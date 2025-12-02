@@ -733,3 +733,29 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   HOVER — Make card text turn white
+   (Title, body, tag, icon all brighten on hover)
+============================================================ */
+
+.p-card:hover h3,
+.p-card:hover p,
+.p-card:hover .p-icon,
+.p-card:hover .p-tag {
+  color: #ffffff !important;
+}
+
+/* Neon tag on hover */
+.p-card:hover .p-tag {
+  background: rgba(255,255,255,0.22);
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Smooth transition */
+.p-card h3,
+.p-card p,
+.p-card .p-icon,
+.p-card .p-tag {
+  transition: color 0.28s ease, background 0.28s ease;
+}
