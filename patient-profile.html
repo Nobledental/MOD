@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Profile & Wallet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a class="active" href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Separate profile page</p>
+        <h1 class="hero-title">Profile, medical, finance, insurance vault</h1>
+        <p class="hero-sub">Store personal details, allergies, blood group, systemic illness, all Indian insurers and TPA details, bank accounts, CIBIL, and organ notes.</p>
+        <div class="hero-actions">
+          <span class="badge">Family sharing</span>
+          <span class="badge">AI completeness check</span>
+          <span class="badge">QR ready</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Quick profile signal</h3>
+        <p class="section-sub">Status surfaced on dashboard + settings</p>
+        <div class="stat-grid">
+          <div class="stat"><small>Blood group</small><strong>O+</strong></div>
+          <div class="stat"><small>CIBIL</small><strong>742</strong></div>
+          <div class="stat"><small>Insurance</small><strong>Cashless ready</strong></div>
+          <div class="stat"><small>Allergies</small><strong>None</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Identity</p><h2 class="section-title">Personal details</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Personal</h3>
+          <p class="section-sub">Name, age, contact, address, ID proofs.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Name</small><strong>Dhivakaran NEO</strong></div>
+            <div class="stat"><small>Contact</small><strong>+91 90000 00000</strong></div>
+            <div class="stat"><small>Email</small><strong>neo@healthflo.ai</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Medical</h3>
+          <p class="section-sub">Blood group, allergies, systemic illness, organ notes.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Blood group</small><strong>O+</strong></div>
+            <div class="stat"><small>Allergies</small><strong>None recorded</strong></div>
+            <div class="stat"><small>Systemic illness</small><strong>Nil</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Finance & bank</p><h2 class="section-title">Bank + CIBIL tracking</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Bank accounts</h3>
+          <p class="section-sub">Store UPI, account numbers, payouts.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Primary</small><strong>HDFC • 1234</strong></div>
+            <div class="stat"><small>Backup</small><strong>SBI • 9876</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>CIBIL & loans</h3>
+          <p class="section-sub">Track CIBIL and HealthFlo loan eligibility.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>CIBIL score</small><strong>742</strong></div>
+            <div class="stat"><small>Loan options</small><strong>Instant / EMI</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Insurance</p><h2 class="section-title">Insurers & TPA details</h2></header>
+      <div class="card">
+        <p class="section-sub">Pick from all health insurance companies in India, add TPA, store policy numbers and cashless readiness.</p>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Insurer</th><th>Policy</th><th>TPA</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>HDFC Ergo</td><td>HE-5544</td><td>FHPL</td><td>Cashless ready</td></tr>
+              <tr><td>Star Health</td><td>ST-2201</td><td>MediAssist</td><td>Pre-auth ready</td></tr>
+              <tr><td>ICICI Lombard</td><td>IC-8890</td><td>Paramount</td><td>Claim tracking</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Profile</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
