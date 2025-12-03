@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthFlo — Patient OS: Easy View</title>
+  <title>HealthFlo — Patient OS V15 Ultra Modular</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,12 +30,14 @@
       </div>
 
       <nav class="hf-nav" aria-label="Primary navigation">
-        <button class="nav-btn active" data-target="dashboard">Home</button>
-        <button class="nav-btn" data-target="vitals">Vitals</button>
-        <button class="nav-btn" data-target="organs">Organs</button>
-        <button class="nav-btn" data-target="reports">Records</button>
-        <button class="nav-btn" data-target="appointments">Appointments</button>
-        <button class="nav-btn" data-target="copilot">Help</button>
+        <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+        <button class="nav-btn" data-target="health">Health</button>
+        <button class="nav-btn" data-target="labs">Labs</button>
+        <button class="nav-btn" data-target="services">Services</button>
+        <button class="nav-btn" data-target="devices">Devices</button>
+        <button class="nav-btn" data-target="family">Family</button>
+        <button class="nav-btn" data-target="insurance">Insurance</button>
+        <button class="nav-btn" data-target="settings">Settings</button>
       </nav>
 
       <div class="hf-actions">
@@ -49,13 +51,23 @@
   <main class="hf-wrapper" id="dashboard">
 
     <!-- HERO -->
-    <section class="dashboard-hero">
-
+    <section class="dashboard-hero" id="health">
       <div class="hero-left">
+        <p class="eyebrow">Neo Guardian • Live safety check</p>
         <h1 class="hero-title">Hi, Dhivakaran 👋</h1>
-        <p class="hero-sub">This screen keeps your health info simple and ready. No medical words—just clear points.</p>
+        <p class="hero-sub">
+          Your modular Patient OS keeps everything in one place: live vitals, lab meaning in simple words, quick bookings, insurance, and SOS readiness.
+        </p>
 
-        <div class="vitals-grid" aria-label="Quick vitals">
+        <div class="quick-actions" aria-label="Quick actions">
+          <button class="pill solid">Book Appointment</button>
+          <button class="pill outline">Order Medicines</button>
+          <button class="pill outline">Upload Report</button>
+          <button class="pill danger">Start SOS</button>
+          <button class="pill ghost">Ask AI</button>
+        </div>
+
+        <div class="vitals-grid" aria-label="Live vitals">
           <div class="vital-card" data-v="hr">
             <span class="vital-label">Heart Rate</span>
             <strong id="v_hr" class="vital-value">76</strong>
@@ -79,8 +91,8 @@
         </div>
 
         <div class="ai-summary">
-          <h3>AI Guardian in Plain Words</h3>
-          <p id="ai_summary">All readings are normal. Stay hydrated and walk 20 mins.</p>
+          <h3>Guardian in simple words</h3>
+          <p id="ai_summary">All looks steady. Drink water, take a 20-minute walk, and sleep on time.</p>
         </div>
       </div>
 
@@ -92,8 +104,8 @@
             auto-rotate
             camera-controls
             disable-zoom
-            exposure="1.18"
-            shadow-intensity="1.5"
+            exposure="1.1"
+            shadow-intensity="1.3"
             class="heart-model"
             aria-label="3D heart visual">
           </model-viewer>
@@ -106,383 +118,501 @@
       </div>
     </section>
 
-    <!-- ORGAN HEALTH -->
-    <section class="organ-twin" id="organs">
-      <h2 class="section-title">Organ Health Twin</h2>
-      <p class="section-sub">Simple view of how your main organs are doing right now.</p>
+    <!-- LIVE STACK -->
+    <section class="live-stack" id="labs">
+      <div class="stack-grid">
+        <div class="card block">
+          <div class="card-head">
+            <h2>Blood status</h2>
+            <span class="pill soft" id="blood_signal">Balanced</span>
+          </div>
+          <div class="stat-grid">
+            <div>
+              <p>Hemoglobin</p>
+              <strong id="hb_value">13.6 g/dL</strong>
+              <small id="hb_msg">Within healthy range</small>
+            </div>
+            <div>
+              <p>Hydration</p>
+              <strong id="water_value">Good</strong>
+              <small id="water_msg">Drink 2.5L today</small>
+            </div>
+            <div>
+              <p>Infection watch</p>
+              <strong id="infection_value">Low</strong>
+              <small id="infection_msg">No signs seen</small>
+            </div>
+            <div>
+              <p>Anemia watch</p>
+              <strong id="anemia_value">Clear</strong>
+              <small id="anemia_msg">Iron looks ok</small>
+            </div>
+          </div>
+        </div>
 
-      <div class="organ-grid">
-        <div class="organ-card" data-organ="brain">
-          <div class="organ-icon">🧠</div>
-          <h3>Brain</h3>
-          <p class="organ-status">Calm</p>
-          <small>No stress signals</small>
-        </div>
-        <div class="organ-card" data-organ="eyes">
-          <div class="organ-icon">👁</div>
-          <h3>Eyes</h3>
-          <p class="organ-status">Clear</p>
-          <small>No strain today</small>
-        </div>
-        <div class="organ-card" data-organ="lungs">
-          <div class="organ-icon">🫁</div>
-          <h3>Lungs</h3>
-          <p class="organ-status">Strong</p>
-          <small>Breathing steady</small>
-        </div>
-        <div class="organ-card" data-organ="heart">
-          <div class="organ-icon">❤️</div>
-          <h3>Heart</h3>
-          <p class="organ-status">Good</p>
-          <small>Rhythm steady</small>
-        </div>
-        <div class="organ-card" data-organ="liver">
-          <div class="organ-icon">🧬</div>
-          <h3>Liver</h3>
-          <p class="organ-status">Healthy</p>
-          <small>Reports normal</small>
-        </div>
-        <div class="organ-card" data-organ="kidneys">
-          <div class="organ-icon">🩺</div>
-          <h3>Kidneys</h3>
-          <p class="organ-status">Watch</p>
-          <small>Drink more water</small>
-        </div>
-        <div class="organ-card" data-organ="gb">
-          <div class="organ-icon">🫙</div>
-          <h3>Gallbladder</h3>
-          <p class="organ-status">Normal</p>
-          <small>No pain alerts</small>
-        </div>
-        <div class="organ-card" data-organ="spleen">
-          <div class="organ-icon">🧬</div>
-          <h3>Spleen</h3>
-          <p class="organ-status">Normal</p>
-          <small>Filters working</small>
+        <div class="card block">
+          <div class="card-head">
+            <h2>Organ watch</h2>
+            <span class="pill soft" id="organ_alert">All clear</span>
+          </div>
+          <div class="organ-grid compact">
+            <div class="organ-card" data-organ="heart">
+              <div class="organ-icon">❤️</div>
+              <h3>Heart</h3>
+              <p class="organ-status" id="heart_status">Good</p>
+              <small>Cardiac markers steady</small>
+            </div>
+            <div class="organ-card" data-organ="lungs">
+              <div class="organ-icon">🫁</div>
+              <h3>Lungs</h3>
+              <p class="organ-status" id="lung_status">Free</p>
+              <small>Spirometry and SpO₂ smooth</small>
+            </div>
+            <div class="organ-card" data-organ="liver">
+              <div class="organ-icon">🧬</div>
+              <h3>Liver</h3>
+              <p class="organ-status" id="liver_status">Healthy</p>
+              <small>LFT normal</small>
+            </div>
+            <div class="organ-card" data-organ="kidney">
+              <div class="organ-icon">🩺</div>
+              <h3>Kidneys</h3>
+              <p class="organ-status" id="kidney_status">Hydrated</p>
+              <small>KFT + CUE normal</small>
+            </div>
+            <div class="organ-card" data-organ="dental">
+              <div class="organ-icon">🦷</div>
+              <h3>Dental</h3>
+              <p class="organ-status" id="dental_status">Bright</p>
+              <small>3D CBCT clear</small>
+            </div>
+            <div class="organ-card" data-organ="brain">
+              <div class="organ-icon">🧠</div>
+              <h3>Brain</h3>
+              <p class="organ-status">Calm</p>
+              <small>No stress signals</small>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- LAB SUITE -->
-    <section class="lab-suite" id="lab">
-      <h2 class="section-title">Lab Reports Made Simple</h2>
-      <p class="section-sub">Quick words on your blood tests. No medical jargon.</p>
+    <!-- LAB INTELLIGENCE -->
+    <section class="lab-suite" id="health-tests">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Lab & imaging</p>
+          <h2 class="section-title">Lab intelligence in plain language</h2>
+          <p class="section-sub">CBC, LFT, KFT, CUE, cardiac markers, lung tests, dental scans, and radiology stitched together.</p>
+        </div>
+        <div class="pill-switch">
+          <span>Mode</span>
+          <button class="pill solid" data-theme="matte">Matte</button>
+          <button class="pill ghost" data-theme="vision">Vision Pro</button>
+        </div>
+      </div>
 
       <div class="lab-suite-grid">
         <div class="lab-card">
-          <h3>Complete Blood Count</h3>
-          <div class="lab-row"><span>Red cells</span><strong id="lab_rbc">Good</strong></div>
-          <div class="lab-row"><span>White cells</span><strong id="lab_wbc">Okay</strong></div>
-          <div class="lab-row"><span>Platelets</span><strong id="lab_platelets">Fine</strong></div>
-          <p class="lab-ai" id="lab_cbc_ai">Everything balanced. Keep eating fruits.</p>
+          <div class="lab-card-head">
+            <h3>CBC & Blood</h3>
+            <span class="pill soft" id="cbc_signal">Normal</span>
+          </div>
+          <p class="lab-ai" id="lab_cbc_ai">Blood looks balanced. No infection seen.</p>
+          <div class="lab-row"><span>RBC</span><strong id="lab_rbc">4.7</strong></div>
+          <div class="lab-row"><span>WBC</span><strong id="lab_wbc">6.2</strong></div>
+          <div class="lab-row"><span>Platelets</span><strong id="lab_platelets">2.3</strong></div>
         </div>
 
         <div class="lab-card">
-          <h3>Liver Health</h3>
-          <div class="lab-row"><span>SGOT</span><strong id="lab_sgot">Normal</strong></div>
-          <div class="lab-row"><span>SGPT</span><strong id="lab_sgpt">Normal</strong></div>
-          <div class="lab-row"><span>Bilirubin</span><strong id="lab_bilirubin">Normal</strong></div>
-          <p class="lab-ai" id="lab_lft_ai">Liver looks fine. Avoid heavy oily food.</p>
+          <div class="lab-card-head">
+            <h3>LFT — Liver</h3>
+            <span class="pill soft" id="lft_signal">Good</span>
+          </div>
+          <p class="lab-ai" id="lab_lft_ai">Liver values stay inside normal range.</p>
+          <div class="lab-row"><span>SGOT</span><strong id="lab_sgot">26</strong></div>
+          <div class="lab-row"><span>SGPT</span><strong id="lab_sgpt">24</strong></div>
+          <div class="lab-row"><span>Bilirubin</span><strong id="lab_bilirubin">0.8</strong></div>
         </div>
 
         <div class="lab-card">
-          <h3>Kidney Health</h3>
-          <div class="lab-row"><span>Creatinine</span><strong id="lab_creatinine">Slightly high</strong></div>
-          <div class="lab-row"><span>Urea</span><strong id="lab_urea">Okay</strong></div>
-          <div class="lab-row"><span>Sodium</span><strong id="lab_sodium">Normal</strong></div>
-          <p class="lab-ai" id="lab_kft_ai">Drink 2-3 litres water daily. Check again in 1 week.</p>
+          <div class="lab-card-head">
+            <h3>KFT + CUE — Kidneys</h3>
+            <span class="pill soft" id="kft_signal">Hydrated</span>
+          </div>
+          <p class="lab-ai" id="lab_kft_ai">Kidney filters are working well. Keep water handy.</p>
+          <div class="lab-row"><span>Creatinine</span><strong id="lab_creatinine">0.9</strong></div>
+          <div class="lab-row"><span>Urea</span><strong id="lab_urea">22</strong></div>
+          <div class="lab-row"><span>Sodium</span><strong id="lab_sodium">140</strong></div>
+        </div>
+
+        <div class="lab-card">
+          <div class="lab-card-head">
+            <h3>Cardiac markers</h3>
+            <span class="pill soft" id="cardiac_signal">Calm</span>
+          </div>
+          <p class="lab-ai" id="lab_cardiac_ai">Heart stress markers are low and steady.</p>
+          <div class="lab-row"><span>Troponin</span><strong id="lab_troponin">Normal</strong></div>
+          <div class="lab-row"><span>CRP</span><strong id="lab_crp">Low</strong></div>
+          <div class="lab-row"><span>BNP</span><strong id="lab_bnp">Normal</strong></div>
+        </div>
+
+        <div class="lab-card">
+          <div class="lab-card-head">
+            <h3>Lung health</h3>
+            <span class="pill soft" id="lung_signal">Free</span>
+          </div>
+          <p class="lab-ai" id="lab_lung_ai">Breathing looks smooth. SpO₂ steady.</p>
+          <div class="lab-row"><span>Spirometry</span><strong id="lab_spirometry">Normal</strong></div>
+          <div class="lab-row"><span>SpO₂ Trend</span><strong id="lab_spo2">98%</strong></div>
+          <div class="lab-row"><span>Resp Rate</span><strong id="lab_resp">16</strong></div>
+        </div>
+
+        <div class="lab-card">
+          <div class="lab-card-head">
+            <h3>Dental</h3>
+            <span class="pill soft" id="dental_signal">Bright</span>
+          </div>
+          <p class="lab-ai" id="lab_dental_ai">3D CBCT shows gums and teeth are clear.</p>
+          <div class="lab-row"><span>CBCT</span><strong id="lab_cbct">Clean</strong></div>
+          <div class="lab-row"><span>Cavities</span><strong id="lab_cavity">None</strong></div>
+          <div class="lab-row"><span>Gums</span><strong id="lab_gums">Healthy</strong></div>
+        </div>
+
+        <div class="lab-card wide">
+          <div class="lab-card-head">
+            <h3>Radiology board</h3>
+            <span class="pill soft" id="radio_signal">Ready</span>
+          </div>
+          <p class="lab-ai">USG abdomen, pelvis, mammogram, soft tissue, MRI/CT head, neck, spine all tracked in one place.</p>
+          <div class="radiology-grid">
+            <span>USG Abdomen</span>
+            <span>USG Pelvis</span>
+            <span>Mammogram</span>
+            <span>MRI Brain</span>
+            <span>CT Head</span>
+            <span>Spine MRI/CT</span>
+            <span>3D CBCT</span>
+            <span>Soft tissue scan</span>
+          </div>
+          <button class="pill solid small">Upload latest scan</button>
         </div>
       </div>
     </section>
 
-    <!-- INVESTIGATION TIMELINE -->
-    <section class="investigation-timeline" id="investigations">
-      <h2 class="section-title">Tests & Scans Status</h2>
-      <p class="section-sub">Know what is done, in progress, and coming up.</p>
+    <!-- SERVICES -->
+    <section class="services" id="services">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Care modules</p>
+          <h2 class="section-title">Bookings and services</h2>
+          <p class="section-sub">Hospitals, clinics, labs, pharmacy, insurance, and finance from one screen.</p>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Hospital check-in</span>
+          <span class="chip">Clinic visit</span>
+          <span class="chip">Lab slot</span>
+          <span class="chip">Pharmacy</span>
+          <span class="chip">Insurance</span>
+        </div>
+      </div>
 
-      <div class="investigation-flow">
-        <div class="investigation-step done">
-          <div class="step-bubble">1</div>
+      <div class="service-grid">
+        <div class="service-card">
           <div>
-            <strong>CBC + Liver + Kidney tests</strong>
-            <p class="muted">Finished • Reports ready</p>
+            <p class="eyebrow">Hospitals & clinics</p>
+            <h3>Book & track visits</h3>
+            <p class="muted">Select hospital, clinic, or lab. Use your QR or ID for instant registration.</p>
+            <div class="inline-row">
+              <button class="pill solid">Find Slot</button>
+              <button class="pill ghost">Show QR</button>
+            </div>
           </div>
+          <div class="badge">Live tracking</div>
         </div>
-        <div class="investigation-step active">
-          <div class="step-bubble">2</div>
+
+        <div class="service-card">
           <div>
-            <strong>Lipid profile</strong>
-            <p class="muted">Sample collected • Being tested</p>
+            <p class="eyebrow">Pharmacy</p>
+            <h3>Order medicines</h3>
+            <p class="muted">Refill reminders, interaction safety, and doorstep delivery.</p>
+            <div class="inline-row">
+              <button class="pill solid">Order Now</button>
+              <button class="pill ghost">See Prescriptions</button>
+            </div>
           </div>
+          <div class="badge">Safe dose</div>
         </div>
-        <div class="investigation-step upcoming">
-          <div class="step-bubble">3</div>
+
+        <div class="service-card">
           <div>
-            <strong>MRI brain</strong>
-            <p class="muted">Scheduled • Feb 12</p>
+            <p class="eyebrow">Lab & imaging</p>
+            <h3>Book investigations</h3>
+            <p class="muted">CBC, LFT, KFT, radiology scans with home pickup and live report sync.</p>
+            <div class="inline-row">
+              <button class="pill solid">Book Test</button>
+              <button class="pill ghost">Track Samples</button>
+            </div>
           </div>
+          <div class="badge">Home pickup</div>
         </div>
-        <div class="investigation-step upcoming">
-          <div class="step-bubble">4</div>
+
+        <div class="service-card" id="insurance">
           <div>
-            <strong>Heart echo</strong>
-            <p class="muted">Waiting for slot</p>
-          </div>
-        </div>
-      </div>
-
-      <p id="inv_ai_msg" class="inv-ai-msg">
-        AI tip: Lipid report by 8 PM today. MRI on time. Echo slot will be confirmed soon.
-      </p>
-    </section>
-
-    <!-- APPOINTMENTS -->
-    <section class="appointments-section" id="appointments">
-      <h2 class="section-title">Appointments</h2>
-      <p class="section-sub">Upcoming doctor visits, labs, and scans.</p>
-
-      <div class="appointment-grid">
-        <div class="appointment-card">
-          <div class="app-left">
-            <div class="doc-pic">👨‍⚕️</div>
-            <div>
-              <h3>Dr. Arvind — Heart Doctor</h3>
-              <p class="muted">Video follow-up</p>
-              <div class="appt-time">Today • 6:00 PM <span class="dot-live"></span></div>
+            <p class="eyebrow">Insurance & claims</p>
+            <h3>See policy & claims</h3>
+            <p class="muted">Cashless status, TPA details, room rent guard, and pending approvals.</p>
+            <div class="inline-row">
+              <button class="pill solid">View Policy</button>
+              <button class="pill ghost">Check Claim</button>
             </div>
           </div>
-          <button class="btn-primary">Join video call</button>
+          <div class="badge">Cashless ready</div>
         </div>
 
-        <div class="appointment-card">
-          <div class="app-left">
-            <div class="doc-pic">🧪</div>
-            <div>
-              <h3>PathLab Diagnostics</h3>
-              <p class="muted">Lipid profile + liver test</p>
-              <div class="appt-time">Tomorrow • 8:30 AM</div>
+        <div class="service-card">
+          <div>
+            <p class="eyebrow">Finance</p>
+            <h3>Health loans</h3>
+            <p class="muted">Instant or easy EMI from HealthFlo partners with clear terms.</p>
+            <div class="inline-row">
+              <button class="pill solid">Check offers</button>
+              <button class="pill ghost">CIBIL view</button>
             </div>
           </div>
-          <button class="btn-outline">See details</button>
-        </div>
-
-        <div class="appointment-card">
-          <div class="app-left">
-            <div class="doc-pic">🩻</div>
-            <div>
-              <h3>City Scans</h3>
-              <p class="muted">MRI brain</p>
-              <div class="appt-time">Feb 12 • 2:00 PM</div>
-            </div>
-          </div>
-          <button class="btn-outline">View center</button>
+          <div class="badge">Pre-approved</div>
         </div>
       </div>
     </section>
 
-    <!-- MEDICINES -->
-    <section class="medicine-section" id="medicines">
-      <h2 class="section-title">Medicine Reminders & Orders</h2>
-      <p class="section-sub">Easy tracker with simple advice.</p>
-
-      <div class="medicine-grid">
-        <div class="medicine-card" data-status="shipped">
-          <div class="med-left">
-            <div class="pill-icon">💊</div>
-            <div>
-              <h3>Telmisartan 40mg</h3>
-              <p class="muted">For blood pressure</p>
-              <p class="ai-msg good">AI: Safe with your current meds.</p>
-            </div>
-          </div>
-          <div class="med-right">
-            <span class="pill shipped">On the way</span>
-            <small>Expected today</small>
-          </div>
+    <!-- PROFILE & WALLET -->
+    <section class="profile-section" id="profile">
+      <div class="profile-card">
+        <div class="profile-avatar-wrap">
+          <img src="https://i.pravatar.cc/150" class="profile-avatar" alt="Profile avatar">
         </div>
-
-        <div class="medicine-card" data-status="processing">
-          <div class="med-left">
-            <div class="pill-icon">💉</div>
-            <div>
-              <h3>Insulin cartridge</h3>
-              <p class="muted">For sugar control</p>
-              <p class="ai-msg warn">AI: Check dose with tonight's dinner.</p>
+        <div class="profile-info-main">
+          <h2>Profile & wallet (separate page)</h2>
+          <p class="muted">Personal details, blood group, allergies, known conditions, insurance, TPA, and bank info with CIBIL tracking.</p>
+          <div class="profile-grid">
+            <div class="p-tile">
+              <h5>Personal</h5>
+              <p>Age 29 • Male • India</p>
+            </div>
+            <div class="p-tile">
+              <h5>Medical</h5>
+              <p>Blood group O+ • No allergies noted</p>
+            </div>
+            <div class="p-tile">
+              <h5>Insurance</h5>
+              <p>Select any Indian insurer + TPA</p>
+            </div>
+            <div class="p-tile">
+              <h5>Finance</h5>
+              <p>CIBIL 742 • Bank linked</p>
             </div>
           </div>
-          <div class="med-right">
-            <span class="pill processing">Processing</span>
-            <small>Dispatching soon</small>
-          </div>
-        </div>
-
-        <div class="medicine-card" data-status="delivered">
-          <div class="med-left">
-            <div class="pill-icon">🧴</div>
-            <div>
-              <h3>Vitamin D3 60K IU</h3>
-              <p class="muted">Weekly supplement</p>
-              <p class="ai-msg good">AI: Take after food.</p>
-            </div>
-          </div>
-          <div class="med-right">
-            <span class="pill delivered">Delivered</span>
-            <small>Yesterday</small>
+          <div class="inline-row">
+            <button class="pill solid">Open profile page</button>
+            <button class="pill ghost">Manage insurance</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- OFFERS -->
-    <section class="offers-section" id="offers">
-      <h2 class="section-title">Offers For You</h2>
-      <p class="section-sub">Deals picked for your health plan.</p>
+    <!-- DEVICES & FAMILY -->
+    <section class="device-family" id="devices">
+      <div class="device-grid">
+        <div class="device-card">
+          <div class="card-head">
+            <h3>Connect devices</h3>
+            <span class="pill soft">Wi‑Fi / BLE</span>
+          </div>
+          <p class="muted">Pair wearables, BP monitors, glucometers, oximeters, and more to sync vitals live.</p>
+          <div class="device-list" id="device_list">
+            <div class="device-item">Apple Watch • Connected</div>
+            <div class="device-item">BP Monitor • Ready</div>
+            <div class="device-item">Oximeter • Connected</div>
+          </div>
+          <div class="inline-row">
+            <button class="pill solid" id="pairDevice">Pair new</button>
+            <button class="pill ghost">Manage devices</button>
+          </div>
+        </div>
 
-      <div class="offers-grid">
-        <div class="offer-card">
-          <span class="offer-tag red">40% OFF</span>
-          <h3>Full body checkup</h3>
-          <p class="muted">PathLab Diagnostics • Till Feb 14</p>
-          <div class="offer-ai good">AI: Good time to do this.</div>
-          <button class="btn-primary">Book now</button>
-        </div>
-        <div class="offer-card">
-          <span class="offer-tag blue">25% OFF</span>
-          <h3>MRI / CT scan</h3>
-          <p class="muted">City Scans, Hyderabad</p>
-          <div class="offer-ai neutral">AI: Useful for your follow-up.</div>
-          <button class="btn-primary">View centers</button>
-        </div>
-        <div class="offer-card">
-          <span class="offer-tag green">UPGRADE</span>
-          <h3>Cashless room upgrade</h3>
-          <p class="muted">190+ hospitals</p>
-          <div class="offer-ai good">AI: Covered under your plan.</div>
-          <button class="btn-primary">Check eligibility</button>
+        <div class="device-card" id="family">
+          <div class="card-head">
+            <h3>Family live view</h3>
+            <span class="pill soft">Shared</span>
+          </div>
+          <p class="muted">Parents, spouse, kids, or caregivers can watch vitals and alerts in real time.</p>
+          <div class="family-list">
+            <div class="family-item">
+              <div>
+                <strong>Mother</strong>
+                <p class="muted">Vitals mirroring on</p>
+              </div>
+              <span class="pill soft">Notify</span>
+            </div>
+            <div class="family-item">
+              <div>
+                <strong>Father</strong>
+                <p class="muted">Alerts only</p>
+              </div>
+              <span class="pill soft">Notify</span>
+            </div>
+            <div class="family-item">
+              <div>
+                <strong>Spouse</strong>
+                <p class="muted">Full view</p>
+              </div>
+              <span class="pill soft">Notify</span>
+            </div>
+          </div>
+          <button class="pill solid">Share live view</button>
         </div>
       </div>
     </section>
 
-    <!-- EMERGENCY -->
-    <section class="emergency-section" id="emergency">
-      <h2 class="section-title">Emergency Assist</h2>
-      <p class="section-sub">Call ambulance in one tap. Family gets alerts too.</p>
-
+    <!-- EMERGENCY & SETTINGS -->
+    <section class="emergency-settings" id="emergency">
       <div class="emergency-box">
-        <div class="emg-left">
-          <h3>🚑 Need help now?</h3>
-          <p class="muted">We will share your location and basic health info to get help fast.</p>
-          <button id="triggerEmergency" class="btn-emergency">Trigger emergency</button>
-          <p class="emg-status" id="emg_status_msg">Ready to connect to nearby ambulances.</p>
+        <div>
+          <h3>Ambulance & SOS</h3>
+          <p class="muted">Manual or auto trigger. Sends live location to nearby hospitals and family.</p>
+          <div class="inline-row">
+            <button id="triggerEmergency" class="pill danger">Trigger now</button>
+            <button class="pill ghost" id="autoToggle">Auto trigger: ON</button>
+          </div>
+          <p class="emg-status" id="emg_status_msg">System ready. Location locked.</p>
         </div>
-        <div class="emg-orb" aria-hidden="true">
+        <div class="emg-orb">
           <div class="orb-core"></div>
           <div class="orb-ring"></div>
           <div class="orb-wave"></div>
         </div>
       </div>
+
+      <div class="settings-card" id="settings">
+        <div class="card-head">
+          <h3>Settings & security</h3>
+          <span class="pill soft">Control</span>
+        </div>
+        <div class="settings-grid">
+          <div>
+            <p>Account</p>
+            <small>Login, logout, change phone, delete account</small>
+          </div>
+          <div>
+            <p>Payments</p>
+            <small>Update UPI/bank for bills</small>
+          </div>
+          <div>
+            <p>QR code</p>
+            <small>For instant registration</small>
+          </div>
+          <div>
+            <p>Location</p>
+            <small>Share live during SOS</small>
+          </div>
+          <div>
+            <p>Theme</p>
+            <small>Matte or Vision Pro</small>
+          </div>
+          <div>
+            <p>Devices</p>
+            <small>Wi‑Fi / Bluetooth pairing</small>
+          </div>
+        </div>
+        <button class="pill solid">Open settings page</button>
+      </div>
     </section>
 
-    <!-- PROFILE -->
-    <section class="profile-section" id="profile">
-      <h2 class="section-title">My Profile</h2>
-      <p class="section-sub">All your key details and family contacts.</p>
+    <!-- COPILOT -->
+    <div class="copilot-widget" id="copilot">
+      <div class="copilot-header">
+        <h3>AI Copilot</h3>
+        <button class="copilot-close">×</button>
+      </div>
+      <div class="copilot-body" id="copilotChat">
+        <div class="msg-ai">Hello! I’m Guardian AI. Ask me about reports, insurance, or bookings.</div>
+      </div>
+      <div class="copilot-input-wrap">
+        <input type="text" id="copilotInput" placeholder="Ask anything…">
+        <button id="copilotSend">➤</button>
+      </div>
+    </div>
+    <button class="copilot-launcher" id="openCopilot">🤖</button>
 
-      <div class="profile-card">
-        <div class="profile-avatar-wrap">
-          <img src="https://i.pravatar.cc/150" class="profile-avatar" alt="Profile avatar">
+    <!-- BODY MAP -->
+    <section class="bodymap-section" id="bodymap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">3D Body</p>
+          <h2 class="section-title">Human body — quick view</h2>
+          <p class="section-sub">Tap any area to explore organ systems and alerts.</p>
         </div>
-
-        <div class="profile-info-main">
-          <h3>Dhivakaran Rabindran</h3>
-          <p class="muted">Age 29 • Male • India</p>
-
-          <div class="ai-persona">
-            <h4>AI note about you</h4>
-            <p id="aiPersonaSummary">You are active and keep medicines on time. Keep morning walks.</p>
-          </div>
-
-          <div class="profile-grid">
-            <div class="p-tile"><h5>Phone</h5><p>+91 98765 43210</p></div>
-            <div class="p-tile"><h5>Email</h5><p>user@healthflo.org</p></div>
-            <div class="p-tile"><h5>Blood Group</h5><p>O+</p></div>
-            <div class="p-tile"><h5>Emergency Contact</h5><p>+91 98765 00021</p></div>
-          </div>
-
-          <div class="profile-columns">
-            <div class="p-info-block">
-              <h4>Medical Info</h4>
-              <p><strong>Chronic:</strong> None</p>
-              <p><strong>Allergies:</strong> None</p>
-              <p><strong>Last check-up:</strong> Feb 2025</p>
-            </div>
-            <div class="p-info-block">
-              <h4>Insurance</h4>
-              <p><strong>Policy:</strong> Star Health</p>
-              <p><strong>Coverage:</strong> ₹10,00,000</p>
-              <p><strong>Status:</strong> Active cashless</p>
-            </div>
-            <div class="p-info-block">
-              <h4>Money & Loans</h4>
-              <p><strong>CIBIL:</strong> 742 (Good)</p>
-              <p><strong>Loan:</strong> Pre-approved</p>
-              <p><strong>EMIs:</strong> None</p>
-            </div>
-          </div>
-        </div>
+      </div>
+      <div class="bodymap-container">
+        <model-viewer
+          id="bodyModel"
+          src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+          camera-controls
+          auto-rotate
+          shadow-intensity="1.4"
+          exposure="1.2">
+        </model-viewer>
       </div>
     </section>
 
     <!-- REPORT VAULT -->
     <section class="report-vault" id="reports">
-      <h2 class="section-title">Report Vault</h2>
-      <p class="section-sub">All your health documents in one safe place.</p>
-
+      <h2 class="section-title">Report vault</h2>
+      <p class="section-sub">All your documents in one safe space with quick view.</p>
       <div class="report-grid">
         <div class="report-card" data-report="cbc_report">
           <div class="report-icon">📄</div>
-          <h3>CBC report</h3>
+          <h3>CBC Report</h3>
           <p class="muted">Uploaded: Feb 4</p>
-          <button class="btn-outline report-open-btn" data-target="cbc_report_modal">View</button>
+          <button class="pill ghost report-open-btn" data-target="cbc_report_modal">View</button>
         </div>
         <div class="report-card" data-report="lft_report">
           <div class="report-icon">📄</div>
-          <h3>Liver report</h3>
+          <h3>LFT Report</h3>
           <p class="muted">Uploaded: Feb 4</p>
-          <button class="btn-outline report-open-btn" data-target="lft_report_modal">View</button>
+          <button class="pill ghost report-open-btn" data-target="lft_report_modal">View</button>
         </div>
         <div class="report-card" data-report="kft_report">
           <div class="report-icon">📄</div>
-          <h3>Kidney report</h3>
+          <h3>KFT Report</h3>
           <p class="muted">Uploaded: Feb 4</p>
-          <button class="btn-outline report-open-btn" data-target="kft_report_modal">View</button>
+          <button class="pill ghost report-open-btn" data-target="kft_report_modal">View</button>
         </div>
         <div class="report-card" data-report="lipid_profile">
           <div class="report-icon">📄</div>
-          <h3>Lipid profile</h3>
+          <h3>Lipid Profile</h3>
           <p class="muted">Uploaded: Feb 6</p>
-          <button class="btn-outline report-open-btn" data-target="lipid_report_modal">View</button>
+          <button class="pill ghost report-open-btn" data-target="lipid_report_modal">View</button>
         </div>
       </div>
     </section>
 
-    <!-- REPORT MODAL -->
+    <!-- MODALS -->
     <div id="reportModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
       <div class="modal-box">
-        <button class="modal-close" aria-label="Close">×</button>
+        <button class="modal-close">×</button>
         <h2 id="modalTitle">Report</h2>
         <p id="modalDate">Date: --</p>
         <div class="modal-content">
-          <img id="modalImage" src="" alt="Report preview">
+          <img id="modalImage" src="" alt="Report Preview">
         </div>
-        <button class="btn-primary" id="downloadReport">Download</button>
+        <button class="pill solid" id="downloadReport">Download</button>
       </div>
     </div>
 
-    <!-- ORGAN MODAL -->
     <div id="organModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
       <div class="modal-box organ-modal-box">
-        <button class="modal-close" aria-label="Close">×</button>
+        <button class="modal-close">×</button>
         <h2 id="organTitle">Organ details</h2>
         <div class="organ-modal-layout">
           <div class="organ-3d-wrap">
@@ -491,14 +621,22 @@
               src="https://modelviewer.dev/shared-assets/models/Heart.glb"
               auto-rotate
               camera-controls
-              disable-zoom
-              aria-label="Organ 3D view">
+              disable-zoom>
             </model-viewer>
           </div>
           <div class="organ-stats">
-            <div class="stat-row"><span>Status</span><strong id="organStatus">--</strong></div>
-            <div class="stat-row"><span>AI observation</span><strong id="organAI">--</strong></div>
-            <div class="stat-row"><span>Risk score</span><strong id="organRisk">--</strong></div>
+            <div class="stat-row">
+              <span>Status</span>
+              <strong id="organStatus">--</strong>
+            </div>
+            <div class="stat-row">
+              <span>AI note</span>
+              <strong id="organAI">--</strong>
+            </div>
+            <div class="stat-row">
+              <span>Risk</span>
+              <strong id="organRisk">--</strong>
+            </div>
             <h3 class="chart-title">Vital trend</h3>
             <canvas id="organTrendChart"></canvas>
           </div>
@@ -506,57 +644,24 @@
       </div>
     </div>
 
-    <!-- AI COPILOT -->
-    <div class="copilot-widget" id="copilot">
-      <div class="copilot-header">
-        <h3>AI Copilot</h3>
-        <button class="copilot-close" aria-label="Close">×</button>
-      </div>
-      <div class="copilot-body" id="copilotChat">
-        <div class="msg-ai">Hello! I’m here to help in simple words. Ask anything.</div>
-      </div>
-      <div class="copilot-input-wrap">
-        <input type="text" id="copilotInput" placeholder="Ask anything…" aria-label="Type your question">
-        <button id="copilotSend">➤</button>
-      </div>
-    </div>
-    <button class="copilot-launcher" id="openCopilot">🤖</button>
-
-    <!-- BODY MAP -->
-    <section class="bodymap-section" id="bodymap">
-      <h2 class="section-title">Human Body — 3D View</h2>
-      <p class="section-sub">Tap any part to learn what it does.</p>
-      <div class="bodymap-container">
-        <model-viewer
-          id="bodyModel"
-          src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-          camera-controls
-          auto-rotate
-          shadow-intensity="1.4"
-          exposure="1.2"
-          aria-label="Full body 3D view">
-        </model-viewer>
-      </div>
-    </section>
-
-    <!-- DOCK -->
-    <nav class="neo-dock" aria-label="Quick navigation">
+    <!-- NEO DOCK -->
+    <nav class="neo-dock">
       <button class="dock-btn active" data-target="dashboard">🏠</button>
-      <button class="dock-btn" data-target="vitals">💓</button>
-      <button class="dock-btn" data-target="organs">🧬</button>
+      <button class="dock-btn" data-target="health">💓</button>
+      <button class="dock-btn" data-target="labs">🧪</button>
+      <button class="dock-btn" data-target="services">📅</button>
+      <button class="dock-btn" data-target="devices">📡</button>
       <button class="dock-btn" data-target="reports">📄</button>
-      <button class="dock-btn" data-target="appointments">📅</button>
       <button class="dock-btn" id="dockCopilot">🤖</button>
     </nav>
 
-    <!-- FOOTER -->
     <footer class="hf-footer">
       <p>© 2025 HealthFlo — Neo Guardian OS</p>
-      <p class="muted small">Made for patients and families in everyday language.</p>
+      <p class="muted small">AI-first health operating system for patients & families</p>
     </footer>
 
   </main>
 
-  <script src="patient-os.js"></script>
+  <script src="js/patient-os.js"></script>
 </body>
 </html>
