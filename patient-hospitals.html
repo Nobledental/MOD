@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Hospitals & Clinics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a class="active" href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Hospital & clinic bookings</p>
+        <h1 class="hero-title">Book visits with live tracking</h1>
+        <p class="hero-sub">Instant registration via QR/User ID for hospital, clinic, lab, pharmacy. Live ETA and ambulance support built in.</p>
+        <div class="hero-actions">
+          <span class="badge">QR ready</span>
+          <span class="badge">User ID</span>
+          <span class="badge">Live tracking</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Instant registration</h3>
+        <p class="section-sub">Share QR with front desk for zero paperwork.</p>
+        <div class="stat-grid">
+          <div class="stat"><small>QR</small><strong>HF-QR-2048</strong></div>
+          <div class="stat"><small>User ID</small><strong>HF-USER-NEO</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Bookings</p><h2 class="section-title">Hospitals & clinics</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Find a slot</h3>
+          <p class="section-sub">Pick speciality, doctor, or facility; track ETA.</p>
+          <div class="flex-row">
+            <button class="badge primary">Find appointment</button>
+            <button class="badge">Share QR</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Live tracking</h3>
+          <p class="section-sub">ETA to hospital/clinic with live map and queue updates.</p>
+          <div class="notice">GPS connected • 12 mins away</div>
+        </div>
+        <div class="card">
+          <h3>Ambulance trigger</h3>
+          <p class="section-sub">Manual trigger or auto-trigger if vitals drop.</p>
+          <div class="flex-row">
+            <button class="badge primary" id="triggerEmergency">Start ambulance</button>
+            <button class="badge" id="autoToggle">Auto trigger: OFF</button>
+          </div>
+          <div class="notice" id="emg_status_msg">Manual mode active.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Hospitals & Clinics</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
