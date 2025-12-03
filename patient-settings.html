@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Settings</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a class="active" href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Settings</p>
+        <h1 class="hero-title">Access, security, pairing</h1>
+        <p class="hero-sub">Login/logout, contact changes, payment accounts, QR code, live location, device pairing, account deletion.</p>
+        <div class="hero-actions">
+          <span class="badge">Security</span>
+          <span class="badge">Device sync</span>
+          <span class="badge">VOKA ceramic</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>QR & User ID</h3>
+        <div class="stat-grid">
+          <div class="stat"><small>QR</small><strong>HF-QR-2048</strong></div>
+          <div class="stat"><small>User ID</small><strong>HF-USER-NEO</strong></div>
+        </div>
+        <div class="notice">Use at hospital, clinic, lab, pharmacy for instant registration.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Account</p><h2 class="section-title">Login & security</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Session control</h3>
+          <p class="section-sub">Login, logout, and device sign-out.</p>
+          <div class="flex-row">
+            <button class="badge primary">Log in</button>
+            <button class="badge">Log out</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Contact</h3>
+          <p class="section-sub">Change phone number or email; 2FA enforced.</p>
+          <div class="notice">Current: +91 90000 00000</div>
+        </div>
+        <div class="card">
+          <h3>Delete account</h3>
+          <p class="section-sub">Schedule deletion with recovery window.</p>
+          <div class="notice danger">Request deletion</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Payments</p><h2 class="section-title">Payment accounts</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Bank & UPI</h3>
+          <p class="section-sub">Manage payouts and refunds.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Primary</small><strong>HDFC • 1234</strong></div>
+            <div class="stat"><small>UPI</small><strong>neo@upi</strong></div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Insurance vault</h3>
+          <p class="section-sub">Quick access to policies and TPAs.</p>
+          <div class="notice">Linked to Profile & Insurance pages</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Devices & location</p><h2 class="section-title">Pair devices + live location</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Pair devices</h3>
+          <p class="section-sub">Connect over WiFi/BLE to stream live vitals.</p>
+          <button class="badge primary" id="pairDevice">Scan devices</button>
+          <div class="stat-grid" id="device_list"></div>
+        </div>
+        <div class="card">
+          <h3>Live location</h3>
+          <p class="section-sub">Share with ambulance or family when needed.</p>
+          <div class="notice">Location sharing ON for emergencies</div>
+        </div>
+        <div class="card">
+          <h3>Ambulance automation</h3>
+          <p class="section-sub">Auto-trigger or manual trigger from settings.</p>
+          <div class="flex-row">
+            <button class="badge primary" id="triggerEmergency">Trigger now</button>
+            <button class="badge" id="autoToggle">Auto trigger: OFF</button>
+          </div>
+          <div class="notice" id="emg_status_msg">Manual mode active.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Settings</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
