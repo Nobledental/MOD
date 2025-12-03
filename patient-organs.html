@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Organ Watch</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a class="active" href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Organ watch + notifications</p>
+        <h1 class="hero-title">Heart, lungs, liver, kidney, dental, brain</h1>
+        <p class="hero-sub">Auto-surfacing alerts from labs, vitals, and radiology with VOKA glass theme.</p>
+        <div class="hero-actions">
+          <span class="badge">Family visible</span>
+          <span class="badge">Consult prompts</span>
+          <span class="badge">3D cues</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Organ alert badge</h3>
+        <p class="section-sub">Mirrors to dashboard when abnormalities exist.</p>
+        <div class="notice" id="organ_alert">All clear</div>
+        <div class="notice" id="organ_alert_badge">0 alerts</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Organ grid</p>
+          <h2 class="section-title">Status per organ</h2>
+          <p class="section-sub">Tap any card for details. Data comes from vitals, CBC, LFT, KFT, CUE, cardiac markers, CBCT, spirometry.</p>
+        </div>
+      </header>
+      <div class="list-grid">
+        <div class="card organ-card" data-organ="heart">
+          <h3>Heart</h3>
+          <p class="section-sub">Cardiac markers + ECG trend</p>
+          <div class="chip-row"><span class="chip organ-status" id="heart_status">Good</span><span class="chip">Consult if pain</span></div>
+        </div>
+        <div class="card organ-card" data-organ="lungs">
+          <h3>Lungs</h3>
+          <p class="section-sub">Spirometry, SpO₂, respiratory rate</p>
+          <div class="chip-row"><span class="chip organ-status" id="lung_status">Free</span><span class="chip">Coach breathing</span></div>
+        </div>
+        <div class="card organ-card" data-organ="liver">
+          <h3>Liver</h3>
+          <p class="section-sub">LFT markers</p>
+          <div class="chip-row"><span class="chip organ-status" id="liver_status">Healthy</span><span class="chip">Avoid oil</span></div>
+        </div>
+        <div class="card organ-card" data-organ="kidney">
+          <h3>Kidney</h3>
+          <p class="section-sub">KFT + CUE</p>
+          <div class="chip-row"><span class="chip organ-status" id="kidney_status">Hydrated</span><span class="chip">Hydration watch</span></div>
+        </div>
+        <div class="card organ-card" data-organ="dental">
+          <h3>Dental</h3>
+          <p class="section-sub">CBCT, cavities, gum health</p>
+          <div class="chip-row"><span class="chip organ-status" id="dental_status">Bright</span><span class="chip">Hygiene</span></div>
+        </div>
+        <div class="card organ-card" data-organ="brain">
+          <h3>Brain</h3>
+          <p class="section-sub">Sleep and stress signals</p>
+          <div class="chip-row"><span class="chip organ-status">Calm</span><span class="chip">Mindful breaks</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Notifications</p>
+          <h2 class="section-title">Organ notifications + consults</h2>
+        </div>
+      </header>
+      <div class="card" id="organAlerts">
+        <p class="section-sub">Abnormalities will be mirrored to the dashboard and Settings for follow-up.</p>
+        <div id="alert_list">
+          <div class="notice success">All systems green. You will be notified if vitals cross thresholds.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Organ Watch</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
