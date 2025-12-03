@@ -140,6 +140,32 @@ function updateLabIntelligence() {
 updateLabIntelligence();
 setInterval(updateLabIntelligence, 15000);
 
+// Radiology + imaging live status
+const radiologyRows = document.querySelectorAll('[data-rad-study]');
+
+function updateRadiologyBoard() {
+  if (!radiologyRows.length) return;
+  const statusPool = [
+    { label: 'Ready', tone: 'notice success', eta: 'Today' },
+    { label: 'Reporting', tone: 'notice warn', eta: 'In progress' },
+    { label: 'Pending upload', tone: 'notice', eta: 'Awaiting' },
+    { label: 'Scheduled', tone: 'notice', eta: 'Tomorrow' },
+  ];
+
+  radiologyRows.forEach(row => {
+    const statusEl = row.querySelector('[data-rad-status]');
+    const etaEl = row.querySelector('[data-rad-eta]');
+    if (!statusEl || !etaEl) return;
+    const status = statusPool[Math.floor(Math.random() * statusPool.length)];
+    statusEl.textContent = status.label;
+    statusEl.className = `chip ${status.tone}`;
+    etaEl.textContent = status.eta;
+  });
+}
+
+updateRadiologyBoard();
+setInterval(updateRadiologyBoard, 12000);
+
 // Organ alerts mirrored across pages
 const organAlertBadge = document.getElementById('organ_alert_badge');
 const alertList = document.getElementById('alert_list');
@@ -208,14 +234,25 @@ if (pairDeviceBtn && deviceList) {
 const emergencyBtn = document.getElementById('triggerEmergency');
 const autoToggle = document.getElementById('autoToggle');
 const emgStatus = document.getElementById('emg_status_msg');
+const liveLocation = document.getElementById('live_location_status');
+const familyToggle = document.getElementById('familyMirror');
+const familyMsg = document.getElementById('family_status_msg');
 
 emergencyBtn?.addEventListener('click', () => {
   if (emgStatus) emgStatus.textContent = 'Ambulance triggered. Location shared with nearest hospital and family.';
   emergencyBtn.textContent = 'Sent';
+  if (liveLocation) liveLocation.textContent = 'Live location streaming to EMS + family.';
 });
 
 autoToggle?.addEventListener('click', () => {
   const isOn = autoToggle.textContent.includes('ON');
   autoToggle.textContent = `Auto trigger: ${isOn ? 'OFF' : 'ON'}`;
   if (emgStatus) emgStatus.textContent = isOn ? 'Manual mode active.' : 'Auto trigger armed for falls or vital changes.';
+});
+
+familyToggle?.addEventListener('click', () => {
+  const sharing = familyToggle.dataset.state === 'on';
+  familyToggle.dataset.state = sharing ? 'off' : 'on';
+  familyToggle.textContent = sharing ? 'Share live view with family' : 'Family live view ON';
+  if (familyMsg) familyMsg.textContent = sharing ? 'Family access paused.' : 'Family can now see live vitals + organ alerts.';
 });
