@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Patient Health Board</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a class="active" href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Live vitals & labs</p>
+        <h1 class="hero-title">Real-time health status</h1>
+        <p class="hero-sub">Live vitals with Wi‑Fi / BLE pairing, family mirroring, hydration and anemia checks, lab intelligence, and radiology snapshots.</p>
+        <div class="hero-actions">
+          <span class="badge">Auto-sync devices</span>
+          <span class="badge">Family live view</span>
+          <span class="badge">Matte + VOKA themes</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Live vitals (demo feed)</h3>
+        <div class="vitals-grid">
+          <div class="vital-card">
+            <small>Heart rate</small>
+            <span class="vital-value" id="v_hr">--</span>
+            <small>bpm</small>
+          </div>
+          <div class="vital-card">
+            <small>Blood pressure</small>
+            <span class="vital-value" id="v_bp">--</span>
+            <small>mmHg</small>
+          </div>
+          <div class="vital-card">
+            <small>SpO₂</small>
+            <span class="vital-value" id="v_spo2">--</span>
+            <small>oxygen</small>
+          </div>
+          <div class="vital-card">
+            <small>Body temp</small>
+            <span class="vital-value" id="v_temp">--</span>
+            <small>core</small>
+          </div>
+        </div>
+        <div class="notice" id="ai_summary">Guardian AI summarises vitals in simple words.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Blood + hydration</p>
+          <h2 class="section-title">Blood status</h2>
+          <p class="section-sub">HB, hydration, infection and anemia signals calculated from CBC.</p>
+        </div>
+      </header>
+      <div class="stat-grid">
+        <div class="stat">
+          <small>Hemoglobin</small>
+          <strong id="hb_value">13.5 g/dL</strong>
+          <span id="hb_msg">Within range</span>
+        </div>
+        <div class="stat">
+          <small>Hydration</small>
+          <strong id="water_value">Good</strong>
+          <span id="water_msg">Keep sipping</span>
+        </div>
+        <div class="stat">
+          <small>Infection status</small>
+          <strong id="infection_value">Low</strong>
+          <span id="infection_msg">No signals</span>
+        </div>
+        <div class="stat">
+          <small>Anemia status</small>
+          <strong id="anemia_value">Clear</strong>
+          <span id="anemia_msg">Iron looks fine</span>
+        </div>
+      </div>
+      <div class="notice" id="blood_signal">Balanced</div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Lab intelligence</p>
+          <h2 class="section-title">CBC, LFT, KFT, CUE, cardiac, lung, dental</h2>
+          <p class="section-sub">Plain language AI notes per panel.</p>
+        </div>
+      </header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>CBC & blood</h3>
+          <p class="notice" id="lab_cbc_ai">Blood looks balanced. No infection seen.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>RBC</small><strong id="lab_rbc">--</strong></div>
+            <div class="stat"><small>WBC</small><strong id="lab_wbc">--</strong></div>
+            <div class="stat"><small>Platelets</small><strong id="lab_platelets">--</strong></div>
+          </div>
+          <div class="chip-row"><span class="chip" id="cbc_signal">Normal</span><span class="chip">HB/Hydration</span></div>
+        </div>
+        <div class="card">
+          <h3>LFT — liver</h3>
+          <p class="notice" id="lab_lft_ai">Liver values inside normal range.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>SGOT</small><strong id="lab_sgot">--</strong></div>
+            <div class="stat"><small>SGPT</small><strong id="lab_sgpt">--</strong></div>
+            <div class="stat"><small>Bilirubin</small><strong id="lab_bilirubin">--</strong></div>
+          </div>
+          <div class="chip-row"><span class="chip" id="lft_signal">Good</span><span class="chip">Avoid oil</span></div>
+        </div>
+        <div class="card">
+          <h3>KFT + CUE — kidney</h3>
+          <p class="notice" id="lab_kft_ai">Kidney filters are working well.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Creatinine</small><strong id="lab_creatinine">--</strong></div>
+            <div class="stat"><small>Urea</small><strong id="lab_urea">--</strong></div>
+            <div class="stat"><small>Sodium</small><strong id="lab_sodium">--</strong></div>
+          </div>
+          <div class="chip-row"><span class="chip" id="kft_signal">Hydrated</span><span class="chip">CUE synced</span></div>
+        </div>
+        <div class="card">
+          <h3>Cardiac markers</h3>
+          <p class="notice" id="lab_cardiac_ai">Heart stress markers are low.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Troponin</small><strong id="lab_troponin">--</strong></div>
+            <div class="stat"><small>CRP</small><strong id="lab_crp">--</strong></div>
+            <div class="stat"><small>BNP</small><strong id="lab_bnp">--</strong></div>
+          </div>
+          <div class="chip-row"><span class="chip" id="cardiac_signal">Calm</span><span class="chip">Rhythm steady</span></div>
+        </div>
+        <div class="card">
+          <h3>Lungs (Spirometry & SpO₂)</h3>
+          <p class="notice" id="lab_lung_ai">Breathing looks smooth.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Spirometry</small><strong id="lab_spirometry">--</strong></div>
+            <div class="stat"><small>SpO₂ trend</small><strong id="lab_spo2">--</strong></div>
+            <div class="stat"><small>Resp rate</small><strong id="lab_resp">--</strong></div>
+          </div>
+          <div class="chip-row"><span class="chip" id="lung_signal">Free</span><span class="chip">Resp coaching</span></div>
+        </div>
+        <div class="card">
+          <h3>Dental</h3>
+          <p class="notice" id="lab_dental_ai">3D CBCT and dental scans synced.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>CBCT</small><strong id="lab_cbct">Clean</strong></div>
+            <div class="stat"><small>Cavities</small><strong id="lab_cavity">None</strong></div>
+            <div class="stat"><small>Gums</small><strong id="lab_gums">Healthy</strong></div>
+          </div>
+          <div class="chip-row"><span class="chip" id="dental_signal">Bright</span><span class="chip">Hygiene tips</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Radiology</p>
+          <h2 class="section-title">Radiology board</h2>
+          <p class="section-sub">USG abdomen, pelvis, mammogram, soft tissue, MRI/CT head & spine, 3D CBCT tracked with status.</p>
+        </div>
+      </header>
+      <div class="table-card card">
+        <table>
+          <thead>
+            <tr><th>Study</th><th>Status</th><th>Last update</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>USG Abdomen</td><td>Ready</td><td>Today</td></tr>
+            <tr><td>USG Pelvis</td><td>Ready</td><td>Today</td></tr>
+            <tr><td>Mammogram</td><td>Pending upload</td><td>-</td></tr>
+            <tr><td>MRI / CT Head</td><td>Scheduled</td><td>Tomorrow</td></tr>
+            <tr><td>Neck / Spine MRI</td><td>Reporting</td><td>In progress</td></tr>
+            <tr><td>3D CBCT (Dental)</td><td>Synced</td><td>Today</td></tr>
+            <tr><td>Soft tissue scan</td><td>Ready</td><td>Today</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Devices & SOS</p>
+          <h2 class="section-title">Pair devices and ambulance automations</h2>
+          <p class="section-sub">WIFI/BLE pairing feeds vitals; ambulance can be manual or auto-trigger with live location.</p>
+        </div>
+      </header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Device pairing</h3>
+          <p class="section-sub">Connect watches, BP cuffs, glucometers, spirometers.</p>
+          <button class="badge primary" id="pairDevice">Scan for devices</button>
+          <div class="stat-grid" id="device_list"></div>
+        </div>
+        <div class="card">
+          <h3>Ambulance support</h3>
+          <p class="section-sub">Manual trigger or auto-trigger if vitals fall outside thresholds.</p>
+          <div class="flex-row">
+            <button class="badge primary" id="triggerEmergency">Trigger ambulance</button>
+            <button class="badge" id="autoToggle">Auto trigger: OFF</button>
+          </div>
+          <div class="notice" id="emg_status_msg">Manual mode active.</div>
+        </div>
+        <div class="card">
+          <h3>Instant QR / ID registration</h3>
+          <p class="section-sub">Use your QR or User ID to register at hospital, clinic, lab, or pharmacy without paperwork.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>QR</small><strong>HF-QR-2048</strong></div>
+            <div class="stat"><small>User ID</small><strong>HF-USER-NEO</strong></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Health Board</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
