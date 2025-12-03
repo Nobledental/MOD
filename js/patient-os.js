@@ -19,6 +19,18 @@ const pairDeviceBtn = document.getElementById('pairDevice');
 const deviceList = document.getElementById('device_list');
 const themeButtons = document.querySelectorAll('.pill-switch button');
 const dockCopilot = document.getElementById('dockCopilot');
+const organAlertBadge = document.getElementById('organ_alert_badge');
+const alertList = document.getElementById('alert_list');
+const bloodSignal = document.getElementById('blood_signal');
+const organSignal = document.getElementById('organ_alert');
+const labPills = {
+  cbc: document.getElementById('cbc_signal'),
+  lft: document.getElementById('lft_signal'),
+  kft: document.getElementById('kft_signal'),
+  cardiac: document.getElementById('cardiac_signal'),
+  lung: document.getElementById('lung_signal'),
+  dental: document.getElementById('dental_signal'),
+};
 
 function smoothScroll(target) {
   const el = document.getElementById(target);
@@ -55,7 +67,15 @@ if (dockCopilot) {
 // Theme
 function setTheme(mode) {
   htmlEl.setAttribute('data-theme', mode);
+  localStorage.setItem('hf_theme', mode);
+  themeButtons.forEach(btn => {
+    if (btn.dataset.theme === mode) btn.classList.add('solid');
+    else btn.classList.remove('solid');
+  });
 }
+
+const savedTheme = localStorage.getItem('hf_theme');
+if (savedTheme) setTheme(savedTheme);
 
 themeToggle?.addEventListener('click', () => {
   const current = htmlEl.getAttribute('data-theme') === 'vision' ? 'matte' : 'vision';
@@ -108,17 +128,72 @@ function setText(id, value) {
 }
 
 function hydrateStatus() {
-  setText('hb_value', `${randomBetween(12.5, 14.2)} g/dL`);
-  setText('water_value', 'Good');
-  setText('water_msg', 'Sip through the day');
-  setText('infection_value', 'Low');
-  setText('infection_msg', 'No signs');
-  setText('anemia_value', 'Clear');
-  setText('anemia_msg', 'Iron looks fine');
+  const hb = randomBetween(12.5, 14.8);
+  const hydrationDrop = Math.random() > 0.7;
+  const infectionChance = Math.random() > 0.85;
+
+  setText('hb_value', `${hb} g/dL`);
+  setText('water_value', hydrationDrop ? 'Low' : 'Good');
+  setText('water_msg', hydrationDrop ? 'Looks dehydrated — drink 500ml now' : 'Sip through the day');
+  setText('infection_value', infectionChance ? 'Watch' : 'Low');
+  setText('infection_msg', infectionChance ? 'Mild infection markers seen' : 'No signs');
+  setText('anemia_value', parseFloat(hb) < 12.8 ? 'Borderline' : 'Clear');
+  setText('anemia_msg', parseFloat(hb) < 12.8 ? 'Iron support suggested' : 'Iron looks fine');
+
+  bloodSignal.textContent = hydrationDrop ? 'Hydrate' : 'Balanced';
+  bloodSignal.className = hydrationDrop ? 'pill soft warn' : 'pill soft';
 }
 
 hydrateStatus();
 setInterval(hydrateStatus, 12000);
+
+function updateLabIntelligence() {
+  const labs = {
+    rbc: randomBetween(4.4, 5.1),
+    wbc: randomBetween(5.5, 7.8),
+    platelets: randomBetween(2.1, 3.2),
+    sgot: randomBetween(22, 38),
+    sgpt: randomBetween(20, 42),
+    bilirubin: randomBetween(0.7, 1.3),
+    creatinine: randomBetween(0.8, 1.2),
+    urea: randomBetween(18, 32),
+    sodium: randomBetween(136, 144),
+    troponin: 'Normal',
+    crp: Math.random() > 0.85 ? 'Mildly High' : 'Low',
+    bnp: 'Normal',
+    spirometry: Math.random() > 0.9 ? 'Mild restriction' : 'Normal',
+  };
+
+  setText('lab_rbc', labs.rbc);
+  setText('lab_wbc', labs.wbc);
+  setText('lab_platelets', labs.platelets);
+  setText('lab_sgot', labs.sgot);
+  setText('lab_sgpt', labs.sgpt);
+  setText('lab_bilirubin', labs.bilirubin);
+  setText('lab_creatinine', labs.creatinine);
+  setText('lab_urea', labs.urea);
+  setText('lab_sodium', labs.sodium);
+  setText('lab_troponin', labs.troponin);
+  setText('lab_crp', labs.crp);
+  setText('lab_bnp', labs.bnp);
+  setText('lab_spirometry', labs.spirometry);
+
+  labPills.cbc.textContent = labs.wbc > 7.5 ? 'Watch' : 'Normal';
+  labPills.lft.textContent = labs.sgot > 35 ? 'Monitor' : 'Good';
+  labPills.kft.textContent = labs.creatinine > 1.1 ? 'Hydrate' : 'Hydrated';
+  labPills.cardiac.textContent = labs.crp.includes('High') ? 'Alert' : 'Calm';
+  labPills.lung.textContent = labs.spirometry.includes('restriction') ? 'Tight' : 'Free';
+  labPills.dental.textContent = 'Bright';
+
+  setText('lab_cbc_ai', labs.wbc > 7.5 ? 'Slightly raised WBC, keep an eye.' : 'Blood looks balanced. No infection seen.');
+  setText('lab_lft_ai', labs.sgot > 35 ? 'LFT mildly elevated, avoid oil and repeat.' : 'Liver values stay inside normal range.');
+  setText('lab_kft_ai', labs.creatinine > 1.1 ? 'Kidney load up — hydrate well.' : 'Kidney filters are working well. Keep water handy.');
+  setText('lab_cardiac_ai', labs.crp.includes('High') ? 'Inflammation noted, rest and recheck.' : 'Heart stress markers are low and steady.');
+  setText('lab_lung_ai', labs.spirometry.includes('restriction') ? 'Lungs feel tight, sit upright and breathe slow.' : 'Breathing looks smooth. SpO₂ steady.');
+}
+
+updateLabIntelligence();
+setInterval(updateLabIntelligence, 15000);
 
 const organHints = {
   heart: 'Cardiac markers calm. Keep walks going.',
@@ -128,6 +203,48 @@ const organHints = {
   dental: '3D CBCT clear. Brush twice daily.',
   brain: 'Calm. Take screen breaks.',
 };
+
+function renderAlerts(entries = []) {
+  if (!alertList || !organAlertBadge) return;
+  alertList.innerHTML = '';
+  if (!entries.length) {
+    alertList.innerHTML = '<div class="alert-item success">All systems green. You will be notified if vitals cross thresholds.</div>';
+    organAlertBadge.textContent = '0 alerts';
+    organSignal.textContent = 'All clear';
+    return;
+  }
+
+  entries.forEach(alert => {
+    const item = document.createElement('div');
+    item.className = `alert-item ${alert.type}`;
+    item.textContent = alert.message;
+    alertList.appendChild(item);
+  });
+  organAlertBadge.textContent = `${entries.length} alert${entries.length > 1 ? 's' : ''}`;
+  organSignal.textContent = entries.length ? 'Action needed' : 'All clear';
+}
+
+function evaluateOrgans() {
+  const alerts = [];
+  const hydrationLow = bloodSignal?.textContent === 'Hydrate';
+  const lungTight = labPills.lung?.textContent === 'Tight';
+
+  if (hydrationLow) {
+    setText('kidney_status', 'Dry');
+    alerts.push({ type: 'warn', message: 'Hydration low — kidneys need water support.' });
+  } else {
+    setText('kidney_status', 'Hydrated');
+  }
+
+  if (lungTight) {
+    setText('lung_status', 'Tight');
+    alerts.push({ type: 'danger', message: 'Spirometry tight. Practice pursed lip breathing.' });
+  } else {
+    setText('lung_status', 'Free');
+  }
+
+  renderAlerts(alerts);
+}
 
 organCards.forEach(card => {
   card.addEventListener('click', () => {
@@ -139,6 +256,9 @@ organCards.forEach(card => {
     document.getElementById('organRisk').textContent = 'Low';
   });
 });
+
+evaluateOrgans();
+setInterval(evaluateOrgans, 14000);
 
 // Reports
 reportButtons.forEach(btn => {
