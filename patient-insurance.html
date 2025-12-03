@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Insurance & Loans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a class="active" href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Insurance & claims</p>
+        <h1 class="hero-title">All insurers in India + TPA vault</h1>
+        <p class="hero-sub">Check claim status, cashless readiness, premiums, and HealthFlo loans with or without EMI. CIBIL view included.</p>
+        <div class="hero-actions">
+          <span class="badge">Cashless guard</span>
+          <span class="badge">Claim tracking</span>
+          <span class="badge">Loans (instant/EMI)</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Claim snapshot</h3>
+        <div class="stat-grid">
+          <div class="stat"><small>Active claim</small><strong>Cashless - Pending approval</strong></div>
+          <div class="stat"><small>TPA</small><strong>FHPL</strong></div>
+          <div class="stat"><small>Insurer</small><strong>Star Health</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Policies</p><h2 class="section-title">Insurance list</h2></header>
+      <div class="table-card card">
+        <table>
+          <thead><tr><th>Insurer</th><th>Policy</th><th>TPA</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Star Health</td><td>ST-2201</td><td>MediAssist</td><td>Pending cashless</td></tr>
+            <tr><td>HDFC Ergo</td><td>HE-5544</td><td>FHPL</td><td>Active</td></tr>
+            <tr><td>ICICI Lombard</td><td>IC-8890</td><td>Paramount</td><td>Claim tracking</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Loans</p><h2 class="section-title">HealthFlo loan options</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Instant loan</h3>
+          <p class="section-sub">Disbursed within minutes for hospital or pharmacy spends.</p>
+          <div class="notice">Pre-approved up to ₹1,00,000</div>
+        </div>
+        <div class="card">
+          <h3>EMI plan</h3>
+          <p class="section-sub">Flexible EMI with clear terms and alerts.</p>
+          <div class="notice">Tenure: 6-18 months</div>
+        </div>
+        <div class="card">
+          <h3>CIBIL view</h3>
+          <p class="section-sub">Transparent credit impact with AI nudges.</p>
+          <div class="notice">Current CIBIL: 742</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Insurance</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
