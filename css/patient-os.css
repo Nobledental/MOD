@@ -140,6 +140,15 @@ header.hf-topbar {
   box-shadow: var(--shadow);
   position: relative;
   overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.hero-card:hover,
+.card:hover,
+.section-slab:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+  border-color: rgba(109, 225, 227, 0.35);
 }
 
 .hero-title { font-size: clamp(32px, 5vw, 46px); margin: 0 0 10px; }
@@ -167,6 +176,19 @@ header.hf-topbar {
 .vital-card small { color: var(--muted); }
 .vital-value { display: block; font-size: 26px; margin: 6px 0; }
 
+.pill-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.pill {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(120deg, rgba(109, 225, 227, 0.12), rgba(138, 164, 255, 0.12));
+  border: var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+.pill span { color: var(--muted); font-weight: 600; }
+
 .section { margin: 30px 0; }
 .section header { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
 .section-title { margin: 0; font-size: 22px; }
@@ -185,10 +207,47 @@ header.hf-topbar {
 .notice.warn { background: rgba(255, 171, 102, 0.12); border-color: rgba(255, 171, 102, 0.5); }
 .notice.danger { background: rgba(255, 123, 138, 0.12); border-color: rgba(255, 123, 138, 0.5); }
 
+.progress-line {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.progress-line span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(120deg, var(--primary), var(--accent));
+  width: 55%;
+  transition: width 0.3s ease;
+}
+
 .table-card { overflow-x: auto; }
 .table-card table { width: 100%; border-collapse: collapse; color: var(--text); }
 .table-card th, .table-card td { padding: 12px; border-bottom: var(--border); text-align: left; }
 .table-card th { color: var(--muted); font-weight: 700; }
+
+.model-stage {
+  border-radius: 20px;
+  border: var(--border);
+  background: radial-gradient(circle at 20% 20%, rgba(109, 225, 227, 0.18), rgba(138, 164, 255, 0.12));
+  padding: 10px;
+  box-shadow: var(--shadow);
+}
+
+.model-stage model-viewer,
+.model-stage .model-fallback {
+  width: 100%;
+  height: 260px;
+  border-radius: 16px;
+  background: var(--bg-glass);
+  border: var(--border);
+}
+
+.model-legend { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; }
+.legend-label { font-weight: 700; }
+.legend-sub { color: var(--muted); font-size: 14px; }
 
 .frosted { background: var(--bg-glass); }
 
