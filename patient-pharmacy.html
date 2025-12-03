@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Pharmacy</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a class="active" href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Pharmacy</p>
+        <h1 class="hero-title">Order medicines with safety</h1>
+        <p class="hero-sub">Refills, interaction safety, doorstep delivery, family-coordinated orders with Vision Pro inspired VOKA styling.</p>
+        <div class="hero-actions">
+          <span class="badge">Interaction checks</span>
+          <span class="badge">Reminders</span>
+          <span class="badge">Doorstep delivery</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Active prescriptions</h3>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Drug</th><th>Dose</th><th>Next refill</th></tr></thead>
+            <tbody>
+              <tr><td>Atorvastatin</td><td>10 mg HS</td><td>3 days</td></tr>
+              <tr><td>Vitamin D3</td><td>Weekly</td><td>6 days</td></tr>
+              <tr><td>Inhaler</td><td>PRN</td><td>Available</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Actions</p><h2 class="section-title">Order & manage</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Order medicines</h3>
+          <p class="section-sub">Upload prescription or choose saved list.</p>
+          <div class="flex-row">
+            <button class="badge primary">Order now</button>
+            <button class="badge">See prescriptions</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Reminders</h3>
+          <p class="section-sub">Set dose reminders for yourself and family.</p>
+          <div class="notice">Reminders ON for 3 meds</div>
+        </div>
+        <div class="card">
+          <h3>Safety</h3>
+          <p class="section-sub">Interaction and allergy checks before dispensing.</p>
+          <div class="notice">No interactions detected</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Pharmacy</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
