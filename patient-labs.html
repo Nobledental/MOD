@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Labs & Investigations</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a class="active" href="patient-labs.html">Labs</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div class="hero-card">
+        <p class="chip">Labs & Radiology</p>
+        <h1 class="hero-title">Book investigations & sync reports</h1>
+        <p class="hero-sub">CBC, LFT, KFT, CUE, cardiac markers, spirometry, radiology (USG, MRI, CT, spine, CBCT) with live sample tracking.</p>
+        <div class="hero-actions">
+          <span class="badge">Home pickup</span>
+          <span class="badge">Radiology board</span>
+          <span class="badge">VOKA glass UI</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Quick book</h3>
+        <p class="section-sub">Pick a test and time slot</p>
+        <div class="flex-row">
+          <button class="badge primary">Book test</button>
+          <button class="badge">Track sample</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Blood panels</p><h2 class="section-title">CBC, LFT, KFT, CUE</h2></header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>CBC</h3><p class="notice">WBC, RBC, platelets; infection and anemia flags.</p>
+        </div>
+        <div class="card">
+          <h3>LFT</h3><p class="notice">SGOT, SGPT, Bilirubin; liver status.</p>
+        </div>
+        <div class="card">
+          <h3>KFT + CUE</h3><p class="notice">Creatinine, urea, sodium; hydration + urinary health.</p>
+        </div>
+        <div class="card">
+          <h3>Cardiac markers</h3><p class="notice">Troponin, CRP, BNP for heart stress.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header><p class="chip">Radiology</p><h2 class="section-title">Imaging schedule</h2></header>
+      <div class="table-card card">
+        <table>
+          <thead><tr><th>Study</th><th>Status</th><th>Slot</th></tr></thead>
+          <tbody>
+            <tr><td>USG abdomen</td><td>Ready</td><td>Today</td></tr>
+            <tr><td>USG pelvis</td><td>Ready</td><td>Today</td></tr>
+            <tr><td>Mammogram</td><td>Pending upload</td><td>-</td></tr>
+            <tr><td>CT Head</td><td>Scheduled</td><td>Tomorrow</td></tr>
+            <tr><td>MRI Spine</td><td>Reporting</td><td>In progress</td></tr>
+            <tr><td>3D CBCT</td><td>Synced</td><td>Today</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Labs</p>
+  </footer>
+  <script src="js/patient-os.js"></script>
+</body>
+</html>
