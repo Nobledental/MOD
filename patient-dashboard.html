@@ -56,7 +56,7 @@
         <p class="eyebrow">Neo Guardian • Live safety check</p>
         <h1 class="hero-title">Hi, Dhivakaran 👋</h1>
         <p class="hero-sub">
-          Your modular Patient OS keeps everything in one place: live vitals, lab meaning in simple words, quick bookings, insurance, and SOS readiness.
+          Your modular Patient OS keeps everything in one place: live vitals, lab meaning in simple words, quick bookings, insurance, finance, and SOS readiness.
         </p>
 
         <div class="quick-actions" aria-label="Quick actions">
@@ -65,6 +65,13 @@
           <button class="pill outline">Upload Report</button>
           <button class="pill danger">Start SOS</button>
           <button class="pill ghost">Ask AI</button>
+        </div>
+
+        <div class="os-flags">
+          <span class="pill soft">Live vitals</span>
+          <span class="pill soft">Lab intelligence</span>
+          <span class="pill soft">QR check-in ready</span>
+          <span class="pill soft">Vision Pro VOKA theme</span>
         </div>
 
         <div class="vitals-grid" aria-label="Live vitals">
@@ -115,6 +122,60 @@
           </div>
         </div>
         <canvas id="ecg_mini" class="ecg-mini" aria-label="Heart rhythm preview"></canvas>
+      </div>
+    </section>
+
+    <!-- OS MATRIX -->
+    <section class="os-matrix" id="modules">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Patient OS v15 Ultra</p>
+          <h2 class="section-title">Modular experiences</h2>
+          <p class="section-sub">Vitals, labs, imaging, finance, and registrations stitched into one super-app.</p>
+        </div>
+        <div class="chip-row">
+          <span class="chip">Matte</span>
+          <span class="chip">Vision Pro (VOKA)</span>
+          <span class="chip">Apple glassy ceramic</span>
+        </div>
+      </div>
+
+      <div class="matrix-grid">
+        <article class="matrix-card">
+          <h3>Live vitals + device sync</h3>
+          <p>SpO₂, HR, BP, temp, ECG streams with Wi‑Fi / BLE pairing and family mirrors.</p>
+          <div class="matrix-tags">
+            <span class="pill soft">Auto-sync</span>
+            <span class="pill soft">Wearables</span>
+            <span class="pill soft">Family view</span>
+          </div>
+        </article>
+        <article class="matrix-card">
+          <h3>Lab & radiology brain</h3>
+          <p>CBC, LFT, KFT, CUE, cardiac markers, dental scans, spirometry, radiology board with quick AI notes.</p>
+          <div class="matrix-tags">
+            <span class="pill soft">HB / hydration</span>
+            <span class="pill soft">Infection</span>
+            <span class="pill soft">Imaging</span>
+          </div>
+        </article>
+        <article class="matrix-card">
+          <h3>Instant check-in</h3>
+          <p>Hospital, clinic, lab, or pharmacy registrations via QR or user ID with live queue tracking.</p>
+          <div class="matrix-tags">
+            <span class="pill soft">QR ready</span>
+            <span class="pill soft">User ID</span>
+          </div>
+        </article>
+        <article class="matrix-card">
+          <h3>Finance & insurance</h3>
+          <p>Indian insurers + TPA vault, claim status, premiums, CIBIL view, and HealthFlo loans with or without EMI.</p>
+          <div class="matrix-tags">
+            <span class="pill soft">Claims</span>
+            <span class="pill soft">Loans</span>
+            <span class="pill soft">EMI / instant</span>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -192,6 +253,17 @@
               <p class="organ-status">Calm</p>
               <small>No stress signals</small>
             </div>
+          </div>
+        </div>
+
+        <div class="card block alert-block" id="organAlerts">
+          <div class="card-head">
+            <h2>Organ notifications</h2>
+            <span class="pill soft" id="organ_alert_badge">0 alerts</span>
+          </div>
+          <p class="muted">Any abnormality will surface here and mirror in the organ page for quick consult.</p>
+          <div class="alert-list" id="alert_list">
+            <div class="alert-item success">All systems green. You will be notified if vitals cross thresholds.</div>
           </div>
         </div>
       </div>
@@ -382,6 +454,18 @@
           </div>
           <div class="badge">Pre-approved</div>
         </div>
+        <div class="service-card">
+          <div>
+            <p class="eyebrow">Insurance & TPA</p>
+            <h3>All Indian insurers</h3>
+            <p class="muted">Select insurer, add TPA, see cashless readiness, and claim status at a glance.</p>
+            <div class="inline-row">
+              <button class="pill solid">Add insurer</button>
+              <button class="pill ghost">View claims</button>
+            </div>
+          </div>
+          <div class="badge">Cashless ready</div>
+        </div>
       </div>
     </section>
 
@@ -393,7 +477,7 @@
         </div>
         <div class="profile-info-main">
           <h2>Profile & wallet (separate page)</h2>
-          <p class="muted">Personal details, blood group, allergies, known conditions, insurance, TPA, and bank info with CIBIL tracking.</p>
+          <p class="muted">Personal details, blood group, allergies, systemic conditions, insurance vault with TPAs, bank accounts, and CIBIL tracking.</p>
           <div class="profile-grid">
             <div class="p-tile">
               <h5>Personal</h5>
@@ -405,7 +489,7 @@
             </div>
             <div class="p-tile">
               <h5>Insurance</h5>
-              <p>Select any Indian insurer + TPA</p>
+              <p>Pick from all Indian insurers + TPA</p>
             </div>
             <div class="p-tile">
               <h5>Finance</h5>
@@ -415,6 +499,28 @@
           <div class="inline-row">
             <button class="pill solid">Open profile page</button>
             <button class="pill ghost">Manage insurance</button>
+          </div>
+          <div class="inline-row">
+            <button class="pill outline">Financial / bank details</button>
+            <button class="pill ghost">Update allergies</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-card alt" id="qrRegistration">
+        <div class="profile-info-main">
+          <h3>Instant registration</h3>
+          <p class="muted">Use your unique QR or User ID to breeze through hospital / clinic / lab / pharmacy admissions.</p>
+          <div class="registration-row">
+            <div class="qr-block">
+              <div class="qr-placeholder">QR</div>
+              <small>User ID: HF-2048-NEO</small>
+            </div>
+            <div class="reg-actions">
+              <button class="pill solid">Download QR</button>
+              <button class="pill ghost">Share with family</button>
+              <button class="pill outline">Check-in demo</button>
+            </div>
           </div>
         </div>
       </div>
@@ -470,6 +576,7 @@
             </div>
           </div>
           <button class="pill solid">Share live view</button>
+          <p class="muted small">Family will also see organ notifications and SOS triggers instantly.</p>
         </div>
       </div>
     </section>
