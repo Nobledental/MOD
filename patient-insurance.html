@@ -30,8 +30,8 @@
   </header>
 
   <main class="container">
-    <section class="hero">
-      <div class="hero-card">
+    <section class="hero hero-compact">
+      <div class="hero-card compact-block">
         <p class="chip">Insurance & claims</p>
         <h1 class="hero-title">All insurers in India + TPA vault</h1>
         <p class="hero-sub">Check claim status, cashless readiness, premiums, and HealthFlo loans with or without EMI. CIBIL view included.</p>
@@ -41,9 +41,9 @@
           <span class="badge">Loans (instant/EMI)</span>
         </div>
       </div>
-      <div class="card">
+      <div class="card compact-block">
         <h3>Claim snapshot</h3>
-        <div class="stat-grid">
+        <div class="stat-grid compact-grid">
           <div class="stat"><small>Active claim</small><strong>Cashless - Pending approval</strong></div>
           <div class="stat"><small>TPA</small><strong>FHPL</strong></div>
           <div class="stat"><small>Insurer</small><strong>Star Health</strong></div>
@@ -51,9 +51,9 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section compact-block">
       <header><p class="chip">Policies</p><h2 class="section-title">Insurance list</h2></header>
-      <div class="table-card card">
+      <div class="table-card card compact-card">
         <table>
           <thead><tr><th>Insurer</th><th>Policy</th><th>TPA</th><th>Status</th></tr></thead>
           <tbody>
@@ -65,23 +65,141 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section compact-block">
       <header><p class="chip">Loans</p><h2 class="section-title">HealthFlo loan options</h2></header>
-      <div class="list-grid">
-        <div class="card">
+      <div class="list-grid compact-grid">
+        <div class="card compact-card">
           <h3>Instant loan</h3>
           <p class="section-sub">Disbursed within minutes for hospital or pharmacy spends.</p>
           <div class="notice">Pre-approved up to ₹1,00,000</div>
         </div>
-        <div class="card">
+        <div class="card compact-card">
           <h3>EMI plan</h3>
           <p class="section-sub">Flexible EMI with clear terms and alerts.</p>
           <div class="notice">Tenure: 6-18 months</div>
         </div>
-        <div class="card">
+        <div class="card compact-card">
           <h3>CIBIL view</h3>
           <p class="section-sub">Transparent credit impact with AI nudges.</p>
           <div class="notice">Current CIBIL: 742</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <p class="chip warn">HealthFlo reimbursement desk</p>
+        <h2 class="section-title">Advanced reimbursement + sync dashboard</h2>
+        <p class="section-sub">File cashless/reimbursement with HealthFlo experts, get claim intimations, guidance, approvals, and insurance follow-up while syncing all hospital, pharmacy, and lab spends.</p>
+      </header>
+
+      <div class="dashboard-grid">
+        <div class="card xl" id="hf_desk">
+          <div class="pill-row">
+            <button class="pill" id="hfSupportToggle" type="button">HealthFlo team support: ON</button>
+            <span class="pill ghost">Family mirror live</span>
+            <span class="pill ghost">Sync with admissions & labs</span>
+          </div>
+          <form id="hf_reimburse_form" class="form-grid">
+            <label>
+              Hospital name
+              <input type="text" id="hospital_name" placeholder="e.g., Apollo Bannerghatta" required>
+            </label>
+            <label>
+              Area / locality
+              <input type="text" id="hospital_area" placeholder="Neighbourhood, district" required>
+            </label>
+            <label class="full">
+              Hospital address
+              <input type="text" id="hospital_address" placeholder="Full address with pincode" required>
+            </label>
+            <label>
+              Claim type
+              <select id="claim_type">
+                <option>Reimbursement</option>
+                <option>Cashless (pre-auth)</option>
+              </select>
+            </label>
+            <label>
+              Admission sync
+              <select id="sync_source">
+                <option>Admission booked in HealthFlo</option>
+                <option>Pharmacy purchase in HealthFlo</option>
+                <option>Lab test booked in HealthFlo</option>
+                <option>Outside expense (manual)</option>
+              </select>
+            </label>
+            <label class="full">
+              Upload records (PDF / images)
+              <input type="file" id="record_upload" multiple accept="application/pdf,image/*">
+              <small id="upload_hint">Add discharge summary, bills, lab reports, prescriptions.</small>
+            </label>
+            <div class="form-actions full">
+              <button type="submit" class="cta">Submit to HealthFlo desk</button>
+              <div class="inline-meta">Instant registration via QR / User ID. Expected update in &lt;15 mins.</div>
+            </div>
+          </form>
+        </div>
+
+        <div class="card status-board">
+          <header class="board-head">
+            <div>
+              <p class="chip">Status</p>
+              <h3>Claim + HealthFlo notifications</h3>
+            </div>
+            <div class="badge" id="claim_intimation_id">Intimation: —</div>
+          </header>
+          <div id="claim_status_list" class="timeline"></div>
+          <div class="notice" id="claim_notice">HealthFlo guides documents, dispatch approvals, and insurer follow-ups.</div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="card compact-card">
+          <header class="board-head">
+            <div>
+              <p class="chip">Guidance</p>
+              <h3>Notifications & tasks</h3>
+            </div>
+            <button class="pill ghost" type="button" id="refresh_guidance">Refresh</button>
+          </header>
+          <div class="notice" id="guidance_feed">Upload medical bills from pharmacy, labs, and admission to speed reimbursement.</div>
+          <ul class="pill-stack" id="guidance_list"></ul>
+        </div>
+
+        <div class="card compact-card">
+          <header class="board-head">
+            <div>
+              <p class="chip">Sync</p>
+              <h3>Linked journeys</h3>
+            </div>
+            <span class="badge">Auto-sync ON</span>
+          </header>
+          <div class="stat-grid mini">
+            <div class="stat"><small>Admissions</small><strong>2</strong><span class="hint">Live room & OT updates linked</span></div>
+            <div class="stat"><small>Labs</small><strong>3</strong><span class="hint">Reports auto-attached</span></div>
+            <div class="stat"><small>Pharmacy</small><strong>5</strong><span class="hint">Bills synced for claims</span></div>
+          </div>
+          <div class="pill-row">
+            <span class="pill ghost">QR instant registration</span>
+            <span class="pill ghost">Family view for billing</span>
+            <span class="pill ghost">Outside bills upload</span>
+          </div>
+        </div>
+
+        <div class="card compact-card">
+          <header class="board-head">
+            <div>
+              <p class="chip">Estimator</p>
+              <h3>Approval likelihood</h3>
+            </div>
+            <span class="badge" id="approval_badge">Pending</span>
+          </header>
+          <div class="stat-grid mini">
+            <div class="stat"><small>Expected settlement</small><strong id="expected_amount">₹0</strong><span class="hint">Based on docs and insurer</span></div>
+            <div class="stat"><small>Probability</small><strong id="approval_probability">—</strong><span class="hint">HealthFlo projection</span></div>
+            <div class="stat"><small>Next action</small><strong id="next_action">Add records</strong><span class="hint">HealthFlo will review</span></div>
+          </div>
         </div>
       </div>
     </section>
