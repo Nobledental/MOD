@@ -29,60 +29,337 @@
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <div class="hero-card">
+  <main class="container labs-shell">
+    <section class="section hero-grid">
+      <div class="hero-card hero-elevated">
         <p class="chip">Labs & Radiology</p>
-        <h1 class="hero-title">Book investigations & sync reports</h1>
-        <p class="hero-sub">CBC, LFT, KFT, CUE, cardiac markers, spirometry, radiology (USG, MRI, CT, spine, CBCT) with live sample tracking.</p>
+        <h1 class="hero-title">Book investigations faster with VOKA</h1>
+        <p class="hero-sub">Compare nearby hospitals or standalone labs, book home blood collection when available, or pick a direct in-lab or hospital visit. Everything is synced back to your patient dashboard.</p>
+        <div class="stat-stack">
+          <div class="stat">
+            <small>Home pickup</small>
+            <strong>45 mins</strong>
+            <span class="muted">Partner phlebotomists on map</span>
+          </div>
+          <div class="stat">
+            <small>Radiology slots</small>
+            <strong>Today & Tomorrow</strong>
+            <span class="muted">MRI, CT, USG, CBCT</span>
+          </div>
+          <div class="stat">
+            <small>Dashboard sync</small>
+            <strong>Auto</strong>
+            <span class="muted">Reports piped to timeline</span>
+          </div>
+        </div>
         <div class="hero-actions">
-          <span class="badge">Home pickup</span>
-          <span class="badge">Radiology board</span>
-          <span class="badge">VOKA glass UI</span>
+          <a class="badge primary" href="#booking">Book blood pickup</a>
+          <a class="badge" href="#radiology-board">Plan radiology</a>
+          <a class="badge ghost" href="patient-dashboard.html">Open patient dashboard</a>
         </div>
       </div>
-      <div class="card">
-        <h3>Quick book</h3>
-        <p class="section-sub">Pick a test and time slot</p>
+      <div class="card sync-card">
+        <div class="pill-row">
+          <span class="pill ghost">VOKA glass UI</span>
+          <span class="pill">Live status</span>
+          <span class="pill">Synced</span>
+        </div>
+        <h3>Patient dashboard mapping</h3>
+        <p class="section-sub">Bookings, ETA, and reports reflect instantly inside <strong>Dashboard → Labs</strong>. Home visit assignments, hospital directions, and payment links follow you.</p>
+        <div class="sync-grid">
+          <div>
+            <p class="muted">Current profile</p>
+            <div class="signal">Hydration steady · CBC clean · LFT green</div>
+          </div>
+          <div>
+            <p class="muted">Next visit</p>
+            <div class="signal accent">USG Pelvis — today, VOKA Imaging Hub</div>
+          </div>
+        </div>
         <div class="flex-row">
-          <button class="badge primary">Book test</button>
-          <button class="badge">Track sample</button>
+          <a class="badge primary" href="patient-dashboard.html">View in dashboard</a>
+          <button class="badge" type="button">Share status</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section labs-actions">
+      <header>
+        <p class="chip">Workflows</p>
+        <h2 class="section-title">Home visit or direct hospital visit</h2>
+        <p class="section-sub">Pick how you want to give a sample; the flow adapts to phlebotomist routes or hospital counters.</p>
+      </header>
+      <div class="lab-action-grid">
+        <div class="action-card">
+          <div class="pill">Home visit</div>
+          <h3>Blood pickup at home</h3>
+          <p class="muted">Track the assigned phlebotomist, collection kit QR, and payment link. Works best for CBC, KFT, LFT, HbA1c.</p>
+          <div class="action-footer">
+            <span class="pill ghost">ETA 45 mins</span>
+            <button class="badge primary" type="button">Request pickup</button>
+          </div>
+        </div>
+        <div class="action-card">
+          <div class="pill ghost">Hospital / Lab counter</div>
+          <h3>Direct visit to lab</h3>
+          <p class="muted">Book a slot at hospitals or stand-alone labs, generate a QR for quick check-in, and sync results to the dashboard automatically.</p>
+          <div class="action-footer">
+            <span class="pill">Queue <strong>Light</strong></span>
+            <button class="badge" type="button">Find slot</button>
+          </div>
+        </div>
+        <div class="action-card">
+          <div class="pill ghost">Radiology</div>
+          <h3>Imaging schedule</h3>
+          <p class="muted">MRI, CT, USG, CBCT with hospital directions and prep checklists. Add driver details for transport if needed.</p>
+          <div class="action-footer">
+            <span class="pill">Today & Tomorrow</span>
+            <button class="badge" type="button">Plan imaging</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="booking" class="section booking-shell">
+      <header>
+        <p class="chip">Booking cockpit</p>
+        <h2 class="section-title">Book labs with one view</h2>
+        <p class="section-sub">Filter by city, visit type, and slot; saved preferences mirror to the patient dashboard.</p>
+      </header>
+      <div class="booking-grid card">
+        <div class="booking-form">
+          <div class="form-row">
+            <label class="pill switcher"> <input type="radio" name="visit_mode" checked> Home blood collection </label>
+            <label class="pill switcher ghost"> <input type="radio" name="visit_mode"> Visit hospital / lab </label>
+          </div>
+          <div class="form-row">
+            <label>City
+              <select>
+                <option>Mumbai</option>
+                <option>Delhi</option>
+                <option>Bengaluru</option>
+                <option>Hyderabad</option>
+                <option>Chennai</option>
+              </select>
+            </label>
+            <label>Area / Locality
+              <input type="text" placeholder="Andheri East, Powai, Koramangala" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Test type
+              <select>
+                <option>Blood (CBC, LFT, KFT, HbA1c)</option>
+                <option>Radiology (USG, MRI, CT)</option>
+                <option>Health package</option>
+              </select>
+            </label>
+            <label>Date & Time
+              <div class="input-group">
+                <input type="date" />
+                <input type="time" />
+              </div>
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Preferred lab
+              <input type="text" placeholder="Apollo, SRL, Thyrocare" />
+            </label>
+            <label>Notes
+              <input type="text" placeholder="Fasting, wheelchair, contrast allergy" />
+            </label>
+          </div>
+          <div class="form-row">
+            <button class="badge primary" type="button">Confirm & sync</button>
+            <button class="badge" type="button">Save preference to dashboard</button>
+          </div>
+        </div>
+        <div class="booking-summary">
+          <div class="summary-block">
+            <p class="muted">Pinned tests</p>
+            <h3>CBC + LFT + HbA1c</h3>
+            <p class="notice">Home visit with sterile kit. Payment link shared after confirmation.</p>
+          </div>
+          <div class="summary-block">
+            <p class="muted">Radiology</p>
+            <div class="pill-row">
+              <span class="pill">USG Pelvis</span>
+              <span class="pill">MRI Spine</span>
+              <span class="pill ghost">CT Head</span>
+            </div>
+            <p class="muted">Directions and prep steps show inside the patient dashboard.</p>
+          </div>
+          <div class="summary-block">
+            <p class="muted">Sync destination</p>
+            <div class="signal">Dashboard → Labs → Upcoming</div>
+          </div>
         </div>
       </div>
     </section>
 
     <section class="section">
-      <header><p class="chip">Blood panels</p><h2 class="section-title">CBC, LFT, KFT, CUE</h2></header>
-      <div class="list-grid">
+      <header>
+        <p class="chip">Labs near you</p>
+        <h2 class="section-title">Hospitals & stand-alone partners</h2>
+        <p class="section-sub">Distance-aware cards with home visit availability and direct hospital counters.</p>
+      </header>
+      <div class="lab-market">
+        <article class="lab-card">
+          <div class="lab-head">
+            <div>
+              <h3>Apollo Diagnostics</h3>
+              <p class="muted">Andheri • Hospital lab</p>
+            </div>
+            <span class="pill">Home visit</span>
+          </div>
+          <p class="notice">CBC, HbA1c, LFT, KFT, CUE with pickup in 45 mins. Radiology board shared with dashboard.</p>
+          <div class="lab-meta">
+            <span class="tag">2.1 km</span>
+            <span class="tag">Blood & Radiology</span>
+            <span class="tag">WhatsApp confirm</span>
+          </div>
+          <div class="card-actions">
+            <button class="badge primary" type="button">Book</button>
+            <button class="badge" type="button">Directions</button>
+            <button class="badge ghost" type="button">Dashboard link</button>
+          </div>
+        </article>
+        <article class="lab-card">
+          <div class="lab-head">
+            <div>
+              <h3>SRL Diagnostics</h3>
+              <p class="muted">Dwarka • Stand-alone lab</p>
+            </div>
+            <span class="pill ghost">Visit lab</span>
+          </div>
+          <p class="notice">Same-day reporting for CBC + thyroid + cardiac markers. Direct visit queue token mirrored in dashboard.</p>
+          <div class="lab-meta">
+            <span class="tag">4.6 km</span>
+            <span class="tag">Blood only</span>
+            <span class="tag">Counter token QR</span>
+          </div>
+          <div class="card-actions">
+            <button class="badge primary" type="button">Book</button>
+            <button class="badge" type="button">Directions</button>
+            <button class="badge ghost" type="button">Share</button>
+          </div>
+        </article>
+        <article class="lab-card">
+          <div class="lab-head">
+            <div>
+              <h3>VOKA Imaging Hub</h3>
+              <p class="muted">Multi-slice CT / MRI center</p>
+            </div>
+            <span class="pill">Radiology</span>
+          </div>
+          <p class="notice">MRI spine, CT head, USG abdomen, 3D CBCT. Preps, instructions, and driver details reflected in dashboard.</p>
+          <div class="lab-meta">
+            <span class="tag">3.0 km</span>
+            <span class="tag">Contrast ready</span>
+            <span class="tag">Wheelchair</span>
+          </div>
+          <div class="card-actions">
+            <button class="badge primary" type="button">Book</button>
+            <button class="badge" type="button">Directions</button>
+            <button class="badge ghost" type="button">Prep list</button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section home-visit-board">
+      <header>
+        <p class="chip">Home visit blood collection</p>
+        <h2 class="section-title">Live assignment</h2>
+        <p class="section-sub">View phlebotomist routing, sample handling, and ETA. The same view stays pinned inside the dashboard.</p>
+      </header>
+      <div class="home-grid">
         <div class="card">
-          <h3>CBC</h3><p class="notice">WBC, RBC, platelets; infection and anemia flags.</p>
+          <div class="pill-row">
+            <span class="pill">CBC + HbA1c</span>
+            <span class="pill ghost">Fasting</span>
+          </div>
+          <h3>Priya — assigned</h3>
+          <p class="muted">On the way • sanitized kit • payment link ready</p>
+          <ul class="steps">
+            <li>📍 Pickup route locked — ETA 35 mins</li>
+            <li>🧊 Sample storage confirmed</li>
+            <li>📱 WhatsApp + Dashboard notifications enabled</li>
+          </ul>
         </div>
         <div class="card">
-          <h3>LFT</h3><p class="notice">SGOT, SGPT, Bilirubin; liver status.</p>
-        </div>
-        <div class="card">
-          <h3>KFT + CUE</h3><p class="notice">Creatinine, urea, sodium; hydration + urinary health.</p>
-        </div>
-        <div class="card">
-          <h3>Cardiac markers</h3><p class="notice">Troponin, CRP, BNP for heart stress.</p>
+          <div class="pill-row">
+            <span class="pill">LFT + KFT</span>
+            <span class="pill ghost">Non-fasting</span>
+          </div>
+          <h3>Backup partner</h3>
+          <p class="muted">If the first route fails, we auto-assign another partner and keep your dashboard slot intact.</p>
+          <div class="notice">Live tracking mirrored to Dashboard → Labs → In progress</div>
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <header><p class="chip">Radiology</p><h2 class="section-title">Imaging schedule</h2></header>
-      <div class="table-card card">
-        <table>
-          <thead><tr><th>Study</th><th>Status</th><th>Slot</th></tr></thead>
-          <tbody>
-            <tr><td>USG abdomen</td><td>Ready</td><td>Today</td></tr>
-            <tr><td>USG pelvis</td><td>Ready</td><td>Today</td></tr>
-            <tr><td>Mammogram</td><td>Pending upload</td><td>-</td></tr>
-            <tr><td>CT Head</td><td>Scheduled</td><td>Tomorrow</td></tr>
-            <tr><td>MRI Spine</td><td>Reporting</td><td>In progress</td></tr>
-            <tr><td>3D CBCT</td><td>Synced</td><td>Today</td></tr>
-          </tbody>
-        </table>
+    <section id="radiology-board" class="section">
+      <header>
+        <p class="chip">Radiology board</p>
+        <h2 class="section-title">Hospitals & slots</h2>
+        <p class="section-sub">Prep steps and reports sync automatically. Status updates reuse the same board on your dashboard.</p>
+      </header>
+      <div class="rad-board">
+        <div class="rad-card" data-rad-study>
+          <div class="rad-head">
+            <div>
+              <p class="muted">MRI Spine</p>
+              <strong>VOKA Imaging Hub</strong>
+            </div>
+            <span class="chip" data-rad-status>Ready</span>
+          </div>
+          <div class="rad-meta">
+            <span class="pill">Slot: Today</span>
+            <span class="pill ghost" data-rad-eta>Today</span>
+            <span class="pill">Sedation ready</span>
+          </div>
+        </div>
+        <div class="rad-card" data-rad-study>
+          <div class="rad-head">
+            <div>
+              <p class="muted">USG Pelvis</p>
+              <strong>Apollo Diagnostics</strong>
+            </div>
+            <span class="chip" data-rad-status>Scheduled</span>
+          </div>
+          <div class="rad-meta">
+            <span class="pill">Slot: Today</span>
+            <span class="pill ghost" data-rad-eta>Today</span>
+            <span class="pill">Prep: Full bladder</span>
+          </div>
+        </div>
+        <div class="rad-card" data-rad-study>
+          <div class="rad-head">
+            <div>
+              <p class="muted">CT Head</p>
+              <strong>City Multi-Slice CT</strong>
+            </div>
+            <span class="chip" data-rad-status>Pending upload</span>
+          </div>
+          <div class="rad-meta">
+            <span class="pill">Slot: Tomorrow</span>
+            <span class="pill ghost" data-rad-eta>Tomorrow</span>
+            <span class="pill">Contrast ready</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-slab">
+      <header>
+        <p class="chip">Report sync</p>
+        <h2 class="section-title">Everything lands in dashboard</h2>
+        <p class="section-sub">Labs, blood panels, radiology DICOM links, and payments show in one place. Click below to jump there.</p>
+      </header>
+      <div class="flex-row">
+        <div class="notice">Dashboard → Labs → Reports will mirror every booking made here. You can share the dashboard view with your doctor or family.</div>
+        <a class="badge primary" href="patient-dashboard.html">Open dashboard</a>
       </div>
     </section>
   </main>
