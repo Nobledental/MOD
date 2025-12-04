@@ -21,6 +21,8 @@
       --radius: 18px;
       --glass: rgba(255,255,255,0.04);
       --blur: blur(12px);
+      --glow: 0 10px 40px rgba(113,198,255,0.35);
+      --pulse: drop-shadow(0 0 14px rgba(113,198,255,0.35));
     }
     [data-theme="day"] {
       --bg: #f5f7fb;
@@ -43,6 +45,7 @@
       font-family: 'Manrope', system-ui, -apple-system, sans-serif;
       background: radial-gradient(circle at 20% 20%, rgba(113,198,255,0.07), transparent 25%),
                   radial-gradient(circle at 80% 0%, rgba(139,255,181,0.06), transparent 25%),
+                  linear-gradient(135deg, rgba(113,198,255,0.05), rgba(139,255,181,0.05)),
                   var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -66,6 +69,12 @@
     .icon-btn { width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; transition:transform 0.2s; }
     .icon-btn:active { transform:scale(0.96); }
     main { max-width:1200px; margin:0 auto; padding:24px; display:flex; flex-direction:column; gap:20px; }
+    .pulse { animation:pulse 2.8s ease-in-out infinite; }
+    @keyframes pulse { 0% { transform:translateY(0);} 50% { transform:translateY(-2px);} 100% { transform:translateY(0);} }
+    .shine { position:relative; overflow:hidden; }
+    .shine::after { content:""; position:absolute; inset:0; background:linear-gradient(120deg, transparent 10%, rgba(255,255,255,0.06) 40%, transparent 60%);
+      transform:translateX(-120%); animation:shine 6s linear infinite; }
+    @keyframes shine { to { transform:translateX(120%); } }
     .hero { display:grid; grid-template-columns:1.1fr 0.9fr; gap:16px; }
     .card { background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow); position:relative; }
     .card h1, .card h2, .card h3 { margin:6px 0; }
@@ -75,6 +84,8 @@
     .metrics { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:10px; margin-top:10px; }
     .metric { background:var(--panel-2); border:1px solid var(--border); border-radius:14px; padding:10px; }
     .metric strong { font-size:22px; display:block; }
+    .metric.animate { animation:pop 0.9s ease; }
+    @keyframes pop { 0% { transform:scale(0.9); opacity:0.2; } 100% { transform:scale(1); opacity:1; } }
     .badge { display:inline-flex; align-items:center; gap:6px; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-weight:700; }
     .badge.primary { background:linear-gradient(135deg, var(--primary), var(--accent)); color:#041019; border:none; }
     .badge.ghost { background:var(--chip); }
@@ -85,6 +96,20 @@
     .chip { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:var(--chip); color:var(--text); font-weight:700; letter-spacing:-0.1px; }
     .assurance { display:flex; gap:10px; flex-wrap:wrap; }
     .assurance .chip { background:var(--panel-2); border:1px solid var(--border); }
+    .insights { display:grid; grid-template-columns:1.1fr 0.9fr; gap:12px; }
+    .insight-list { display:flex; flex-direction:column; gap:10px; }
+    .insight-row { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:12px; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); }
+    .insight-row strong { display:block; }
+    .insight-row small { color:var(--muted); display:block; }
+    .status-badge { padding:6px 10px; border-radius:999px; font-weight:800; border:1px solid var(--border); }
+    .status-badge.good { background:rgba(139,255,181,0.14); color:var(--accent); border-color:rgba(139,255,181,0.3); }
+    .status-badge.warn { background:rgba(255,158,169,0.14); color:var(--danger); border-color:rgba(255,158,169,0.3); }
+    .status-badge.neutral { background:var(--chip); color:var(--text); }
+    .report-card { border:1px dashed var(--border); border-radius:14px; padding:12px; background:var(--panel-2); }
+    .timeline { display:flex; gap:10px; flex-wrap:wrap; }
+    .timeline .chip { background:var(--panel); }
+    .sync-btn { display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border-radius:12px; border:1px solid var(--border); background:linear-gradient(135deg, var(--primary), var(--accent)); color:#041019; font-weight:800; cursor:pointer; box-shadow:var(--glow); }
+    .sync-btn:active { transform:scale(0.97); }
     .status-line { color:var(--muted); font-weight:600; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
     .lab-card { display:flex; flex-direction:column; gap:10px; cursor:pointer; transition:transform 0.2s, border 0.2s; }
@@ -109,8 +134,10 @@
     .panel.active { display:block; }
     .panel .modal-toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
     .modal-list { display:flex; flex-direction:column; gap:10px; }
-    .test-row { display:flex; justify-content:space-between; align-items:center; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--panel-2); }
-    .test-row label { display:flex; gap:10px; align-items:center; cursor:pointer; font-weight:700; }
+    .test-row { display:flex; justify-content:space-between; align-items:flex-start; padding:10px; border:1px solid var(--border); border-radius:12px; background:var(--panel-2); gap:8px; }
+    .test-row label { display:flex; gap:10px; align-items:flex-start; cursor:pointer; font-weight:700; flex:1; }
+    .test-why { color:var(--muted); font-weight:600; margin:4px 0 0; font-size:13px; line-height:1.4; }
+    .test-price-wrap { text-align:right; min-width:90px; }
     .modal-foot { display:flex; gap:10px; align-items:center; justify-content:space-between; padding:12px; border-top:1px solid var(--border); background:var(--panel-2); border-radius:12px; }
     .booking-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .booking-grid label { display:flex; flex-direction:column; gap:6px; color:var(--muted); font-weight:700; }
@@ -123,6 +150,7 @@
     @keyframes ripple { to { transform:scale(3); opacity:0; } }
     @media (max-width:900px) {
       .hero { grid-template-columns:1fr; }
+      .insights { grid-template-columns:1fr; }
       .booking-grid { grid-template-columns:1fr; }
       .sheet { max-height:95vh; border-radius:20px 20px 0 0; }
     }
@@ -204,6 +232,29 @@
       <span class="chip">Flexible rescheduling</span>
     </section>
 
+    <section class="insights">
+      <div class="card shine" aria-live="polite">
+        <div class="label-row" style="justify-content:space-between; align-items:center;">
+          <div>
+            <p class="chip">Health map & reports</p>
+            <h3>Track lab reports and push them to your dashboard</h3>
+            <p class="muted">Latest synced report shows where you stand. Sync from any lab modal to refresh this snapshot.</p>
+          </div>
+          <div class="status-badge neutral" id="dashboardStatus">No reports synced yet</div>
+        </div>
+        <div class="report-card" id="dashboardReport">
+          <p id="dashboardSummary" class="muted">Open a lab, review "Reports & Health Map", then sync to populate this space.</p>
+          <div id="dashboardList" class="insight-list"></div>
+        </div>
+      </div>
+      <div class="card pulse" aria-live="polite">
+        <p class="chip">Investigation explainers</p>
+        <h3>Why each investigation matters</h3>
+        <p class="muted">Quick rationale keeps you confident about every blood or imaging test. Hover to feel the subtle glow.</p>
+        <div class="insight-list" id="explainerList"></div>
+      </div>
+    </section>
+
     <section>
       <div class="grid" id="labsGrid" aria-live="polite"></div>
     </section>
@@ -234,6 +285,7 @@
       <nav class="tabs" role="tablist">
         <button data-tab="blood" aria-selected="true">Blood Tests</button>
         <button data-tab="radiology" aria-selected="false">Radiology</button>
+        <button data-tab="reports" aria-selected="false">Reports & Health Map</button>
         <button data-tab="book" aria-selected="false">Booking</button>
         <button data-tab="about" aria-selected="false">About</button>
       </nav>
@@ -262,6 +314,26 @@
           <span>Selected: <strong id="radCount">0</strong></span>
           <span>Total: <strong id="radTotal">₹0</strong></span>
         </div>
+      </div>
+      <div class="panel" data-panel="reports">
+        <div class="modal-toolbar">
+          <div>
+            <strong>Latest lab report preview</strong>
+            <p class="muted" id="reportMeta">Live metrics streamed from this lab help plot your dashboard trajectory.</p>
+          </div>
+          <button class="sync-btn" id="syncDashboard" type="button" data-ripple>🛰️ Sync to dashboard</button>
+        </div>
+        <div class="reports-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="report-card">
+            <h4>Blood markers</h4>
+            <div class="modal-list" id="reportBlood"></div>
+          </div>
+          <div class="report-card">
+            <h4>Imaging & impressions</h4>
+            <div class="modal-list" id="reportImaging"></div>
+          </div>
+        </div>
+        <div class="timeline" id="reportTimeline"></div>
       </div>
       <div class="panel" data-panel="book">
         <div class="booking-grid">
@@ -350,12 +422,18 @@
     <div class="test-row">
       <label>
         <input type="checkbox">
-        <span class="test-name"></span>
+        <div>
+          <span class="test-name"></span>
+          <p class="test-why"></p>
+        </div>
       </label>
-      <strong class="test-price"></strong>
+      <div class="test-price-wrap">
+        <strong class="test-price"></strong>
+        <small class="muted test-range"></small>
+      </div>
     </div>
   </template>
-
+  
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <audio id="clickSound" preload="auto" src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA/////wAAA1cAABF4AAD///8ATGF2ZjU2LjQxLjEwNAAAAAAAAAAAAAAA//uQxAADB6gAhR0AAAiCAAAIhYAQBEdAAAEQxAADL0AAAL0AAAQW5n//sQxAAD//8AAAAAAAAAAAAAAA=="></audio>
@@ -387,6 +465,10 @@
     const sortMeta = el('sortMeta');
     const locationMeta = el('locationMeta');
     const homeFeeMeta = el('homeFeeMeta');
+    const explainerList = el('explainerList');
+    const dashboardStatus = el('dashboardStatus');
+    const dashboardSummary = el('dashboardSummary');
+    const dashboardList = el('dashboardList');
 
     const modal = el('labModal');
     const modalTitle = el('modalTitle');
@@ -436,6 +518,11 @@
     const aboutTitle = el('aboutTitle');
     const aboutDesc = el('aboutDesc');
     const aboutContact = el('aboutContact');
+    const reportBloodEl = el('reportBlood');
+    const reportImagingEl = el('reportImaging');
+    const reportTimeline = el('reportTimeline');
+    const syncDashboard = el('syncDashboard');
+    const reportMeta = el('reportMeta');
 
     let labs = [];
     let selections = new Map();
@@ -443,26 +530,26 @@
     let userLocation = null;
 
     const baseBlood = [
-      { name: 'Complete Blood Count', price: 480 },
-      { name: 'Lipid Profile', price: 650 },
-      { name: 'Liver Function Test', price: 720 },
-      { name: 'Kidney Function Test', price: 700 },
-      { name: 'HbA1c', price: 540 },
-      { name: 'Thyroid Panel', price: 820 },
-      { name: 'Vitamin D', price: 1100 },
-      { name: 'Iron Studies', price: 900 },
-      { name: 'CRP', price: 580 },
-      { name: 'Ferritin', price: 750 }
+      { name: 'Complete Blood Count', price: 480, why: 'Screens anemia, infection and platelet issues in one sweep.', unit:'g/dL', range:[12,16] },
+      { name: 'Lipid Profile', price: 650, why: 'Maps cholesterol fractions to quantify heart risk.', unit:'mg/dL', range:[120,200] },
+      { name: 'Liver Function Test', price: 720, why: 'Checks bilirubin and enzymes to flag liver stress early.', unit:'IU/L', range:[5,45] },
+      { name: 'Kidney Function Test', price: 700, why: 'Creatinine + urea tell you how well the kidneys filter.', unit:'mg/dL', range:[0.6,1.2] },
+      { name: 'HbA1c', price: 540, why: 'Average sugar of past 3 months, cornerstone for diabetes control.', unit:'%', range:[4.5,5.6] },
+      { name: 'Thyroid Panel', price: 820, why: 'TSH/T3/T4 balance that controls energy, mood, and weight.', unit:'µIU/mL', range:[0.3,4.5] },
+      { name: 'Vitamin D', price: 1100, why: 'Bone health, immunity, and mood regulation booster.', unit:'ng/mL', range:[30,70] },
+      { name: 'Iron Studies', price: 900, why: 'Ferritin/iron/TIBC to spot deficiency or overload.', unit:'µg/dL', range:[60,170] },
+      { name: 'CRP', price: 580, why: 'Inflammation flag that correlates with infection or heart risk.', unit:'mg/L', range:[0,5] },
+      { name: 'Ferritin', price: 750, why: 'Iron store that dips before hemoglobin drops.', unit:'ng/mL', range:[20,250] }
     ];
     const baseRad = [
-      { name: 'Chest X-Ray', price: 600 },
-      { name: 'Ultrasound Abdomen', price: 1800 },
-      { name: 'CT Brain', price: 4200 },
-      { name: 'MRI Spine', price: 5500 },
-      { name: 'Mammography', price: 2500 },
-      { name: 'DEXA Scan', price: 3000 },
-      { name: 'PET-CT', price: 11000 },
-      { name: 'USG Pelvis', price: 1600 }
+      { name: 'Chest X-Ray', price: 600, why: 'Screens lungs and heart silhouette for infections or fluid.', impression:'No active consolidation. Heart size normal.' },
+      { name: 'Ultrasound Abdomen', price: 1800, why: 'Looks at liver, gall bladder, kidneys for stones or swellings.', impression:'Liver smooth, no gall stones. Kidneys normal size.' },
+      { name: 'CT Brain', price: 4200, why: 'Fast stroke/bleed screening when every minute counts.', impression:'No hemorrhage. Ventricles symmetrical.' },
+      { name: 'MRI Spine', price: 5500, why: 'Disc, nerve and soft-tissue clarity for back or neck pain.', impression:'Mild L4-L5 disc bulge without nerve compression.' },
+      { name: 'Mammography', price: 2500, why: 'Detects early calcifications and lumps in breast tissue.', impression:'BI-RADS 2: benign-appearing calcifications.' },
+      { name: 'DEXA Scan', price: 3000, why: 'Bone density score to understand fracture risk.', impression:'T-score -1.1 : Mild osteopenia, start supplements.' },
+      { name: 'PET-CT', price: 11000, why: 'Whole-body metabolic scan to stage or monitor cancers.', impression:'No avid lesions beyond baseline.' },
+      { name: 'USG Pelvis', price: 1600, why: 'Evaluates uterus/ovaries/prostate for structural changes.', impression:'Uterus normal size, no adnexal masses.' }
     ];
 
     function initTheme() {
@@ -488,8 +575,24 @@
         const radiology = baseRad.map(t => ({ ...t, price: Math.round(t.price * (multiplier+0.05)) }));
         const description = `${name} offers NABL-style quality with QC checks every hour. Home phlebotomy trained, transparent pricing, and WhatsApp confirmations.`;
         const img = `https://images.unsplash.com/photo-1582719478173-2f2df4b95831?auto=format&fit=crop&w=900&q=80&sig=${idx}`;
-        return { id:`lab-${idx}`, name, city, area, lat:19 + Math.random(), lng:72 + Math.random(), phone:`+91-98765${10000+idx}`, homeVisit, homeFee, blood, radiology, description, img };
+        const reports = buildLabReports(blood, radiology);
+        return { id:`lab-${idx}`, name, city, area, lat:19 + Math.random(), lng:72 + Math.random(), phone:`+91-98765${10000+idx}`, homeVisit, homeFee, blood, radiology, description, img, reports };
       });
+    }
+
+    function buildLabReports(blood, radiology) {
+      const bloodReports = blood.slice(0,4).map(test => {
+        const baseline = test.range ? rand(test.range[0]*0.9, test.range[1]*1.2) : rand(10,90);
+        const status = test.range ? (baseline < test.range[0] ? 'low' : baseline > test.range[1] ? 'high' : 'normal') : 'note';
+        return { name: test.name, value: Number(baseline.toFixed(1)), unit: test.unit || '', range: test.range, why: test.why, status };
+      });
+      const imagingReports = radiology.slice(0,3).map(test => ({
+        name: test.name,
+        impression: test.impression,
+        status: Math.random() > 0.72 ? 'follow-up' : 'clear',
+        why: test.why
+      }));
+      return { updated: new Date().toISOString(), bloodReports, imagingReports };
     }
 
     function haversine(lat1, lon1, lat2, lon2) {
@@ -545,6 +648,11 @@
       radCount.textContent = radLabs;
       avgPrice.textContent = list.length ? fmt(avg) : '₹0';
       homeFeeMeta.textContent = homeLabs ? fmt(list.filter(l=>l.homeVisit).reduce((a,l)=>a+l.homeFee,0)/homeLabs) : '₹0';
+      [visibleCount, homeCount, radCount, avgPrice, homeFeeMeta].forEach(node => {
+        const metric = node.closest('.metric');
+        if (!metric) return;
+        metric.classList.remove('animate'); metric.offsetWidth; metric.classList.add('animate');
+      });
       list.forEach(lab => {
         const node = labCardTpl.content.firstElementChild.cloneNode(true);
         node.querySelector('.lab-img').src = lab.img;
@@ -573,6 +681,38 @@
       });
     }
 
+    function renderExplainers() {
+      explainerList.innerHTML = '';
+      const picked = [...baseBlood.slice(0,3), ...baseRad.slice(0,2)];
+      picked.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'insight-row shine';
+        row.innerHTML = `<div><strong>${item.name}</strong><small>${item.why}</small></div><span class="status-badge neutral">Why it's done</span>`;
+        explainerList.appendChild(row);
+      });
+    }
+
+    function renderDashboardSnapshot() {
+      const saved = JSON.parse(localStorage.getItem('lab-dashboard-latest') || 'null');
+      dashboardList.innerHTML = '';
+      if (!saved) {
+        dashboardStatus.textContent = 'No reports synced yet';
+        dashboardStatus.className = 'status-badge neutral';
+        dashboardSummary.textContent = 'Sync any lab report to see friendly explanations and health status mapping here.';
+        return;
+      }
+      dashboardStatus.textContent = `Synced ${new Date(saved.updated).toLocaleString()}`;
+      dashboardStatus.className = 'status-badge good';
+      dashboardSummary.textContent = `From ${saved.lab} • ${saved.city}`;
+      saved.bloodReports.forEach(rep => {
+        const badgeClass = rep.status === 'normal' ? 'good' : rep.status === 'high' || rep.status === 'low' ? 'warn' : 'neutral';
+        const row = document.createElement('div');
+        row.className = 'insight-row';
+        row.innerHTML = `<div><strong>${rep.name}</strong><small>${rep.why}</small><small>Result: ${rep.value} ${rep.unit || ''}${rep.range?` (target ${rep.range[0]}-${rep.range[1]})`:''}</small></div><span class="status-badge ${badgeClass}">${rep.status}</span>`;
+        dashboardList.appendChild(row);
+      });
+    }
+
     function getSel(id) {
       if (!selections.has(id)) selections.set(id, { blood:new Set(), rad:new Set(), home:false });
       return selections.get(id);
@@ -586,6 +726,8 @@
           const cb = row.querySelector('input');
           row.querySelector('.test-name').textContent = test.name;
           row.querySelector('.test-price').textContent = fmt(test.price);
+          row.querySelector('.test-why').textContent = test.why || 'Investigation added for clinical context.';
+          row.querySelector('.test-range').textContent = test.range ? `Target ${test.range[0]}–${test.range[1]} ${test.unit||''}` : '';
           cb.checked = selSet.has(test.name);
           cb.addEventListener('change', () => {
             cb.checked ? selSet.add(test.name) : selSet.delete(test.name);
@@ -627,6 +769,33 @@
       bookTotal.textContent = fmt(bloodSum + radSum);
     }
 
+    function renderReports(lab) {
+      reportBloodEl.innerHTML = '';
+      reportImagingEl.innerHTML = '';
+      reportTimeline.innerHTML = '';
+      reportMeta.textContent = `Generated from ${new Date(lab.reports.updated).toLocaleString()}. Sync below to push into your dashboard timeline.`;
+      lab.reports.bloodReports.forEach(rep => {
+        const badgeClass = rep.status === 'normal' ? 'good' : rep.status === 'high' || rep.status === 'low' ? 'warn' : 'neutral';
+        const row = document.createElement('div');
+        row.className = 'insight-row';
+        row.innerHTML = `<div><strong>${rep.name}</strong><small>${rep.why}</small><small>Result: ${rep.value} ${rep.unit || ''}${rep.range?` (target ${rep.range[0]}-${rep.range[1]})`:''}</small></div><span class="status-badge ${badgeClass}">${rep.status}</span>`;
+        reportBloodEl.appendChild(row);
+      });
+      lab.reports.imagingReports.forEach(rep => {
+        const badgeClass = rep.status === 'clear' ? 'good' : rep.status === 'follow-up' ? 'warn' : 'neutral';
+        const row = document.createElement('div');
+        row.className = 'insight-row';
+        row.innerHTML = `<div><strong>${rep.name}</strong><small>${rep.why}</small><small>${rep.impression}</small></div><span class="status-badge ${badgeClass}">${rep.status}</span>`;
+        reportImagingEl.appendChild(row);
+      });
+      ['Select tests you care about', 'Sync to dashboard to track streaks', 'Use nearest-first to tighten logistics'].forEach(text => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = text;
+        reportTimeline.appendChild(chip);
+      });
+    }
+
     function openModal(lab) {
       currentLab = lab;
       const sel = getSel(lab.id);
@@ -645,6 +814,7 @@
       bloodHomeToggle.checked = sel.home && lab.homeVisit;
       renderTests(bloodList, lab.blood, sel.blood, bloodSearch.value);
       renderTests(radList, lab.radiology, sel.rad, radSearch.value);
+      renderReports(lab);
       updateTotals();
       modal.classList.add('show');
       modal.setAttribute('aria-hidden','false');
@@ -700,6 +870,14 @@
     bookConfirm.addEventListener('click', () => {
       if (!currentLab) return; window.open(buildWhatsAppLink(currentLab,'booking'),'_blank'); showToast('Booking sent via WhatsApp');
     });
+
+    function syncReportsToDashboard(lab) {
+      const payload = { ...lab.reports, lab: lab.name, city: lab.city, area: lab.area };
+      localStorage.setItem('lab-dashboard-latest', JSON.stringify(payload));
+      renderDashboardSnapshot();
+      showToast('Report synced to dashboard');
+    }
+    syncDashboard.addEventListener('click', () => { if (currentLab) syncReportsToDashboard(currentLab); });
 
     function loadProfile() {
       const saved = JSON.parse(localStorage.getItem('lab-profile') || '{}');
@@ -771,6 +949,8 @@
       const savedLoc = localStorage.getItem('lab-location');
       if (savedLoc) { userLocation = JSON.parse(savedLoc); locationMeta.textContent = 'Saved'; }
       buildLabs();
+      renderExplainers();
+      renderDashboardSnapshot();
       filterLabs();
       initRipple();
     }
