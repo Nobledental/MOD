@@ -97,6 +97,40 @@
         </div>
       </header>
 
+      <div class="advanced-head card">
+        <div class="finder-stats">
+          <div class="stat-row">
+            <strong id="labsMetaCount">— labs nearby</strong>
+            <span class="pill ghost" id="labsHomeCount">— home visit</span>
+            <span class="pill" id="labsRadCount">— radiology hubs</span>
+          </div>
+          <div class="advanced-kpis">
+            <div class="kpi-card">
+              <small>Nearest first</small>
+              <strong id="labsSortMeta">Live location</strong>
+              <span class="muted">Auto-applied like Zomato</span>
+            </div>
+            <div class="kpi-card">
+              <small>Dashboard sync</small>
+              <strong>Instant</strong>
+              <span class="muted">Pins to Labs board</span>
+            </div>
+            <div class="kpi-card">
+              <small>Pricing</small>
+              <strong id="labsPriceMeta">₹—</strong>
+              <span class="muted">Avg. blood panel start</span>
+            </div>
+          </div>
+        </div>
+        <div class="finder-stats">
+          <div class="notice glass" id="labsMetaStatus">Live location applied · home pickup highlighted.</div>
+          <div class="stat-row">
+            <button class="badge primary" id="pinDashboard" type="button">Pin these results to dashboard</button>
+            <span class="pill ghost">Saved automatically</span>
+          </div>
+        </div>
+      </div>
+
       <div class="location-bar card">
         <div class="location-meta">
           <p class="muted">Live location</p>
@@ -151,6 +185,18 @@
       </div>
 
       <div class="results-grid zomato-grid" id="labResults" aria-live="polite"></div>
+
+      <div class="investigation-board card">
+        <header class="board-head">
+          <div>
+            <p class="chip">Investigations near you</p>
+            <h3>Popular tests and price starts</h3>
+            <p class="section-sub">Curated from the filtered labs — mirrored to Dashboard → Labs.</p>
+          </div>
+          <span class="pill ghost" id="investigationMeta">Live price bands</span>
+        </header>
+        <div class="investigation-list" id="investigationList"></div>
+      </div>
     </section>
 
     <section class="section labs-actions">
@@ -416,6 +462,15 @@
     const locateMe = document.getElementById('locateMe');
     const locationStatus = document.getElementById('locationStatus');
     const cityHint = document.getElementById('cityHint');
+    const labsMetaCount = document.getElementById('labsMetaCount');
+    const labsHomeCount = document.getElementById('labsHomeCount');
+    const labsRadCount = document.getElementById('labsRadCount');
+    const labsSortMeta = document.getElementById('labsSortMeta');
+    const labsPriceMeta = document.getElementById('labsPriceMeta');
+    const labsMetaStatus = document.getElementById('labsMetaStatus');
+    const pinDashboard = document.getElementById('pinDashboard');
+    const investigationList = document.getElementById('investigationList');
+    const investigationMeta = document.getElementById('investigationMeta');
 
     const deg2rad = (d) => d * (Math.PI / 180);
     const haversineKm = (a, b) => {
@@ -441,8 +496,68 @@
       return tests
         .filter(t => !type || t.type === type)
         .slice(0, 4)
-        .map(t => `<span class="test-chip">${t.name} <strong>₹${t.price}</strong></span>`)
+        .map(t => `<span class="test-chip price-pill">${t.name} <strong>₹${t.price}</strong></span>`)
         .join('');
+    }
+
+    function updateMeta(filtered) {
+      const home = filtered.filter(l => l.homeVisit).length;
+      const rad = filtered.filter(l => l.type.includes('radiology')).length;
+      const prices = filtered.flatMap(l => l.tests.filter(t => t.type === 'blood').map(t => t.price));
+      const avg = prices.length ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : '—';
+
+      labsMetaCount.textContent = `${filtered.length} labs nearby`;
+      labsHomeCount.textContent = `${home} home visit`;
+      labsRadCount.textContent = `${rad} radiology hubs`;
+      labsPriceMeta.textContent = prices.length ? `₹${avg}` : '₹—';
+      labsMetaStatus.textContent = `${home} home pickups · ${rad} imaging hubs · synced with dashboard`;
+      labsSortMeta.textContent = (labSort?.value || '') === 'az' ? 'A–Z sort' : 'Nearest first';
+      if (investigationMeta) investigationMeta.textContent = `Pulled from ${filtered.length} labs`;
+    }
+
+    function buildInvestigationBoard(filtered) {
+      if (!investigationList) return;
+      const map = new Map();
+
+      filtered.forEach(lab => {
+        lab.tests.forEach(test => {
+          const key = test.name;
+          const existing = map.get(key) || { name: test.name, type: test.type, price: test.price, labs: 0, home: 0 };
+          existing.price = Math.min(existing.price, test.price);
+          existing.labs += 1;
+          if (lab.homeVisit) existing.home += 1;
+          map.set(key, existing);
+        });
+      });
+
+      const top = Array.from(map.values())
+        .sort((a, b) => a.price - b.price)
+        .slice(0, 8);
+
+      investigationList.innerHTML = '';
+      top.forEach(test => {
+        const row = document.createElement('div');
+        row.className = 'investigation-row';
+        row.innerHTML = `
+          <div class="stack">
+            <strong>${test.name}</strong>
+            <small>${test.type === 'blood' ? 'Blood / pathology' : 'Radiology / imaging'}</small>
+          </div>
+          <div class="stack">
+            <small>Starting</small>
+            <strong>₹${test.price}</strong>
+          </div>
+          <div class="stack">
+            <small>Labs</small>
+            <span class="pill">${test.labs} nearby</span>
+          </div>
+          <div class="stack">
+            <small>Home pickup</small>
+            <span class="pill ${test.home ? '' : 'ghost'}">${test.home ? `${test.home} offer home visit` : 'Visit lab'}</span>
+          </div>
+        `;
+        investigationList.appendChild(row);
+      });
     }
 
     function renderLabs() {
@@ -480,12 +595,17 @@
       labResults.innerHTML = '';
       filtered.forEach(lab => {
         const card = document.createElement('article');
-        card.className = 'lab-card zomato-card';
+        card.className = 'lab-card zomato-card advanced';
         card.innerHTML = `
           <div class="lab-img" style="background-image:url('${lab.img}')">
+            <div class="lab-overlay"></div>
             <div class="lab-badge-row">
               <span class="pill ${lab.homeVisit ? '' : 'ghost'}">${lab.homeVisit ? 'Home visit' : 'Visit lab'}</span>
               <span class="pill ghost">${lab.open ? 'Open slots' : 'Waitlist'}</span>
+            </div>
+            <div class="lab-meta-bar">
+              <span class="pill">${lab.distanceCalc} km</span>
+              <span class="pill ghost">${lab.slot}</span>
             </div>
             <div class="lab-rating">${lab.rating.toFixed(1)}★</div>
           </div>
@@ -495,15 +615,10 @@
                 <h3>${lab.name}</h3>
                 <p class="muted">${lab.area} • ${lab.city}</p>
               </div>
-              <span class="pill">${lab.distanceCalc} km</span>
+              <span class="pill">${lab.type.includes('blood') ? 'Blood' : ''}${lab.type.length === 2 ? ' & ' : ''}${lab.type.includes('radiology') ? 'Radiology' : ''}</span>
             </div>
-            <p class="notice">${lab.tests[0]?.name || ''} starts at ₹${lab.tests[0]?.price} — ${lab.slot}. Synced with dashboard.</p>
-            <div class="lab-meta">
-              <span class="tag">${lab.type.includes('blood') ? 'Blood' : ''}${lab.type.length === 2 ? ' & ' : ''}${lab.type.includes('radiology') ? 'Radiology' : ''}</span>
-              <span class="tag">${lab.slot}</span>
-              <span class="tag">Dashboard link</span>
-            </div>
-            <div class="lab-tests">${renderTests(lab.tests, type)}</div>
+            <div class="price-line">Starts at <strong>₹${lab.tests[0]?.price || '—'}</strong> • ${lab.slot}</div>
+            <div class="lab-tests inline-tests">${renderTests(lab.tests, type)}</div>
             <div class="card-actions">
               <button class="badge primary" type="button">Book</button>
               <a class="badge" href="https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}" target="_blank" rel="noopener">Directions</a>
@@ -517,6 +632,9 @@
       if (labStatus) {
         labStatus.textContent = `${filtered.length} labs ready · filters mirrored to dashboard`;
       }
+
+      updateMeta(filtered);
+      buildInvestigationBoard(filtered);
     }
 
     [labSearch, labCity, labType, labSort, homeOnlyToggle, openSlotToggle].forEach(el => {
@@ -529,6 +647,12 @@
       labStatus.textContent = 'Filters synced to dashboard ✔';
       labStatus.classList.add('accent-text');
       setTimeout(() => labStatus.classList.remove('accent-text'), 1800);
+    });
+
+    pinDashboard?.addEventListener('click', () => {
+      labsMetaStatus.textContent = 'Pinned to dashboard → Labs';
+      labsMetaStatus.classList.add('accent-text');
+      setTimeout(() => labsMetaStatus.classList.remove('accent-text'), 1800);
     });
 
     locateMe?.addEventListener('click', () => {
