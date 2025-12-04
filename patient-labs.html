@@ -186,6 +186,83 @@
 
       <div class="results-grid zomato-grid" id="labResults" aria-live="polite"></div>
 
+      <!-- Detail modal -->
+      <div class="lab-modal" id="labModal" aria-hidden="true">
+        <div class="lab-modal__sheet" role="dialog" aria-modal="true" aria-labelledby="labModalTitle">
+          <header class="lab-modal__head">
+            <div class="lab-modal__meta">
+              <p class="muted" id="labModalLocation">—</p>
+              <h3 id="labModalTitle">Lab</h3>
+              <div class="pill-row">
+                <span class="pill" id="labModalHome">Home visit • Yes</span>
+                <span class="pill" id="labModalDistance">— km</span>
+                <span class="pill ghost" id="labModalCounts">—</span>
+              </div>
+            </div>
+            <div class="lab-modal__actions">
+              <a class="badge" id="labModalDirections" target="_blank" rel="noopener">Directions</a>
+              <a class="badge" id="labModalCall">Call</a>
+              <a class="badge ghost" id="labModalWA" target="_blank" rel="noopener">WhatsApp</a>
+              <button class="icon-btn" id="labModalClose" type="button">✕</button>
+            </div>
+          </header>
+
+          <div class="lab-modal__tabs" role="tablist">
+            <button class="pill" data-tab="blood" aria-selected="true">Blood Tests</button>
+            <button class="pill ghost" data-tab="radiology" aria-selected="false">Radiology</button>
+            <button class="pill ghost" data-tab="book" aria-selected="false">Book</button>
+          </div>
+
+          <div class="lab-modal__panel" data-panel="blood">
+            <div class="modal-toolbar">
+              <div class="toolbar-field">
+                <input id="bloodSearch" type="search" placeholder="Search blood tests" />
+              </div>
+              <label class="pill switcher">
+                <input id="bloodHomeToggle" type="checkbox" /> Home collection
+              </label>
+              <span class="muted" id="homeFeeText">Home fee: ₹0</span>
+              <div class="spacer"></div>
+              <button class="badge ghost" id="bloodClear" type="button">Clear</button>
+              <button class="badge" id="bloodWA" type="button">Send on WhatsApp</button>
+            </div>
+            <div class="modal-list" id="bloodList"></div>
+            <footer class="modal-foot">
+              <span>Selected: <strong id="bloodCount">0</strong></span>
+              <span class="spacer"></span>
+              <span>Total: <strong id="bloodTotal">₹0</strong></span>
+            </footer>
+          </div>
+
+          <div class="lab-modal__panel hidden" data-panel="radiology">
+            <div class="modal-toolbar">
+              <div class="toolbar-field">
+                <input id="radSearch" type="search" placeholder="Search radiology" />
+              </div>
+              <div class="spacer"></div>
+              <button class="badge ghost" id="radClear" type="button">Clear</button>
+              <button class="badge" id="radWA" type="button">Send on WhatsApp</button>
+            </div>
+            <div class="modal-list" id="radList"></div>
+            <footer class="modal-foot">
+              <span>Selected: <strong id="radCount">0</strong></span>
+              <span class="spacer"></span>
+              <span>Total: <strong id="radTotal">₹0</strong></span>
+            </footer>
+          </div>
+
+          <div class="lab-modal__panel hidden" data-panel="book">
+            <div class="booking-summary">
+              <p class="muted">Selections will sync to Dashboard → Labs.</p>
+              <div id="bookSummary" class="notice">No tests selected yet.</div>
+              <div class="modal-foot">
+                <span>Total: <strong id="bookTotal">₹0</strong></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="investigation-board card">
         <header class="board-head">
           <div>
@@ -570,6 +647,15 @@
         return Number(lab.fallbackDistance);
       }
 
+      const selections = {};
+
+      function getSel(id) {
+        if (!selections[id]) {
+          selections[id] = { blood: new Set(), rad: new Set(), home: false };
+        }
+        return selections[id];
+      }
+
       function renderTests(tests, type) {
         const list = tests
           .filter(t => !type || t.type === type)
@@ -578,6 +664,215 @@
           .join('');
         return list || '<span class="pill ghost">All investigations shown in modal</span>';
       }
+
+      const labModal = document.getElementById('labModal');
+      const labModalTitle = document.getElementById('labModalTitle');
+      const labModalLocation = document.getElementById('labModalLocation');
+      const labModalHome = document.getElementById('labModalHome');
+      const labModalDistance = document.getElementById('labModalDistance');
+      const labModalCounts = document.getElementById('labModalCounts');
+      const labModalDirections = document.getElementById('labModalDirections');
+      const labModalCall = document.getElementById('labModalCall');
+      const labModalWA = document.getElementById('labModalWA');
+      const labModalClose = document.getElementById('labModalClose');
+      const tabButtons = Array.from(document.querySelectorAll('.lab-modal__tabs [data-tab]'));
+      const panels = Array.from(document.querySelectorAll('.lab-modal__panel'));
+      const bloodList = document.getElementById('bloodList');
+      const radList = document.getElementById('radList');
+      const bloodSearch = document.getElementById('bloodSearch');
+      const radSearch = document.getElementById('radSearch');
+      const bloodHomeToggle = document.getElementById('bloodHomeToggle');
+      const homeFeeText = document.getElementById('homeFeeText');
+      const bloodClear = document.getElementById('bloodClear');
+      const radClear = document.getElementById('radClear');
+      const bloodWA = document.getElementById('bloodWA');
+      const radWA = document.getElementById('radWA');
+      const bloodCount = document.getElementById('bloodCount');
+      const radCount = document.getElementById('radCount');
+      const bloodTotal = document.getElementById('bloodTotal');
+      const radTotal = document.getElementById('radTotal');
+      const bookSummary = document.getElementById('bookSummary');
+      const bookTotal = document.getElementById('bookTotal');
+
+      let currentLab = null;
+
+      function setActiveTab(tab) {
+        tabButtons.forEach(btn => {
+          const active = btn.dataset.tab === tab;
+          btn.classList.toggle('ghost', !active);
+          btn.setAttribute('aria-selected', active);
+        });
+        panels.forEach(panel => {
+          panel.classList.toggle('hidden', panel.dataset.panel !== tab);
+        });
+      }
+
+      tabButtons.forEach(btn => btn.addEventListener('click', () => setActiveTab(btn.dataset.tab)));
+
+      function renderModalList(listEl, tests, selSet, query = '') {
+        if (!listEl) return;
+        listEl.innerHTML = '';
+        const q = query.trim().toLowerCase();
+        tests
+          .filter(t => !q || t.name.toLowerCase().includes(q))
+          .forEach(test => {
+            const row = document.createElement('div');
+            row.className = 'modal-row';
+            row.innerHTML = `
+              <label>
+                <input type="checkbox" ${selSet.has(test.name) ? 'checked' : ''} />
+                <span>${test.name}</span>
+              </label>
+              <strong>${fmtINR(test.price)}</strong>
+            `;
+            const checkbox = row.querySelector('input');
+            checkbox.addEventListener('change', () => {
+              if (checkbox.checked) selSet.add(test.name);
+              else selSet.delete(test.name);
+              updateTotals();
+            });
+            listEl.appendChild(row);
+          });
+
+        if (!listEl.children.length) {
+          const empty = document.createElement('div');
+          empty.className = 'notice';
+          empty.textContent = 'No tests match this search yet.';
+          listEl.appendChild(empty);
+        }
+      }
+
+      function updateTotals() {
+        if (!currentLab) return;
+        const sel = getSel(currentLab.id);
+        const bloodSel = currentLab.blood.filter(t => sel.blood.has(t.name));
+        const radSel = currentLab.radiology.filter(t => sel.rad.has(t.name));
+        const bloodFee = sel.home && currentLab.homeVisit ? currentLab.homeFee : 0;
+        const bloodSum = bloodSel.reduce((a, t) => a + t.price, 0) + bloodFee;
+        const radSum = radSel.reduce((a, t) => a + t.price, 0);
+
+        if (bloodCount) bloodCount.textContent = bloodSel.length;
+        if (bloodTotal) bloodTotal.textContent = fmtINR(bloodSum);
+        if (radCount) radCount.textContent = radSel.length;
+        if (radTotal) radTotal.textContent = fmtINR(radSum);
+
+        if (bookSummary) {
+          if (!bloodSel.length && !radSel.length) {
+            bookSummary.textContent = 'No tests selected yet.';
+          } else {
+            const lines = [];
+            if (bloodSel.length) {
+              lines.push('Blood:');
+              bloodSel.forEach(t => lines.push(`• ${t.name} — ${fmtINR(t.price)}`));
+              if (bloodFee) lines.push(`• Home fee — ${fmtINR(bloodFee)}`);
+            }
+            if (radSel.length) {
+              lines.push('Radiology:');
+              radSel.forEach(t => lines.push(`• ${t.name} — ${fmtINR(t.price)}`));
+            }
+            bookSummary.textContent = lines.join('\n');
+          }
+        }
+        if (bookTotal) bookTotal.textContent = fmtINR(bloodSum + radSum);
+      }
+
+      function openLabModal(lab) {
+        currentLab = lab;
+        setActiveTab('blood');
+        const sel = getSel(lab.id);
+        if (labModalTitle) labModalTitle.textContent = lab.name;
+        if (labModalLocation) labModalLocation.textContent = `${lab.city}, ${lab.area}`;
+        if (labModalHome) labModalHome.textContent = lab.homeVisit ? `Home visit • Fee ${fmtINR(lab.homeFee)}` : 'In-lab only';
+        if (labModalDistance) labModalDistance.textContent = lab.distanceKm ? `${lab.distanceKm.toFixed(1)} km` : '— km';
+        if (labModalCounts) labModalCounts.textContent = `${lab.blood.length} blood • ${lab.radiology.length} radiology`;
+        if (homeFeeText) homeFeeText.textContent = lab.homeVisit ? `Home fee: ${fmtINR(lab.homeFee)}` : 'Home collection not available';
+        if (bloodHomeToggle) {
+          bloodHomeToggle.disabled = !lab.homeVisit;
+          bloodHomeToggle.checked = !!sel.home && lab.homeVisit;
+        }
+        if (labModalDirections) labModalDirections.href = `https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}`;
+        if (labModalCall) labModalCall.href = `tel:${lab.phone}`;
+        if (labModalWA) labModalWA.href = `https://wa.me/?text=${encodeURIComponent(`Hi ${lab.name}, I want to book tests.`)}`;
+
+        renderModalList(bloodList, lab.blood, sel.blood, bloodSearch?.value || '');
+        renderModalList(radList, lab.radiology, sel.rad, radSearch?.value || '');
+        updateTotals();
+
+        labModal?.classList.add('open');
+        labModal?.setAttribute('aria-hidden', 'false');
+      }
+
+      function closeLabModal() {
+        labModal?.classList.remove('open');
+        labModal?.setAttribute('aria-hidden', 'true');
+        currentLab = null;
+      }
+
+      labModalClose?.addEventListener('click', closeLabModal);
+      labModal?.addEventListener('click', (e) => {
+        if (e.target === labModal) closeLabModal();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && labModal?.classList.contains('open')) closeLabModal();
+      });
+
+      bloodHomeToggle?.addEventListener('change', () => {
+        if (!currentLab) return;
+        getSel(currentLab.id).home = bloodHomeToggle.checked;
+        updateTotals();
+      });
+
+      bloodSearch?.addEventListener('input', () => {
+        if (!currentLab) return;
+        renderModalList(bloodList, currentLab.blood, getSel(currentLab.id).blood, bloodSearch.value);
+      });
+      radSearch?.addEventListener('input', () => {
+        if (!currentLab) return;
+        renderModalList(radList, currentLab.radiology, getSel(currentLab.id).rad, radSearch.value);
+      });
+
+      bloodClear?.addEventListener('click', () => {
+        if (!currentLab) return;
+        getSel(currentLab.id).blood.clear();
+        renderModalList(bloodList, currentLab.blood, getSel(currentLab.id).blood, bloodSearch?.value || '');
+        updateTotals();
+      });
+      radClear?.addEventListener('click', () => {
+        if (!currentLab) return;
+        getSel(currentLab.id).rad.clear();
+        renderModalList(radList, currentLab.radiology, getSel(currentLab.id).rad, radSearch?.value || '');
+        updateTotals();
+      });
+
+      bloodWA?.addEventListener('click', () => {
+        if (!currentLab) return;
+        const sel = getSel(currentLab.id);
+        const picks = currentLab.blood.filter(t => sel.blood.has(t.name));
+        if (!picks.length) return;
+        const fee = sel.home && currentLab.homeVisit ? currentLab.homeFee : 0;
+        const total = picks.reduce((a, t) => a + t.price, 0) + fee;
+        const msg = [
+          `Blood tests — ${currentLab.name} (${currentLab.area})`,
+          ...picks.map(t => `• ${t.name} — ${fmtINR(t.price)}`),
+          fee ? `• Home fee — ${fmtINR(fee)}` : '',
+          `Total — ${fmtINR(total)}`
+        ].filter(Boolean).join('\n');
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      });
+
+      radWA?.addEventListener('click', () => {
+        if (!currentLab) return;
+        const sel = getSel(currentLab.id);
+        const picks = currentLab.radiology.filter(t => sel.rad.has(t.name));
+        if (!picks.length) return;
+        const total = picks.reduce((a, t) => a + t.price, 0);
+        const msg = [
+          `Radiology — ${currentLab.name} (${currentLab.area})`,
+          ...picks.map(t => `• ${t.name} — ${fmtINR(t.price)}`),
+          `Total — ${fmtINR(total)}`
+        ].join('\n');
+        window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+      });
 
       function updateMeta(filtered, type) {
         if (!labsMetaCount) return;
@@ -696,37 +991,38 @@
           card.className = 'lab-card zomato-card advanced';
           card.innerHTML = `
             <div class="lab-img" style="background-image:url('${lab.img}')">
-              <div class="lab-overlay"></div>
               <div class="lab-badge-row">
-                <span class="pill ${lab.homeVisit ? '' : 'ghost'}">${lab.homeVisit ? 'Home visit' : 'Visit lab'}</span>
-                <span class="pill ghost">${lab.open ? 'Open slots' : 'Waitlist'}</span>
+                <span class="pill">${lab.distanceKm?.toFixed ? lab.distanceKm.toFixed(1) : '—'} km</span>
               </div>
-              <div class="lab-meta-bar">
-                <span class="pill">${lab.distanceKm?.toFixed ? lab.distanceKm.toFixed(1) : lab.distanceKm} km</span>
-                <span class="pill ghost">${lab.slot}</span>
-              </div>
-              <div class="lab-rating">${lab.rating.toFixed(1)}★</div>
             </div>
             <div class="lab-body">
-              <div class="lab-head">
-                <div>
-                  <h3>${lab.name}</h3>
-                  <p class="muted">${lab.area} • ${lab.city}</p>
-                </div>
-                <span class="pill">${lab.type.includes('blood') ? 'Blood' : ''}${lab.type.length === 2 ? ' & ' : ''}${lab.type.includes('radiology') ? 'Radiology' : ''}</span>
+              <h3>${lab.name}</h3>
+              <p class="muted">${lab.area} • ${lab.city}</p>
+              <div class="lab-meta-row">
+                <span class="pill">Home visit ${lab.homeVisit ? 'Yes' : 'No'}</span>
+                <span class="pill ghost">${lab.homeVisit ? `Fee ${fmtINR(lab.homeFee)}` : 'Visit lab'}</span>
+                <span class="pill">${lab.distanceKm?.toFixed ? lab.distanceKm.toFixed(1) : '—'} km</span>
+                <span class="pill ghost">${lab.tests.length} blood & radiology</span>
               </div>
               <div class="price-line">Starts at <strong>${startPrice ? fmtINR(startPrice) : '₹—'}</strong> • ${lab.slot}</div>
               <div class="lab-tests inline-tests">${renderTests(tests, type)}</div>
               <div class="card-actions">
-                <button class="badge primary" type="button">Book</button>
+                <button class="badge primary" type="button" data-action="view">View</button>
                 <a class="badge" href="https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}" target="_blank" rel="noopener">Directions</a>
-                <button class="badge ghost" type="button">View tests</button>
+                <a class="badge ghost" href="tel:${lab.phone}">Call</a>
               </div>
             </div>
           `;
+
+          card.querySelector('[data-action="view"]')?.addEventListener('click', () => openLabModal(lab));
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('a')) return;
+            openLabModal(lab);
+          });
+
           labResults.appendChild(card);
         });
-
+        
         if (labStatus) {
           labStatus.textContent = `${filtered.length} labs ready · filters mirrored to dashboard`;
         }
