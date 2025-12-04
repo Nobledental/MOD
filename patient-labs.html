@@ -7,41 +7,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b0f18;
-      --panel: #111827;
-      --panel-2: #182235;
-      --panel-3: #0f1724;
-      --text: #f6f8ff;
-      --muted: #9db0d9;
-      --primary: #7dd3fc;
-      --primary-strong: #1fb6ff;
-      --accent: #a9ffcb;
-      --accent-2: #fbbf24;
+      --bg: #0f1115;
+      --panel: #161921;
+      --panel-2: #1c202b;
+      --text: #f5f7fb;
+      --muted: #9aa4be;
+      --primary: #71c6ff;
+      --accent: #8bffb5;
       --danger: #ff9ea9;
-      --chip: #1f2a3d;
-      --border: #22314b;
-      --shadow: 0 24px 60px rgba(2,6,23,0.55);
+      --chip: #222736;
+      --border: #23283a;
+      --shadow: 0 20px 50px rgba(0,0,0,0.35);
       --radius: 18px;
       --glass: rgba(255,255,255,0.04);
       --blur: blur(12px);
-      --glow: 0 12px 46px rgba(125,211,252,0.38);
+      --glow: 0 10px 40px rgba(113,198,255,0.35);
       --pulse: drop-shadow(0 0 14px rgba(113,198,255,0.35));
     }
     [data-theme="day"] {
-      --bg: #f7f9ff;
+      --bg: #f5f7fb;
       --panel: #ffffff;
-      --panel-2: #f0f4ff;
-      --panel-3: #e7eeff;
-      --text: #0c1220;
-      --muted: #617099;
+      --panel-2: #eef2fb;
+      --text: #0e121b;
+      --muted: #6c7288;
       --primary: #1f7bff;
-      --primary-strong: #0f5ed2;
-      --accent: #0fb48c;
-      --accent-2: #d97706;
+      --accent: #00b686;
       --danger: #eb3b5a;
       --chip: #e8edfa;
       --border: #d8dff1;
-      --shadow: 0 18px 40px rgba(21,34,70,0.12);
+      --shadow: 0 15px 40px rgba(21,34,70,0.12);
       --glass: rgba(255,255,255,0.85);
       --blur: blur(0px);
     }
@@ -49,9 +43,9 @@
     body {
       margin: 0;
       font-family: 'Manrope', system-ui, -apple-system, sans-serif;
-      background: radial-gradient(circle at 12% 18%, rgba(125,211,252,0.14), transparent 28%),
-                  radial-gradient(circle at 88% 8%, rgba(249,115,22,0.12), transparent 28%),
-                  linear-gradient(135deg, rgba(125,211,252,0.08), rgba(15,180,140,0.08)),
+      background: radial-gradient(circle at 20% 20%, rgba(113,198,255,0.07), transparent 25%),
+                  radial-gradient(circle at 80% 0%, rgba(139,255,181,0.06), transparent 25%),
+                  linear-gradient(135deg, rgba(113,198,255,0.05), rgba(139,255,181,0.05)),
                   var(--bg);
       color: var(--text);
       min-height: 100vh;
@@ -95,10 +89,10 @@
     .badge { display:inline-flex; align-items:center; gap:6px; padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); cursor:pointer; font-weight:700; }
     .badge.primary { background:linear-gradient(135deg, var(--primary), var(--accent)); color:#041019; border:none; }
     .badge.ghost { background:var(--chip); }
-    .toolbar { background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:12px; display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:8px; align-items:center; box-shadow:var(--shadow); }
-    .toolbar label { display:flex; flex-direction:column; gap:4px; font-weight:800; color:var(--muted); font-size:13px; }
-    .toolbar input, .toolbar select { padding:10px 10px; border-radius:12px; border:1px solid var(--border); background:linear-gradient(135deg,var(--panel-2),var(--panel-3)); color:var(--text); min-width:0; width:100%; }
-    .toolbar .toggles { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .toolbar { background:var(--panel); border:1px solid var(--border); border-radius:var(--radius); padding:16px; display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; box-shadow:var(--shadow); }
+    .toolbar label { display:flex; flex-direction:column; gap:6px; font-weight:700; color:var(--muted); }
+    .toolbar input, .toolbar select { padding:12px 12px; border-radius:12px; border:1px solid var(--border); background:var(--panel-2); color:var(--text); min-width:180px; }
+    .toolbar .toggles { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
     .chip { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius:999px; background:var(--chip); color:var(--text); font-weight:700; letter-spacing:-0.1px; }
     .assurance { display:flex; gap:10px; flex-wrap:wrap; }
     .assurance .chip { background:var(--panel-2); border:1px solid var(--border); }
@@ -181,9 +175,9 @@
   <main>
     <section class="hero">
       <div class="card">
-        <p class="chip">Labs • Hospitals • Radiology</p>
-        <h1 class="hero-title">Find verified labs, book blood pickup, or plan imaging with one tap</h1>
-        <p class="hero-sub">Now showing hospitals and boutique labs in Mumbai, Delhi, Bengaluru, Hyderabad, and Chennai. Compact filters, live GPS distance, and bright visuals keep nearby options addictive to browse.</p>
+        <p class="chip">Labs & Radiology</p>
+        <h1 class="hero-title">Find verified labs, book blood pickup, or plan imaging</h1>
+        <p class="hero-sub">Available in Mumbai, Delhi, Bengaluru, Hyderabad, and Chennai. Filters, live distance, and home visit logic keep results tight.</p>
         <div class="metrics">
           <div class="metric"><small class="muted">Visible labs</small><strong id="visibleCount">—</strong><span class="muted">Based on filters</span></div>
           <div class="metric"><small class="muted">Home visit ready</small><strong id="homeCount">—</strong><span class="muted">Labs offering home pickup</span></div>
@@ -221,13 +215,6 @@
           <option value="">Any</option>
           <option value="blood">Blood / Pathology</option>
           <option value="radiology">Radiology / Imaging</option>
-        </select>
-      </label>
-      <label>Facility type
-        <select id="facilityFilter">
-          <option value="">Any</option>
-          <option value="Hospital">Hospital network</option>
-          <option value="Private">Private lab</option>
         </select>
       </label>
       <div class="toggles">
@@ -349,10 +336,6 @@
         <div class="timeline" id="reportTimeline"></div>
       </div>
       <div class="panel" data-panel="book">
-        <div class="modal-toolbar">
-          <button class="badge primary" id="quickFill" type="button" data-ripple>⚡ Quick-fill earliest slot</button>
-          <small class="muted">Applies your profile, nearest lab distance, and next available time.</small>
-        </div>
         <div class="booking-grid">
           <div>
             <label>Visit mode
@@ -450,7 +433,7 @@
       </div>
     </div>
   </template>
-
+  
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <audio id="clickSound" preload="auto" src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA/////wAAA1cAABF4AAD///8ATGF2ZjU2LjQxLjEwNAAAAAAAAAAAAAAA//uQxAADB6gAhR0AAAiCAAAIhYAQBEdAAAEQxAADL0AAAL0AAAQW5n//sQxAAD//8AAAAAAAAAAAAAAA=="></audio>
@@ -469,7 +452,6 @@
 
     const searchInput = el('searchInput');
     const cityFilter = el('cityFilter');
-    const facilityFilter = el('facilityFilter');
     const typeFilter = el('typeFilter');
     const homeToggle = el('homeToggle');
     const nearestToggle = el('nearestToggle');
@@ -524,7 +506,6 @@
     const bookName = el('bookName');
     const bookPhone = el('bookPhone');
     const bookCity = el('bookCity');
-    const quickFill = el('quickFill');
     const saveProfile = el('saveProfile');
     const clearProfile = el('clearProfile');
     const useProfile = el('useProfile');
@@ -547,7 +528,6 @@
     let selections = new Map();
     let currentLab = null;
     let userLocation = null;
-    let lastBaseLocation = null;
 
     const baseBlood = [
       { name: 'Complete Blood Count', price: 480, why: 'Screens anemia, infection and platelet issues in one sweep.', unit:'g/dL', range:[12,16] },
@@ -572,48 +552,6 @@
       { name: 'USG Pelvis', price: 1600, why: 'Evaluates uterus/ovaries/prostate for structural changes.', impression:'Uterus normal size, no adnexal masses.' }
     ];
 
-    const rand = (min, max) => Math.random() * (max - min) + min;
-
-    const cityAnchors = {
-      Mumbai: { lat: 19.076, lng: 72.8777, label: 'Mumbai anchor' },
-      Delhi: { lat: 28.6139, lng: 77.209, label: 'Delhi anchor' },
-      Bengaluru: { lat: 12.9716, lng: 77.5946, label: 'Bengaluru anchor' },
-      Hyderabad: { lat: 17.385, lng: 78.4867, label: 'Hyderabad anchor' },
-      Chennai: { lat: 13.0827, lng: 80.2707, label: 'Chennai anchor' }
-    };
-
-    const labSeed = [
-      { name:'Lotus Diagnostics', city:'Mumbai', area:'Bandra', facility:'Private', img:'https://images.unsplash.com/photo-1582719478173-2f2df4b95831?auto=format&fit=crop&w=900&q=80&sat=-15&sig=101' },
-      { name:'Fortis Care Lab', city:'Mumbai', area:'Andheri', facility:'Hospital', img:'https://images.unsplash.com/photo-1581093588401-22da8ca941c6?auto=format&fit=crop&w=900&q=80&sig=102' },
-      { name:'Kokilaben Imaging Hub', city:'Mumbai', area:'Juhu', facility:'Hospital', img:'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=900&q=80&sig=103' },
-      { name:'CityLine Path Labs', city:'Mumbai', area:'Powai', facility:'Private', img:'https://images.unsplash.com/photo-1504439468489-c8920d796a29?auto=format&fit=crop&w=900&q=80&sig=104' },
-      { name:'TrustLab Prime', city:'Mumbai', area:'Thane', facility:'Private', img:'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=80&sig=105' },
-
-      { name:'Apollo Diagnostics', city:'Delhi', area:'Saket', facility:'Hospital', img:'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80&sig=106' },
-      { name:'BLK Precision Lab', city:'Delhi', area:'Rajouri Garden', facility:'Hospital', img:'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=900&q=80&sig=107' },
-      { name:'Thyroplus Express', city:'Delhi', area:'Lajpat Nagar', facility:'Private', img:'https://images.unsplash.com/photo-1504814532849-92767b4e1c02?auto=format&fit=crop&w=900&q=80&sig=108' },
-      { name:'MedLife Central', city:'Delhi', area:'Dwarka', facility:'Private', img:'https://images.unsplash.com/photo-1505663912202-ac22d4cb370b?auto=format&fit=crop&w=900&q=80&sig=109' },
-      { name:'NOVA Scan & Care', city:'Delhi', area:'Connaught Place', facility:'Private', img:'https://images.unsplash.com/photo-1581090700227-1e37b190418e?auto=format&fit=crop&w=900&q=80&sig=110' },
-
-      { name:'Aster Medcity Lab', city:'Bengaluru', area:'Hebbal', facility:'Hospital', img:'https://images.unsplash.com/photo-1579154204601-01588f351e67?auto=format&fit=crop&w=900&q=80&sig=111' },
-      { name:'Cloudnine Diagnostics', city:'Bengaluru', area:'Jayanagar', facility:'Hospital', img:'https://images.unsplash.com/photo-1530023367847-a683933f4177?auto=format&fit=crop&w=900&q=80&sig=112' },
-      { name:'Prime Path Koramangala', city:'Bengaluru', area:'Koramangala', facility:'Private', img:'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=900&q=80&sig=113' },
-      { name:'Orbit Labs', city:'Bengaluru', area:'Whitefield', facility:'Private', img:'https://images.unsplash.com/photo-1581092152835-30ab079f19b9?auto=format&fit=crop&w=900&q=80&sig=114' },
-      { name:'Manipal Imaging Ring', city:'Bengaluru', area:'Old Airport', facility:'Hospital', img:'https://images.unsplash.com/photo-1460672985063-6764ac8b9c74?auto=format&fit=crop&w=900&q=80&sig=115' },
-
-      { name:'Yashoda SmartLab', city:'Hyderabad', area:'Somajiguda', facility:'Hospital', img:'https://images.unsplash.com/photo-1583912086057-6b5530f2605f?auto=format&fit=crop&w=900&q=80&sig=116' },
-      { name:'Rainbow Diagnostics', city:'Hyderabad', area:'Banjara Hills', facility:'Hospital', img:'https://images.unsplash.com/photo-1460672985063-6764ac8b9c74?auto=format&fit=crop&w=900&q=80&sig=117' },
-      { name:'Neon Labs', city:'Hyderabad', area:'Gachibowli', facility:'Private', img:'https://images.unsplash.com/photo-1583912086096-8a27b40a97c3?auto=format&fit=crop&w=900&q=80&sig=118' },
-      { name:'Orbit Scan Center', city:'Hyderabad', area:'Kondapur', facility:'Private', img:'https://images.unsplash.com/photo-1581092152835-30ab079f19b9?auto=format&fit=crop&w=900&q=80&sig=119' },
-      { name:'Care Hospitals Lab', city:'Hyderabad', area:'Secunderabad', facility:'Hospital', img:'https://images.unsplash.com/photo-1582719478248-54e9f2e7f1e9?auto=format&fit=crop&w=900&q=80&sig=120' },
-
-      { name:'Apollo Spectra Lab', city:'Chennai', area:'Teynampet', facility:'Hospital', img:'https://images.unsplash.com/photo-1581090700227-1e37b190418e?auto=format&fit=crop&w=900&q=80&sig=121' },
-      { name:'Vijaya Diagnostic', city:'Chennai', area:'Vadapalani', facility:'Hospital', img:'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=900&q=80&sig=122' },
-      { name:'Anderson Labs', city:'Chennai', area:'Velachery', facility:'Private', img:'https://images.unsplash.com/photo-1583912267550-51a3b0395e7c?auto=format&fit=crop&w=900&q=80&sig=123' },
-      { name:'Aarthi Scans Plus', city:'Chennai', area:'Tambaram', facility:'Private', img:'https://images.unsplash.com/photo-1584515933487-779824d29309?auto=format&fit=crop&w=900&q=80&sig=124' },
-      { name:'Medall Precision Hub', city:'Chennai', area:'OMR', facility:'Private', img:'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=900&q=80&sig=125' },
-    ];
-
     function initTheme() {
       const saved = localStorage.getItem('hf-theme') || 'matte';
       document.documentElement.dataset.theme = saved;
@@ -625,18 +563,20 @@
     }
 
     function buildLabs() {
-      labs = labSeed.map((item, idx) => {
-        const anchor = cityAnchors[item.city];
+      const labNames = ['Apollo Diagnostics','SRL Care','Thyroplus','MedLife Lab','HealthVista','City Imaging','Prime Path','TrustLab','Nova Scan','Orbit Labs'];
+      const cities = ['Mumbai','Delhi','Bengaluru','Hyderabad','Chennai'];
+      labs = labNames.map((name, idx) => {
+        const city = cities[idx % cities.length];
+        const area = ['Andheri','Karol Bagh','Koramangala','Jubilee Hills','Velachery'][idx % 5];
         const multiplier = rand(0.9,1.35);
-        const homeVisit = Math.random() > 0.25 || item.facility === 'Hospital';
-        const homeFee = homeVisit ? Math.round(rand(120,320)) : 0;
+        const homeVisit = Math.random() > 0.35;
+        const homeFee = homeVisit ? Math.round(rand(150,350)) : 0;
         const blood = baseBlood.map(t => ({ ...t, price: Math.round(t.price * multiplier) }));
         const radiology = baseRad.map(t => ({ ...t, price: Math.round(t.price * (multiplier+0.05)) }));
-        const description = `${item.name} (${item.facility === 'Hospital' ? 'hospital network' : 'private lab'}) keeps QA clocks running, shares WhatsApp confirmations, and colour-coded reports for dashboard mapping.`;
-        const lat = anchor ? anchor.lat + rand(-0.08,0.08) : 20 + Math.random();
-        const lng = anchor ? anchor.lng + rand(-0.08,0.08) : 78 + Math.random();
+        const description = `${name} offers NABL-style quality with QC checks every hour. Home phlebotomy trained, transparent pricing, and WhatsApp confirmations.`;
+        const img = `https://images.unsplash.com/photo-1582719478173-2f2df4b95831?auto=format&fit=crop&w=900&q=80&sig=${idx}`;
         const reports = buildLabReports(blood, radiology);
-        return { id:`lab-${idx}`, name:item.name, city:item.city, area:item.area, facility:item.facility, lat, lng, phone:`+91-98765${10000+idx}`, homeVisit, homeFee, blood, radiology, description, img:item.img, reports };
+        return { id:`lab-${idx}`, name, city, area, lat:19 + Math.random(), lng:72 + Math.random(), phone:`+91-98765${10000+idx}`, homeVisit, homeFee, blood, radiology, description, img, reports };
       });
     }
 
@@ -663,37 +603,21 @@
       return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     }
 
-    function getFallbackLocation() {
-      const cityHint = profileCity.value || cityFilter.value || bookCity.value || 'Mumbai';
-      const anchor = cityAnchors[cityHint] || { lat: 20.5937, lng: 78.9629, label: 'India midpoint' };
-      return { ...anchor, label: anchor.label || `${cityHint} anchor` };
-    }
-
-    function getActiveBaseLocation() {
-      if (userLocation) return { ...userLocation, label: userLocation.label || 'Live GPS' };
-      return getFallbackLocation();
-    }
-
-    function computeDistances(base) {
-      if (!base) return;
+    function computeDistances() {
+      if (!userLocation) return;
       labs.forEach(l => {
-        l.distanceKm = haversine(base.lat, base.lng, l.lat, l.lng);
+        l.distanceKm = haversine(userLocation.lat, userLocation.lng, l.lat, l.lng);
       });
     }
 
     function filterLabs() {
-      const base = getActiveBaseLocation();
-      lastBaseLocation = base;
-      computeDistances(base);
-      locationMeta.textContent = base.label;
+      computeDistances();
       const query = (searchInput.value || '').toLowerCase();
       const city = cityFilter.value;
       const type = typeFilter.value;
       const homeOnly = homeToggle.checked;
-      const facility = facilityFilter.value;
       let results = labs.filter(lab => {
         if (city && lab.city !== city) return false;
-        if (facility && lab.facility !== facility) return false;
         if (homeOnly && !lab.homeVisit) return false;
         const haystack = [lab.name, lab.city, lab.area, ...lab.blood.map(t=>t.name), ...lab.radiology.map(t=>t.name)]
           .join(' ').toLowerCase();
@@ -702,15 +626,14 @@
         if (type === 'radiology' && !lab.radiology.length) return false;
         return true;
       });
-      if (nearestToggle.checked) {
+      if (nearestToggle.checked && userLocation) {
         results.sort((a,b) => (a.distanceKm||Infinity) - (b.distanceKm||Infinity));
         sortMeta.textContent = 'Nearest';
-        sortStatus.textContent = base.label === 'Live GPS' ? 'Sorting by live distance.' : `Sorting by distance from ${base.label}. Tap 📍 to update.`;
-        locationMeta.textContent = base.label;
+        sortStatus.textContent = 'Sorting by distance using live or saved location.';
       } else {
         results.sort((a,b) => a.name.localeCompare(b.name));
         sortMeta.textContent = 'A–Z';
-        sortStatus.textContent = 'Sorting alphabetically; enable nearest for live distance.';
+        sortStatus.textContent = 'Sorting alphabetically; enable nearest for distance order.';
       }
       renderLabs(results);
     }
@@ -738,17 +661,13 @@
         node.querySelector('.lab-loc').textContent = `${lab.city} · ${lab.area}`;
         const badges = node.querySelector('.badges');
         badges.innerHTML = '';
-        const facilityBadge = document.createElement('span');
-        facilityBadge.className = 'pill badge';
-        facilityBadge.textContent = lab.facility === 'Hospital' ? '🏥 Hospital' : '🧪 Private lab';
-        badges.appendChild(facilityBadge);
         const homeBadge = document.createElement('span');
         homeBadge.className = 'pill ' + (lab.homeVisit ? 'good' : '');
         homeBadge.textContent = lab.homeVisit ? `Home visit • ${fmt(lab.homeFee)}` : 'In-lab only';
         badges.appendChild(homeBadge);
         badges.insertAdjacentHTML('beforeend', `<span class="pill">${lab.blood.length} blood</span><span class="pill">${lab.radiology.length} radiology</span>`);
         const distRow = node.querySelector('.distance-row');
-        distRow.textContent = lab.distanceKm ? `${lab.distanceKm.toFixed(1)} km from ${lastBaseLocation ? lastBaseLocation.label : 'anchor'}` : 'Distance pending location';
+        distRow.textContent = userLocation && lab.distanceKm ? `${lab.distanceKm.toFixed(1)} km away` : 'Distance pending location';
         const viewBtn = node.querySelector('[data-action="view"]');
         const dirBtn = node.querySelector('[data-action="directions"]');
         const callBtn = node.querySelector('[data-action="call"]');
@@ -882,7 +801,7 @@
       const sel = getSel(lab.id);
       setTab('blood');
       modalTitle.textContent = lab.name;
-      modalLocation.textContent = `${lab.city}, ${lab.area} · ${lab.facility}`;
+      modalLocation.textContent = `${lab.city}, ${lab.area}`;
       modalHome.textContent = lab.homeVisit ? `Home visit • ${fmt(lab.homeFee)}` : 'In-lab only';
       modalDistance.textContent = lab.distanceKm ? `${lab.distanceKm.toFixed(1)} km` : 'Location pending';
       modalCounts.textContent = `${lab.blood.length} blood • ${lab.radiology.length} radiology`;
@@ -952,22 +871,6 @@
       if (!currentLab) return; window.open(buildWhatsAppLink(currentLab,'booking'),'_blank'); showToast('Booking sent via WhatsApp');
     });
 
-    quickFill.addEventListener('click', () => {
-      const now = new Date();
-      const next = new Date(now.getTime() + 90*60000);
-      bookDate.value = next.toISOString().slice(0,10);
-      bookTime.value = `${String(next.getHours()).padStart(2,'0')}:${String(next.getMinutes()).padStart(2,'0')}`;
-      const saved = JSON.parse(localStorage.getItem('lab-profile') || '{}');
-      if (saved.name) bookName.value = saved.name;
-      if (saved.phone) bookPhone.value = saved.phone;
-      if (saved.city) { bookCity.value = saved.city; cityFilter.value = saved.city; }
-      const mode = currentLab && currentLab.homeVisit ? 'home' : 'lab';
-      const modeInput = document.querySelector(`input[name="visitMode"][value="${mode}"]`);
-      if (modeInput) modeInput.checked = true;
-      showToast('Prefilled with your quickest option');
-      filterLabs();
-    });
-
     function syncReportsToDashboard(lab) {
       const payload = { ...lab.reports, lab: lab.name, city: lab.city, area: lab.area };
       localStorage.setItem('lab-dashboard-latest', JSON.stringify(payload));
@@ -1005,25 +908,21 @@
       setTimeout(() => toast.classList.remove('show'), 2000);
     }
 
-    function requestLocation(auto = false) {
-      if (!navigator.geolocation) { if (!auto) showToast('Geolocation not supported'); return; }
+    function requestLocation() {
+      if (!navigator.geolocation) { showToast('Geolocation not supported'); return; }
       navigator.geolocation.getCurrentPosition(pos => {
-        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude, label: 'Live GPS' };
+        userLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
         localStorage.setItem('lab-location', JSON.stringify(userLocation));
-        locationMeta.textContent = 'Live GPS';
-        showToast(auto ? 'Locked to live location' : 'Location updated');
+        locationMeta.textContent = 'Live';
+        showToast('Location updated');
         filterLabs();
-      }, () => {
-        if (!auto) showToast('Unable to fetch location');
-        if (!userLocation) { filterLabs(); }
-      });
+      }, () => { showToast('Unable to fetch location'); });
     }
 
-    locateBtn.addEventListener('click', () => requestLocation(false));
+    locateBtn.addEventListener('click', requestLocation);
     nearestToggle.addEventListener('change', filterLabs);
     searchInput.addEventListener('input', filterLabs);
     cityFilter.addEventListener('change', filterLabs);
-    facilityFilter.addEventListener('change', filterLabs);
     typeFilter.addEventListener('change', filterLabs);
     homeToggle.addEventListener('change', filterLabs);
 
@@ -1048,11 +947,10 @@
       initTheme();
       loadProfile();
       const savedLoc = localStorage.getItem('lab-location');
-      if (savedLoc) { userLocation = { ...JSON.parse(savedLoc), label: 'Saved GPS' }; locationMeta.textContent = 'Saved GPS'; }
+      if (savedLoc) { userLocation = JSON.parse(savedLoc); locationMeta.textContent = 'Saved'; }
       buildLabs();
       renderExplainers();
       renderDashboardSnapshot();
-      requestLocation(true);
       filterLabs();
       initRipple();
     }
