@@ -49,7 +49,7 @@
           <div class="stat">
             <small>Dashboard sync</small>
             <strong>Auto</strong>
-            <span class="muted">Reports piped to timeline</span>
+            <span class="muted">Reports land in Labs</span>
           </div>
         </div>
         <div class="hero-actions">
@@ -81,6 +81,76 @@
           <button class="badge" type="button">Share status</button>
         </div>
       </div>
+    </section>
+
+    <section id="labs-finder" class="section">
+      <header class="finder-head">
+        <div>
+          <p class="chip">Upgraded workflows</p>
+          <h2 class="section-title">Find a lab, home pickup, or hospital slot</h2>
+          <p class="section-sub">Search by name, city, visit mode, and availability. These filters mirror to <strong>Dashboard → Labs</strong> so you can resume later.</p>
+        </div>
+        <div class="pill-row">
+          <span class="pill">Mapped to dashboard</span>
+          <span class="pill ghost">Live ETA</span>
+          <span class="pill">Home visit aware</span>
+        </div>
+      </header>
+
+      <div class="location-bar card">
+        <div class="location-meta">
+          <p class="muted">Live location</p>
+          <div class="location-status" id="locationStatus">Using saved preference · nearest first</div>
+        </div>
+        <div class="location-actions">
+          <button class="badge" id="locateMe" type="button">Use my location</button>
+          <span class="pill ghost" id="cityHint">City: Auto</span>
+          <span class="pill">Synced to dashboard</span>
+        </div>
+      </div>
+
+      <div class="filter-card card">
+        <div class="filter-grid">
+          <label>Search labs or tests
+            <input id="labSearch" type="search" placeholder="CBC, Apollo, MRI, USG" />
+          </label>
+          <label>City
+            <select id="labCity">
+              <option value="">All</option>
+              <option>Mumbai</option>
+              <option>Delhi</option>
+              <option>Bengaluru</option>
+              <option>Hyderabad</option>
+              <option>Chennai</option>
+            </select>
+          </label>
+          <label>Type
+            <select id="labType">
+              <option value="">Any</option>
+              <option value="blood">Blood / Pathology</option>
+              <option value="radiology">Radiology / Imaging</option>
+            </select>
+          </label>
+          <label>Sort
+            <select id="labSort">
+              <option value="nearest">Nearest</option>
+              <option value="az">A–Z</option>
+            </select>
+          </label>
+        </div>
+        <div class="filter-actions">
+          <label class="pill switcher">
+            <input id="homeOnlyToggle" type="checkbox" /> Home visit only
+          </label>
+          <label class="pill switcher ghost">
+            <input id="openSlotToggle" type="checkbox" /> Show only with open slots
+          </label>
+          <span class="inline-meta" id="labStatus">Loading labs…</span>
+          <button class="badge" id="syncFilters" type="button">Sync filters to dashboard</button>
+        </div>
+      </div>
+
+      <div class="results-grid zomato-grid" id="labResults" aria-live="polite"></div>
     </section>
 
     <section class="section labs-actions">
@@ -197,76 +267,6 @@
       </div>
     </section>
 
-    <section class="section">
-      <header>
-        <p class="chip">Labs near you</p>
-        <h2 class="section-title">Hospitals & stand-alone partners</h2>
-        <p class="section-sub">Distance-aware cards with home visit availability and direct hospital counters.</p>
-      </header>
-      <div class="lab-market">
-        <article class="lab-card">
-          <div class="lab-head">
-            <div>
-              <h3>Apollo Diagnostics</h3>
-              <p class="muted">Andheri • Hospital lab</p>
-            </div>
-            <span class="pill">Home visit</span>
-          </div>
-          <p class="notice">CBC, HbA1c, LFT, KFT, CUE with pickup in 45 mins. Radiology board shared with dashboard.</p>
-          <div class="lab-meta">
-            <span class="tag">2.1 km</span>
-            <span class="tag">Blood & Radiology</span>
-            <span class="tag">WhatsApp confirm</span>
-          </div>
-          <div class="card-actions">
-            <button class="badge primary" type="button">Book</button>
-            <button class="badge" type="button">Directions</button>
-            <button class="badge ghost" type="button">Dashboard link</button>
-          </div>
-        </article>
-        <article class="lab-card">
-          <div class="lab-head">
-            <div>
-              <h3>SRL Diagnostics</h3>
-              <p class="muted">Dwarka • Stand-alone lab</p>
-            </div>
-            <span class="pill ghost">Visit lab</span>
-          </div>
-          <p class="notice">Same-day reporting for CBC + thyroid + cardiac markers. Direct visit queue token mirrored in dashboard.</p>
-          <div class="lab-meta">
-            <span class="tag">4.6 km</span>
-            <span class="tag">Blood only</span>
-            <span class="tag">Counter token QR</span>
-          </div>
-          <div class="card-actions">
-            <button class="badge primary" type="button">Book</button>
-            <button class="badge" type="button">Directions</button>
-            <button class="badge ghost" type="button">Share</button>
-          </div>
-        </article>
-        <article class="lab-card">
-          <div class="lab-head">
-            <div>
-              <h3>VOKA Imaging Hub</h3>
-              <p class="muted">Multi-slice CT / MRI center</p>
-            </div>
-            <span class="pill">Radiology</span>
-          </div>
-          <p class="notice">MRI spine, CT head, USG abdomen, 3D CBCT. Preps, instructions, and driver details reflected in dashboard.</p>
-          <div class="lab-meta">
-            <span class="tag">3.0 km</span>
-            <span class="tag">Contrast ready</span>
-            <span class="tag">Wheelchair</span>
-          </div>
-          <div class="card-actions">
-            <button class="badge primary" type="button">Book</button>
-            <button class="badge" type="button">Directions</button>
-            <button class="badge ghost" type="button">Prep list</button>
-          </div>
-        </article>
-      </div>
-    </section>
-
     <section class="section home-visit-board">
       <header>
         <p class="chip">Home visit blood collection</p>
@@ -367,6 +367,191 @@
   <footer>
     <p>© 2025 HealthFlo — Labs</p>
   </footer>
+
   <script src="js/patient-os.js"></script>
+  <script>
+    const labData = [
+      { name: 'Apollo Diagnostics', city: 'Mumbai', area: 'Andheri East', lat: 19.119, lng: 72.846, distance: 2.1, homeVisit: true, type: ['blood', 'radiology'], slot: 'Today • 4:30 PM', tests: [
+        { name: 'CBC', price: 350, type: 'blood' },
+        { name: 'HbA1c', price: 520, type: 'blood' },
+        { name: 'LFT', price: 900, type: 'blood' },
+        { name: 'USG Abdomen', price: 1400, type: 'radiology' }
+      ], open: true, rating: 4.7, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+      { name: 'SRL Diagnostics', city: 'Delhi', area: 'Dwarka', lat: 28.592, lng: 77.046, distance: 4.6, homeVisit: false, type: ['blood'], slot: 'Today • Counter', tests: [
+        { name: 'CBC', price: 340, type: 'blood' },
+        { name: 'Thyroid Profile', price: 650, type: 'blood' },
+        { name: 'Cardiac markers', price: 1200, type: 'blood' }
+      ], open: true, rating: 4.6, img: 'https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?q=80&auto=format&fit=crop&w=1200' },
+      { name: 'VOKA Imaging Hub', city: 'Mumbai', area: 'Four Bungalows', lat: 19.134, lng: 72.833, distance: 3.0, homeVisit: false, type: ['radiology'], slot: 'Today • MRI/CT', tests: [
+        { name: 'MRI Spine', price: 5200, type: 'radiology' },
+        { name: 'CT Head', price: 2500, type: 'radiology' },
+        { name: 'USG Pelvis', price: 1400, type: 'radiology' }
+      ], open: true, rating: 4.8, img: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&auto=format&fit=crop&w=1200' },
+      { name: 'Aster Labs', city: 'Bengaluru', area: 'Whitefield', lat: 12.969, lng: 77.749, distance: 5.4, homeVisit: true, type: ['blood'], slot: 'Tomorrow • 9:15 AM', tests: [
+        { name: 'CBC', price: 330, type: 'blood' },
+        { name: 'KFT', price: 900, type: 'blood' },
+        { name: 'LFT', price: 880, type: 'blood' }
+      ], open: false, rating: 4.5, img: 'https://images.unsplash.com/photo-1582719478145-bf0f1f6b68ff?q=80&auto=format&fit=crop&w=1200' },
+      { name: 'Metropolis Lab', city: 'Delhi', area: 'Preet Vihar', lat: 28.636, lng: 77.289, distance: 3.2, homeVisit: true, type: ['blood', 'radiology'], slot: 'Today • 6:00 PM', tests: [
+        { name: 'LFT', price: 920, type: 'blood' },
+        { name: 'KFT', price: 910, type: 'blood' },
+        { name: 'X-Ray Chest', price: 450, type: 'radiology' }
+      ], open: true, rating: 4.4, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
+      { name: 'Healthians', city: 'Hyderabad', area: 'Banjara Hills', lat: 17.416, lng: 78.448, distance: 6.1, homeVisit: true, type: ['blood'], slot: 'Today • 5:00 PM', tests: [
+        { name: 'CBC', price: 320, type: 'blood' },
+        { name: 'Lipid Profile', price: 900, type: 'blood' },
+        { name: 'Vitamin D', price: 1200, type: 'blood' }
+      ], open: true, rating: 4.6, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' }
+    ];
+
+    const labResults = document.getElementById('labResults');
+    const labSearch = document.getElementById('labSearch');
+    const labCity = document.getElementById('labCity');
+    const labType = document.getElementById('labType');
+    const labSort = document.getElementById('labSort');
+    const homeOnlyToggle = document.getElementById('homeOnlyToggle');
+    const openSlotToggle = document.getElementById('openSlotToggle');
+    const labStatus = document.getElementById('labStatus');
+    const syncFilters = document.getElementById('syncFilters');
+    const locateMe = document.getElementById('locateMe');
+    const locationStatus = document.getElementById('locationStatus');
+    const cityHint = document.getElementById('cityHint');
+
+    const deg2rad = (d) => d * (Math.PI / 180);
+    const haversineKm = (a, b) => {
+      const R = 6371;
+      const dLat = deg2rad(b.lat - a.lat);
+      const dLon = deg2rad(b.lng - a.lng);
+      const lat1 = deg2rad(a.lat);
+      const lat2 = deg2rad(b.lat);
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * (Math.sin(dLon / 2) ** 2);
+      return R * (2 * Math.asin(Math.sqrt(h)));
+    };
+
+    let userLoc = null;
+
+    function formatDistance(lab) {
+      if (userLoc) {
+        return haversineKm(userLoc, { lat: lab.lat, lng: lab.lng }).toFixed(1);
+      }
+      return lab.distance || '—';
+    }
+
+    function renderTests(tests, type) {
+      return tests
+        .filter(t => !type || t.type === type)
+        .slice(0, 4)
+        .map(t => `<span class="test-chip">${t.name} <strong>₹${t.price}</strong></span>`)
+        .join('');
+    }
+
+    function renderLabs() {
+      if (!labResults) return;
+      const query = (labSearch?.value || '').trim().toLowerCase();
+      const city = labCity?.value || '';
+      const type = labType?.value || '';
+      const homeOnly = homeOnlyToggle?.checked;
+      const openOnly = openSlotToggle?.checked;
+
+      let filtered = labData.filter(lab => {
+        if (city && lab.city !== city) return false;
+        if (type && !lab.type.includes(type)) return false;
+        if (homeOnly && !lab.homeVisit) return false;
+        if (openOnly && !lab.open) return false;
+        if (query) {
+          const blob = `${lab.name} ${lab.city} ${lab.area} ${lab.tests.map(t => t.name).join(' ')}`.toLowerCase();
+          if (!blob.includes(query)) return false;
+        }
+        return true;
+      });
+
+      filtered = filtered.map(lab => ({ ...lab, distanceCalc: formatDistance(lab) }));
+
+      if ((labSort?.value || '') === 'az') {
+        filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        filtered = filtered.sort((a, b) => {
+          const distA = parseFloat(a.distanceCalc);
+          const distB = parseFloat(b.distanceCalc);
+          return (isNaN(distA) ? 9999 : distA) - (isNaN(distB) ? 9999 : distB);
+        });
+      }
+
+      labResults.innerHTML = '';
+      filtered.forEach(lab => {
+        const card = document.createElement('article');
+        card.className = 'lab-card zomato-card';
+        card.innerHTML = `
+          <div class="lab-img" style="background-image:url('${lab.img}')">
+            <div class="lab-badge-row">
+              <span class="pill ${lab.homeVisit ? '' : 'ghost'}">${lab.homeVisit ? 'Home visit' : 'Visit lab'}</span>
+              <span class="pill ghost">${lab.open ? 'Open slots' : 'Waitlist'}</span>
+            </div>
+            <div class="lab-rating">${lab.rating.toFixed(1)}★</div>
+          </div>
+          <div class="lab-body">
+            <div class="lab-head">
+              <div>
+                <h3>${lab.name}</h3>
+                <p class="muted">${lab.area} • ${lab.city}</p>
+              </div>
+              <span class="pill">${lab.distanceCalc} km</span>
+            </div>
+            <p class="notice">${lab.tests[0]?.name || ''} starts at ₹${lab.tests[0]?.price} — ${lab.slot}. Synced with dashboard.</p>
+            <div class="lab-meta">
+              <span class="tag">${lab.type.includes('blood') ? 'Blood' : ''}${lab.type.length === 2 ? ' & ' : ''}${lab.type.includes('radiology') ? 'Radiology' : ''}</span>
+              <span class="tag">${lab.slot}</span>
+              <span class="tag">Dashboard link</span>
+            </div>
+            <div class="lab-tests">${renderTests(lab.tests, type)}</div>
+            <div class="card-actions">
+              <button class="badge primary" type="button">Book</button>
+              <a class="badge" href="https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}" target="_blank" rel="noopener">Directions</a>
+              <button class="badge ghost" type="button">View tests</button>
+            </div>
+          </div>
+        `;
+        labResults.appendChild(card);
+      });
+
+      if (labStatus) {
+        labStatus.textContent = `${filtered.length} labs ready · filters mirrored to dashboard`;
+      }
+    }
+
+    [labSearch, labCity, labType, labSort, homeOnlyToggle, openSlotToggle].forEach(el => {
+      el?.addEventListener('input', renderLabs);
+      el?.addEventListener('change', renderLabs);
+    });
+
+    syncFilters?.addEventListener('click', () => {
+      if (!labStatus) return;
+      labStatus.textContent = 'Filters synced to dashboard ✔';
+      labStatus.classList.add('accent-text');
+      setTimeout(() => labStatus.classList.remove('accent-text'), 1800);
+    });
+
+    locateMe?.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        locationStatus.textContent = 'Geolocation not supported on this device';
+        return;
+      }
+      locationStatus.textContent = 'Detecting location…';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          locationStatus.textContent = 'Using your live location';
+          cityHint.textContent = 'City: Auto (nearest)';
+          renderLabs();
+        },
+        () => {
+          locationStatus.textContent = 'Unable to fetch location — using saved preference';
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+
+    renderLabs();
+  </script>
 </body>
 </html>
