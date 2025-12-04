@@ -253,6 +253,17 @@ const guidanceRefresh = document.getElementById('refresh_guidance');
 const supportToggle = document.getElementById('hfSupportToggle');
 const uploadInput = document.getElementById('record_upload');
 const uploadHint = document.getElementById('upload_hint');
+const hospitalSelect = document.getElementById('hospital_select');
+const hospitalFillButtons = document.querySelectorAll('[data-hospital-fill]');
+const coverageForm = document.getElementById('coverage_form');
+const coverageBaseDocs = document.getElementById('coverage_base_docs');
+const coverageFullDocs = document.getElementById('coverage_full_docs');
+const coverageAccuracy = document.getElementById('coverage_accuracy');
+const coverageAccuracyHint = document.getElementById('coverage_accuracy_hint');
+const coverageAmount = document.getElementById('coverage_amount');
+const coverageNotification = document.getElementById('coverage_notification');
+const coverageMeta = document.getElementById('coverage_meta');
+const coverageEta = document.getElementById('coverage_eta');
 
 function generateIntimation() {
   return `HF-${Math.floor(Math.random() * 90000) + 10000}`;
@@ -340,6 +351,36 @@ function hydrateReimbursement(payload) {
   ]);
 }
 
+function setHospitalFields(name, area, address) {
+  const hospitalName = document.getElementById('hospital_name');
+  const hospitalArea = document.getElementById('hospital_area');
+  const hospitalAddress = document.getElementById('hospital_address');
+  if (hospitalName) hospitalName.value = name || '';
+  if (hospitalArea) hospitalArea.value = area || '';
+  if (hospitalAddress) hospitalAddress.value = address || '';
+}
+
+function computeCoverageEstimate() {
+  const baseCount = coverageBaseDocs?.files?.length || 0;
+  const fullCount = coverageFullDocs?.files?.length || 0;
+  const admissionType = document.getElementById('coverage_admission')?.value || 'IP admission';
+  let accuracy = baseCount ? 70 : 40;
+  let hint = 'Upload hospitalization bills for a quick 70% analysis.';
+  if (baseCount && fullCount) {
+    accuracy = 95;
+    hint = 'Full dossier received — we will run a 95% accuracy estimate.';
+  }
+  const projected = Math.max(65000, (baseCount + fullCount) * 18000 + 60000);
+  const eta = 'ETA: 30 min';
+
+  if (coverageAccuracy) coverageAccuracy.textContent = `${accuracy}%`;
+  if (coverageAccuracyHint) coverageAccuracyHint.textContent = hint;
+  if (coverageAmount) coverageAmount.textContent = `₹${projected.toLocaleString('en-IN')}`;
+  if (coverageNotification) coverageNotification.textContent = 'You will get an in-app + SMS notification';
+  if (coverageMeta) coverageMeta.textContent = `${eta} · Includes ${admissionType} benefits and exclusions.`;
+  if (coverageEta) coverageEta.textContent = eta;
+}
+
 claimForm?.addEventListener('submit', event => {
   event.preventDefault();
   const payload = {
@@ -351,6 +392,31 @@ claimForm?.addEventListener('submit', event => {
   };
 
   hydrateReimbursement(payload);
+});
+
+hospitalSelect?.addEventListener('change', event => {
+  const name = event.target.value;
+  if (!name) return;
+  const presets = {
+    'Apollo Bannerghatta': { area: 'Bannerghatta', address: '15th Cross, Bengaluru 560076' },
+    'Fortis MG Road': { area: 'MG Road', address: 'Ward 2, Bengaluru 560001' },
+    'Rainbow Hospitals': { area: 'Kondapur', address: 'Plot 22, Hyderabad' },
+    'Medicover Hitech City': { area: 'Hitech City', address: 'Plot 44, Hyderabad 500081' },
+    'Manipal Yeshwanthpur': { area: 'Yeshwanthpur', address: 'Ring Road, Bengaluru 560022' },
+  };
+  const preset = presets[name] || {};
+  setHospitalFields(name, preset.area, preset.address);
+});
+
+hospitalFillButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    try {
+      const details = JSON.parse(btn.dataset.hospitalFill || '{}');
+      setHospitalFields(details.name, details.area, details.address);
+    } catch (err) {
+      console.error('Unable to parse hospital details', err);
+    }
+  });
 });
 
 supportToggle?.addEventListener('click', () => {
@@ -374,6 +440,15 @@ uploadInput?.addEventListener('change', () => {
   const count = uploadInput.files?.length || 0;
   if (uploadHint) uploadHint.textContent = count ? `${count} document(s) staged for HealthFlo review.` : 'Add discharge summary, bills, lab reports, prescriptions.';
   setEstimator(`₹${(count * 12000 + 60000).toLocaleString('en-IN')}`, `${85 + Math.min(count, 3)}%`, count ? 'HealthFlo verifying uploads' : 'Add records');
+});
+
+coverageBaseDocs?.addEventListener('change', computeCoverageEstimate);
+coverageFullDocs?.addEventListener('change', computeCoverageEstimate);
+
+coverageForm?.addEventListener('submit', event => {
+  event.preventDefault();
+  computeCoverageEstimate();
+  if (coverageNotification) coverageNotification.textContent = 'Results will be pushed in 30 minutes.';
 });
 
 // Seed default view if the desk is present
