@@ -238,6 +238,155 @@ const liveLocation = document.getElementById('live_location_status');
 const familyToggle = document.getElementById('familyMirror');
 const familyMsg = document.getElementById('family_status_msg');
 
+// Insurance reimbursement desk
+const claimForm = document.getElementById('hf_reimburse_form');
+const statusList = document.getElementById('claim_status_list');
+const claimNotice = document.getElementById('claim_notice');
+const claimIntimationId = document.getElementById('claim_intimation_id');
+const approvalBadge = document.getElementById('approval_badge');
+const expectedAmountEl = document.getElementById('expected_amount');
+const approvalProbabilityEl = document.getElementById('approval_probability');
+const nextActionEl = document.getElementById('next_action');
+const guidanceList = document.getElementById('guidance_list');
+const guidanceFeed = document.getElementById('guidance_feed');
+const guidanceRefresh = document.getElementById('refresh_guidance');
+const supportToggle = document.getElementById('hfSupportToggle');
+const uploadInput = document.getElementById('record_upload');
+const uploadHint = document.getElementById('upload_hint');
+
+function generateIntimation() {
+  return `HF-${Math.floor(Math.random() * 90000) + 10000}`;
+}
+
+function renderStatusItems(items = []) {
+  if (!statusList) return;
+  statusList.innerHTML = '';
+  items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'item';
+    const text = document.createElement('div');
+    text.innerHTML = `<strong>${item.title}</strong><div class="meta">${item.meta}</div>`;
+    const badge = document.createElement('span');
+    badge.className = `badge ${item.tone || ''}`;
+    badge.textContent = item.badge;
+    row.append(text, badge);
+    statusList.appendChild(row);
+  });
+}
+
+function setEstimator(amount, probability, next) {
+  if (expectedAmountEl) expectedAmountEl.textContent = amount;
+  if (approvalProbabilityEl) approvalProbabilityEl.textContent = probability;
+  if (nextActionEl) nextActionEl.textContent = next;
+  if (approvalBadge) approvalBadge.textContent = probability.includes('%') ? 'In review' : 'Pending';
+}
+
+function pushGuidance(items = []) {
+  if (!guidanceList) return;
+  guidanceList.innerHTML = '';
+  items.forEach(msg => {
+    const li = document.createElement('li');
+    li.textContent = msg;
+    guidanceList.appendChild(li);
+  });
+}
+
+function hydrateReimbursement(payload) {
+  const intimation = generateIntimation();
+  if (claimIntimationId) claimIntimationId.textContent = `Intimation: ${intimation}`;
+  const baseAmount = Math.floor(Math.random() * 40000) + 60000;
+  const probability = `${Math.floor(Math.random() * 18) + 78}%`;
+  renderStatusItems([
+    {
+      title: `Claim filed for ${payload.hospital}`,
+      meta: `${payload.area} · ${payload.type} · Linked via ${payload.sync}`,
+      badge: 'Filed',
+      tone: 'success',
+    },
+    {
+      title: 'Claim intimation shared with insurer/TPA',
+      meta: `Number ${intimation} · Awaiting document check`,
+      badge: 'Intimated',
+    },
+    {
+      title: 'Document guidance issued',
+      meta: 'Upload discharge summary, itemized bills, prescriptions. Corrections auto-highlighted.',
+      badge: 'Notify',
+      tone: 'warn',
+    },
+    {
+      title: 'Dispatch approval window',
+      meta: 'HealthFlo predicts approval with expected settlement shared below.',
+      badge: 'Review',
+    },
+    {
+      title: 'Insurer follow-up in progress',
+      meta: 'Settlement / query / rejection will be mirrored to dashboard + family.',
+      badge: 'Chasing',
+      tone: 'success',
+    },
+  ]);
+
+  const next = payload.sync.includes('Outside') ? 'Upload external bills' : 'Awaiting insurer query response';
+  setEstimator(`₹${baseAmount.toLocaleString('en-IN')}`, probability, next);
+  if (claimNotice) {
+    claimNotice.textContent = 'HealthFlo is updating intimations, document corrections, dispatch approval, and insurer queries in real time.';
+  }
+  pushGuidance([
+    'Upload PDFs or images of bills and lab/OT charges.',
+    `Verify admission address: ${payload.address}`,
+    'Respond to insurer queries within 4 hours for faster settlement.',
+    'Share QR / User ID at hospital, labs, and pharmacies for auto-sync.',
+  ]);
+}
+
+claimForm?.addEventListener('submit', event => {
+  event.preventDefault();
+  const payload = {
+    hospital: document.getElementById('hospital_name')?.value || 'Hospital',
+    area: document.getElementById('hospital_area')?.value || 'Area',
+    address: document.getElementById('hospital_address')?.value || 'Address',
+    type: document.getElementById('claim_type')?.value || 'Reimbursement',
+    sync: document.getElementById('sync_source')?.value || 'Admission booked in HealthFlo',
+  };
+
+  hydrateReimbursement(payload);
+});
+
+supportToggle?.addEventListener('click', () => {
+  const isOn = supportToggle.textContent.includes('ON');
+  supportToggle.textContent = `HealthFlo team support: ${isOn ? 'OFF' : 'ON'}`;
+  if (claimNotice) claimNotice.textContent = isOn ? 'You are managing this claim manually.' : 'HealthFlo team actively managing reimbursement + follow-ups.';
+});
+
+guidanceRefresh?.addEventListener('click', () => {
+  const tips = [
+    'Attach pharmacy bills incurred outside HealthFlo to boost approval.',
+    'Upload recent lab PDFs; we auto-tag Hb, LFT, KFT, and radiology codes.',
+    'Confirm discharge date and attending doctor signature.',
+    'Share live location for courier pickup of physical documents.',
+  ];
+  pushGuidance(tips.sort(() => 0.5 - Math.random()).slice(0, 3));
+  if (guidanceFeed) guidanceFeed.textContent = 'Guidance refreshed from HealthFlo desk.';
+});
+
+uploadInput?.addEventListener('change', () => {
+  const count = uploadInput.files?.length || 0;
+  if (uploadHint) uploadHint.textContent = count ? `${count} document(s) staged for HealthFlo review.` : 'Add discharge summary, bills, lab reports, prescriptions.';
+  setEstimator(`₹${(count * 12000 + 60000).toLocaleString('en-IN')}`, `${85 + Math.min(count, 3)}%`, count ? 'HealthFlo verifying uploads' : 'Add records');
+});
+
+// Seed default view if the desk is present
+if (claimForm && !statusList?.children.length) {
+  hydrateReimbursement({
+    hospital: 'Rainbow Hospitals',
+    area: 'Kondapur',
+    address: 'Plot 22, Hyderabad',
+    type: 'Reimbursement',
+    sync: 'Admission booked in HealthFlo',
+  });
+}
+
 emergencyBtn?.addEventListener('click', () => {
   if (emgStatus) emgStatus.textContent = 'Ambulance triggered. Location shared with nearest hospital and family.';
   emergencyBtn.textContent = 'Sent';
