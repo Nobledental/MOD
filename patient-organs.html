@@ -94,6 +94,48 @@
     <section class="section">
       <header>
         <div>
+          <p class="chip">3D organs</p>
+          <h2 class="section-title">Immersive anatomy studio</h2>
+          <p class="section-sub">Interactive 3D meshes for heart, lungs, kidney, and dental (demo streams) with alerts mirrored on cards.</p>
+        </div>
+      </header>
+      <div class="list-grid">
+        <div class="card">
+          <h3>Heart 3D (demo)</h3>
+          <p class="section-sub">Rotate to inspect valves before booking a consult.</p>
+          <div class="model-stage">
+            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" autoplay camera-controls auto-rotate ar-modes="scene-viewer webxr quick-look" shadow-intensity="0.6" interaction-prompt="none">
+              <div class="model-fallback">3D preview loads in modern browsers.</div>
+            </model-viewer>
+          </div>
+          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Cardiac markers steady</span></div>
+        </div>
+        <div class="card">
+          <h3>Lungs 3D (demo)</h3>
+          <p class="section-sub">Visualise airways alongside spirometry and SpO₂ trends.</p>
+          <div class="model-stage">
+            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.8">
+              <div class="model-fallback">3D lung mesh streams here.</div>
+            </model-viewer>
+          </div>
+          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Spirometry synced</span></div>
+        </div>
+        <div class="card">
+          <h3>Kidney & dental 3D (demo)</h3>
+          <p class="section-sub">Layer KFT, CUE, and CBCT outcomes with a 3D reference.</p>
+          <div class="model-stage">
+            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.7">
+              <div class="model-fallback">Kidney & dental mesh preview</div>
+            </model-viewer>
+          </div>
+          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Hydration + CBCT clean</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
           <p class="chip">Notifications</p>
           <h2 class="section-title">Organ notifications + consults</h2>
         </div>
@@ -110,6 +152,7 @@
   <footer>
     <p>© 2025 HealthFlo — Organ Watch</p>
   </footer>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <script src="js/patient-os.js"></script>
 </body>
 </html>
