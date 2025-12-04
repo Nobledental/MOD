@@ -188,13 +188,13 @@
             <tr><th>Study</th><th>Status</th><th>Last update</th></tr>
           </thead>
           <tbody>
-            <tr><td>USG Abdomen</td><td>Ready</td><td>Today</td></tr>
-            <tr><td>USG Pelvis</td><td>Ready</td><td>Today</td></tr>
-            <tr><td>Mammogram</td><td>Pending upload</td><td>-</td></tr>
-            <tr><td>MRI / CT Head</td><td>Scheduled</td><td>Tomorrow</td></tr>
-            <tr><td>Neck / Spine MRI</td><td>Reporting</td><td>In progress</td></tr>
-            <tr><td>3D CBCT (Dental)</td><td>Synced</td><td>Today</td></tr>
-            <tr><td>Soft tissue scan</td><td>Ready</td><td>Today</td></tr>
+            <tr data-rad-study="usg-abdomen"><td>USG Abdomen</td><td><span class="chip" data-rad-status>Ready</span></td><td><span data-rad-eta>Today</span></td></tr>
+            <tr data-rad-study="usg-pelvis"><td>USG Pelvis</td><td><span class="chip" data-rad-status>Ready</span></td><td><span data-rad-eta>Today</span></td></tr>
+            <tr data-rad-study="mammogram"><td>Mammogram</td><td><span class="chip" data-rad-status>Pending upload</span></td><td><span data-rad-eta>-</span></td></tr>
+            <tr data-rad-study="ct-head"><td>MRI / CT Head</td><td><span class="chip" data-rad-status>Scheduled</span></td><td><span data-rad-eta>Tomorrow</span></td></tr>
+            <tr data-rad-study="spine"><td>Neck / Spine MRI</td><td><span class="chip" data-rad-status>Reporting</span></td><td><span data-rad-eta>In progress</span></td></tr>
+            <tr data-rad-study="cbct"><td>3D CBCT (Dental)</td><td><span class="chip" data-rad-status>Synced</span></td><td><span data-rad-eta>Today</span></td></tr>
+            <tr data-rad-study="soft-tissue"><td>Soft tissue scan</td><td><span class="chip" data-rad-status>Ready</span></td><td><span data-rad-eta>Today</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -216,6 +216,12 @@
           <div class="stat-grid" id="device_list"></div>
         </div>
         <div class="card">
+          <h3>Family live tracking</h3>
+          <p class="section-sub">Share live vitals and organ alerts with trusted family on any device.</p>
+          <button class="badge" id="familyMirror" data-state="off">Share live view with family</button>
+          <div class="notice" id="family_status_msg">Family access paused.</div>
+        </div>
+        <div class="card">
           <h3>Ambulance support</h3>
           <p class="section-sub">Manual trigger or auto-trigger if vitals fall outside thresholds.</p>
           <div class="flex-row">
@@ -223,6 +229,7 @@
             <button class="badge" id="autoToggle">Auto trigger: OFF</button>
           </div>
           <div class="notice" id="emg_status_msg">Manual mode active.</div>
+          <div class="notice" id="live_location_status">Location ready but not streaming.</div>
         </div>
         <div class="card">
           <h3>Instant QR / ID registration</h3>
