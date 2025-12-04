@@ -416,266 +416,366 @@
 
   <script src="js/patient-os.js"></script>
   <script>
-    const labData = [
-      { name: 'Apollo Diagnostics', city: 'Mumbai', area: 'Andheri East', lat: 19.119, lng: 72.846, distance: 2.1, homeVisit: true, type: ['blood', 'radiology'], slot: 'Today • 4:30 PM', tests: [
-        { name: 'CBC', price: 350, type: 'blood' },
-        { name: 'HbA1c', price: 520, type: 'blood' },
-        { name: 'LFT', price: 900, type: 'blood' },
-        { name: 'USG Abdomen', price: 1400, type: 'radiology' }
-      ], open: true, rating: 4.7, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
-      { name: 'SRL Diagnostics', city: 'Delhi', area: 'Dwarka', lat: 28.592, lng: 77.046, distance: 4.6, homeVisit: false, type: ['blood'], slot: 'Today • Counter', tests: [
-        { name: 'CBC', price: 340, type: 'blood' },
-        { name: 'Thyroid Profile', price: 650, type: 'blood' },
-        { name: 'Cardiac markers', price: 1200, type: 'blood' }
-      ], open: true, rating: 4.6, img: 'https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?q=80&auto=format&fit=crop&w=1200' },
-      { name: 'VOKA Imaging Hub', city: 'Mumbai', area: 'Four Bungalows', lat: 19.134, lng: 72.833, distance: 3.0, homeVisit: false, type: ['radiology'], slot: 'Today • MRI/CT', tests: [
-        { name: 'MRI Spine', price: 5200, type: 'radiology' },
-        { name: 'CT Head', price: 2500, type: 'radiology' },
-        { name: 'USG Pelvis', price: 1400, type: 'radiology' }
-      ], open: true, rating: 4.8, img: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&auto=format&fit=crop&w=1200' },
-      { name: 'Aster Labs', city: 'Bengaluru', area: 'Whitefield', lat: 12.969, lng: 77.749, distance: 5.4, homeVisit: true, type: ['blood'], slot: 'Tomorrow • 9:15 AM', tests: [
-        { name: 'CBC', price: 330, type: 'blood' },
-        { name: 'KFT', price: 900, type: 'blood' },
-        { name: 'LFT', price: 880, type: 'blood' }
-      ], open: false, rating: 4.5, img: 'https://images.unsplash.com/photo-1582719478145-bf0f1f6b68ff?q=80&auto=format&fit=crop&w=1200' },
-      { name: 'Metropolis Lab', city: 'Delhi', area: 'Preet Vihar', lat: 28.636, lng: 77.289, distance: 3.2, homeVisit: true, type: ['blood', 'radiology'], slot: 'Today • 6:00 PM', tests: [
-        { name: 'LFT', price: 920, type: 'blood' },
-        { name: 'KFT', price: 910, type: 'blood' },
-        { name: 'X-Ray Chest', price: 450, type: 'radiology' }
-      ], open: true, rating: 4.4, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
-      { name: 'Healthians', city: 'Hyderabad', area: 'Banjara Hills', lat: 17.416, lng: 78.448, distance: 6.1, homeVisit: true, type: ['blood'], slot: 'Today • 5:00 PM', tests: [
-        { name: 'CBC', price: 320, type: 'blood' },
-        { name: 'Lipid Profile', price: 900, type: 'blood' },
-        { name: 'Vitamin D', price: 1200, type: 'blood' }
-      ], open: true, rating: 4.6, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' }
-    ];
-
-    const labResults = document.getElementById('labResults');
-    const labSearch = document.getElementById('labSearch');
-    const labCity = document.getElementById('labCity');
-    const labType = document.getElementById('labType');
-    const labSort = document.getElementById('labSort');
-    const homeOnlyToggle = document.getElementById('homeOnlyToggle');
-    const openSlotToggle = document.getElementById('openSlotToggle');
-    const labStatus = document.getElementById('labStatus');
-    const syncFilters = document.getElementById('syncFilters');
-    const locateMe = document.getElementById('locateMe');
-    const locationStatus = document.getElementById('locationStatus');
-    const cityHint = document.getElementById('cityHint');
-    const labsMetaCount = document.getElementById('labsMetaCount');
-    const labsHomeCount = document.getElementById('labsHomeCount');
-    const labsRadCount = document.getElementById('labsRadCount');
-    const labsSortMeta = document.getElementById('labsSortMeta');
-    const labsPriceMeta = document.getElementById('labsPriceMeta');
-    const labsMetaStatus = document.getElementById('labsMetaStatus');
-    const pinDashboard = document.getElementById('pinDashboard');
-    const investigationList = document.getElementById('investigationList');
-    const investigationMeta = document.getElementById('investigationMeta');
-
-    const deg2rad = (d) => d * (Math.PI / 180);
-    const haversineKm = (a, b) => {
-      const R = 6371;
-      const dLat = deg2rad(b.lat - a.lat);
-      const dLon = deg2rad(b.lng - a.lng);
-      const lat1 = deg2rad(a.lat);
-      const lat2 = deg2rad(b.lat);
-      const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * (Math.sin(dLon / 2) ** 2);
-      return R * (2 * Math.asin(Math.sqrt(h)));
-    };
-
-    let userLoc = null;
-
-    function formatDistance(lab) {
-      if (userLoc) {
-        return haversineKm(userLoc, { lat: lab.lat, lng: lab.lng }).toFixed(1);
-      }
-      return lab.distance || '—';
-    }
-
-    function renderTests(tests, type) {
-      return tests
-        .filter(t => !type || t.type === type)
-        .slice(0, 4)
-        .map(t => `<span class="test-chip price-pill">${t.name} <strong>₹${t.price}</strong></span>`)
-        .join('');
-    }
-
-    function updateMeta(filtered) {
-      const home = filtered.filter(l => l.homeVisit).length;
-      const rad = filtered.filter(l => l.type.includes('radiology')).length;
-      const prices = filtered.flatMap(l => l.tests.filter(t => t.type === 'blood').map(t => t.price));
-      const avg = prices.length ? Math.round(prices.reduce((a, b) => a + b, 0) / prices.length) : '—';
-
-      labsMetaCount.textContent = `${filtered.length} labs nearby`;
-      labsHomeCount.textContent = `${home} home visit`;
-      labsRadCount.textContent = `${rad} radiology hubs`;
-      labsPriceMeta.textContent = prices.length ? `₹${avg}` : '₹—';
-      labsMetaStatus.textContent = `${home} home pickups · ${rad} imaging hubs · synced with dashboard`;
-      labsSortMeta.textContent = (labSort?.value || '') === 'az' ? 'A–Z sort' : 'Nearest first';
-      if (investigationMeta) investigationMeta.textContent = `Pulled from ${filtered.length} labs`;
-    }
-
-    function buildInvestigationBoard(filtered) {
-      if (!investigationList) return;
-      const map = new Map();
-
-      filtered.forEach(lab => {
-        lab.tests.forEach(test => {
-          const key = test.name;
-          const existing = map.get(key) || { name: test.name, type: test.type, price: test.price, labs: 0, home: 0 };
-          existing.price = Math.min(existing.price, test.price);
-          existing.labs += 1;
-          if (lab.homeVisit) existing.home += 1;
-          map.set(key, existing);
-        });
-      });
-
-      const top = Array.from(map.values())
-        .sort((a, b) => a.price - b.price)
-        .slice(0, 8);
-
-      investigationList.innerHTML = '';
-      top.forEach(test => {
-        const row = document.createElement('div');
-        row.className = 'investigation-row';
-        row.innerHTML = `
-          <div class="stack">
-            <strong>${test.name}</strong>
-            <small>${test.type === 'blood' ? 'Blood / pathology' : 'Radiology / imaging'}</small>
-          </div>
-          <div class="stack">
-            <small>Starting</small>
-            <strong>₹${test.price}</strong>
-          </div>
-          <div class="stack">
-            <small>Labs</small>
-            <span class="pill">${test.labs} nearby</span>
-          </div>
-          <div class="stack">
-            <small>Home pickup</small>
-            <span class="pill ${test.home ? '' : 'ghost'}">${test.home ? `${test.home} offer home visit` : 'Visit lab'}</span>
-          </div>
-        `;
-        investigationList.appendChild(row);
-      });
-    }
-
-    function renderLabs() {
+    (() => {
+      const labResults = document.getElementById('labResults');
       if (!labResults) return;
-      const query = (labSearch?.value || '').trim().toLowerCase();
-      const city = labCity?.value || '';
-      const type = labType?.value || '';
-      const homeOnly = homeOnlyToggle?.checked;
-      const openOnly = openSlotToggle?.checked;
 
-      let filtered = labData.filter(lab => {
-        if (city && lab.city !== city) return false;
-        if (type && !lab.type.includes(type)) return false;
-        if (homeOnly && !lab.homeVisit) return false;
-        if (openOnly && !lab.open) return false;
-        if (query) {
-          const blob = `${lab.name} ${lab.city} ${lab.area} ${lab.tests.map(t => t.name).join(' ')}`.toLowerCase();
-          if (!blob.includes(query)) return false;
-        }
-        return true;
+      const labSearch = document.getElementById('labSearch');
+      const labCity = document.getElementById('labCity');
+      const labType = document.getElementById('labType');
+      const labSort = document.getElementById('labSort');
+      const homeOnlyToggle = document.getElementById('homeOnlyToggle');
+      const openSlotToggle = document.getElementById('openSlotToggle');
+      const labStatus = document.getElementById('labStatus');
+      const syncFilters = document.getElementById('syncFilters');
+      const locateMe = document.getElementById('locateMe');
+      const locationStatus = document.getElementById('locationStatus');
+      const cityHint = document.getElementById('cityHint');
+      const labsMetaCount = document.getElementById('labsMetaCount');
+      const labsHomeCount = document.getElementById('labsHomeCount');
+      const labsRadCount = document.getElementById('labsRadCount');
+      const labsSortMeta = document.getElementById('labsSortMeta');
+      const labsPriceMeta = document.getElementById('labsPriceMeta');
+      const labsMetaStatus = document.getElementById('labsMetaStatus');
+      const pinDashboard = document.getElementById('pinDashboard');
+      const investigationList = document.getElementById('investigationList');
+      const investigationMeta = document.getElementById('investigationMeta');
+
+      const fmtINR = (n) => `₹${Number(n || 0).toLocaleString('en-IN')}`;
+      const deg2rad = (d) => d * (Math.PI / 180);
+      const haversineKm = (a, b) => {
+        const R = 6371;
+        const dLat = deg2rad(b.lat - a.lat);
+        const dLon = deg2rad(b.lng - a.lng);
+        const lat1 = deg2rad(a.lat);
+        const lat2 = deg2rad(b.lat);
+        const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * (Math.sin(dLon / 2) ** 2);
+        return R * (2 * Math.asin(Math.sqrt(h)));
+      };
+
+      const cityCoords = {
+        Mumbai: { lat: 19.076, lng: 72.8777 },
+        Delhi: { lat: 28.6139, lng: 77.2090 },
+        Bengaluru: { lat: 12.9716, lng: 77.5946 },
+        Hyderabad: { lat: 17.3850, lng: 78.4867 },
+        Chennai: { lat: 13.0827, lng: 80.2707 },
+      };
+
+      const baseBlood = [
+        { name: 'Complete Blood Count (CBC)', price: 350 },
+        { name: 'Fasting Blood Sugar (FBS)', price: 180 },
+        { name: 'Post-Prandial Blood Sugar (PPBS)', price: 200 },
+        { name: 'HbA1c', price: 520 },
+        { name: 'Lipid Profile', price: 900 },
+        { name: 'Liver Function Test (LFT)', price: 950 },
+        { name: 'Kidney Function Test (KFT)', price: 900 },
+        { name: 'Vitamin D (25-OH)', price: 1200 },
+        { name: 'Thyroid Profile (T3/T4/TSH)', price: 650 },
+        { name: 'C-Reactive Protein (CRP)', price: 550 },
+        { name: 'Urine Routine', price: 180 }
+      ];
+
+      const baseRad = [
+        { name: 'X-Ray Chest PA', price: 450 },
+        { name: 'Ultrasound Whole Abdomen', price: 1400 },
+        { name: 'CT Brain (Plain)', price: 2500 },
+        { name: 'MRI Knee', price: 5200 },
+        { name: 'ECG', price: 300 },
+        { name: '2D Echo', price: 1800 }
+      ];
+
+      const slotPool = [
+        'Today • 4:30 PM',
+        'Today • 6:00 PM',
+        'Today • MRI/CT',
+        'Today • Counter',
+        'Tomorrow • 9:15 AM'
+      ];
+
+      const labs = [
+        { id: 'lab01', name: 'Apollo Diagnostics', city: 'Mumbai', area: 'Andheri', lat: 19.118, lng: 72.846, phone: '+912241234567', homeVisit: true, homeFee: 129, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab02', name: 'Thyrocare Centre', city: 'Mumbai', area: 'Powai', lat: 19.118, lng: 72.905, phone: '+912242345678', homeVisit: true, homeFee: 99, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab03', name: 'SRL Diagnostics', city: 'Delhi', area: 'Dwarka', lat: 28.592, lng: 77.046, phone: '+911145678901', homeVisit: true, homeFee: 149, img: 'https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab04', name: 'Metropolis Lab', city: 'Delhi', area: 'Preet Vihar', lat: 28.636, lng: 77.289, phone: '+911123456789', homeVisit: true, homeFee: 129, img: 'https://images.unsplash.com/photo-1582719478145-bf0f1f6b68ff?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab05', name: 'Dr. Lal PathLabs', city: 'Bengaluru', area: 'Jayanagar', lat: 12.925, lng: 77.593, phone: '+918023456701', homeVisit: true, homeFee: 119, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab06', name: 'Vijaya Diagnostics', city: 'Hyderabad', area: 'Banjara Hills', lat: 17.416, lng: 78.448, phone: '+914040123456', homeVisit: true, homeFee: 129, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab07', name: 'Aster Labs', city: 'Bengaluru', area: 'Whitefield', lat: 12.969, lng: 77.749, phone: '+918022223333', homeVisit: true, homeFee: 149, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab08', name: 'Hitech Diagnostics', city: 'Chennai', area: 'T. Nagar', lat: 13.041, lng: 80.234, phone: '+914428765432', homeVisit: true, homeFee: 109, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab09', name: 'Kokilaben Ambani Lab', city: 'Mumbai', area: 'Four Bungalows', lat: 19.134, lng: 72.833, phone: '+912261111111', homeVisit: false, homeFee: 0, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab10', name: 'Max Lab', city: 'Delhi', area: 'Saket', lat: 28.528, lng: 77.219, phone: '+911149876543', homeVisit: true, homeFee: 159, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab11', name: 'Fortis Lab', city: 'Noida', area: 'Sector 62', lat: 28.62, lng: 77.363, phone: '+911202223344', homeVisit: true, homeFee: 149, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab12', name: 'Medall Diagnostics', city: 'Chennai', area: 'Adyar', lat: 13.006, lng: 80.257, phone: '+914443211234', homeVisit: true, homeFee: 119, img: 'https://images.unsplash.com/photo-1582719478145-bf0f1f6b68ff?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab13', name: 'Suburban Diagnostics', city: 'Pune', area: 'Aundh', lat: 18.563, lng: 73.807, phone: '+912040987654', homeVisit: true, homeFee: 139, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab14', name: 'Oncquest Labs', city: 'Jaipur', area: 'C-Scheme', lat: 26.913, lng: 75.789, phone: '+911414567890', homeVisit: true, homeFee: 149, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab15', name: 'Redcliffe Labs', city: 'Lucknow', area: 'Gomti Nagar', lat: 26.853, lng: 81.003, phone: '+915224567890', homeVisit: true, homeFee: 119, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab16', name: 'Healthians', city: 'Gurugram', area: 'DLF Phase 3', lat: 28.494, lng: 77.097, phone: '+911244567890', homeVisit: true, homeFee: 99, img: 'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab17', name: 'Diagno Labs', city: 'Ahmedabad', area: 'Navrangpura', lat: 23.036, lng: 72.558, phone: '+917926543210', homeVisit: true, homeFee: 129, img: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200' },
+        { id: 'lab18', name: 'Aarthi Scans & Labs', city: 'Kochi', area: 'Vytilla', lat: 9.967, lng: 76.318, phone: '+914844445555', homeVisit: true, homeFee: 109, img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200' }
+      ].map((lab, idx) => {
+        const bloodMul = 0.92 + (idx % 5) * 0.03;
+        const radMul = 1.0 + (idx % 4) * 0.05;
+        lab.blood = baseBlood.map(t => ({ ...t, price: Math.round(t.price * bloodMul) }));
+        lab.radiology = baseRad.map(t => ({ ...t, price: Math.round(t.price * radMul) }));
+        lab.tests = [...lab.blood, ...lab.radiology];
+        lab.type = [];
+        if (lab.blood.length) lab.type.push('blood');
+        if (lab.radiology.length) lab.type.push('radiology');
+        lab.slot = slotPool[idx % slotPool.length];
+        lab.rating = 4.2 + (idx % 6) * 0.1;
+        lab.open = idx % 4 !== 0;
+        lab.fallbackDistance = (1.2 + (idx % 7) * 0.7).toFixed(1);
+        return lab;
       });
 
-      filtered = filtered.map(lab => ({ ...lab, distanceCalc: formatDistance(lab) }));
+      let userLoc = null;
+      const filterKey = 'hf_lab_filters_v2';
 
-      if ((labSort?.value || '') === 'az') {
-        filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
-      } else {
-        filtered = filtered.sort((a, b) => {
-          const distA = parseFloat(a.distanceCalc);
-          const distB = parseFloat(b.distanceCalc);
-          return (isNaN(distA) ? 9999 : distA) - (isNaN(distB) ? 9999 : distB);
+      function saveFilters() {
+        const payload = {
+          q: labSearch?.value || '',
+          city: labCity?.value || '',
+          type: labType?.value || '',
+          sort: labSort?.value || 'nearest',
+          home: !!homeOnlyToggle?.checked,
+          open: !!openSlotToggle?.checked,
+        };
+        localStorage.setItem(filterKey, JSON.stringify(payload));
+      }
+
+      function restoreFilters() {
+        const saved = localStorage.getItem(filterKey);
+        if (!saved) return;
+        try {
+          const filters = JSON.parse(saved);
+          if (labSearch) labSearch.value = filters.q || '';
+          if (labCity && filters.city) labCity.value = filters.city;
+          if (labType && filters.type) labType.value = filters.type;
+          if (labSort && filters.sort) labSort.value = filters.sort;
+          if (homeOnlyToggle) homeOnlyToggle.checked = !!filters.home;
+          if (openSlotToggle) openSlotToggle.checked = !!filters.open;
+          if (!userLoc && filters.city && cityCoords[filters.city]) {
+            userLoc = cityCoords[filters.city];
+            if (locationStatus) locationStatus.textContent = `Using ${filters.city} center for distance`;
+            if (cityHint) cityHint.textContent = `City: ${filters.city}`;
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+
+      function distanceFor(lab) {
+        if (userLoc) {
+          return Number(haversineKm(userLoc, { lat: lab.lat, lng: lab.lng }).toFixed(1));
+        }
+        return Number(lab.fallbackDistance);
+      }
+
+      function renderTests(tests, type) {
+        const list = tests
+          .filter(t => !type || t.type === type)
+          .slice(0, 4)
+          .map(t => `<span class="test-chip price-pill">${t.name} <strong>${fmtINR(t.price)}</strong></span>`)
+          .join('');
+        return list || '<span class="pill ghost">All investigations shown in modal</span>';
+      }
+
+      function updateMeta(filtered, type) {
+        if (!labsMetaCount) return;
+        const home = filtered.filter(l => l.homeVisit).length;
+        const rad = filtered.filter(l => l.type.includes('radiology')).length;
+        const pool = filtered.flatMap(l => l.tests.filter(t => !type || t.type === type).map(t => t.price));
+        const avg = pool.length ? Math.round(pool.reduce((a, b) => a + b, 0) / pool.length) : null;
+
+        labsMetaCount.textContent = `${filtered.length} labs nearby`;
+        labsHomeCount.textContent = `${home} home visit`;
+        labsRadCount.textContent = `${rad} radiology hubs`;
+        labsPriceMeta.textContent = avg ? fmtINR(avg) : '₹—';
+        labsMetaStatus.textContent = `${home} home pickups · ${rad} imaging hubs · synced with dashboard`;
+        labsSortMeta.textContent = (labSort?.value || '') === 'az' ? 'A–Z sort' : 'Nearest first';
+        if (investigationMeta) investigationMeta.textContent = `Pulled from ${filtered.length} labs`;
+      }
+
+      function buildInvestigationBoard(filtered, type) {
+        if (!investigationList) return;
+        investigationList.innerHTML = '';
+        const map = new Map();
+
+        filtered.forEach(lab => {
+          lab.tests
+            .filter(t => !type || t.type === type)
+            .forEach(test => {
+              const key = test.name;
+              const existing = map.get(key) || { name: test.name, type: test.type, price: test.price, labs: 0, home: 0 };
+              existing.price = Math.min(existing.price, test.price);
+              existing.labs += 1;
+              if (lab.homeVisit) existing.home += 1;
+              map.set(key, existing);
+            });
+        });
+
+        const top = Array.from(map.values())
+          .sort((a, b) => a.price - b.price)
+          .slice(0, 8);
+
+        if (!top.length) {
+          investigationList.innerHTML = '<div class="notice">No investigations found for the current filters.</div>';
+          return;
+        }
+
+        top.forEach(test => {
+          const row = document.createElement('div');
+          row.className = 'investigation-row';
+          row.innerHTML = `
+            <div class="stack">
+              <strong>${test.name}</strong>
+              <small>${test.type === 'blood' ? 'Blood / pathology' : 'Radiology / imaging'}</small>
+            </div>
+            <div class="stack">
+              <small>Starting</small>
+              <strong>${fmtINR(test.price)}</strong>
+            </div>
+            <div class="stack">
+              <small>Labs</small>
+              <span class="pill">${test.labs} nearby</span>
+            </div>
+            <div class="stack">
+              <small>Home pickup</small>
+              <span class="pill ${test.home ? '' : 'ghost'}">${test.home ? `${test.home} offer home visit` : 'Visit lab'}</span>
+            </div>
+          `;
+          investigationList.appendChild(row);
         });
       }
 
-      labResults.innerHTML = '';
-      filtered.forEach(lab => {
-        const card = document.createElement('article');
-        card.className = 'lab-card zomato-card advanced';
-        card.innerHTML = `
-          <div class="lab-img" style="background-image:url('${lab.img}')">
-            <div class="lab-overlay"></div>
-            <div class="lab-badge-row">
-              <span class="pill ${lab.homeVisit ? '' : 'ghost'}">${lab.homeVisit ? 'Home visit' : 'Visit lab'}</span>
-              <span class="pill ghost">${lab.open ? 'Open slots' : 'Waitlist'}</span>
-            </div>
-            <div class="lab-meta-bar">
-              <span class="pill">${lab.distanceCalc} km</span>
-              <span class="pill ghost">${lab.slot}</span>
-            </div>
-            <div class="lab-rating">${lab.rating.toFixed(1)}★</div>
-          </div>
-          <div class="lab-body">
-            <div class="lab-head">
-              <div>
-                <h3>${lab.name}</h3>
-                <p class="muted">${lab.area} • ${lab.city}</p>
+      function renderEmptyState(message) {
+        labResults.innerHTML = `<div class="notice">${message}</div>`;
+        if (labStatus) labStatus.textContent = message;
+        if (investigationList) investigationList.innerHTML = '<div class="notice">No investigations for this filter set.</div>';
+      }
+
+      function renderLabs() {
+        const query = (labSearch?.value || '').trim().toLowerCase();
+        const city = labCity?.value || '';
+        const type = labType?.value || '';
+        const homeOnly = homeOnlyToggle?.checked;
+        const openOnly = openSlotToggle?.checked;
+
+        saveFilters();
+
+        let filtered = labs.filter(lab => {
+          if (city && lab.city !== city) return false;
+          if (type && !lab.type.includes(type)) return false;
+          if (homeOnly && !lab.homeVisit) return false;
+          if (openOnly && !lab.open) return false;
+          if (query) {
+            const blob = `${lab.name} ${lab.city} ${lab.area} ${lab.tests.map(t => t.name).join(' ')}`.toLowerCase();
+            if (!blob.includes(query)) return false;
+          }
+          return true;
+        });
+
+        filtered = filtered.map(lab => ({ ...lab, distanceKm: distanceFor(lab) }));
+
+        if ((labSort?.value || '') === 'az') {
+          filtered.sort((a, b) => a.name.localeCompare(b.name));
+        } else {
+          filtered.sort((a, b) => (a.distanceKm ?? 9999) - (b.distanceKm ?? 9999));
+        }
+
+        if (!filtered.length) {
+          renderEmptyState('No labs match these filters yet. Try another city or clear toggles.');
+          updateMeta([], type);
+          return;
+        }
+
+        labResults.innerHTML = '';
+        filtered.forEach(lab => {
+          const tests = type === 'blood' ? lab.blood : type === 'radiology' ? lab.radiology : lab.tests;
+          const startPrice = tests.length ? Math.min(...tests.map(t => t.price)) : null;
+          const card = document.createElement('article');
+          card.className = 'lab-card zomato-card advanced';
+          card.innerHTML = `
+            <div class="lab-img" style="background-image:url('${lab.img}')">
+              <div class="lab-overlay"></div>
+              <div class="lab-badge-row">
+                <span class="pill ${lab.homeVisit ? '' : 'ghost'}">${lab.homeVisit ? 'Home visit' : 'Visit lab'}</span>
+                <span class="pill ghost">${lab.open ? 'Open slots' : 'Waitlist'}</span>
               </div>
-              <span class="pill">${lab.type.includes('blood') ? 'Blood' : ''}${lab.type.length === 2 ? ' & ' : ''}${lab.type.includes('radiology') ? 'Radiology' : ''}</span>
+              <div class="lab-meta-bar">
+                <span class="pill">${lab.distanceKm?.toFixed ? lab.distanceKm.toFixed(1) : lab.distanceKm} km</span>
+                <span class="pill ghost">${lab.slot}</span>
+              </div>
+              <div class="lab-rating">${lab.rating.toFixed(1)}★</div>
             </div>
-            <div class="price-line">Starts at <strong>₹${lab.tests[0]?.price || '—'}</strong> • ${lab.slot}</div>
-            <div class="lab-tests inline-tests">${renderTests(lab.tests, type)}</div>
-            <div class="card-actions">
-              <button class="badge primary" type="button">Book</button>
-              <a class="badge" href="https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}" target="_blank" rel="noopener">Directions</a>
-              <button class="badge ghost" type="button">View tests</button>
+            <div class="lab-body">
+              <div class="lab-head">
+                <div>
+                  <h3>${lab.name}</h3>
+                  <p class="muted">${lab.area} • ${lab.city}</p>
+                </div>
+                <span class="pill">${lab.type.includes('blood') ? 'Blood' : ''}${lab.type.length === 2 ? ' & ' : ''}${lab.type.includes('radiology') ? 'Radiology' : ''}</span>
+              </div>
+              <div class="price-line">Starts at <strong>${startPrice ? fmtINR(startPrice) : '₹—'}</strong> • ${lab.slot}</div>
+              <div class="lab-tests inline-tests">${renderTests(tests, type)}</div>
+              <div class="card-actions">
+                <button class="badge primary" type="button">Book</button>
+                <a class="badge" href="https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}" target="_blank" rel="noopener">Directions</a>
+                <button class="badge ghost" type="button">View tests</button>
+              </div>
             </div>
-          </div>
-        `;
-        labResults.appendChild(card);
+          `;
+          labResults.appendChild(card);
+        });
+
+        if (labStatus) {
+          labStatus.textContent = `${filtered.length} labs ready · filters mirrored to dashboard`;
+        }
+
+        updateMeta(filtered, type);
+        buildInvestigationBoard(filtered, type);
+      }
+
+      [labSearch, labCity, labType, labSort, homeOnlyToggle, openSlotToggle].forEach(el => {
+        el?.addEventListener('input', renderLabs);
+        el?.addEventListener('change', renderLabs);
       });
 
-      if (labStatus) {
-        labStatus.textContent = `${filtered.length} labs ready · filters mirrored to dashboard`;
-      }
+      syncFilters?.addEventListener('click', () => {
+        if (!labStatus) return;
+        labStatus.textContent = 'Filters synced to dashboard ✔';
+        labStatus.classList.add('accent-text');
+        setTimeout(() => labStatus.classList.remove('accent-text'), 1800);
+      });
 
-      updateMeta(filtered);
-      buildInvestigationBoard(filtered);
-    }
+      pinDashboard?.addEventListener('click', () => {
+        labsMetaStatus.textContent = 'Pinned to dashboard → Labs';
+        labsMetaStatus.classList.add('accent-text');
+        setTimeout(() => labsMetaStatus.classList.remove('accent-text'), 1800);
+      });
 
-    [labSearch, labCity, labType, labSort, homeOnlyToggle, openSlotToggle].forEach(el => {
-      el?.addEventListener('input', renderLabs);
-      el?.addEventListener('change', renderLabs);
-    });
+      locateMe?.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+          if (locationStatus) locationStatus.textContent = 'Geolocation not supported on this device';
+          return;
+        }
+        if (locationStatus) locationStatus.textContent = 'Detecting location…';
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            if (locationStatus) locationStatus.textContent = 'Using your live location';
+            if (cityHint) cityHint.textContent = 'City: Auto (nearest)';
+            renderLabs();
+          },
+          () => {
+            if (locationStatus) locationStatus.textContent = 'Unable to fetch location — using saved preference';
+          },
+          { enableHighAccuracy: true, timeout: 8000 }
+        );
+      });
 
-    syncFilters?.addEventListener('click', () => {
-      if (!labStatus) return;
-      labStatus.textContent = 'Filters synced to dashboard ✔';
-      labStatus.classList.add('accent-text');
-      setTimeout(() => labStatus.classList.remove('accent-text'), 1800);
-    });
-
-    pinDashboard?.addEventListener('click', () => {
-      labsMetaStatus.textContent = 'Pinned to dashboard → Labs';
-      labsMetaStatus.classList.add('accent-text');
-      setTimeout(() => labsMetaStatus.classList.remove('accent-text'), 1800);
-    });
-
-    locateMe?.addEventListener('click', () => {
-      if (!navigator.geolocation) {
-        locationStatus.textContent = 'Geolocation not supported on this device';
-        return;
-      }
-      locationStatus.textContent = 'Detecting location…';
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-          locationStatus.textContent = 'Using your live location';
-          cityHint.textContent = 'City: Auto (nearest)';
-          renderLabs();
-        },
-        () => {
-          locationStatus.textContent = 'Unable to fetch location — using saved preference';
-        },
-        { enableHighAccuracy: true, timeout: 8000 }
-      );
-    });
-
-    renderLabs();
+      restoreFilters();
+      renderLabs();
+    })();
   </script>
 </body>
 </html>
