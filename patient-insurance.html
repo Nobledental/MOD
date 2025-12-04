@@ -102,6 +102,17 @@
           </div>
           <form id="hf_reimburse_form" class="form-grid">
             <label>
+              Choose hospital
+              <select id="hospital_select">
+                <option value="">Select from network</option>
+                <option>Apollo Bannerghatta</option>
+                <option>Fortis MG Road</option>
+                <option>Rainbow Hospitals</option>
+                <option>Medicover Hitech City</option>
+                <option>Manipal Yeshwanthpur</option>
+              </select>
+            </label>
+            <label>
               Hospital name
               <input type="text" id="hospital_name" placeholder="e.g., Apollo Bannerghatta" required>
             </label>
@@ -113,6 +124,14 @@
               Hospital address
               <input type="text" id="hospital_address" placeholder="Full address with pincode" required>
             </label>
+            <div class="full recent-bar">
+              <span class="chip info">Recent hospitalization</span>
+              <div class="pill-row">
+                <button type="button" class="pill ghost" data-hospital-fill='{"name":"Fortis MG Road","area":"MG Road","address":"Ward 2, Bengaluru 560001"}'>Fortis MG Road</button>
+                <button type="button" class="pill ghost" data-hospital-fill='{"name":"Rainbow Hospitals","area":"Kondapur","address":"Plot 22, Hyderabad"}'>Rainbow Kondapur</button>
+                <button type="button" class="pill ghost" data-hospital-fill='{"name":"Apollo Bannerghatta","area":"Bannerghatta","address":"15th Cross, Bengaluru 560076"}'>Apollo Bannerghatta</button>
+              </div>
+            </div>
             <label>
               Claim type
               <select id="claim_type">
@@ -200,6 +219,71 @@
             <div class="stat"><small>Probability</small><strong id="approval_probability">—</strong><span class="hint">HealthFlo projection</span></div>
             <div class="stat"><small>Next action</small><strong id="next_action">Add records</strong><span class="hint">HealthFlo will review</span></div>
           </div>
+        </div>
+      </div>
+
+      <div class="dashboard-grid advanced-grid">
+        <div class="card gradient-card" id="coverage_card">
+          <header class="board-head">
+            <div>
+              <p class="chip info">Coverage</p>
+              <h3>Get your insurance coverage estimate</h3>
+              <p class="hint">Upload hospitalization docs to receive a 30 min estimate based on your policy.</p>
+            </div>
+            <span class="badge" id="coverage_eta">ETA: 30 min</span>
+          </header>
+          <form id="coverage_form" class="form-grid">
+            <label>
+              Admission type
+              <select id="coverage_admission">
+                <option>Day care</option>
+                <option>IP admission</option>
+                <option>OP + procedure</option>
+              </select>
+            </label>
+            <label>
+              Base docs (70% analysis)
+              <input type="file" id="coverage_base_docs" multiple accept="application/pdf,image/*">
+              <small class="hint">Upload pharmacy bills, lab bills, final bill, discharge summary (PDF/JPEG).</small>
+            </label>
+            <label>
+              Advanced docs (95% analysis)
+              <input type="file" id="coverage_full_docs" multiple accept="application/pdf,image/*">
+              <small class="hint">Add OPD/IPD sheets and all investigation reports for higher accuracy.</small>
+            </label>
+            <label class="full">
+              Notes for reviewer
+              <textarea id="coverage_notes" rows="2" placeholder="Any exclusions, co-pay, or room type to consider"></textarea>
+            </label>
+            <div class="form-actions full">
+              <button class="cta" type="submit">Calculate estimate</button>
+              <div class="inline-meta" id="coverage_meta">30 min smart review · Analysis accuracy starts at 70%.</div>
+            </div>
+          </form>
+          <div class="stat-grid mini">
+            <div class="stat"><small>Accuracy level</small><strong id="coverage_accuracy">—</strong><span class="hint" id="coverage_accuracy_hint">Upload docs to compute</span></div>
+            <div class="stat"><small>Projected cover</small><strong id="coverage_amount">₹0</strong><span class="hint">Based on your policy</span></div>
+            <div class="stat"><small>Notification</small><strong id="coverage_notification">Pending</strong><span class="hint">Result shared in app + family</span></div>
+          </div>
+        </div>
+
+        <div class="card compact-card feature-stack">
+          <header class="board-head">
+            <div>
+              <p class="chip">Assist</p>
+              <h3>Patient-friendly tools</h3>
+              <p class="hint">Tap to auto-fill details or request concierge support.</p>
+            </div>
+            <span class="badge success">Enhanced UX</span>
+          </header>
+          <ul class="feature-list colorful">
+            <li><span class="dot blue"></span>Cashless readiness checker + room rent guard</li>
+            <li><span class="dot purple"></span>Co-pay and deductible calculator with sliders</li>
+            <li><span class="dot teal"></span>Document locker syncing labs, pharmacy, and outside bills</li>
+            <li><span class="dot amber"></span>Recent hospitalizations quick-fill (above) for faster claims</li>
+            <li><span class="dot pink"></span>Concierge pickup of originals with live courier tracking</li>
+            <li><span class="dot lime"></span>Family mirror notifications for approvals, queries, and settlement</li>
+          </ul>
         </div>
       </div>
     </section>
