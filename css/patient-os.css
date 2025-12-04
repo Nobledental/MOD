@@ -418,6 +418,15 @@ header.hf-topbar {
 .rad-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
 .rad-meta { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Upgraded labs finder */
+.filter-card { display: flex; flex-direction: column; gap: 12px; background: var(--bg-soft); border: var(--border); border-radius: var(--card-radius); box-shadow: var(--shadow); }
+.filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.filter-grid label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; }
+.filter-grid input, .filter-grid select { border-radius: 12px; border: var(--border); background: var(--bg-glass); color: var(--text); padding: 10px 12px; }
+.filter-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; justify-content: space-between; }
+.results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+.accent-text { color: var(--primary); font-weight: 800; }
+
 @media (max-width: 960px) {
   .hero-grid, .booking-grid { grid-template-columns: 1fr; }
 }
