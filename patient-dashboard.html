@@ -472,222 +472,106 @@
       </div>
     </section>
 
-    <!-- ENGAGEMENT LOOP -->
+    <!-- HEALTH COACH -->
     <section class="engagement-loop" id="engagement">
       <div class="section-head">
         <div>
-          <p class="eyebrow">Guardian dopamine loop</p>
-          <h2 class="section-title">Daily streaks, rituals, and wins</h2>
-          <p class="section-sub">One-tap check-ins, micro actions, and progress bars keep you hooked to healthy routines.</p>
+          <p class="eyebrow">Guardian health coach</p>
+          <h2 class="section-title">Actionable guidance that feels simple</h2>
+          <p class="section-sub">Clear daily goals, instant check-ins, and recovery tips so you know exactly what to do next.</p>
         </div>
         <div class="chip-row">
-          <span class="chip">Habit XP</span>
-          <span class="chip">Check-in streak</span>
-          <span class="chip">Social proof</span>
+          <span class="chip">Guided actions</span>
+          <span class="chip">Recovery</span>
+          <span class="chip">Clarity first</span>
         </div>
       </div>
 
       <div class="loop-grid">
         <div class="loop-card streak">
           <div class="card-head">
-            <h3>Neo streak</h3>
-            <span class="pill soft" id="streak_badge">12 days 🔥</span>
+            <h3>Daily readiness</h3>
+            <span class="pill soft" id="readiness_badge">Synced just now</span>
           </div>
-          <p class="muted">Show up daily to lock bonuses. Miss two days and the streak cools down.</p>
+          <p class="muted">Check-in once to update hydration, movement, and sleep balance in one view.</p>
           <div class="progress-wrap">
             <div class="progress-bar">
-              <div id="streak_progress" class="progress-fill" style="width: 72%"></div>
+              <div id="readiness_progress" class="progress-fill" style="width: 72%"></div>
             </div>
             <div class="progress-meta">
-              <strong id="streak_value">72%</strong>
-              <small id="streak_hint">3 rituals left today</small>
+              <strong id="readiness_value">72%</strong>
+              <small id="readiness_hint">Add water + a short walk</small>
             </div>
           </div>
           <div class="inline-row">
-            <button class="pill solid" id="checkin_btn">One-tap check-in</button>
-            <button class="pill ghost" id="share_streak">Share win</button>
+            <button class="pill solid" id="checkin_btn">Log morning check-in</button>
+            <button class="pill ghost" id="share_readiness">Share with family</button>
           </div>
-          <p class="muted small" id="checkin_msg">Tap check-in to keep dopamine drip flowing.</p>
+          <p class="muted small" id="checkin_msg">We’ll remind you only if balance drops.</p>
         </div>
 
         <div class="loop-card">
           <div class="card-head">
-            <h3>Today’s rituals</h3>
-            <span class="pill soft">Live</span>
+            <h3>Today’s actions</h3>
+            <span class="pill soft">AI ordered</span>
           </div>
-          <ul class="ritual-list" id="ritual_list">
-            <li data-ritual="water"><span>500ml water</span><div class="mini-progress"><span style="width: 60%"></span></div></li>
-            <li data-ritual="walk"><span>20-min walk</span><div class="mini-progress"><span style="width: 35%"></span></div></li>
-            <li data-ritual="sleep"><span>Sleep on time</span><div class="mini-progress"><span style="width: 45%"></span></div></li>
-            <li data-ritual="meds"><span>Take meds</span><div class="mini-progress"><span style="width: 80%"></span></div></li>
+          <ul class="ritual-list" id="mission_list">
+            <li data-mission="water"><span>Finish 600ml water</span><div class="mini-progress"><span style="width: 60%"></span></div></li>
+            <li data-mission="walk"><span>12-min brisk walk</span><div class="mini-progress"><span style="width: 35%"></span></div></li>
+            <li data-mission="breath"><span>3 deep-breath sets</span><div class="mini-progress"><span style="width: 45%"></span></div></li>
+            <li data-mission="sleep"><span>Plan sleep by 10:30pm</span><div class="mini-progress"><span style="width: 25%"></span></div></li>
           </ul>
-          <button class="pill ghost" id="ritual_shuffle">Shuffle micro habits</button>
-        </div>
-
-        <div class="loop-card pulse">
-          <div class="card-head">
-            <h3>Dopamine feed</h3>
-            <span class="pill soft">Every 15s</span>
-          </div>
-          <div class="feed" id="dopamine_feed">
-            <div class="feed-item success">Hydration up 12% after your last sip.</div>
-            <div class="feed-item">SpO₂ steady. Keep the streak alive.</div>
-            <div class="feed-item warn">Lungs need a stretch. Try box breathing.</div>
-          </div>
-        </div>
-
-        <div class="loop-card rewards">
-          <div class="card-head">
-            <h3>Rewards & boosts</h3>
-            <span class="pill soft">Live</span>
-          </div>
-          <div class="reward-grid">
-            <div>
-              <p class="muted">Energy meter</p>
-              <strong id="energy_value">84%</strong>
-              <small id="energy_hint">Morning boost unlocked</small>
-            </div>
-            <div>
-              <p class="muted">Mood</p>
-              <strong id="mood_value">Calm</strong>
-              <small>Breath pacing on</small>
-            </div>
-            <div>
-              <p class="muted">AI companion</p>
-              <strong>Guardian</strong>
-              <small>+2 nudges today</small>
-            </div>
-          </div>
-          <button class="pill outline" id="boost_button">Claim focus boost</button>
-        </div>
-      </div>
-    </section>
-
-    <!-- DEVICES & FAMILY -->
-    <section class="device-family" id="devices">
-      <div class="device-grid">
-        <div class="device-card">
-          <div class="card-head">
-            <h3>Connect devices</h3>
-            <span class="pill soft">Wi‑Fi / BLE</span>
-          </div>
-          <p class="muted">Pair wearables, BP monitors, glucometers, oximeters, and more to sync vitals live.</p>
-          <div class="device-list" id="device_list">
-            <div class="device-item">Apple Watch • Connected</div>
-            <div class="device-item">BP Monitor • Ready</div>
-            <div class="device-item">Oximeter • Connected</div>
-          </div>
           <div class="inline-row">
-            <button class="pill solid" id="pairDevice">Pair new</button>
-            <button class="pill ghost">Manage devices</button>
+            <button class="pill solid small" id="mission_shuffle">Reshuffle priority</button>
+            <button class="pill ghost small">Save as plan</button>
           </div>
         </div>
 
-        <div class="device-card" id="family">
+        <div class="loop-card">
           <div class="card-head">
-            <h3>Family live view</h3>
-            <span class="pill soft">Shared</span>
+            <h3>Recovery + sleep</h3>
+            <span class="pill soft">Live recovery</span>
           </div>
-          <p class="muted">Parents, spouse, kids, or caregivers can watch vitals and alerts in real time.</p>
-          <div class="family-list">
-            <div class="family-item">
-              <div>
-                <strong>Mother</strong>
-                <p class="muted">Vitals mirroring on</p>
-              </div>
-              <span class="pill soft">Notify</span>
+          <div class="recovery-grid">
+            <div><p>Sleep debt</p><strong id="sleep_debt">-38 min</strong><small>Catch up early tonight</small></div>
+            <div><p>HRV signal</p><strong id="hrv_signal">Stable</strong><small>Stay hydrated</small></div>
+            <div><p>Rest timer</p><strong id="rest_timer">18 min</strong><small>Short stretch break</small></div>
+          </div>
+          <button class="pill solid small" id="recovery_btn">Start wind-down</button>
+        </div>
+
+        <div class="loop-card energy">
+          <div class="card-head">
+            <h3>Coach feed</h3>
+            <span class="pill soft">New prompts</span>
+          </div>
+          <div class="feed" id="coach_feed">
+            <div class="feed-item">Hydration up 12% after your last sip.</div>
+            <div class="feed-item">SpO₂ steady. Consider a stretch.</div>
+            <div class="feed-item">Sleep window looks good. Keep it.</div>
+          </div>
+          <div class="energy-meter">
+            <strong id="energy_value">82%</strong>
+            <small id="energy_hint">Best time to move</small>
+          </div>
+          <div class="mood-row">
+            <div>
+              <p>Current state</p>
+              <strong id="mood_value">Flow</strong>
             </div>
-            <div class="family-item">
-              <div>
-                <strong>Father</strong>
-                <p class="muted">Alerts only</p>
-              </div>
-              <span class="pill soft">Notify</span>
+            <div>
+              <p>Breathing</p>
+              <strong>Steady</strong>
             </div>
-            <div class="family-item">
-              <div>
-                <strong>Spouse</strong>
-                <p class="muted">Full view</p>
-              </div>
-              <span class="pill soft">Notify</span>
+            <div>
+              <p>Sleep prep</p>
+              <strong>On track</strong>
             </div>
           </div>
-          <button class="pill solid">Share live view</button>
-          <p class="muted small">Family will also see organ notifications and SOS triggers instantly.</p>
+          <button class="pill solid" id="boost_button">Guide me now</button>
         </div>
       </div>
     </section>
-
-    <!-- EMERGENCY & SETTINGS -->
-    <section class="emergency-settings" id="emergency">
-      <div class="emergency-box">
-        <div>
-          <h3>Ambulance & SOS</h3>
-          <p class="muted">Manual or auto trigger. Sends live location to nearby hospitals and family.</p>
-          <div class="inline-row">
-            <button id="triggerEmergency" class="pill danger">Trigger now</button>
-            <button class="pill ghost" id="autoToggle">Auto trigger: ON</button>
-          </div>
-          <p class="emg-status" id="emg_status_msg">System ready. Location locked.</p>
-        </div>
-        <div class="emg-orb">
-          <div class="orb-core"></div>
-          <div class="orb-ring"></div>
-          <div class="orb-wave"></div>
-        </div>
-      </div>
-
-      <div class="settings-card" id="settings">
-        <div class="card-head">
-          <h3>Settings & security</h3>
-          <span class="pill soft">Control</span>
-        </div>
-        <div class="settings-grid">
-          <div>
-            <p>Account</p>
-            <small>Login, logout, change phone, delete account</small>
-          </div>
-          <div>
-            <p>Payments</p>
-            <small>Update UPI/bank for bills</small>
-          </div>
-          <div>
-            <p>QR code</p>
-            <small>For instant registration</small>
-          </div>
-          <div>
-            <p>Location</p>
-            <small>Share live during SOS</small>
-          </div>
-          <div>
-            <p>Theme</p>
-            <small>Matte or Vision Pro</small>
-          </div>
-          <div>
-            <p>Devices</p>
-            <small>Wi‑Fi / Bluetooth pairing</small>
-          </div>
-        </div>
-        <button class="pill solid">Open settings page</button>
-      </div>
-    </section>
-
-    <!-- COPILOT -->
-    <div class="copilot-widget" id="copilot">
-      <div class="copilot-header">
-        <h3>AI Copilot</h3>
-        <button class="copilot-close">×</button>
-      </div>
-      <div class="copilot-body" id="copilotChat">
-        <div class="msg-ai">Hello! I’m Guardian AI. Ask me about reports, insurance, or bookings.</div>
-      </div>
-      <div class="copilot-input-wrap">
-        <input type="text" id="copilotInput" placeholder="Ask anything…">
-        <button id="copilotSend">➤</button>
-      </div>
-    </div>
-    <button class="copilot-launcher" id="openCopilot">🤖</button>
-
     <!-- BODY MAP -->
     <section class="bodymap-section" id="bodymap">
       <div class="section-head">
