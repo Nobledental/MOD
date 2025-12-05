@@ -268,7 +268,7 @@
     </div>
   </main>
 
-  <!-- ===== Card Template (full-bleed image) ===== -->
+  <!-- ===== Card Template (premium compact) ===== -->
   <template id="tpl-lab-card">
     <article class="card pressable ripple" tabindex="0" aria-label="Open lab details">
       <figure class="media">
@@ -296,6 +296,20 @@
           <span class="chip">Home ready</span>
           <span class="chip">Report coaching</span>
           <span class="chip">WhatsApp concierge</span>
+        </div>
+        <div class="badge-line" aria-label="Premium stats">
+          <div class="mini-stat">
+            <small>TAT</small>
+            <strong class="tat">12-24h</strong>
+          </div>
+          <div class="mini-stat">
+            <small>Doctor</small>
+            <strong class="persona">IV safety</strong>
+          </div>
+          <div class="mini-stat">
+            <small>Rating</small>
+            <strong class="rating">4.9</strong>
+          </div>
         </div>
         <div class="badges" aria-label="Highlights"></div>
         <div class="doctor-note">“Looks safe for home pickup. We’ll map the report date into your Health board automatically.”</div>
@@ -500,6 +514,25 @@
 
   <!-- ===== Toast ===== -->
   <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ===== Reports Vault ===== -->
+  <section class="report-vault" aria-label="Lab reports with PDFs">
+    <div class="wrap">
+      <header class="vault-head">
+        <div>
+          <p class="eyebrow">Doctor-mapped reports</p>
+          <h2>Latest lab PDFs & impressions</h2>
+          <p class="muted">See synced reports in-line, mapped by date, with quick PDF pulls the Profile and Health boards can mirror.</p>
+        </div>
+        <div class="vault-actions">
+          <span class="chip">Auto-mirrors to Health</span>
+          <span class="chip">Doctor narration</span>
+          <span class="chip">PDF ready</span>
+        </div>
+      </header>
+      <div id="labReportShelf" class="report-grid" aria-live="polite"></div>
+    </div>
+  </section>
 
   <!-- ===== Scripts ===== -->
   <script src="js/patient-labs.js" defer></script>
