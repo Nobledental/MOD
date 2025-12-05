@@ -1,91 +1,208 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="matte">
+<!doctype html>
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthFlo — Pharmacy</title>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/patient-os.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HealthFlo — Hospital Pharmacies & Medicines</title>
+  <meta name="description" content="Order authentic medicines from nearby hospital pharmacies. Compare prices, search substitutes, and track live delivery." />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/patient-pharmacy.css" />
 </head>
-<body>
-  <header class="hf-topbar">
-    <div class="container topbar-inner">
-      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
-      <nav class="hf-nav">
-        <a href="patient-dashboard.html">Dashboard</a>
-        <a href="patient-health.html">Health</a>
-        <a href="patient-organs.html">Organs</a>
-        <a href="patient-profile.html">Profile</a>
-        <a href="patient-hospitals.html">Hospitals</a>
-        <a class="active" href="patient-pharmacy.html">Pharmacy</a>
-        <a href="patient-labs.html">Labs</a>
-        <a href="patient-devices.html">Devices</a>
-        <a href="patient-family.html">Family</a>
-        <a href="patient-insurance.html">Insurance</a>
-        <a href="patient-settings.html">Settings</a>
+<body class="hf-body pharm-shell fade-in-page">
+  <!-- ===== Header ===== -->
+  <header class="hf-header" role="banner">
+    <div class="wrap header-inner">
+      <div class="hf-logo" aria-label="HealthFlo OS">
+        <span class="logo-dot" aria-hidden="true"></span>
+        <div>
+          <div class="logo-title">HealthFlo OS</div>
+          <div class="logo-sub">Pharmacy & medicines</div>
+        </div>
+      </div>
+
+      <nav class="hf-nav" aria-label="Primary navigation">
+        <a class="nav-btn" href="patient-dashboard.html">Dashboard</a>
+        <a class="nav-btn" href="patient-health.html">Health</a>
+        <a class="nav-btn" href="patient-organs.html">Organs</a>
+        <a class="nav-btn" href="patient-profile.html">Profile</a>
+        <a class="nav-btn" href="patient-hospitals.html">Hospitals</a>
+        <a class="nav-btn active" href="patient-pharmacy.html">Pharmacy</a>
+        <a class="nav-btn" href="patient-labs.html">Labs</a>
+        <a class="nav-btn" href="patient-devices.html">Devices</a>
+        <a class="nav-btn" href="patient-family.html">Family</a>
+        <a class="nav-btn" href="patient-insurance.html">Insurance</a>
+        <a class="nav-btn" href="patient-settings.html">Settings</a>
       </nav>
-      <div class="topbar-actions">
-        <button class="icon-btn" id="themeToggle">🌓</button>
-        <button class="icon-btn">🔔</button>
+
+      <div class="hf-actions">
+        <button id="themeToggle" class="hf-icon ripple pressable" type="button" title="Toggle theme" aria-pressed="false">🌓</button>
+        <button class="hf-icon ripple pressable" type="button" aria-label="Notifications">🔔</button>
+        <a class="pill ghost ripple pressable" href="patient-health.html">Return to Health</a>
       </div>
     </div>
   </header>
 
-  <main class="container">
-    <section class="hero">
-      <div class="hero-card">
-        <p class="chip">Pharmacy</p>
-        <h1 class="hero-title">Order medicines with safety</h1>
-        <p class="hero-sub">Refills, interaction safety, doorstep delivery, family-coordinated orders with Vision Pro inspired VOKA styling.</p>
-        <div class="hero-actions">
-          <span class="badge">Interaction checks</span>
-          <span class="badge">Reminders</span>
-          <span class="badge">Doorstep delivery</span>
+  <!-- ===== Hero ===== -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <p class="eyebrow">Pharmacy OS • Dual dashboards</p>
+        <h1 id="heroTitle">Order hospital-grade meds with live tracking</h1>
+        <p class="sub">Built to mirror your Health board and Labs page — HealthFlo pharmacies buffer every order, map substitutes, and sync back to Health.</p>
+        <div class="hero-pills">
+          <span class="pill soft">Interaction & allergy checks</span>
+          <span class="pill soft">HealthFlo buffer pharmacy</span>
+          <span class="pill soft">Live courier radar</span>
+          <span class="pill soft">Therapeutic filters</span>
         </div>
-      </div>
-      <div class="card">
-        <h3>Active prescriptions</h3>
-        <div class="table-card">
-          <table>
-            <thead><tr><th>Drug</th><th>Dose</th><th>Next refill</th></tr></thead>
-            <tbody>
-              <tr><td>Atorvastatin</td><td>10 mg HS</td><td>3 days</td></tr>
-              <tr><td>Vitamin D3</td><td>Weekly</td><td>6 days</td></tr>
-              <tr><td>Inhaler</td><td>PRN</td><td>Available</td></tr>
-            </tbody>
-          </table>
+        <div class="hero-actions" aria-label="Quick pharmacy actions">
+          <button class="pill solid" id="ctaOrder">Order now</button>
+          <a class="pill outline" href="patient-health.html">Map to Health</a>
+          <button class="pill ghost" id="ctaLocate">Use my location</button>
+          <button class="pill ghost" id="ctaWhatsApp">WhatsApp concierge</button>
         </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <header><p class="chip">Actions</p><h2 class="section-title">Order & manage</h2></header>
-      <div class="list-grid">
-        <div class="card">
-          <h3>Order medicines</h3>
-          <p class="section-sub">Upload prescription or choose saved list.</p>
-          <div class="flex-row">
-            <button class="badge primary">Order now</button>
-            <button class="badge">See prescriptions</button>
+        <div class="doctor-voice">
+          <div>
+            <p class="eyebrow">Doctor voice</p>
+            <p class="muted">“We’re ranking pharmacies like a clinician — cold-chain, Rx validity, buffer by HealthFlo, and emergency swap options.”</p>
+          </div>
+          <div class="doctor-checks" aria-label="Safety checklist">
+            <span class="chip">HealthFlo buffer</span>
+            <span class="chip">Rx validation</span>
+            <span class="chip">Cold chain</span>
+            <span class="chip">HIPAA safe</span>
           </div>
         </div>
-        <div class="card">
-          <h3>Reminders</h3>
-          <p class="section-sub">Set dose reminders for yourself and family.</p>
-          <div class="notice">Reminders ON for 3 meds</div>
-        </div>
-        <div class="card">
-          <h3>Safety</h3>
-          <p class="section-sub">Interaction and allergy checks before dispensing.</p>
-          <div class="notice">No interactions detected</div>
+      </div>
+      <div class="hero-right">
+        <div class="glass-stack">
+          <div class="hero-kpis" aria-label="Key metrics">
+            <div class="kpi"><strong id="kMeds">—</strong><span>Meds aligned to Health</span></div>
+            <div class="kpi"><strong id="kPharm">—</strong><span>Pharmacies</span></div>
+            <div class="kpi"><strong id="kBuffer">HealthFlo</strong><span>Buffer routes</span></div>
+            <div class="kpi pulse"><strong id="kLive">—</strong><span>Live deliveries</span></div>
+          </div>
+          <div class="concierge-card" role="presentation">
+            <div>
+              <p class="eyebrow">Concierge view</p>
+              <h3>Pharmacy flow that behaves like the dashboard</h3>
+              <p class="muted">Auto-maps prescriptions, substitutes, and hospital pharmacies with the same glass/blue tone as your Labs cockpit.</p>
+            </div>
+            <div class="inline-flags">
+              <span class="pill soft">AI sort</span>
+              <span class="pill soft">Substitutes</span>
+              <span class="pill soft">Rx & OTC</span>
+            </div>
+            <div class="doctor-inline">
+              <div>
+                <p class="eyebrow">Health board</p>
+                <p class="muted">Sends orders + refills back into patient-health.html and reminders.</p>
+              </div>
+              <button class="btn btn-primary ripple pressable" type="button" id="syncHealth">Sync to Health</button>
+            </div>
+          </div>
         </div>
       </div>
-    </section>
-  </main>
+    </div>
+  </section>
+
+  <!-- ===== Dashboards ===== -->
+  <section class="wrap dual-grid" aria-label="Dual pharmacy dashboards">
+    <article class="bento-card prime" id="dashboardMeds">
+      <div class="card-top">
+        <div>
+          <p class="eyebrow">Dashboard 1</p>
+          <h3>Medicine discovery aligned to your health data</h3>
+          <p class="muted">Search by drug, brand, therapeutic use, price band, discounts, and load meds from nearby pharmacies automatically. Limited to 3 rows for focus.</p>
+        </div>
+        <div class="pill soft" id="healthContext">Syncing with Health data</div>
+      </div>
+      <div class="filters">
+        <label class="field"><span>Search</span><input id="searchMeds" type="search" placeholder="Drug, brand, condition" /></label>
+        <label class="field"><span>Therapeutic use</span><select id="therapeuticFilter"><option value="">All</option><option>Antibiotic</option><option>Pain Relief</option><option>Diabetes</option><option>Heart</option><option>Allergy</option></select></label>
+        <label class="field"><span>Price</span><input id="priceRange" type="range" min="0" max="800" step="50" value="800" /><small id="priceValue">Up to ₹800</small></label>
+        <label class="field"><span>Discount</span><select id="discountFilter"><option value="">Any</option><option value="10">10%+</option><option value="20">20%+</option><option value="30">30%+</option></select></label>
+        <label class="switch"><input id="autoLoadFromStores" type="checkbox" checked /> <span>Auto-load medicines from pharmacy dashboard</span></label>
+      </div>
+      <div class="grid meds-grid" id="medsGrid" aria-live="polite"></div>
+      <div class="mini-note">Showing a curated 3-row feed. Pulls meds from pharmacies below and your saved health/medical data.</div>
+    </article>
+
+    <article class="bento-card" id="dashboardStores">
+      <div class="card-top">
+        <div>
+          <p class="eyebrow">Dashboard 2</p>
+          <h3>Hospital pharmacies with live locations</h3>
+          <p class="muted">Search pharmacies by location, delivery speed, HealthFlo buffer routing, and live courier pings.</p>
+        </div>
+        <div class="row-actions">
+          <button class="pill outline" id="sortNearest">Nearest first</button>
+          <button class="pill ghost" id="filterDelivery">Delivery only</button>
+        </div>
+      </div>
+      <div class="filters">
+        <label class="field"><span>Location</span><input id="searchLocation" type="search" placeholder="City, area, or pin" /></label>
+        <label class="field"><span>Fulfilment</span><select id="fulfilmentFilter"><option value="">Any</option><option value="delivery">Delivery</option><option value="pickup">Pick-up</option></select></label>
+        <label class="switch"><input id="includeBuffer" type="checkbox" checked /> <span>Include HealthFlo buffer pharmacy</span></label>
+      </div>
+      <div class="grid store-grid" id="storeGrid" aria-live="polite"></div>
+      <div class="live-tracker" aria-live="polite">
+        <div>
+          <p class="eyebrow">Live delivery</p>
+          <h4 id="liveStatus">No active delivery</h4>
+          <p class="muted" id="liveEta">ETA will appear when an order is active.</p>
+          <div class="track-bar"><span id="trackProgress"></span></div>
+        </div>
+        <button class="pill ghost" id="openTracker">View timeline</button>
+      </div>
+    </article>
+  </section>
+
+  <!-- ===== Substitutes & safety ===== -->
+  <section class="wrap bento-grid" aria-label="Safety and substitutes">
+    <article class="bento-tile">
+      <div class="tile-head"><p class="eyebrow">Substitutes</p><span class="pill ghost">Same composition</span></div>
+      <h4>Show similar meds</h4>
+      <p class="muted">Automatically surfaces 1:1 substitutes with price + availability from the same pharmacies.</p>
+      <div class="micro-metrics"><div><strong id="statSubs">—</strong><small>substitutes found</small></div><div><strong>Rx/OTC</strong><small>clear labeling</small></div></div>
+    </article>
+    <article class="bento-tile">
+      <div class="tile-head"><p class="eyebrow">Safety</p><span class="pill ghost">Interaction check</span></div>
+      <h4>Allergy & interaction guardrails</h4>
+      <p class="muted">Runs the same checks as patient-health.html with pill conflicts, pregnancy flags, and dose limits.</p>
+      <div class="micro-metrics"><div><strong>3</strong><small>live checks</small></div><div><strong>24x7</strong><small>pharmacist review</small></div></div>
+    </article>
+    <article class="bento-tile span2">
+      <div class="tile-head"><p class="eyebrow">Orders</p><span class="pill ghost">Live tracker</span></div>
+      <h4>Order, pay, and track like a food app</h4>
+      <p class="muted">Full stack ordering with WhatsApp, live courier position, partner name, and arrival countdown.</p>
+      <div class="micro-metrics"><div><strong id="statOrders">—</strong><small>orders placed</small></div><div><strong id="statBuffer">100%</strong><small>through HealthFlo buffer</small></div><div><strong>UPI/COD</strong><small>supported</small></div></div>
+    </article>
+  </section>
+
+  <!-- ===== Dock ===== -->
+  <nav class="neo-dock">
+    <a class="dock-btn" href="patient-dashboard.html" aria-label="Dashboard">🏠</a>
+    <a class="dock-btn" href="patient-health.html" aria-label="Health">💓</a>
+    <a class="dock-btn" href="patient-organs.html" aria-label="Organs">🫀</a>
+    <a class="dock-btn" href="patient-profile.html" aria-label="Profile">👤</a>
+    <a class="dock-btn" href="patient-labs.html" aria-label="Labs">🧪</a>
+    <a class="dock-btn active" href="patient-pharmacy.html" aria-label="Pharmacy">💊</a>
+    <a class="dock-btn" href="patient-hospitals.html" aria-label="Hospitals">🏥</a>
+    <a class="dock-btn" href="patient-devices.html" aria-label="Devices">📡</a>
+    <a class="dock-btn" href="patient-family.html" aria-label="Family">👪</a>
+    <a class="dock-btn" href="patient-insurance.html" aria-label="Insurance">💳</a>
+    <a class="dock-btn" href="patient-settings.html" aria-label="Settings">⚙️</a>
+  </nav>
 
   <footer>
     <p>© 2025 HealthFlo — Pharmacy</p>
   </footer>
-  <script src="js/patient-os.js"></script>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="js/patient-pharmacy.js" defer></script>
 </body>
 </html>
