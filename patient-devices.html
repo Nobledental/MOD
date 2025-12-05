@@ -37,7 +37,7 @@
       <div class="hero-card">
         <p class="chip">Wi‑Fi / BLE</p>
         <h1 class="hero-title">Pair all devices in one place</h1>
-        <p class="section-sub">Live vitals streaming from watches, BP cuffs, glucometers, scales, and spirometers with one-click pairing.</p>
+        <p class="section-sub">Live vitals streaming from watches, BP cuffs, glucometers, scales, and spirometers with one-click pairing and signal health checks.</p>
         <div class="hero-actions">
           <button class="badge primary" id="pairDevice">Scan for devices</button>
           <button class="badge" id="triggerEmergency">Trigger ambulance</button>
@@ -56,6 +56,11 @@
           <span class="badge soft">OTA updates</span>
           <span class="badge soft">Battery health</span>
           <span class="badge soft">Calibration alerts</span>
+        </div>
+        <div class="inline-list">
+          <span class="badge soft">Signal quality</span>
+          <span class="badge soft">Lag guard</span>
+          <span class="badge soft">Auto reconnection</span>
         </div>
       </div>
     </section>
@@ -121,6 +126,31 @@
             <span class="pill">Hospital QR ready</span>
           </div>
         </div>
+        <div class="device-card">
+          <h3>Diagnostics</h3>
+          <p class="section-sub">Network tests, packet loss guard, and manual rerun for hospitals with low bandwidth.</p>
+          <div class="device-meta">
+            <span class="pill">Latency < 80ms</span>
+            <span class="pill">Packet loss 0.2%</span>
+            <span class="pill">Auto retries</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Battery + warranty</p>
+          <h2 class="section-title">Device health</h2>
+          <p class="section-sub">Predictive battery life, warranty tracking, and quick actions.</p>
+        </div>
+      </header>
+      <div class="notice-grid">
+        <div class="notice">Watch battery 78% — projected 14 hours left.</div>
+        <div class="notice">BP cuff calibration due in 2 days.</div>
+        <div class="notice">Libre 3 sensor expires in 11 days.</div>
+        <div class="notice">Upload device bills to auto-track warranty end dates.</div>
       </div>
     </section>
 
