@@ -212,6 +212,12 @@ function getLabSnapshot() {
   }
 }
 
+function panelsFromSnapshot() {
+  const snap = getLabSnapshot();
+  if (snap?.latestPanels) return snap.latestPanels;
+  return null;
+}
+
 function describeMarker(rep, fallback = '—') {
   if (!rep) return fallback;
   const val = rep.value !== undefined ? rep.value : rep.impression;
@@ -251,6 +257,7 @@ const labPills = {
   lung: document.getElementById('lung_signal'),
   dental: document.getElementById('dental_signal'),
 };
+const labTimeline = document.getElementById('lab_timeline');
 
 function updateLabIntelligence() {
   if (!labPills.cbc && !labPills.lft) return;
@@ -269,6 +276,8 @@ function updateLabIntelligence() {
     bnp: 'Normal',
     spirometry: Math.random() > 0.9 ? 'Mild restriction' : 'Normal',
   };
+  const snapshotPanels = panelsFromSnapshot();
+  if (snapshotPanels) Object.assign(labs, snapshotPanels);
 
   setText('lab_rbc', labs.rbc);
   setText('lab_wbc', labs.wbc);
@@ -303,6 +312,60 @@ function updateLabIntelligence() {
 
 updateLabIntelligence();
 setInterval(updateLabIntelligence, 15000);
+
+function renderLabTimeline() {
+  if (!labTimeline) return;
+  const snap = getLabSnapshot();
+  const history = snap?.history && snap.history.length ? snap.history : [
+    {
+      date: '2024-07-05 08:00',
+      title: 'CBC + Hydration check',
+      lab: 'Apollo Diagnostics',
+      doctor: 'Dr. Vasudha Nene',
+      status: 'Hydrate & recheck',
+      markers: [
+        { name: 'HB', value: '12.8 g/dL', status: 'Borderline' },
+        { name: 'WBC', value: '7.9k', status: 'Watch infection' },
+        { name: 'Platelets', value: '2.5 L', status: 'Normal' },
+      ],
+      note: 'Looks mildly dry. ORS 500 ml today, repeat CBC in 72h.',
+      next: ['ORS 500ml', 'Repeat CBC in 3 days'],
+    },
+  ];
+
+  labTimeline.innerHTML = '';
+  history.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'timeline-card';
+    const head = document.createElement('div');
+    head.className = 'head';
+    head.innerHTML = `<div><strong>${item.title}</strong><div class="meta">${item.lab || 'Synced lab'} • ${item.doctor || 'Doctor lens'} • ${item.status || ''}</div></div><span class="chip">${item.date}</span>`;
+    const markers = document.createElement('div');
+    markers.className = 'markers';
+    (item.markers || []).forEach(m => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = `${m.name}: ${m.value} (${m.status || ''})`;
+      markers.appendChild(chip);
+    });
+    const note = document.createElement('div');
+    note.className = 'notice';
+    note.textContent = item.note || 'Doctor note pending.';
+    const next = document.createElement('div');
+    next.className = 'next';
+    (item.next || ['Prep ready']).forEach(n => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = n;
+      next.appendChild(chip);
+    });
+    card.append(head, markers, note, next);
+    labTimeline.appendChild(card);
+  });
+}
+
+renderLabTimeline();
+setInterval(renderLabTimeline, 12000);
 
 // Radiology + imaging live status
 const radiologyRows = document.querySelectorAll('[data-rad-study]');
