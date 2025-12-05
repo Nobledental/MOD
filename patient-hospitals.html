@@ -5,98 +5,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HealthFlo — Hospitals & Clinics</title>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/patient-os.css">
+  <link rel="stylesheet" href="css/patient-hospitals.css">
 </head>
-<body>
-  <header class="hf-topbar">
-    <div class="container topbar-inner">
-      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
-      <nav class="hf-nav">
-        <a href="patient-dashboard.html">Dashboard</a>
-        <a href="patient-health.html">Health</a>
-        <a href="patient-organs.html">Organs</a>
-        <a href="patient-profile.html">Profile</a>
-        <a class="active" href="patient-hospitals.html">Hospitals</a>
-        <a href="patient-pharmacy.html">Pharmacy</a>
-        <a href="patient-labs.html">Labs</a>
-        <a href="patient-insurance.html">Insurance</a>
-        <a href="patient-settings.html">Settings</a>
+<body class="hf-body fade-in-page">
+  <header class="hf-header">
+    <div class="wrap header-inner">
+      <div class="hf-logo">
+        <span class="logo-dot"></span>
+        HealthFlo OS
+      </div>
+      <nav class="hf-nav" aria-label="Primary navigation">
+        <a class="nav-btn" href="patient-dashboard.html">Dashboard</a>
+        <a class="nav-btn" href="patient-health.html">Health</a>
+        <a class="nav-btn" href="patient-organs.html">Organs</a>
+        <a class="nav-btn" href="patient-profile.html">Profile</a>
+        <a class="nav-btn active" href="patient-hospitals.html">Hospitals</a>
+        <a class="nav-btn" href="patient-pharmacy.html">Pharmacy</a>
+        <a class="nav-btn" href="patient-labs.html">Labs</a>
+        <a class="nav-btn" href="patient-devices.html">Devices</a>
+        <a class="nav-btn" href="patient-family.html">Family</a>
+        <a class="nav-btn" href="patient-insurance.html">Insurance</a>
+        <a class="nav-btn" href="patient-settings.html">Settings</a>
       </nav>
-      <div class="topbar-actions">
-        <button class="icon-btn" id="themeToggle">🌓</button>
-        <button class="icon-btn">🔔</button>
+      <div class="hf-actions">
+        <button id="themeToggle" class="hf-icon" aria-label="Toggle theme">🌓</button>
+        <button class="hf-icon" aria-label="Notifications">🔔</button>
+        <button class="hf-icon" aria-label="Profile">👤</button>
       </div>
     </div>
   </header>
 
-  <main class="container">
+  <main class="wrap">
     <section class="hero">
-      <div class="hero-card">
-        <p class="chip">Hospital & clinic bookings</p>
-        <h1 class="hero-title">Book visits with live tracking</h1>
-        <p class="hero-sub">Instant registration via QR/User ID for hospital, clinic, lab, pharmacy. Live ETA and ambulance support built in.</p>
-        <div class="hero-actions">
-          <span class="badge">QR ready</span>
-          <span class="badge">User ID</span>
-          <span class="badge">Live tracking</span>
+      <div class="hero-inner">
+        <div class="hero-card">
+          <p class="pill soft">Hospitals OS • Unified card</p>
+          <h1 class="hero-title">Doctor, procedures, labs, and pharmacy in one card</h1>
+          <p class="hero-sub">Pulls live providers from across India, mirrors the dashboard shell, and maps every hospital action — appointments, procedures, meds, labs — inside one surface.</p>
+          <div class="hero-pills">
+            <span class="pill soft">Cashless ready</span>
+            <span class="pill soft">Doctor & procedure booking</span>
+            <span class="pill soft">In-hospital pharmacy</span>
+            <span class="pill soft">Lab reports synced</span>
+          </div>
         </div>
-      </div>
-      <div class="card">
-        <h3>Instant registration</h3>
-        <p class="section-sub">Share QR with front desk for zero paperwork.</p>
-        <div class="stat-grid">
-          <div class="stat"><small>QR</small><strong>HF-QR-2048</strong></div>
-          <div class="stat"><small>User ID</small><strong>HF-USER-NEO</strong></div>
+        <div class="hero-stats">
+          <div class="stat"><small>States covered</small><strong id="metricStates">—</strong></div>
+          <div class="stat"><small>Hospitals loaded</small><strong id="metricHospitals">—</strong></div>
+          <div class="stat"><small>Cashless ready</small><strong id="metricCashless">—</strong></div>
+          <div class="stat"><small>Average rating</small><strong id="metricRating">—</strong></div>
         </div>
       </div>
     </section>
 
-    <section class="section">
-      <header><p class="chip">Bookings</p><h2 class="section-title">Hospitals & clinics</h2></header>
-      <div class="list-grid">
-        <div class="card">
-          <h3>Find a slot</h3>
-          <p class="section-sub">Pick speciality, doctor, or facility; track ETA.</p>
-          <div class="flex-row">
-            <button class="badge primary">Find appointment</button>
-            <button class="badge">Share QR</button>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Live tracking</h3>
-          <p class="section-sub">ETA to hospital/clinic with live map and queue updates.</p>
-          <div class="notice">GPS connected • 12 mins away</div>
-        </div>
-        <div class="card">
-          <h3>Ambulance trigger</h3>
-          <p class="section-sub">Manual trigger or auto-trigger if vitals drop.</p>
-          <div class="flex-row">
-            <button class="badge primary" id="triggerEmergency">Start ambulance</button>
-            <button class="badge" id="autoToggle">Auto trigger: OFF</button>
-          </div>
-          <div class="notice" id="emg_status_msg">Manual mode active.</div>
-        </div>
-      </div>
+    <section class="filters" aria-label="Filters">
+      <label>
+        Search hospital, speciality, procedure
+        <input type="search" id="searchInput" placeholder="Search hospitals, city, speciality">
+      </label>
+      <label>
+        State
+        <select id="stateFilter"></select>
+      </label>
+      <label>
+        Cashless
+        <select id="cashlessFilter">
+          <option value="">Any</option>
+          <option value="true">Cashless only</option>
+          <option value="false">Non-cashless</option>
+        </select>
+      </label>
     </section>
+
+    <section aria-live="polite" aria-label="Hospitals" class="hospital-grid" id="hospitalGrid"></section>
   </main>
 
-  <nav class="neo-dock">
-    <a class="dock-btn" href="patient-dashboard.html" aria-label="Dashboard">🏠</a>
-    <a class="dock-btn" href="patient-health.html" aria-label="Health">💓</a>
-    <a class="dock-btn" href="patient-organs.html" aria-label="Organs">🫀</a>
-    <a class="dock-btn" href="patient-profile.html" aria-label="Profile">👤</a>
-    <a class="dock-btn" href="patient-labs.html" aria-label="Labs">🧪</a>
-    <a class="dock-btn active" href="patient-hospitals.html" aria-label="Hospitals">🏥</a>
-    <a class="dock-btn" href="patient-pharmacy.html" aria-label="Pharmacy">💊</a>
-    <a class="dock-btn" href="patient-devices.html" aria-label="Devices">📡</a>
-    <a class="dock-btn" href="patient-family.html" aria-label="Family">👪</a>
-    <a class="dock-btn" href="patient-insurance.html" aria-label="Insurance">💳</a>
-    <a class="dock-btn" href="patient-settings.html" aria-label="Settings">⚙️</a>
-  </nav>
-
-  <footer>
-    <p>© 2025 HealthFlo — Hospitals & Clinics</p>
-  </footer>
-  <script src="js/patient-os.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="js/patient-hospitals.js" defer></script>
 </body>
 </html>
