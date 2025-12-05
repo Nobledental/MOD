@@ -6,6 +6,8 @@ const qs = (sel, root = document) => root.querySelector(sel);
 const qsa = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const fmtINR = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
 
+const imageFor = (h) => h.image || `https://picsum.photos/seed/${encodeURIComponent(h.id || h.name)}-hosp/900/600`;
+
 const PROC_MAP = {
   Cardiology: [
     ['Coronary Angiography', [12000, 24000]],
@@ -132,12 +134,34 @@ function createCard(h, medsFlat) {
   const card = document.createElement('article');
   card.className = 'hospital-card';
   const distance = distanceFor(h);
+  const rating = (h.rating || 4 + Math.random() * 0.8).toFixed(1);
+  const wait = Math.round(5 + Math.random() * 25);
   card.innerHTML = `
+    <figure class="card-visual">
+      <img src="${imageFor(h)}" alt="${h.name} image" loading="lazy">
+      <div class="card-visual-glow"></div>
+      <div class="card-visual-badges">
+        <div class="row">
+          <span class="pill badge">⭐ ${rating}</span>
+          <span class="pill badge">${h.isCashless ? 'Cashless desk' : 'Self-pay'}</span>
+        </div>
+        <div class="row">
+          <span class="pill badge">${distance} km live</span>
+          <span class="pill badge">${wait} min wait</span>
+        </div>
+      </div>
+    </figure>
     <div class="card-top">
       <h3 class="card-title">${h.name}</h3>
-      <div class="card-meta">📍 ${distance} km</div>
+      <p class="card-sub">${h.type || 'Multi-speciality'} • ${(h.specialties || []).slice(0, 2).join(', ') || 'Tertiary care'}</p>
+      <div class="card-meta-row">
+        <span class="pill badge">${h.beds || 140}+ beds</span>
+        <span class="pill badge">${(h.specialties || []).length || 3} specialities</span>
+        <span class="pill badge neon">AI navigation</span>
+      </div>
     </div>
     <div class="card-actions">
+      <button class="btn ghost" type="button">Route</button>
       <button class="btn primary" type="button">View</button>
       <button class="btn emergency" type="button">Emergency</button>
     </div>
@@ -145,8 +169,12 @@ function createCard(h, medsFlat) {
 
   card.addEventListener('click', () => openHospital(h, medsFlat, distance));
   const btns = card.querySelectorAll('button');
-  btns[0]?.addEventListener('click', (e) => { e.stopPropagation(); openHospital(h, medsFlat, distance); });
-  btns[1]?.addEventListener('click', (e) => {
+  btns[0]?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toast(`Routing to ${h.name} • ${distance} km`);
+  });
+  btns[1]?.addEventListener('click', (e) => { e.stopPropagation(); openHospital(h, medsFlat, distance); });
+  btns[2]?.addEventListener('click', (e) => {
     e.stopPropagation();
     toast('Connecting you to emergency desk…');
     setTimeout(() => window.open('tel:108', '_self'), 150);
@@ -289,6 +317,61 @@ function renderContext() {
   });
 }
 
+function renderGlance(h, distance) {
+  const wrap = qs('#glanceGrid');
+  wrap.innerHTML = '';
+  const rating = (h.rating || 4.2).toFixed(1);
+  const wait = Math.round(5 + Math.random() * 25);
+  const crowd = 68 + Math.round(Math.random() * 20);
+  const cards = [
+    { title: 'Experience', value: `⭐ ${rating}`, meta: 'Patient-rated comfort & care' },
+    { title: 'Beds live', value: `${h.beds || 140}+`, meta: 'Including ICU & daycare' },
+    { title: 'Cashless', value: h.isCashless ? 'Available' : 'Self-pay / EMI', meta: 'Insurance & pre-auth desk' },
+    { title: 'Distance', value: `${distance} km`, meta: 'Live ETA with traffic' },
+    { title: 'OPD load', value: `${wait} min`, meta: 'Triage wait right now' },
+    { title: 'Signals', value: `${crowd}% occupancy`, meta: 'Smart bedboard feed' },
+    { title: 'Specialities', value: (h.specialties || []).slice(0, 3).join(', ') || 'Multi-speciality', meta: 'Mapped to your profile' },
+  ];
+
+  cards.forEach((c) => {
+    const node = document.createElement('div');
+    node.className = 'glance-card';
+    node.innerHTML = `<small>${c.title}</small><strong>${c.value}</strong><small>${c.meta}</small>`;
+    wrap.appendChild(node);
+  });
+}
+
+function renderOverlayBadges(h, distance) {
+  const wrap = qs('#modalOverlayBadges');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const rowTop = document.createElement('div');
+  rowTop.className = 'row';
+  ['24×7 Command', h.isCashless ? 'Cashless ready' : 'Self-pay'].forEach((t) => {
+    const chip = document.createElement('span');
+    chip.className = 'overlay-chip';
+    chip.textContent = t;
+    rowTop.appendChild(chip);
+  });
+
+  const rowBottom = document.createElement('div');
+  rowBottom.className = 'row';
+  const spec = (h.specialties || []).slice(0, 2).join(', ') || 'Multi-speciality';
+  [
+    `${distance} km live`,
+    `${h.beds || 140}+ beds`,
+    spec,
+  ].forEach((t) => {
+    const chip = document.createElement('span');
+    chip.className = 'overlay-chip';
+    chip.textContent = t;
+    rowBottom.appendChild(chip);
+  });
+
+  wrap.appendChild(rowTop);
+  wrap.appendChild(rowBottom);
+}
+
 function openHospital(h, medsFlat, distance) {
   const modal = qs('#hospitalModal');
   qs('#modalTitle').textContent = h.name;
@@ -297,6 +380,11 @@ function openHospital(h, medsFlat, distance) {
   qs('#modalCashless').textContent = h.isCashless ? 'Cashless ready' : 'Self-pay';
   qs('#modalCashless').classList.toggle('pill', true);
   qs('#modalAddress').textContent = `${h.address || ''} • ${h.type || 'Multi-speciality'}`;
+
+  qs('#modalImage').src = imageFor(h);
+  qs('#modalImage').alt = `${h.name} preview`;
+  renderOverlayBadges(h, distance);
+  renderGlance(h, distance);
 
   const tagWrap = qs('#modalTags');
   tagWrap.innerHTML = '';
