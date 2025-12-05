@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
       elSortHint.textContent = 'Sorted by nearest — using your current location.';
     } else {
       out.sort((a,b) => a.name.localeCompare(b.name));
-      elSortHint.textContent = 'Sorted A–Z.';
+      elSortHint.textContent = userLoc ? 'Sorted A–Z.' : 'Sorted A–Z — enable location to sort nearest first.'
     }
     return out;
   }
@@ -356,7 +356,14 @@ document.addEventListener('DOMContentLoaded', () => {
     elGrid.innerHTML = '';
     const frag = document.createDocumentFragment();
     list.forEach(l => frag.appendChild(cardNode(l)));
-    elGrid.appendChild(frag);
+    if (!list.length) {
+      const empty = document.createElement('div');
+      empty.className = 'muted';
+      empty.textContent = 'No labs match your filters yet.';
+      elGrid.appendChild(empty);
+    } else {
+      elGrid.appendChild(frag);
+    }
     const k = qs('#kLabs');
     if (k) k.textContent = String(list.length);
   }
