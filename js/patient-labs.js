@@ -358,8 +358,8 @@ document.addEventListener('DOMContentLoaded', () => {
     list.forEach(l => frag.appendChild(cardNode(l)));
     if (!list.length) {
       const empty = document.createElement('div');
-      empty.className = 'muted';
-      empty.textContent = 'No labs match your filters yet.';
+      empty.className = 'empty-state muted';
+      empty.textContent = userLoc ? 'No labs match your filters yet.' : 'No labs match your filters yet — try enabling location for nearest picks.';
       elGrid.appendChild(empty);
     } else {
       elGrid.appendChild(frag);
