@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Devices & Vitals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+  <link rel="stylesheet" href="css/patient-connections.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a class="active" href="patient-devices.html">Devices</a>
+        <a href="patient-family.html">Family</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="connection-hero">
+      <div class="hero-card">
+        <p class="chip">Wi‑Fi / BLE</p>
+        <h1 class="hero-title">Pair all devices in one place</h1>
+        <p class="section-sub">Live vitals streaming from watches, BP cuffs, glucometers, scales, and spirometers with one-click pairing.</p>
+        <div class="hero-actions">
+          <button class="badge primary" id="pairDevice">Scan for devices</button>
+          <button class="badge" id="triggerEmergency">Trigger ambulance</button>
+          <button class="badge" id="autoToggle">Auto trigger: OFF</button>
+        </div>
+        <div class="notice" id="live_location_status">Location ready but not streaming.</div>
+        <div class="notice" id="emg_status_msg">Manual mode active.</div>
+      </div>
+      <div class="hero-card stack">
+        <div class="stat-grid" id="device_list">
+          <div class="stat"><small>Watch</small><strong>Neo Band</strong><span class="hint">Live HR + SpO₂</span></div>
+          <div class="stat"><small>BP cuff</small><strong>Qardio</strong><span class="hint">Synced</span></div>
+          <div class="stat"><small>Glucose</small><strong>Libre 3</strong><span class="hint">Auto every 8h</span></div>
+        </div>
+        <div class="inline-list">
+          <span class="badge soft">OTA updates</span>
+          <span class="badge soft">Battery health</span>
+          <span class="badge soft">Calibration alerts</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Pairing desk</p>
+          <h2 class="section-title">Device connection status</h2>
+          <p class="section-sub">HealthFlo tests signal strength, firmware, and stream latency for each medical device.</p>
+        </div>
+      </header>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Device</th><th>Status</th><th>Signal</th><th>Last sync</th></tr>
+          </thead>
+          <tbody id="device_status_rows">
+            <tr data-device="watch"><td>Smart watch</td><td><span class="chip">Connected</span></td><td><span class="chip">Strong</span></td><td>2 min ago</td></tr>
+            <tr data-device="bp"><td>BP cuff</td><td><span class="chip">Connected</span></td><td><span class="chip">Strong</span></td><td>5 min ago</td></tr>
+            <tr data-device="glucose"><td>CGM / Glucose</td><td><span class="chip">Ready</span></td><td><span class="chip">Moderate</span></td><td>20 min ago</td></tr>
+            <tr data-device="scale"><td>Smart scale</td><td><span class="chip">Standby</span></td><td><span class="chip">Idle</span></td><td>-</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Automation</p>
+          <h2 class="section-title">Vitals mirroring and SOP</h2>
+          <p class="section-sub">Ambulance triggers, fall detection, and hydration nudges can be mirrored with family and care teams.</p>
+        </div>
+        <div class="hero-actions">
+          <button class="badge" id="familyMirror" data-state="off">Share live view with family</button>
+          <button class="badge ghost" id="family_status_msg">Family access paused.</button>
+        </div>
+      </header>
+      <div class="section-grid">
+        <div class="device-card">
+          <h3>Live vitals feed</h3>
+          <p class="section-sub">HR, BP, SpO₂, temperature, ECG streamed with AI summaries every 5 seconds.</p>
+          <div class="device-meta">
+            <span class="pill">AES-256</span>
+            <span class="pill">Rolling tokens</span>
+            <span class="pill">Alert mirroring</span>
+          </div>
+        </div>
+        <div class="device-card">
+          <h3>Calibration & battery</h3>
+          <p class="section-sub">Auto reminders for cuff calibration, lancet replacements, and battery swaps.</p>
+          <div class="device-meta">
+            <span class="pill">ETA: 2 days</span>
+            <span class="pill">Silent push</span>
+          </div>
+        </div>
+        <div class="device-card">
+          <h3>Geo-aware triggers</h3>
+          <p class="section-sub">Send live location to nearest hospital and trusted family when SOS is pressed or a fall is detected.</p>
+          <div class="device-meta">
+            <span class="pill">SOS + crash</span>
+            <span class="pill">Hospital QR ready</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Quick actions</p>
+          <h2 class="section-title">Pair or troubleshoot</h2>
+          <p class="section-sub">Fast actions to keep vitals flowing without downtime.</p>
+        </div>
+      </header>
+      <div class="notice-grid">
+        <div class="notice">Reboot BLE radios on devices older than 2022.</div>
+        <div class="notice">Keep CGM phone within 6 ft for uninterrupted sync.</div>
+        <div class="notice">Upload device bills for warranty tracking.</div>
+        <div class="notice">Add caretaker Wi‑Fi as backup for fall detection.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Device desk</p>
+  </footer>
+
+  <script src="js/patient-os.js"></script>
+  <script src="js/patient-connections.js"></script>
+</body>
+</html>
