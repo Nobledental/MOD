@@ -157,6 +157,8 @@ html[data-theme="light"] .hf-header{background:rgba(255,255,255,.82);}
 .pill.danger{background:linear-gradient(135deg,#ff6b8a,#ff8e6b);color:#fff;border:0}
 .pill.solid{background:linear-gradient(135deg, var(--brand-700), #53e7c6);color:#fff;box-shadow:0 14px 40px rgba(83,231,198,.25);border:0}
 .pill.outline{background:transparent;border-color:rgba(255,255,255,.18);color:var(--text)}
+.doctor-voice{margin-top:18px;padding:14px;border-radius:16px;border:1px solid rgba(255,255,255,.12);background:color-mix(in srgb, var(--surface) 92%, transparent);box-shadow:var(--elev-1);display:flex;flex-direction:column;gap:10px}
+.doctor-voice .doctor-checks{display:flex;gap:8px;flex-wrap:wrap}
 
 html[data-theme="light"] .nav-btn{border-color:rgba(0,0,0,.06)}
 html[data-theme="light"] .hf-icon{border-color:rgba(0,0,0,.08)}
@@ -214,6 +216,8 @@ html[data-theme="light"] .hf-icon{border-color:rgba(0,0,0,.08)}
 .glass-stack{display:grid; gap:14px}
 .concierge-card{padding:18px; border-radius:18px; background:var(--surface); border:1px solid rgba(255,255,255,.12); box-shadow:var(--elev-2); display:grid; gap:12px}
 .concierge-card .inline-flags{display:flex; gap:8px; flex-wrap:wrap}
+.doctor-inline{margin-top:12px; padding:10px; border-radius:14px; border:var(--border); background:color-mix(in srgb, var(--surface) 90%, transparent); display:flex; gap:12px; align-items:center; flex-wrap:wrap}
+.doctor-inline .btn{min-height:40px}
 .hero-kpis{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px}
 .kpi{background:var(--surface); border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:14px; display:grid; gap:4px; box-shadow:var(--elev-1); text-align:center}
 .kpi strong{font-size:1.35rem}
@@ -232,6 +236,7 @@ html[data-theme="light"] .hf-icon{border-color:rgba(0,0,0,.08)}
 .sig-dot.cool{background:linear-gradient(135deg,#7ba0ff,#c5e0ff);box-shadow:0 0 0 8px rgba(123,160,255,.14)}
 .bento-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px}
 .bento-tile{padding:18px; border-radius:18px; background:var(--surface); border:1px solid rgba(255,255,255,.08); box-shadow:var(--elev-1); display:grid; gap:10px}
+.bento-tile.span2{grid-column:span 2}
 .tile-head{display:flex; justify-content:space-between; align-items:center; gap:10px}
 .bento-tile h4{font-size:1.05rem}
 .micro-metrics{display:flex; gap:12px; flex-wrap:wrap}
@@ -307,6 +312,9 @@ html[data-theme="dark"] .kpi strong{color:#add4ff}
 .media img{
   width:100%; height:100%; object-fit:cover; transform:scale(1.02); transition:transform var(--t-slow)
 }
+.media .media-overlay{position:absolute; inset:0; padding:12px; display:flex; flex-direction:column; justify-content:space-between; pointer-events:none; background:linear-gradient(180deg, rgba(0,0,0,.36), transparent 52%, rgba(0,0,0,.44));}
+.media .overlay-row{display:flex; gap:8px; flex-wrap:wrap}
+.media .overlay-row.mini .chip{background:rgba(255,255,255,.14); color:#fff; border:1px solid rgba(255,255,255,.24)}
 .card:hover .media img{transform:scale(1.07)}
 .media::after{
   content:""; position:absolute; inset:0;
@@ -317,11 +325,15 @@ html[data-theme="dark"] .kpi strong{color:#add4ff}
   background: rgba(0,0,0,.65); color:#fff; font-weight:900; font-size:.85rem;
   padding:4px 9px; border-radius:999px; backdrop-filter:saturate(140%) blur(4px)
 }
-.body{padding:12px}
+.body{padding:12px; display:flex; flex-direction:column; gap:10px; height:100%}
+.title-row{display:flex; align-items:center; justify-content:space-between; gap:.4rem}
 .title{display:flex; align-items:center; gap:.4rem; font-size:1.05rem; letter-spacing:.2px}
 .sub{color:var(--muted); margin-top:2px; font-size:.92rem}
+.meta-line{display:flex; flex-wrap:wrap; gap:6px}
 .badges{display:flex; flex-wrap:wrap; gap:6px; margin-top:8px}
 .badges .pill{padding:4px 7px; border-radius:999px; background:color-mix(in srgb, var(--brand-400) 16%, transparent); border:1px dashed color-mix(in srgb, var(--brand-500) 26%, transparent); font-weight:800; font-size:.75rem; color:var(--brand-800)}
+.doctor-tag{font-size:.85rem; padding:8px 12px; background:color-mix(in srgb, var(--brand-500) 18%, transparent); border:1px solid color-mix(in srgb, var(--brand-500) 28%, transparent)}
+.doctor-note{background:color-mix(in srgb, var(--brand-500) 12%, transparent); border-radius:12px; padding:10px; color:var(--text); line-height:1.4; border:1px solid color-mix(in srgb, var(--brand-500) 28%, transparent)}
 .cta{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:8px; margin-top:10px}
 .empty-state{grid-column:1 / -1; text-align:center; padding:18px; border:1px dashed var(--border); border-radius:14px; background:color-mix(in srgb, var(--surface) 80%, rgba(255,255,255,.12)); box-shadow:var(--elev-1)}
 
