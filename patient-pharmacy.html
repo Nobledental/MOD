@@ -109,28 +109,73 @@
     </div>
   </section>
 
+  <!-- ===== Promo rail ===== -->
+  <section class="wrap promo-rail" aria-label="Trending pharmacy rails">
+    <header class="promo-head">
+      <div>
+        <p class="eyebrow">Trending Today</p>
+        <h2>Fresh picks from hospital pharmacies</h2>
+        <p class="muted">Closer to the Netmeds feel with bright art, gradient cards, and razor-sharp deals.</p>
+      </div>
+      <a class="pill outline" href="#dashboardStores">View all stores</a>
+    </header>
+    <div class="promo-grid">
+      <article class="promo-card" style="--bg-img:url('https://images.unsplash.com/photo-1582719478171-2f2df97e9748?auto=format&fit=crop&w=600&q=80');">
+        <div class="promo-label">Ortho care</div>
+        <h3>Up to 42% off</h3>
+        <p>Braces, sprays, and hot-cold packs routed via buffer.</p>
+        <button class="pill solid" type="button">Shop ortho</button>
+      </article>
+      <article class="promo-card" style="--bg-img:url('https://images.unsplash.com/photo-1582719478188-2f2df97e9748?auto=format&fit=crop&w=600&q=80');">
+        <div class="promo-label">Diabetes care</div>
+        <h3>Get up to 21% off</h3>
+        <p>Continuous glucose monitors, strips, and insulin pens.</p>
+        <button class="pill solid" type="button">Control now</button>
+      </article>
+      <article class="promo-card" style="--bg-img:url('https://images.unsplash.com/photo-1588710920535-1f2081b3bb3b?auto=format&fit=crop&w=600&q=80');">
+        <div class="promo-label">Supplements</div>
+        <h3>Up to 55% off</h3>
+        <p>Essential multivitamins with substitute suggestions.</p>
+        <button class="pill solid" type="button">See combos</button>
+      </article>
+      <article class="promo-card" style="--bg-img:url('https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80');">
+        <div class="promo-label">Eye care</div>
+        <h3>Up to 12% off</h3>
+        <p>Lubricating drops, lenses, and dry-eye kits from hospitals.</p>
+        <button class="pill solid" type="button">View eye care</button>
+      </article>
+      <article class="promo-card" style="--bg-img:url('https://images.unsplash.com/photo-1527613426441-4da17471b66d?auto=format&fit=crop&w=600&q=80');">
+        <div class="promo-label">Immunity</div>
+        <h3>Up to 45% off</h3>
+        <p>Ayush and immunity boosters with pharmacist review.</p>
+        <button class="pill solid" type="button">Boost today</button>
+      </article>
+    </div>
+  </section>
+
+  <!-- ===== Category rail ===== -->
+  <section class="wrap category-rail" aria-label="All categories">
+    <div class="rail-head">
+      <h2>All categories</h2>
+      <a class="pill ghost" href="#dashboardMeds">Open medicine dashboard</a>
+    </div>
+    <div class="category-grid">
+      <div class="category-chip">Ayush</div>
+      <div class="category-chip">Baby care</div>
+      <div class="category-chip">Hair care</div>
+      <div class="category-chip">Beard care</div>
+      <div class="category-chip">Face care</div>
+      <div class="category-chip">Eyewear</div>
+      <div class="category-chip">Multivitamin</div>
+      <div class="category-chip">Antibiotic</div>
+      <div class="category-chip">Diabetes</div>
+      <div class="category-chip">Heart</div>
+      <div class="category-chip">Allergy</div>
+    </div>
+  </section>
+
   <!-- ===== Dashboards ===== -->
   <section class="wrap dual-grid" aria-label="Dual pharmacy dashboards">
-    <article class="bento-card prime" id="dashboardMeds">
-      <div class="card-top">
-        <div>
-          <p class="eyebrow">Dashboard 1</p>
-          <h3>Medicine discovery aligned to your health data</h3>
-          <p class="muted">Search by drug, brand, therapeutic use, price band, discounts, and load meds from nearby pharmacies automatically. Limited to 3 rows for focus.</p>
-        </div>
-        <div class="pill soft" id="healthContext">Syncing with Health data</div>
-      </div>
-      <div class="filters">
-        <label class="field"><span>Search</span><input id="searchMeds" type="search" placeholder="Drug, brand, condition" /></label>
-        <label class="field"><span>Therapeutic use</span><select id="therapeuticFilter"><option value="">All</option><option>Antibiotic</option><option>Pain Relief</option><option>Diabetes</option><option>Heart</option><option>Allergy</option></select></label>
-        <label class="field"><span>Price</span><input id="priceRange" type="range" min="0" max="800" step="50" value="800" /><small id="priceValue">Up to ₹800</small></label>
-        <label class="field"><span>Discount</span><select id="discountFilter"><option value="">Any</option><option value="10">10%+</option><option value="20">20%+</option><option value="30">30%+</option></select></label>
-        <label class="switch"><input id="autoLoadFromStores" type="checkbox" checked /> <span>Auto-load medicines from pharmacy dashboard</span></label>
-      </div>
-      <div class="grid meds-grid" id="medsGrid" aria-live="polite"></div>
-      <div class="mini-note">Showing a curated 3-row feed. Pulls meds from pharmacies below and your saved health/medical data.</div>
-    </article>
-
     <article class="bento-card" id="dashboardStores">
       <div class="card-top">
         <div>
@@ -159,8 +204,57 @@
         <button class="pill ghost" id="openTracker">View timeline</button>
       </div>
     </article>
+
+    <article class="bento-card prime" id="dashboardMeds">
+      <div class="card-top">
+        <div>
+          <p class="eyebrow">Dashboard 1</p>
+          <h3>Medicine discovery aligned to your health data</h3>
+          <p class="muted">Search by drug, brand, therapeutic use, price band, discounts, and load meds from nearby pharmacies automatically. Limited to 3 rows for focus.</p>
+        </div>
+        <div class="pill soft" id="healthContext">Syncing with Health data</div>
+      </div>
+      <div class="filters">
+        <label class="field"><span>Search</span><input id="searchMeds" type="search" placeholder="Drug, brand, condition" /></label>
+        <label class="field"><span>Therapeutic use</span><select id="therapeuticFilter"><option value="">All</option><option>Antibiotic</option><option>Pain Relief</option><option>Diabetes</option><option>Heart</option><option>Allergy</option></select></label>
+        <label class="field"><span>Price</span><input id="priceRange" type="range" min="0" max="800" step="50" value="800" /><small id="priceValue">Up to ₹800</small></label>
+        <label class="field"><span>Discount</span><select id="discountFilter"><option value="">Any</option><option value="10">10%+</option><option value="20">20%+</option><option value="30">30%+</option></select></label>
+        <label class="switch"><input id="autoLoadFromStores" type="checkbox" checked /> <span>Auto-load medicines from pharmacy dashboard</span></label>
+      </div>
+      <div class="grid meds-grid" id="medsGrid" aria-live="polite"></div>
+      <div class="mini-note">Showing a curated 3-row feed. Pulls meds from pharmacies below and your saved health/medical data.</div>
+    </article>
   </section>
 
+  <!-- ===== Order mapping rail ===== -->
+  <section class="wrap sync-rail" aria-label="Orders mapped to other pages">
+    <article class="sync-card">
+      <div class="card-top">
+        <div>
+          <p class="eyebrow">Synced order</p>
+          <h3 id="mappedOrderName">No orders yet</h3>
+          <p class="muted">When you add an item, we pin it back to your Health, Dashboard, and Labs pages automatically.</p>
+        </div>
+        <span class="pill soft" id="mappingBadge">Awaiting first order</span>
+      </div>
+      <div class="mapping-links">
+        <a class="pill outline" href="patient-dashboard.html">View on Dashboard</a>
+        <a class="pill outline" href="patient-health.html">View on Health</a>
+        <a class="pill outline" href="patient-labs.html">View on Labs</a>
+      </div>
+    </article>
+    <article class="sync-card secondary">
+      <p class="eyebrow">Delivery & care</p>
+      <h3>Concierge + pharmacy AI</h3>
+      <p class="muted">Orders are mirrored to the dashboard timeline, health reminders, and lab eligibility so every visit sees the same context.</p>
+      <ul>
+        <li>Light theme by default — Netmeds inspired pastels.</li>
+        <li>Dual dashboards stacked: pharmacies above medicines.</li>
+        <li>Mapping saves your latest item across HealthFlo pages.</li>
+      </ul>
+    </article>
+  </section>
+  
   <!-- ===== Substitutes & safety ===== -->
   <section class="wrap bento-grid" aria-label="Safety and substitutes">
     <article class="bento-tile">
