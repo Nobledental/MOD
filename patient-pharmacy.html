@@ -183,6 +183,57 @@
     </article>
   </section>
 
+  <!-- ===== Store inventory modal (dashboard 2 click) ===== -->
+  <div id="storeModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="storeTitle">
+    <div class="sheet">
+      <header class="sheet-head">
+        <div>
+          <p class="eyebrow">Hospital / HealthFlo</p>
+          <h3 id="storeTitle" class="title">Pharmacy inventory</h3>
+          <p id="storeMeta" class="muted small">—</p>
+        </div>
+        <div class="row-actions">
+          <label class="field mini"><span>Category</span><select id="storeCategory"></select></label>
+          <label class="field mini"><span>Search</span><input id="storeSearch" type="search" placeholder="Drug, brand" /></label>
+          <button id="storeClose" class="pill ghost" type="button" aria-label="Close">Close</button>
+        </div>
+      </header>
+
+      <div class="grid meds-grid capped" id="storeMedGrid" aria-live="polite"></div>
+    </div>
+  </div>
+
+  <!-- ===== Medicine detail overlay ===== -->
+  <div id="medDetail" class="modal" aria-hidden="true" role="dialog" aria-labelledby="medTitle">
+    <div class="sheet">
+      <header class="sheet-head">
+        <div>
+          <p class="eyebrow" id="medCategory">Therapeutic</p>
+          <h3 id="medTitle" class="title">Medicine</h3>
+          <p id="medGeneric" class="muted small">—</p>
+        </div>
+        <div class="row-actions">
+          <button class="pill ghost" id="btnMedClose" type="button">Close</button>
+        </div>
+      </header>
+
+      <div class="med-detail-body">
+        <div class="detail-pricing">
+          <div><span class="muted">Best price</span><strong id="medPrice">₹0</strong></div>
+          <div><span class="muted">MRP</span><strong id="medMrp">₹0</strong></div>
+          <div><span class="muted">Discount</span><strong id="medDiscount">0%</strong></div>
+          <div><span class="muted">Rx/OTC</span><strong id="medRx">—</strong></div>
+        </div>
+        <p id="medNotes" class="muted"></p>
+        <div class="detail-tags" id="medTags"></div>
+        <div class="detail-substitutes">
+          <h4>Similar substitutes</h4>
+          <div id="subGrid" class="grid meds-grid mini"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ===== Dock ===== -->
   <nav class="neo-dock">
     <a class="dock-btn" href="patient-dashboard.html" aria-label="Dashboard">🏠</a>
