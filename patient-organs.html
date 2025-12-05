@@ -35,12 +35,12 @@
     <section class="hero">
       <div class="hero-card">
         <p class="chip">Organ watch + notifications</p>
-        <h1 class="hero-title">Heart, lungs, liver, kidney, dental, brain</h1>
-        <p class="hero-sub">Auto-surfacing alerts from labs, vitals, and radiology with VOKA glass theme.</p>
+        <h1 class="hero-title">Whole-body atlas with live vitals</h1>
+        <p class="hero-sub">Every organ and system streams signals from vitals, devices, and synced lab reports. We flag organ stress and mirror urgent alerts to the dashboard.</p>
         <div class="hero-actions">
-          <span class="badge">Family visible</span>
-          <span class="badge">Consult prompts</span>
-          <span class="badge">3D cues</span>
+          <span class="badge">Vitals-linked</span>
+          <span class="badge">Lab-synced</span>
+          <span class="badge">3D previews</span>
         </div>
       </div>
       <div class="card">
@@ -48,6 +48,18 @@
         <p class="section-sub">Mirrors to dashboard when abnormalities exist.</p>
         <div class="notice" id="organ_alert">All clear</div>
         <div class="notice" id="organ_alert_badge">0 alerts</div>
+        <div class="signal-row">
+          <div>
+            <p class="section-sub">Latest vitals</p>
+            <div class="stat-line">Heart rate <strong id="organ_vitals_hr">—</strong></div>
+            <div class="stat-line">BP <strong id="organ_vitals_bp">—</strong> · SpO₂ <strong id="organ_vitals_spo2">—</strong></div>
+          </div>
+          <div>
+            <p class="section-sub">Last lab sync</p>
+            <div class="stat-line"><strong id="organ_lab_name">No lab synced</strong></div>
+            <div class="stat-line" id="organ_lab_updated">Use Labs → Sync to push reports here.</div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -59,36 +71,81 @@
           <p class="section-sub">Tap any card for details. Data comes from vitals, CBC, LFT, KFT, CUE, cardiac markers, CBCT, spirometry.</p>
         </div>
       </header>
-      <div class="list-grid">
+      <div class="list-grid organ-map">
         <div class="card organ-card" data-organ="heart">
-          <h3>Heart</h3>
+          <div class="card-head"><h3>Heart</h3><span class="pill" id="heart_status">Good</span></div>
           <p class="section-sub">Cardiac markers + ECG trend</p>
-          <div class="chip-row"><span class="chip organ-status" id="heart_status">Good</span><span class="chip">Consult if pain</span></div>
+          <div class="stat-line">Vitals: <strong id="heart_vitals">—</strong></div>
         </div>
         <div class="card organ-card" data-organ="lungs">
-          <h3>Lungs</h3>
+          <div class="card-head"><h3>Lungs</h3><span class="pill" id="lung_status">Free</span></div>
           <p class="section-sub">Spirometry, SpO₂, respiratory rate</p>
-          <div class="chip-row"><span class="chip organ-status" id="lung_status">Free</span><span class="chip">Coach breathing</span></div>
+          <div class="stat-line">Breath: <strong id="lung_vitals">—</strong></div>
         </div>
         <div class="card organ-card" data-organ="liver">
-          <h3>Liver</h3>
+          <div class="card-head"><h3>Liver</h3><span class="pill" id="liver_status">Healthy</span></div>
           <p class="section-sub">LFT markers</p>
-          <div class="chip-row"><span class="chip organ-status" id="liver_status">Healthy</span><span class="chip">Avoid oil</span></div>
+          <div class="stat-line">Labs: <strong id="liver_markers">—</strong></div>
         </div>
         <div class="card organ-card" data-organ="kidney">
-          <h3>Kidney</h3>
+          <div class="card-head"><h3>Kidneys</h3><span class="pill" id="kidney_status">Hydrated</span></div>
           <p class="section-sub">KFT + CUE</p>
-          <div class="chip-row"><span class="chip organ-status" id="kidney_status">Hydrated</span><span class="chip">Hydration watch</span></div>
-        </div>
-        <div class="card organ-card" data-organ="dental">
-          <h3>Dental</h3>
-          <p class="section-sub">CBCT, cavities, gum health</p>
-          <div class="chip-row"><span class="chip organ-status" id="dental_status">Bright</span><span class="chip">Hygiene</span></div>
+          <div class="stat-line">Labs: <strong id="kidney_markers">—</strong></div>
         </div>
         <div class="card organ-card" data-organ="brain">
-          <h3>Brain</h3>
-          <p class="section-sub">Sleep and stress signals</p>
-          <div class="chip-row"><span class="chip organ-status">Calm</span><span class="chip">Mindful breaks</span></div>
+          <div class="card-head"><h3>Brain</h3><span class="pill" id="brain_status">Calm</span></div>
+          <p class="section-sub">Sleep & stress signals</p>
+          <div class="stat-line">State: <strong id="brain_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="dental">
+          <div class="card-head"><h3>Dental</h3><span class="pill" id="dental_status">Bright</span></div>
+          <p class="section-sub">CBCT, cavities, gum health</p>
+          <div class="stat-line">Hygiene: <strong id="dental_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="vascular">
+          <div class="card-head"><h3>Vascular</h3><span class="pill" id="vascular_status">Open</span></div>
+          <p class="section-sub">Blood pressure & circulation</p>
+          <div class="stat-line">Flow: <strong id="vascular_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="endocrine">
+          <div class="card-head"><h3>Endocrine</h3><span class="pill" id="endocrine_status">Balanced</span></div>
+          <p class="section-sub">Thyroid, HbA1c, hormones</p>
+          <div class="stat-line">Signals: <strong id="endocrine_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="immune">
+          <div class="card-head"><h3>Immune</h3><span class="pill" id="immune_status">Calm</span></div>
+          <p class="section-sub">WBC, CRP, inflammation</p>
+          <div class="stat-line">Markers: <strong id="immune_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="musculoskeletal">
+          <div class="card-head"><h3>Musculoskeletal</h3><span class="pill" id="musculoskeletal_status">Supple</span></div>
+          <p class="section-sub">DEXA, mobility, pain diary</p>
+          <div class="stat-line">Support: <strong id="msk_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="gi">
+          <div class="card-head"><h3>Gut</h3><span class="pill" id="gi_status">Smooth</span></div>
+          <p class="section-sub">Nutrition, hydration, abdomen scans</p>
+          <div class="stat-line">Status: <strong id="gi_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="reproductive">
+          <div class="card-head"><h3>Reproductive</h3><span class="pill" id="reproductive_status">Clear</span></div>
+          <p class="section-sub">USG pelvis / prostate + hormones</p>
+          <div class="stat-line">Scan: <strong id="reproductive_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="skin">
+          <div class="card-head"><h3>Skin</h3><span class="pill" id="skin_status">Calm</span></div>
+          <p class="section-sub">Hydration + allergy watch</p>
+          <div class="stat-line">Barrier: <strong id="skin_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="eye">
+          <div class="card-head"><h3>Eyes</h3><span class="pill" id="eye_status">Focused</span></div>
+          <p class="section-sub">Vision strain + fundoscopy</p>
+          <div class="stat-line">Focus: <strong id="eye_state">—</strong></div>
+        </div>
+        <div class="card organ-card" data-organ="ear">
+          <div class="card-head"><h3>Ears</h3><span class="pill" id="ear_status">Clear</span></div>
+          <p class="section-sub">Hearing and balance</p>
+          <div class="stat-line">Sound: <strong id="ear_state">—</strong></div>
         </div>
       </div>
     </section>
@@ -98,7 +155,7 @@
         <div>
           <p class="chip">3D organs</p>
           <h2 class="section-title">Immersive anatomy studio</h2>
-          <p class="section-sub">Interactive 3D meshes for heart, lungs, kidney, and dental (demo streams) with alerts mirrored on cards.</p>
+          <p class="section-sub">Interactive 3D meshes for heart, lungs, kidney, dental, brain, spine, and vascular flows with alerts mirrored on cards.</p>
         </div>
       </header>
       <div class="list-grid">
@@ -132,6 +189,64 @@
           </div>
           <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Hydration + CBCT clean</span></div>
         </div>
+        <div class="card">
+          <h3>Brain & spine 3D (demo)</h3>
+          <p class="section-sub">Review neuro and musculoskeletal balance before therapy.</p>
+          <div class="model-stage">
+            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.7">
+              <div class="model-fallback">Neuro + spine mesh preview</div>
+            </model-viewer>
+          </div>
+          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Cognitive calm + flexible</span></div>
+        </div>
+        <div class="card">
+          <h3>Vascular flow (demo)</h3>
+          <p class="section-sub">BP, circulation, and perfusion cues stitched to live vitals.</p>
+          <div class="model-stage">
+            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.7">
+              <div class="model-fallback">Vascular mesh preview</div>
+            </model-viewer>
+          </div>
+          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">BP mirrored from vitals</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Lab sync</p>
+          <h2 class="section-title">Organ health from lab reports</h2>
+          <p class="section-sub">Pull the latest lab dashboard snapshot to update organ stress, hydration, inflammation, and endocrine balance.</p>
+        </div>
+        <div class="header-actions">
+          <button class="badge" id="refresh_lab_sync" type="button">🔁 Sync from Labs page</button>
+        </div>
+      </header>
+      <div class="card" id="lab_sync_panel">
+        <div class="grid-two">
+          <div>
+            <p class="section-sub">Hydration & kidney</p>
+            <div class="stat-line">Creatinine: <strong id="sync_creatinine">—</strong></div>
+            <div class="stat-line">Urea: <strong id="sync_urea">—</strong></div>
+          </div>
+          <div>
+            <p class="section-sub">Liver & inflammation</p>
+            <div class="stat-line">SGOT/SGPT: <strong id="sync_lft">—</strong></div>
+            <div class="stat-line">CRP: <strong id="sync_crp">—</strong></div>
+          </div>
+          <div>
+            <p class="section-sub">Endocrine & metabolic</p>
+            <div class="stat-line">HbA1c / Lipids: <strong id="sync_metabolic">—</strong></div>
+            <div class="stat-line">Thyroid: <strong id="sync_thyroid">—</strong></div>
+          </div>
+          <div>
+            <p class="section-sub">Immune</p>
+            <div class="stat-line">CBC / WBC: <strong id="sync_cbc">—</strong></div>
+            <div class="stat-line">Imaging flags: <strong id="sync_imaging">—</strong></div>
+          </div>
+        </div>
+        <p class="section-sub">Updated snapshot feeds the dashboard organ alerts automatically.</p>
       </div>
     </section>
 
