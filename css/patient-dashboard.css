@@ -98,6 +98,7 @@ html[data-theme="vision"] .hf-header {
   flex-wrap: wrap;
 }
 
+
 .nav-btn {
   background: transparent;
   color: var(--text);
@@ -106,6 +107,10 @@ html[data-theme="vision"] .hf-header {
   padding: 10px 14px;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .nav-btn.active, .nav-btn:hover {
@@ -589,6 +594,10 @@ html[data-theme="vision"] .hf-header {
   padding: 10px 14px;
   border-radius: 14px;
   cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .dock-btn.active, .dock-btn:hover { background: var(--card-strong); }
