@@ -230,7 +230,7 @@ header.hf-topbar {
 
 .advanced-kpis .kpi-card strong { font-size: 20px; }
 
-.zomato-grid .lab-card.advanced {
+.vibrant-grid .lab-card.advanced {
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.08);
   display: grid;
@@ -566,7 +566,7 @@ header.hf-topbar {
 .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
 .accent-text { color: var(--primary); font-weight: 800; }
 
-/* Labs finder (Zomato-like) */
+/* Labs finder (vibrant cards) */
 .hero-landing { grid-template-columns: 1.1fr 0.9fr; }
 .finder-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 .location-bar { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 14px; }
@@ -574,8 +574,8 @@ header.hf-topbar {
 .location-status { font-weight: 700; }
 .location-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .filter-card { backdrop-filter: blur(6px); }
-.results-grid.zomato-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--grid-gap); margin-top: 16px; }
-.zomato-card { padding: 0; overflow: hidden; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08), transparent 35%), var(--bg-soft); border: var(--border-strong); }
+.results-grid.vibrant-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--grid-gap); margin-top: 16px; }
+.vibrant-card { padding: 0; overflow: hidden; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08), transparent 35%), var(--bg-soft); border: var(--border-strong); }
 .lab-img { position: relative; height: 190px; background-size: cover; background-position: center; }
 .lab-badge-row { position: absolute; top: 12px; left: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
 .lab-rating { position: absolute; bottom: 10px; right: 12px; background: rgba(0,0,0,0.7); padding: 6px 9px; border-radius: 12px; font-weight: 800; box-shadow: var(--shadow); }
