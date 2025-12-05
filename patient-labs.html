@@ -1,350 +1,327 @@
-<!DOCTYPE html>
-<html lang="en" data-theme="matte">
+<!-- HealthFlo — Home Lab Tests (Light theme / pastel-green gradient) -->
+<!doctype html>
+<html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Patient Labs & Investigations</title>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/patient-os.css">
-  <link rel="stylesheet" href="css/patient-labs.css">
-
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HealthFlo — Home Lab Tests</title>
+  <meta name="description" content="Find nearby medical labs across India. Compare test prices, check home visit availability, and book appointments." />
+  <meta name="theme-color" content="#f6fff9" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/patient-labs.css" />
 </head>
+
 <body>
-  <header class="hf-topbar">
-    <div class="container topbar-inner">
-      <a class="hf-logo" href="patient-dashboard.html">
-        <span class="logo-dot"></span>
-        HealthFlo Patient OS
+  <!-- ===== Header ===== -->
+  <header class="hf-header" role="banner">
+    <div class="wrap header-inner">
+      <a class="brand" href="#" aria-label="HealthFlo home">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="brand-text">HealthFlo</span>
       </a>
-      <nav class="hf-nav" aria-label="Primary navigation">
-        <a href="patient-dashboard.html">Dashboard</a>
-        <a href="patient-health.html">Health</a>
-        <a href="patient-organs.html">Organs</a>
-        <a href="patient-profile.html">Profile</a>
-        <a href="patient-hospitals.html">Hospitals</a>
-        <a href="patient-pharmacy.html">Pharmacy</a>
-        <a class="active" href="patient-labs.html">Labs</a>
-        <a href="patient-devices.html">Devices</a>
-        <a href="patient-family.html">Family</a>
-        <a href="patient-insurance.html">Insurance</a>
-        <a href="patient-settings.html">Settings</a>
-      </nav>
-      <div class="topbar-actions">
-        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌓</button>
-        <button class="icon-btn" aria-label="Notifications">🔔</button>
-        <button class="icon-btn" aria-label="Profile">👤</button>
+
+      <div class="actions">
+        <button id="themeToggle" class="btn btn-ghost ripple pressable" type="button" title="Toggle theme" aria-pressed="false">🌗</button>
       </div>
     </div>
   </header>
 
-  <main class="container lab-wrap">
-    <section class="hero">
-      <div class="card">
-        <p class="chip">Labs & Radiology</p>
-        <h1 class="hero-title">Book India-wide lab visits in two taps</h1>
-        <p class="hero-sub">Every city shows 5 curated labs (3 private + 2 hospital) with live offers, instant PDF downloads, and one-click booking.</p>
-        <div class="ad-bar">
-          <span><strong>Festival boosters:</strong> Color-loaded cards, trust badges, and QR-ready confirmations.</span>
-          <div class="download-actions">
-            <button class="badge primary" id="bookLandingCta" type="button">Book now</button>
-            <button class="badge" id="downloadLandingPdf" type="button">Download sample PDF</button>
-          </div>
-        </div>
-        <div class="metrics">
-          <div class="metric"><small class="muted">Visible labs</small><strong id="visibleCount">—</strong><span class="muted">Based on filters</span></div>
-          <div class="metric"><small class="muted">Home visit ready</small><strong id="homeCount">—</strong><span class="muted">Labs offering home pickup</span></div>
-          <div class="metric"><small class="muted">Radiology hubs</small><strong id="radCount">—</strong><span class="muted">Labs with imaging</span></div>
-          <div class="metric"><small class="muted">Avg. blood panel</small><strong id="avgPrice">₹—</strong><span class="muted">Based on filtered labs</span></div>
-        </div>
+  <!-- ===== Hero ===== -->
+  <section class="hero" aria-labelledby="heroTitle">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <h1 id="heroTitle">Book home & in-lab tests near you</h1>
+        <p class="sub">15+ cities • Transparent pricing • Home visit option • WhatsApp confirmation</p>
       </div>
-      <div class="card">
-        <h3>Live counters</h3>
-        <p class="muted">Track how filters and search change the set. Nearest-first uses your saved or requested location.</p>
-        <div class="metrics">
-          <div class="metric"><small class="muted">Sort</small><strong id="sortMeta">A–Z</strong><span class="muted">Toggles on toolbar</span></div>
-          <div class="metric"><small class="muted">Location</small><strong id="locationMeta">Saved</strong><span class="muted">Tap locate to refresh</span></div>
-          <div class="metric"><small class="muted">Home fee avg</small><strong id="homeFeeMeta">₹—</strong><span class="muted">For labs allowing home visit</span></div>
-        </div>
+      <div class="hero-kpis" aria-label="Key metrics">
+        <div class="kpi"><strong id="kLabs">—</strong><span>Labs</span></div>
+        <div class="kpi"><strong>15+</strong><span>Cities</span></div>
+        <div class="kpi"><strong>Fast</strong><span>Home pickup</span></div>
       </div>
-    </section>
-
-    <section class="toolbar">
-      <label>Search labs or tests
-        <input id="searchInput" type="search" placeholder="Search labs, city, test name" />
-      </label>
-      <label>City
-        <select id="cityFilter">
-          <option value="">All</option>
-          <option>Mumbai</option>
-          <option>Delhi</option>
-          <option>Bengaluru</option>
-          <option>Hyderabad</option>
-          <option>Chennai</option>
-        </select>
-      </label>
-      <label>Test type
-        <select id="typeFilter">
-          <option value="">Any</option>
-          <option value="blood">Blood / Pathology</option>
-          <option value="radiology">Radiology / Imaging</option>
-        </select>
-      </label>
-      <div class="toggles">
-        <label class="pill"><input id="homeToggle" type="checkbox"> Home visit only</label>
-        <label class="pill"><input id="nearestToggle" type="checkbox" checked> Nearest first</label>
-        <button class="badge" id="locateBtn" type="button" data-ripple>📍 Locate me</button>
-      </div>
-      <div class="status-line" id="sortStatus">Sorting by distance using saved location.</div>
-    </section>
-
-    <div class="promo-banner shine">
-      <div>
-        <strong>Addictive lab lane</strong>
-        <p class="muted">Trending science blurbs sit inside every card. Scroll through neon pills, offers, and instantly jump to booking.</p>
-      </div>
-      <div class="offers-strip" id="offersStrip"></div>
     </div>
+  </section>
 
-    <section class="assurance">
-      <span class="chip">Certification-grade partners</span>
-      <span class="chip">Transparent pricing</span>
-      <span class="chip">WhatsApp confirmation</span>
-      <span class="chip">Flexible rescheduling</span>
-    </section>
-
-    <section class="insights">
-      <div class="card shine" aria-live="polite">
-        <div class="label-row between">
-          <div>
-            <p class="chip">Health map & reports</p>
-            <h3>Track lab reports, sync, or download PDFs</h3>
-            <p class="muted">Dummy data is preloaded so you always see movement. Sync from any lab modal or export instant PDFs.</p>
-          </div>
-          <div class="status-badge neutral" id="dashboardStatus">Demo snapshot</div>
-        </div>
-        <div class="download-actions padded">
-          <button class="badge" id="downloadDashboardPdf" type="button">⬇️ Download PDF</button>
-          <button class="badge ghost" id="syncFromLatest" type="button">🔁 Refresh dummy data</button>
-        </div>
-        <div class="report-card" id="dashboardReport">
-          <p id="dashboardSummary" class="muted">Open a lab, review "Reports & Health Map", then sync to populate this space.</p>
-          <div id="dashboardList" class="insight-list"></div>
-        </div>
+  <!-- ===== Toolbar / Filters ===== -->
+  <section class="toolbar" role="region" aria-label="Search and filters">
+    <div class="wrap">
+      <div class="field search">
+        <input id="searchInput" type="search" inputmode="search" placeholder="Search lab, area, test (CBC, Ultrasound)…" aria-label="Search labs and tests" />
+        <span class="icon" aria-hidden="true">🔎</span>
       </div>
-      <div class="card pulse" aria-live="polite">
-        <p class="chip">City deals & booking shortcuts</p>
-        <h3>Ads + offers tuned for quick conversion</h3>
-        <p class="muted">Colorful offer cards, health trend captions, and a sticky booking CTA keep the experience addictive.</p>
-        <div class="offers-strip" id="secondaryOffers"></div>
-      </div>
-    </section>
 
-    <section class="card" aria-live="polite">
-      <div class="label-row spread-wrap">
-        <div>
-          <p class="chip">Concierge bundles</p>
-          <h3>Pre-built panels for faster ordering</h3>
-          <p class="muted">Tap a bundle to auto-select tests inside any lab modal. Designed to avoid decision fatigue.</p>
+      <div class="row">
+        <div class="field">
+          <label for="cityFilter">City</label>
+          <select id="cityFilter" aria-label="Filter by city">
+            <option value="">All</option>
+            <option>Mumbai</option><option>Delhi</option><option>Bengaluru</option>
+            <option>Hyderabad</option><option>Chennai</option><option>Pune</option>
+            <option>Kolkata</option><option>Ahmedabad</option><option>Jaipur</option>
+            <option>Lucknow</option><option>Chandigarh</option><option>Indore</option>
+            <option>Kochi</option><option>Surat</option><option>Noida</option>
+          </select>
         </div>
-        <div class="actions">
-          <button class="badge" type="button" id="openFirstLab" data-ripple>Open first lab</button>
-          <button class="badge ghost" type="button" id="showAllLabs" data-ripple>Show all labs</button>
-        </div>
-      </div>
-      <div class="bundle-row" id="bundleRow"></div>
-    </section>
 
-    <section>
-      <div class="grid skeleton" id="labsSkeleton" aria-hidden="true"></div>
-      <div class="grid" id="labsGrid" aria-live="polite"></div>
-      <div class="empty-state" id="labsEmpty" hidden>Filters returned no labs. Reset filters or tap "Show all labs".</div>
-    </section>
+        <div class="field">
+          <label for="typeFilter">Type</label>
+          <select id="typeFilter" aria-label="Filter by test type">
+            <option value="">All</option>
+            <option value="blood">Blood / Pathology</option>
+            <option value="radiology">Radiology / Imaging</option>
+          </select>
+        </div>
+
+        <label class="switch" aria-label="Show only labs with home visit">
+          <input id="homeOnly" type="checkbox" />
+          <span>Home visit only</span>
+        </label>
+
+        <label class="switch" aria-label="Sort results nearest first">
+          <input id="nearestToggle" type="checkbox" checked />
+          <span>Nearest first</span>
+        </label>
+
+        <button id="btnLocate" class="btn ripple pressable" type="button">Use my location</button>
+      </div>
+
+      <div id="sortHint" class="hint" role="status" aria-live="polite">Sorted by nearest — using your current location.</div>
+    </div>
+  </section>
+
+  <!-- ===== Confidence Chips ===== -->
+  <section class="metrics" aria-label="Assurances">
+    <div class="wrap chips">
+      <div class="chip">NABL-grade partners</div>
+      <div class="chip">Transparent pricing</div>
+      <div class="chip">WhatsApp confirmations</div>
+      <div class="chip">Reschedule-friendly</div>
+    </div>
+  </section>
+
+  <!-- ===== Lab Grid ===== -->
+  <main class="grid-section" role="main" aria-labelledby="gridTitle">
+    <h2 id="gridTitle" class="vh">Labs near you</h2>
+    <div class="wrap">
+      <div id="labGrid" class="grid" aria-live="polite"><!-- JS injects cards --></div>
+    </div>
   </main>
 
-  <div class="modal" id="labModal" aria-hidden="true">
-    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <header class="sheet-head">
-        <div class="sheet-meta">
-          <div class="logo" id="modalLogo">LB</div>
-          <div>
-            <p class="muted" id="modalLocation">—</p>
-            <h2 id="modalTitle">Lab</h2>
-            <div class="label-row">
-              <span class="pill" id="modalHome">Home visit</span>
-              <span class="pill" id="modalDistance">— km</span>
-              <span class="pill" id="modalCounts">—</span>
+  <!-- ===== Card Template (full-bleed image) ===== -->
+  <template id="tpl-lab-card">
+    <article class="card pressable ripple" tabindex="0" aria-label="Open lab details">
+      <figure class="media">
+        <img src="" alt="" />
+        <span class="distance" aria-label="Distance">— km</span>
+      </figure>
+      <div class="body">
+        <h3 class="title">Lab Name</h3>
+        <div class="sub">Area • City</div>
+        <div class="badges" aria-label="Highlights"></div>
+        <div class="cta">
+          <button class="btn btn-primary btn-view ripple pressable" type="button">View</button>
+          <a class="btn btn-ghost btn-dir ripple pressable" target="_blank" rel="noopener" role="button" aria-label="Get directions">Directions</a>
+          <a class="btn btn-ghost btn-call ripple pressable" role="button" aria-label="Call lab">Call</a>
+        </div>
+      </div>
+    </article>
+  </template>
+
+  <!-- ===== Test Row Template ===== -->
+  <template id="tpl-test-row">
+    <div class="test pressable ripple">
+      <label>
+        <input class="pick" type="checkbox" aria-label="Select test" />
+        <span class="tname">Test name</span>
+      </label>
+      <div class="price" aria-label="Price">₹0</div>
+    </div>
+  </template>
+
+  <!-- ===== Modal / Sheet ===== -->
+  <div id="labModal" class="modal" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="labTitle">
+      <!-- Header -->
+      <div class="sheet-head">
+        <div class="lab-hero">
+          <img id="labLogo" class="logo" alt="Lab logo" />
+          <div class="lab-meta">
+            <h3 id="labTitle">Lab</h3>
+            <div class="meta">
+              <span id="labAreaTxt">City, Area</span>
+              <span class="pill" id="labHome" aria-live="polite">Home visit • —</span>
+              <span class="pill" id="labDistance">— km</span>
+              <span class="pill" id="labCounts">—</span>
             </div>
           </div>
         </div>
-        <div class="actions">
-          <a class="badge tiny" id="modalDirections" target="_blank" rel="noopener" data-ripple>Directions</a>
-          <a class="badge tiny" id="modalCall" data-ripple>Call</a>
-          <a class="badge tiny ghost" id="modalWA" target="_blank" rel="noopener" data-ripple>WhatsApp</a>
-          <button class="icon-btn" id="modalClose" aria-label="Close modal" data-ripple>✕</button>
-        </div>
-      </header>
-      <nav class="tabs" role="tablist">
-        <button data-tab="blood" aria-selected="true">Blood Tests</button>
-        <button data-tab="radiology" aria-selected="false">Radiology</button>
-        <button data-tab="reports" aria-selected="false">Reports & Health Map</button>
-        <button data-tab="book" aria-selected="false">Booking</button>
-        <button data-tab="about" aria-selected="false">About</button>
-      </nav>
-      <div class="panel active" data-panel="blood">
-        <div class="modal-toolbar">
-          <input id="bloodSearch" type="search" placeholder="Search blood tests" />
-          <label class="pill"><input id="bloodHomeToggle" type="checkbox"> Home collection</label>
-          <span id="homeFeeText" class="muted">Home fee: ₹0</span>
-          <button class="badge ghost" id="bloodClear" type="button" data-ripple>Clear</button>
-          <button class="badge" id="bloodWA" type="button" data-ripple>WhatsApp</button>
-        </div>
-        <div class="modal-list" id="bloodList"></div>
-        <div class="modal-foot">
-          <span>Selected: <strong id="bloodCount">0</strong></span>
-          <span>Total: <strong id="bloodTotal">₹0</strong></span>
+        <div class="head-cta">
+          <a id="labMap" class="btn btn-ghost ripple pressable" target="_blank" rel="noopener" aria-label="Open directions">Directions</a>
+          <a id="labCallBtn" class="btn btn-ghost ripple pressable" aria-label="Call lab">Call</a>
+          <a id="labWABtn" class="btn btn-ghost ripple pressable" target="_blank" rel="noopener" aria-label="WhatsApp lab">WhatsApp</a>
+          <button id="labClose" class="icon-btn ripple pressable" type="button" aria-label="Close">✕</button>
         </div>
       </div>
-      <div class="panel" data-panel="radiology">
-        <div class="modal-toolbar">
-          <input id="radSearch" type="search" placeholder="Search radiology" />
-          <button class="badge ghost" id="radClear" type="button" data-ripple>Clear</button>
-          <button class="badge" id="radWA" type="button" data-ripple>WhatsApp</button>
-        </div>
-        <div class="modal-list" id="radList"></div>
-        <div class="modal-foot">
-          <span>Selected: <strong id="radCount">0</strong></span>
-          <span>Total: <strong id="radTotal">₹0</strong></span>
-        </div>
+
+      <!-- Tabs -->
+      <div class="tabs" role="tablist" aria-label="Lab sections">
+        <button class="tab is-active ripple pressable" data-tab="blood" role="tab" aria-selected="true" aria-controls="panel-blood">Blood Tests</button>
+        <button class="tab ripple pressable" data-tab="radiology" role="tab" aria-selected="false" aria-controls="panel-rad">Radiology</button>
+        <button class="tab ripple pressable" data-tab="book" role="tab" aria-selected="false" aria-controls="panel-book">Book</button>
+        <button class="tab ripple pressable" data-tab="about" role="tab" aria-selected="false" aria-controls="panel-about">About</button>
       </div>
-      <div class="panel" data-panel="reports">
-        <div class="modal-toolbar">
-          <div>
-            <strong>Latest lab report preview</strong>
-            <p class="muted" id="reportMeta">Live metrics streamed from this lab help plot your dashboard trajectory.</p>
-          </div>
-          <div class="download-actions">
-            <button class="sync-btn" id="syncDashboard" type="button" data-ripple>🛰️ Sync to dashboard</button>
-            <button class="badge ghost" id="downloadPdf" type="button" data-ripple>⬇️ Download PDF</button>
-          </div>
-        </div>
-        <div class="reports-grid">
-          <div class="report-card">
-            <h4>Blood markers</h4>
-            <div class="modal-list" id="reportBlood"></div>
-          </div>
-          <div class="report-card">
-            <h4>Imaging & impressions</h4>
-            <div class="modal-list" id="reportImaging"></div>
-          </div>
-        </div>
-        <div class="timeline" id="reportTimeline"></div>
-      </div>
-      <div class="panel" data-panel="book">
-        <div class="booking-grid">
-          <div>
-            <label>Visit mode
-              <div>
-                <label class="pill"><input type="radio" name="visitMode" value="home" checked> Home visit</label>
-                <label class="pill"><input type="radio" name="visitMode" value="lab"> Visit lab</label>
-              </div>
-            </label>
-            <label>Date & time
-              <div class="inline-inputs">
-                <input id="bookDate" type="date">
-                <input id="bookTime" type="time">
-              </div>
-            </label>
-            <label>Name
-              <input id="bookName" type="text" placeholder="Your name">
-            </label>
-            <label>Phone
-              <input id="bookPhone" type="tel" placeholder="10-digit mobile">
-            </label>
-          </div>
-          <div>
-            <label>City
-              <select id="bookCity">
-                <option>Mumbai</option>
-                <option>Delhi</option>
-                <option>Bengaluru</option>
-                <option>Hyderabad</option>
-                <option>Chennai</option>
-              </select>
-            </label>
-            <details class="profile">
-              <summary>Default profile</summary>
-              <label>Default name<input id="profileName" type="text"></label>
-              <label>Default phone<input id="profilePhone" type="tel"></label>
-              <label>Default city<input id="profileCity" type="text"></label>
-              <label>Default sort
-                <select id="profileSort">
-                  <option value="nearest">Nearest</option>
-                  <option value="az">A–Z</option>
-                </select>
-              </label>
-              <div class="actions">
-                <button class="badge" id="saveProfile" type="button" data-ripple>Save profile</button>
-                <button class="badge ghost" id="clearProfile" type="button" data-ripple>Clear</button>
-                <button class="badge primary" id="useProfile" type="button" data-ripple>Use profile</button>
-              </div>
-            </details>
-            <div class="card tight-pad">
-              <p class="muted">Selected tests & total</p>
-              <div id="bookSummary">No tests selected yet.</div>
-              <strong id="bookTotal">₹0</strong>
+
+      <!-- Panels -->
+      <div class="panels">
+        <!-- Blood -->
+        <section id="panel-blood" class="panel is-active" role="tabpanel" aria-labelledby="tab-blood">
+          <div class="panel-head">
+            <div class="field search mini">
+              <input id="bloodSearch" type="search" placeholder="Search blood tests" aria-label="Search blood tests" />
+              <span class="icon" aria-hidden="true">🔎</span>
             </div>
-            <button class="badge primary" id="bookConfirm" type="button" data-ripple>Confirm & WhatsApp</button>
+            <label class="switch" aria-label="Show only tests with home collection">
+              <input id="bloodHomeToggle" type="checkbox" />
+              <span>Home collection</span>
+            </label>
+            <div id="homeFee" class="muted" aria-live="polite">—</div>
+            <div class="grow" aria-hidden="true"></div>
+            <button id="btnBloodClear" class="btn btn-ghost ripple pressable" type="button">Clear</button>
+            <a id="btnBloodWA" class="btn ripple pressable" role="button">Send on WhatsApp</a>
           </div>
-        </div>
-      </div>
-      <div class="panel" data-panel="about">
-        <h3 id="aboutTitle">About</h3>
-        <p id="aboutDesc" class="muted"></p>
-        <p><strong>Contact:</strong> <span id="aboutContact"></span></p>
+          <div id="bloodList" class="tests" aria-live="polite"></div>
+          <div class="panel-foot">
+            <div>Selected: <strong id="bloodCount">0</strong></div>
+            <div class="grow" aria-hidden="true"></div>
+            <div>Total: <strong id="bloodTotal">₹0</strong></div>
+          </div>
+        </section>
+
+        <!-- Radiology -->
+        <section id="panel-rad" class="panel" role="tabpanel" aria-labelledby="tab-radiology">
+          <div class="panel-head">
+            <div class="field search mini">
+              <input id="radSearch" type="search" placeholder="Search radiology" aria-label="Search radiology tests" />
+              <span class="icon" aria-hidden="true">🔎</span>
+            </div>
+            <div class="grow" aria-hidden="true"></div>
+            <button id="btnRadClear" class="btn btn-ghost ripple pressable" type="button">Clear</button>
+            <a id="btnRadWA" class="btn ripple pressable" role="button">Send on WhatsApp</a>
+          </div>
+          <div id="radList" class="tests" aria-live="polite"></div>
+          <div class="panel-foot">
+            <div>Selected: <strong id="radCount">0</strong></div>
+            <div class="grow" aria-hidden="true"></div>
+            <div>Total: <strong id="radTotal">₹0</strong></div>
+          </div>
+        </section>
+
+        <!-- Booking -->
+        <section id="panel-book" class="panel" role="tabpanel" aria-labelledby="tab-book">
+          <div class="book-grid">
+            <div class="col">
+              <div class="field">
+                <label>Visit mode</label>
+                <div class="seg" role="radiogroup" aria-label="Visit mode">
+                  <label class="pressable ripple"><input id="modeVisit" type="radio" name="mode" checked aria-checked="true" /> Visit lab</label>
+                  <label id="modeHomeWrap" class="pressable ripple"><input id="modeHome" type="radio" name="mode" aria-checked="false" /> Home visit</label>
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <label for="bookDate">Date</label>
+                  <input id="bookDate" type="date" class="pressable ripple" />
+                </div>
+                <div class="field">
+                  <label for="bookTime">Time</label>
+                  <input id="bookTime" type="time" step="900" class="pressable ripple" />
+                </div>
+              </div>
+
+              <div class="row2">
+                <div class="field">
+                  <label for="bookName">Name</label>
+                  <input id="bookName" type="text" placeholder="Your name" class="pressable ripple" autocomplete="name" />
+                </div>
+                <div class="field">
+                  <label for="bookPhone">Phone</label>
+                  <input id="bookPhone" type="tel" placeholder="10-digit mobile" class="pressable ripple" autocomplete="tel" />
+                </div>
+              </div>
+
+              <!-- Inline default profile editor (inside booking) -->
+              <details id="profileDetails" class="profile-details">
+                <summary class="profile-summary pressable ripple">Edit default profile</summary>
+                <div class="profile-form">
+                  <div class="row2">
+                    <div class="field">
+                      <label for="profileName">Default Name</label>
+                      <input id="profileName" type="text" placeholder="Full name" class="pressable ripple" />
+                    </div>
+                    <div class="field">
+                      <label for="profilePhone">Default Phone</label>
+                      <input id="profilePhone" type="tel" placeholder="10-digit mobile" class="pressable ripple" />
+                    </div>
+                  </div>
+                  <div class="row2">
+                    <div class="field">
+                      <label for="profileCity">Default City</label>
+                      <select id="profileCity" class="pressable ripple">
+                        <option value="">—</option>
+                        <option>Mumbai</option><option>Delhi</option><option>Bengaluru</option>
+                        <option>Hyderabad</option><option>Chennai</option><option>Pune</option>
+                        <option>Kolkata</option><option>Ahmedabad</option><option>Jaipur</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label for="profileSort">Default sort</label>
+                      <select id="profileSort" class="pressable ripple">
+                        <option value="nearest">Nearest</option>
+                        <option value="az">A–Z</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <button id="profileClear" class="btn btn-ghost ripple pressable" type="button">Clear</button>
+                    <div class="grow" aria-hidden="true"></div>
+                    <button id="profileSave" class="btn btn-primary ripple pressable" type="button">Save</button>
+                  </div>
+                </div>
+              </details>
+
+              <div class="row">
+                <button id="btnUseProfile" class="btn btn-ghost ripple pressable" type="button">Use Profile</button>
+                <div class="grow" aria-hidden="true"></div>
+                <button id="btnBookConfirm" class="btn btn-primary ripple pressable" type="button">Confirm & WhatsApp</button>
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="summary" aria-live="polite">
+                <div class="h">Summary</div>
+                <div id="bookSummary" class="muted">No tests selected yet.</div>
+                <div class="tot">Total: <strong id="bookTotal">₹0</strong></div>
+                <div class="muted small">Your number will be shared with the lab for coordination.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- About -->
+        <section id="panel-about" class="panel" role="tabpanel" aria-labelledby="tab-about">
+          <p id="labAbout">—</p>
+          <p id="labContact" class="muted">—</p>
+        </section>
       </div>
     </div>
   </div>
 
-  <template id="labCardTpl">
-    <div class="card lab-card" data-ripple>
-      <img class="lab-img" alt="Lab image">
-      <div>
-        <h3 class="lab-name"></h3>
-        <p class="muted lab-loc"></p>
-      </div>
-      <div class="label-row badges"></div>
-      <div class="investigation-hints"></div>
-      <div class="label-row distance-row"></div>
-      <div class="actions">
-        <button class="tiny badge" data-action="view" type="button">View</button>
-        <button class="tiny badge book-now" data-action="book" type="button">Book now</button>
-        <a class="tiny badge ghost" data-action="directions" target="_blank" rel="noopener">Directions</a>
-        <a class="tiny badge ghost" data-action="call">Call</a>
-      </div>
-    </div>
-  </template>
+  <!-- ===== Toast ===== -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
-  <template id="testRowTpl">
-    <div class="test-row">
-      <label>
-        <input type="checkbox">
-        <div>
-          <span class="test-name"></span>
-          <p class="test-why"></p>
-        </div>
-      </label>
-      <div class="test-price-wrap">
-        <strong class="test-price"></strong>
-        <small class="muted test-range"></small>
-      </div>
-    </div>
-  </template>
-  
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-
-  <audio id="clickSound" preload="auto" src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCA/////wAAA1cAABF4AAD///8ATGF2ZjU2LjQxLjEwNAAAAAAAAAAAAAAA//uQxAADB6gAhR0AAAiCAAAIhYAQBEdAAAEQxAADL0AAAL0AAAQW5n//sQxAAD//8AAAAAAAAAAAAAAA=="></audio>
-
-  <script src="js/patient-labs.js"></script>
-
+  <!-- ===== Scripts ===== -->
+  <script src="js/patient-labs.js" defer></script>
 </body>
 </html>
