@@ -49,6 +49,93 @@ function updateVitals() {
 updateVitals();
 setInterval(updateVitals, 4500);
 
+// Engagement loop
+const streakProgress = document.getElementById('streak_progress');
+const streakValue = document.getElementById('streak_value');
+const streakHint = document.getElementById('streak_hint');
+const streakBadge = document.getElementById('streak_badge');
+const checkinBtn = document.getElementById('checkin_btn');
+const checkinMsg = document.getElementById('checkin_msg');
+const ritualList = document.getElementById('ritual_list');
+const ritualShuffle = document.getElementById('ritual_shuffle');
+const dopamineFeed = document.getElementById('dopamine_feed');
+const shareStreak = document.getElementById('share_streak');
+const energyValue = document.getElementById('energy_value');
+const energyHint = document.getElementById('energy_hint');
+const moodValue = document.getElementById('mood_value');
+const boostButton = document.getElementById('boost_button');
+
+function setProgress(el, value) {
+  if (!el) return;
+  el.style.width = `${value}%`;
+}
+
+function renderStreak(progress = 72) {
+  if (!streakProgress || !streakValue) return;
+  setProgress(streakProgress, progress);
+  streakValue.textContent = `${progress}%`;
+  if (streakHint) streakHint.textContent = progress > 85 ? 'You are in the flow — 1 ritual left' : '3 rituals left today';
+  if (streakBadge) streakBadge.textContent = `${Math.floor(progress / 6)} days 🔥`;
+}
+
+function shuffleRituals() {
+  if (!ritualList) return;
+  const items = Array.from(ritualList.querySelectorAll('li'));
+  items.forEach(item => {
+    const bar = item.querySelector('.mini-progress span');
+    const pct = Math.floor(Math.random() * 60) + 30;
+    if (bar) bar.style.width = `${pct}%`;
+  });
+  items.sort(() => Math.random() - 0.5).forEach(item => ritualList.appendChild(item));
+}
+
+function rotateFeed() {
+  if (!dopamineFeed) return;
+  const updates = [
+    'Hydration up 12% after your last sip.',
+    'SpO₂ steady. Keep the streak alive.',
+    'Lungs need a stretch. Try box breathing.',
+    'Night mode ready — prep for deep sleep.',
+    'Guardian pushed a calm playlist for you.',
+  ];
+  const feedItem = document.createElement('div');
+  feedItem.className = 'feed-item';
+  feedItem.textContent = updates[Math.floor(Math.random() * updates.length)];
+  dopamineFeed.prepend(feedItem);
+  if (dopamineFeed.children.length > 4) dopamineFeed.lastElementChild.remove();
+}
+
+function updateEnergy() {
+  if (!energyValue || !energyHint) return;
+  const value = Math.floor(Math.random() * 20) + 70;
+  energyValue.textContent = `${value}%`;
+  energyHint.textContent = value > 85 ? 'Prime time — book your walk now' : 'Micro-boost ready';
+  if (moodValue) moodValue.textContent = value > 82 ? 'Flow' : 'Calm';
+}
+
+checkinBtn?.addEventListener('click', () => {
+  const next = Math.min(100, parseInt(streakValue?.textContent || '70', 10) + 8);
+  renderStreak(next);
+  if (checkinMsg) checkinMsg.textContent = 'Check-in logged. Dopamine drip extended by 4 hours.';
+});
+
+ritualShuffle?.addEventListener('click', shuffleRituals);
+boostButton?.addEventListener('click', () => {
+  updateEnergy();
+  if (checkinMsg) checkinMsg.textContent = 'Focus boost applied. Mood stabilized.';
+});
+
+shareStreak?.addEventListener('click', () => {
+  if (checkinMsg) checkinMsg.textContent = 'Link copied — flex your streak in family chat.';
+});
+
+renderStreak();
+shuffleRituals();
+updateEnergy();
+setInterval(() => renderStreak(Math.floor(Math.random() * 25) + 65), 10000);
+setInterval(rotateFeed, 15000);
+setInterval(updateEnergy, 12000);
+
 // Blood & hydration
 const bloodSignal = document.getElementById('blood_signal');
 function setText(id, value) {
