@@ -203,6 +203,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const elLocate = qs('#btnLocate');
   const elSortHint = qs('#sortHint');
   const elKLabs = qs('#kLabs');
+  const statHomeLabs = qs('#statHomeLabs');
+  const statCities = qs('#statCities');
+  const statAvgFee = qs('#statAvgFee');
+  const statCoverage = qs('#statCoverage');
+  const statHomeRange = qs('#statHomeRange');
 
   // Modal elements
   const modal = qs('#labModal');
@@ -364,10 +369,36 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       elGrid.appendChild(frag);
     }
-    const k = qs('#kLabs');
-    if (k) k.textContent = String(list.length);
+    updateHeroStats(list);
   }
 
+  function updateHeroStats(list) {
+    const homeList = list.filter(l => l.homeVisit);
+    if (elKLabs) elKLabs.textContent = String(list.length);
+    if (statHomeLabs) statHomeLabs.textContent = homeList.length ? String(homeList.length) : '—';
+    if (statCities) {
+      const cityCount = new Set(list.map(l => l.city)).size;
+      statCities.textContent = cityCount ? String(cityCount) : '—';
+    }
+    if (statAvgFee) {
+      const homeFees = homeList.map(l => l.homeFee).filter(f => typeof f === 'number');
+      if (homeFees.length) {
+        const avg = Math.round(homeFees.reduce((a, b) => a + b, 0) / homeFees.length);
+        const min = Math.min(...homeFees);
+        const max = Math.max(...homeFees);
+        statAvgFee.textContent = fmtINR(avg);
+        if (statHomeRange) statHomeRange.textContent = `${fmtINR(min)}–${fmtINR(max)}`;
+      } else {
+        statAvgFee.textContent = '—';
+        if (statHomeRange) statHomeRange.textContent = '—';
+      }
+    }
+    if (statCoverage) {
+      const cityTotal = new Set(labs.map(l => l.city)).size;
+      statCoverage.textContent = `${cityTotal} cities`;
+    }
+  }
+   
   /* -------------------------------
      Geolocation
   --------------------------------*/
