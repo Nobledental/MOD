@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="matte">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthFlo — Family & Care Circle</title>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/patient-os.css">
+  <link rel="stylesheet" href="css/patient-connections.css">
+</head>
+<body>
+  <header class="hf-topbar">
+    <div class="container topbar-inner">
+      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
+      <nav class="hf-nav">
+        <a href="patient-dashboard.html">Dashboard</a>
+        <a href="patient-health.html">Health</a>
+        <a href="patient-organs.html">Organs</a>
+        <a href="patient-profile.html">Profile</a>
+        <a href="patient-hospitals.html">Hospitals</a>
+        <a href="patient-pharmacy.html">Pharmacy</a>
+        <a href="patient-labs.html">Labs</a>
+        <a href="patient-devices.html">Devices</a>
+        <a class="active" href="patient-family.html">Family</a>
+        <a href="patient-insurance.html">Insurance</a>
+        <a href="patient-settings.html">Settings</a>
+      </nav>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌓</button>
+        <button class="icon-btn">🔔</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="connection-hero">
+      <div class="hero-card">
+        <p class="chip">Family mirror</p>
+        <h1 class="hero-title">Share live vitals and alerts</h1>
+        <p class="section-sub">Trusted family get AI-simplified vitals, organ alerts, and ambulance triggers with privacy controls.</p>
+        <div class="hero-actions">
+          <button class="badge primary" id="familyMirror" data-state="off">Share live view with family</button>
+          <button class="badge" id="triggerEmergency">Trigger ambulance</button>
+          <button class="badge" id="autoToggle">Auto trigger: OFF</button>
+        </div>
+        <div class="notice" id="family_status_msg">Family access paused.</div>
+        <div class="notice" id="emg_status_msg">Manual mode active.</div>
+      </div>
+      <div class="hero-card stack">
+        <div class="stat-grid" id="family_tiles">
+          <div class="stat"><small>Riya (Sister)</small><strong>Viewer</strong><span class="hint">Sees labs, vitals</span></div>
+          <div class="stat"><small>Anand (Dad)</small><strong>Guardian</strong><span class="hint">Can trigger ambulance</span></div>
+          <div class="stat"><small>Priya (Partner)</small><strong>Admin</strong><span class="hint">Manage insurance</span></div>
+        </div>
+        <div class="inline-list">
+          <span class="badge soft">SOS mirroring</span>
+          <span class="badge soft">Geo-stream</span>
+          <span class="badge soft">One-tap revoke</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Trusted circle</p>
+          <h2 class="section-title">Roles & permissions</h2>
+          <p class="section-sub">Granular controls for who sees vitals, prescriptions, insurance, or can act during emergencies.</p>
+        </div>
+      </header>
+      <div class="section-grid">
+        <div class="family-card">
+          <h3>Share packages</h3>
+          <p class="section-sub">Pick what to share: vitals, organ alerts, labs, insurance or invoices.</p>
+          <div class="device-meta">
+            <span class="pill">Vitals + Organs</span>
+            <span class="pill">Labs + Radiology</span>
+            <span class="pill">Insurance desk</span>
+          </div>
+        </div>
+        <div class="family-card">
+          <h3>Emergency controls</h3>
+          <p class="section-sub">Allow who can call ambulance, share live location, or accept a hospital bed.</p>
+          <div class="device-meta">
+            <span class="pill">Crash/fall detect</span>
+            <span class="pill">Geo + QR</span>
+          </div>
+        </div>
+        <div class="family-card">
+          <h3>Notifications</h3>
+          <p class="section-sub">Configure SMS, WhatsApp, and in-app alerts. Silent hours respected.</p>
+          <div class="device-meta">
+            <span class="pill">Layered alerts</span>
+            <span class="pill">Timezone aware</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Care tasks</p>
+          <h2 class="section-title">What family can do</h2>
+          <p class="section-sub">Orders, insurance uploads, and appointment approvals without paperwork.</p>
+        </div>
+      </header>
+      <div class="table-card">
+        <table>
+          <thead>
+            <tr><th>Action</th><th>Owner</th><th>Permissions</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Approve admission</td><td>Admin</td><td>Can accept bed + share QR</td></tr>
+            <tr><td>Upload lab reports</td><td>Guardian</td><td>Auto-sync to organs/labs</td></tr>
+            <tr><td>Order medicines</td><td>Viewer</td><td>Requires patient OTP</td></tr>
+            <tr><td>Insurance documents</td><td>Admin</td><td>Submit + track status</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Safety</p>
+          <h2 class="section-title">Location + follow-me</h2>
+          <p class="section-sub">Live location streaming during ambulance triggers with privacy-aware timers.</p>
+        </div>
+      </header>
+      <div class="section-grid">
+        <div class="family-card">
+          <h3>Location streaming</h3>
+          <p class="section-sub">Send live location to 3 trusted members for 30 minutes.</p>
+          <div class="device-meta">
+            <span class="pill">TTL 30m</span>
+            <span class="pill">Auto stop</span>
+          </div>
+        </div>
+        <div class="family-card">
+          <h3>Consent receipts</h3>
+          <p class="section-sub">Every share has a receipt with time and device used.</p>
+          <div class="device-meta">
+            <span class="pill">Audit ready</span>
+            <span class="pill">HIPAA safe</span>
+          </div>
+        </div>
+        <div class="family-card">
+          <h3>Hospital handoff</h3>
+          <p class="section-sub">Trusted family can share QR/ID to register at the hospital without paperwork.</p>
+          <div class="device-meta">
+            <span class="pill">HF-QR-2048</span>
+            <span class="pill">HF-USER-NEO</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HealthFlo — Family desk</p>
+  </footer>
+
+  <script src="js/patient-os.js"></script>
+  <script src="js/patient-connections.js"></script>
+</body>
+</html>
