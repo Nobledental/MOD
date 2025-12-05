@@ -549,6 +549,12 @@
     const dashboardStatus = el('dashboardStatus');
     const dashboardSummary = el('dashboardSummary');
     const dashboardList = el('dashboardList');
+    const offersStrip = el('offersStrip');
+    const secondaryOffers = el('secondaryOffers');
+    const bookLandingCta = el('bookLandingCta');
+    const downloadLandingPdf = el('downloadLandingPdf');
+    const downloadDashboardPdf = el('downloadDashboardPdf');
+    const syncFromLatest = el('syncFromLatest');
 
     const modal = el('labModal');
     const modalTitle = el('modalTitle');
@@ -603,12 +609,14 @@
     const reportTimeline = el('reportTimeline');
     const syncDashboard = el('syncDashboard');
     const reportMeta = el('reportMeta');
+    const downloadPdfBtn = el('downloadPdf');
 
     let labs = [];
     let selections = new Map();
     let currentLab = null;
     let userLocation = null;
-
+    let latestReportForPdf = getFallbackSnapshot();
+    
     const baseBlood = [
       { name: 'Complete Blood Count', price: 480, why: 'Screens anemia, infection and platelet issues in one sweep.', unit:'g/dL', range:[12,16] },
       { name: 'Lipid Profile', price: 650, why: 'Maps cholesterol fractions to quantify heart risk.', unit:'mg/dL', range:[120,200] },
@@ -632,6 +640,59 @@
       { name: 'USG Pelvis', price: 1600, why: 'Evaluates uterus/ovaries/prostate for structural changes.', impression:'Uterus normal size, no adnexal masses.' }
     ];
 
+    const cityCoordinates = {
+      Mumbai: { lat: 19.076, lng: 72.8777, areas: ['Andheri','Bandra','Powai','Dadar','Mulund'] },
+      Delhi: { lat: 28.6139, lng: 77.209, areas: ['Saket','Dwarka','Karol Bagh','Rohini','Punjabi Bagh'] },
+      Bengaluru: { lat: 12.9716, lng: 77.5946, areas: ['Koramangala','Indiranagar','Whitefield','Jayanagar','Malleshwaram'] },
+      Hyderabad: { lat: 17.385, lng: 78.4867, areas: ['Jubilee Hills','Gachibowli','Begumpet','Kukatpally','Secunderabad'] },
+      Chennai: { lat: 13.0827, lng: 80.2707, areas: ['Velachery','Adyar','Anna Nagar','T Nagar','OMR'] }
+    };
+
+    const cityLabPlans = [
+      { city:'Mumbai', labs:[
+        { name:'Metropolis SmartLab', category:'Private Lab', area:'Andheri' },
+        { name:'Thyrocare Rapid', category:'Private Lab', area:'Powai' },
+        { name:'HealthVista Diagnostics', category:'Private Lab', area:'Dadar' },
+        { name:'Fortis Hospital Lab', category:'Hospital Lab', area:'Mulund' },
+        { name:'Lilavati Hospital Pathology', category:'Hospital Lab', area:'Bandra' }
+      ]},
+      { city:'Delhi', labs:[
+        { name:'Dr. Lal Care', category:'Private Lab', area:'Karol Bagh' },
+        { name:'Max Smart Diagnostics', category:'Private Lab', area:'Saket' },
+        { name:'SRL Vision Hub', category:'Private Lab', area:'Dwarka' },
+        { name:'AIIMS Hospital Lab', category:'Hospital Lab', area:'Rohini' },
+        { name:'Apollo Hospitals Lab Delhi', category:'Hospital Lab', area:'Jasola' }
+      ]},
+      { city:'Bengaluru', labs:[
+        { name:'Aster Clinical Lab', category:'Private Lab', area:'Whitefield' },
+        { name:'Clumax Diagnostics', category:'Private Lab', area:'Jayanagar' },
+        { name:'PrimeCare Path Lab', category:'Private Lab', area:'Koramangala' },
+        { name:'Manipal Hospital Diagnostics', category:'Hospital Lab', area:'Old Airport' },
+        { name:'Fortis Bengaluru Lab', category:'Hospital Lab', area:'Bannerghatta' }
+      ]},
+      { city:'Hyderabad', labs:[
+        { name:'Vijaya Diagnostic Center', category:'Private Lab', area:'Himayatnagar' },
+        { name:'Medicover Labs', category:'Private Lab', area:'Madhapur' },
+        { name:'Lucid Medical Diagnostics', category:'Private Lab', area:'Kukatpally' },
+        { name:'Apollo Hospitals Lab Hyderabad', category:'Hospital Lab', area:'Jubilee Hills' },
+        { name:'Yashoda Hospital Lab', category:'Hospital Lab', area:'Somajiguda' }
+      ]},
+      { city:'Chennai', labs:[
+        { name:'Anderson Diagnostics', category:'Private Lab', area:'Alwarpet' },
+        { name:'Aarthi Scans & Labs', category:'Private Lab', area:'T Nagar' },
+        { name:'Proscans Pathology', category:'Private Lab', area:'Velachery' },
+        { name:'Apollo Hospitals Lab Chennai', category:'Hospital Lab', area:'Greams Road' },
+        { name:'Sri Ramachandra Hospital Lab', category:'Hospital Lab', area:'Porur' }
+      ]}
+    ];
+
+    const offerData = [
+      { title:'Flat 30% on home collection', tag:'HOLI30', desc:'Works for all private labs with home visit readiness.' },
+      { title:'Hospital lab bundle', tag:'CARE20', desc:'Save on MRI + CBC when booking hospital diagnostics.' },
+      { title:'Early bird slots', tag:'SUNRISE', desc:'6–8 AM fasting slots with priority pickup.' },
+      { title:'Family pack of 4', tag:'FAM4', desc:'Auto copy reports to all linked dashboards.' }
+    ];
+
     function initTheme() {
       const saved = localStorage.getItem('hf-theme') || 'matte';
       document.documentElement.dataset.theme = saved;
@@ -643,20 +704,42 @@
     }
 
     function buildLabs() {
-      const labNames = ['Apollo Diagnostics','SRL Care','Thyroplus','MedLife Lab','HealthVista','City Imaging','Prime Path','TrustLab','Nova Scan','Orbit Labs'];
-      const cities = ['Mumbai','Delhi','Bengaluru','Hyderabad','Chennai'];
-      labs = labNames.map((name, idx) => {
-        const city = cities[idx % cities.length];
-        const area = ['Andheri','Karol Bagh','Koramangala','Jubilee Hills','Velachery'][idx % 5];
-        const multiplier = rand(0.9,1.35);
-        const homeVisit = Math.random() > 0.35;
-        const homeFee = homeVisit ? Math.round(rand(150,350)) : 0;
-        const blood = baseBlood.map(t => ({ ...t, price: Math.round(t.price * multiplier) }));
-        const radiology = baseRad.map(t => ({ ...t, price: Math.round(t.price * (multiplier+0.05)) }));
-        const description = `${name} offers NABL-style quality with QC checks every hour. Home phlebotomy trained, transparent pricing, and WhatsApp confirmations.`;
-        const img = `https://images.unsplash.com/photo-1582719478173-2f2df4b95831?auto=format&fit=crop&w=900&q=80&sig=${idx}`;
-        const reports = buildLabReports(blood, radiology);
-        return { id:`lab-${idx}`, name, city, area, lat:19 + Math.random(), lng:72 + Math.random(), phone:`+91-98765${10000+idx}`, homeVisit, homeFee, blood, radiology, description, img, reports };
+      let idx = 0;
+      labs = [];
+      cityLabPlans.forEach(plan => {
+        const coord = cityCoordinates[plan.city];
+        plan.labs.forEach(lab => {
+          const multiplier = rand(0.92,1.3);
+          const homeVisit = lab.category === 'Private Lab' ? Math.random() > 0.25 : Math.random() > 0.6;
+          const homeFee = homeVisit ? Math.round(rand(120,320)) : 0;
+          const blood = baseBlood.map(t => ({ ...t, price: Math.round(t.price * multiplier) }));
+          const radiology = baseRad.map(t => ({ ...t, price: Math.round(t.price * (multiplier+0.08)) }));
+          const description = `${lab.category} with neon status chips, QR confirmations, and proactive WhatsApp nudges.`;
+          const img = `https://images.unsplash.com/photo-1582719478173-2f2df4b95831?auto=format&fit=crop&w=900&q=80&sig=${idx}`;
+          const reports = buildLabReports(blood, radiology);
+          const sigTests = [blood[0], blood[1], radiology[0]].map(t => ({ name:t.name, why:t.why }));
+          const lat = coord.lat + rand(-0.08,0.08);
+          const lng = coord.lng + rand(-0.08,0.08);
+          labs.push({
+            id:`lab-${idx}`,
+            name: lab.name,
+            city: plan.city,
+            area: lab.area || coord.areas[idx % coord.areas.length],
+            category: lab.category,
+            lat,
+            lng,
+            phone:`+91-98765${10000+idx}`,
+            homeVisit,
+            homeFee,
+            blood,
+            radiology,
+            description,
+            img,
+            reports,
+            signatureTests: sigTests
+          });
+          idx++;
+        });
       });
     }
 
@@ -673,6 +756,29 @@
         why: test.why
       }));
       return { updated: new Date().toISOString(), bloodReports, imagingReports };
+    }
+
+    function getFallbackSnapshot() {
+      return {
+        updated: new Date().toISOString(),
+        lab: 'HealthFlo Demo Lab',
+        city: 'Mumbai',
+        area: 'Andheri',
+        bloodReports: baseBlood.slice(0,3).map((test, i) => ({
+          name: test.name,
+          value: (test.range ? test.range[0] + (i+1) * 0.8 : 12 + i).toFixed(1),
+          unit: test.unit || '',
+          range: test.range,
+          why: test.why,
+          status: i === 1 ? 'high' : 'normal'
+        })),
+        imagingReports: baseRad.slice(0,2).map((test, i) => ({
+          name: test.name,
+          impression: i === 0 ? 'Clear lungs and mediastinum.' : test.impression,
+          status: i === 1 ? 'follow-up' : 'clear',
+          why: test.why
+        }))
+      };
     }
 
     function haversine(lat1, lon1, lat2, lon2) {
@@ -745,15 +851,26 @@
         homeBadge.className = 'pill ' + (lab.homeVisit ? 'good' : '');
         homeBadge.textContent = lab.homeVisit ? `Home visit • ${fmt(lab.homeFee)}` : 'In-lab only';
         badges.appendChild(homeBadge);
-        badges.insertAdjacentHTML('beforeend', `<span class="pill">${lab.blood.length} blood</span><span class="pill">${lab.radiology.length} radiology</span>`);
+        badges.insertAdjacentHTML('beforeend', `<span class="pill">${lab.blood.length} blood</span><span class="pill">${lab.radiology.length} radiology</span><span class="pill hot">${lab.category}</span>`);
+        const hints = node.querySelector('.investigation-hints');
+        hints.innerHTML = '';
+        lab.signatureTests.forEach(test => {
+          const chip = document.createElement('span');
+          chip.className = 'hint';
+          chip.textContent = test.name;
+          chip.title = test.why;
+          hints.appendChild(chip);
+        });
         const distRow = node.querySelector('.distance-row');
         distRow.textContent = userLocation && lab.distanceKm ? `${lab.distanceKm.toFixed(1)} km away` : 'Distance pending location';
         const viewBtn = node.querySelector('[data-action="view"]');
+        const bookBtn = node.querySelector('[data-action="book"]');
         const dirBtn = node.querySelector('[data-action="directions"]');
         const callBtn = node.querySelector('[data-action="call"]');
         dirBtn.href = `https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}`;
         callBtn.href = `tel:${lab.phone}`;
         viewBtn.addEventListener('click', e => { e.stopPropagation(); openModal(lab); });
+        bookBtn.addEventListener('click', e => { e.stopPropagation(); openModal(lab); setTab('book'); });
         dirBtn.addEventListener('click', e => e.stopPropagation());
         callBtn.addEventListener('click', e => e.stopPropagation());
         node.addEventListener('click', () => openModal(lab));
@@ -772,17 +889,28 @@
       });
     }
 
+    function renderOfferCards(container) {
+      container.innerHTML = '';
+      offerData.forEach(offer => {
+        const card = document.createElement('div');
+        card.className = 'offer-card';
+        card.innerHTML = `<h4>${offer.title}</h4><p class="offer-tag">Code ${offer.tag}</p><p class="muted">${offer.desc}</p>`;
+        container.appendChild(card);
+      });
+    }
+
+    function renderOffers() {
+      renderOfferCards(offersStrip);
+      renderOfferCards(secondaryOffers);
+    }
+
     function renderDashboardSnapshot() {
-      const saved = JSON.parse(localStorage.getItem('lab-dashboard-latest') || 'null');
+      const savedRaw = localStorage.getItem('lab-dashboard-latest');
+      const saved = savedRaw ? JSON.parse(savedRaw) : getFallbackSnapshot();
+      const demo = !savedRaw;
       dashboardList.innerHTML = '';
-      if (!saved) {
-        dashboardStatus.textContent = 'No reports synced yet';
-        dashboardStatus.className = 'status-badge neutral';
-        dashboardSummary.textContent = 'Sync any lab report to see friendly explanations and health status mapping here.';
-        return;
-      }
-      dashboardStatus.textContent = `Synced ${new Date(saved.updated).toLocaleString()}`;
-      dashboardStatus.className = 'status-badge good';
+      dashboardStatus.textContent = demo ? 'Demo snapshot' : `Synced ${new Date(saved.updated).toLocaleString()}`;
+      dashboardStatus.className = demo ? 'status-badge neutral' : 'status-badge good';
       dashboardSummary.textContent = `From ${saved.lab} • ${saved.city}`;
       saved.bloodReports.forEach(rep => {
         const badgeClass = rep.status === 'normal' ? 'good' : rep.status === 'high' || rep.status === 'low' ? 'warn' : 'neutral';
@@ -791,6 +919,7 @@
         row.innerHTML = `<div><strong>${rep.name}</strong><small>${rep.why}</small><small>Result: ${rep.value} ${rep.unit || ''}${rep.range?` (target ${rep.range[0]}-${rep.range[1]})`:''}</small></div><span class="status-badge ${badgeClass}">${rep.status}</span>`;
         dashboardList.appendChild(row);
       });
+      latestReportForPdf = saved;
     }
 
     function getSel(id) {
@@ -850,6 +979,7 @@
     }
 
     function renderReports(lab) {
+      latestReportForPdf = { ...lab.reports, lab: lab.name, city: lab.city, area: lab.area };
       reportBloodEl.innerHTML = '';
       reportImagingEl.innerHTML = '';
       reportTimeline.innerHTML = '';
@@ -945,14 +1075,64 @@
       return `https://wa.me/?text=${encodeURIComponent(msg)}`;
     }
 
+    function downloadReportPDF(report, filename='lab-report.pdf') {
+      if (!report) { showToast('No report to download yet'); return; }
+      const lines = [];
+      lines.push(`Lab report: ${report.lab || 'Lab'}`);
+      lines.push(`City: ${report.city || '-'} ${report.area ? '• ' + report.area : ''}`);
+      lines.push(`Updated: ${new Date(report.updated || Date.now()).toLocaleString()}`);
+      lines.push('');
+      lines.push('Blood markers:');
+      (report.bloodReports || []).forEach(rep => {
+        lines.push(`- ${rep.name}: ${rep.value || '-'} ${rep.unit || ''}`);
+        if (rep.range) lines.push(`  Target: ${rep.range[0]}-${rep.range[1]}`);
+        if (rep.why) lines.push(`  Why: ${rep.why}`);
+      });
+      lines.push('');
+      lines.push('Imaging & impressions:');
+      (report.imagingReports || []).forEach(rep => {
+        lines.push(`- ${rep.name}: ${rep.impression || ''}`);
+        if (rep.why) lines.push(`  Why: ${rep.why}`);
+        if (rep.status) lines.push(`  Status: ${rep.status}`);
+      });
+      const blob = new Blob([lines.join('\n')], { type:'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Downloading PDF report');
+    }
+    
     bloodWA.addEventListener('click', () => { if (!currentLab) return; window.open(buildWhatsAppLink(currentLab,'blood'),'_blank'); showToast('Opened WhatsApp with blood tests'); });
     radWA.addEventListener('click', () => { if (!currentLab) return; window.open(buildWhatsAppLink(currentLab,'radiology'),'_blank'); showToast('Opened WhatsApp with radiology tests'); });
     bookConfirm.addEventListener('click', () => {
       if (!currentLab) return; window.open(buildWhatsAppLink(currentLab,'booking'),'_blank'); showToast('Booking sent via WhatsApp');
     });
 
+    downloadPdfBtn.addEventListener('click', () => downloadReportPDF(latestReportForPdf, `${currentLab ? currentLab.name : 'lab'}-report.pdf`));
+    downloadDashboardPdf.addEventListener('click', () => {
+      const snapshot = JSON.parse(localStorage.getItem('lab-dashboard-latest') || 'null') || getFallbackSnapshot();
+      downloadReportPDF(snapshot, 'health-map-report.pdf');
+    });
+    downloadLandingPdf.addEventListener('click', () => downloadReportPDF(getFallbackSnapshot(), 'demo-lab-report.pdf'));
+    syncFromLatest.addEventListener('click', () => {
+      const snap = getFallbackSnapshot();
+      latestReportForPdf = snap;
+      localStorage.setItem('lab-dashboard-latest', JSON.stringify(snap));
+      renderDashboardSnapshot();
+      showToast('Dummy data refreshed');
+    });
+    bookLandingCta.addEventListener('click', () => {
+      if (!labs.length) return;
+      openModal(labs[0]);
+      setTab('book');
+    });
+
     function syncReportsToDashboard(lab) {
       const payload = { ...lab.reports, lab: lab.name, city: lab.city, area: lab.area };
+      latestReportForPdf = payload;
       localStorage.setItem('lab-dashboard-latest', JSON.stringify(payload));
       renderDashboardSnapshot();
       showToast('Report synced to dashboard');
