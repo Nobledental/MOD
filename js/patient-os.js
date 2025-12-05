@@ -25,6 +25,38 @@ const vitalsEl = {
   ai: document.getElementById('ai_summary'),
 };
 
+const organMeta = {
+  vitals: {
+    hr: document.getElementById('organ_vitals_hr'),
+    bp: document.getElementById('organ_vitals_bp'),
+    spo2: document.getElementById('organ_vitals_spo2'),
+    heart: document.getElementById('heart_vitals'),
+    lung: document.getElementById('lung_vitals'),
+  },
+  lab: {
+    name: document.getElementById('organ_lab_name'),
+    updated: document.getElementById('organ_lab_updated'),
+  },
+};
+
+const organStatusEls = {
+  heart: document.getElementById('heart_status'),
+  lungs: document.getElementById('lung_status'),
+  liver: document.getElementById('liver_status'),
+  kidney: document.getElementById('kidney_status'),
+  brain: document.getElementById('brain_status'),
+  dental: document.getElementById('dental_status'),
+  vascular: document.getElementById('vascular_status'),
+  endocrine: document.getElementById('endocrine_status'),
+  immune: document.getElementById('immune_status'),
+  musculoskeletal: document.getElementById('musculoskeletal_status'),
+  gi: document.getElementById('gi_status'),
+  reproductive: document.getElementById('reproductive_status'),
+  skin: document.getElementById('skin_status'),
+  eye: document.getElementById('eye_status'),
+  ear: document.getElementById('ear_status'),
+};
+
 function randomBetween(min, max, fixed = 1) {
   return (Math.random() * (max - min) + min).toFixed(fixed);
 }
@@ -37,10 +69,17 @@ function updateVitals() {
   const spo2 = Math.floor(Math.random() * 3) + 97;
   const temp = randomBetween(36.5, 37.2);
 
+  window.hfVitals = { hr, bpS, bpD, spo2, temp };
+
   vitalsEl.hr.textContent = hr;
   vitalsEl.bp.textContent = `${bpS}/${bpD}`;
   vitalsEl.spo2.textContent = `${spo2}%`;
   vitalsEl.temp.textContent = `${temp}°C`;
+  if (organMeta.vitals.hr) organMeta.vitals.hr.textContent = `${hr} bpm`;
+  if (organMeta.vitals.bp) organMeta.vitals.bp.textContent = `${bpS}/${bpD}`;
+  if (organMeta.vitals.spo2) organMeta.vitals.spo2.textContent = `${spo2}%`;
+  if (organMeta.vitals.heart) organMeta.vitals.heart.textContent = `${hr} bpm, ${bpS}/${bpD}`;
+  if (organMeta.vitals.lung) organMeta.vitals.lung.textContent = `${spo2}% SpO₂, ${Math.floor(Math.random() * 4) + 14} rr`;
   if (vitalsEl.ai) {
     vitalsEl.ai.textContent = `Vitals steady. HR ${hr} bpm, BP ${bpS}/${bpD}, SpO₂ ${spo2}%. Stay hydrated.`;
   }
@@ -153,6 +192,32 @@ const bloodSignal = document.getElementById('blood_signal');
 function setText(id, value) {
   const el = document.getElementById(id);
   if (el) el.textContent = value;
+}
+
+function setOrganStatus(key, value, tone = 'good') {
+  const el = organStatusEls[key];
+  if (!el) return;
+  el.textContent = value;
+  el.classList.remove('good', 'warn', 'danger');
+  if (tone) el.classList.add(tone);
+}
+
+function getLabSnapshot() {
+  const raw = localStorage.getItem('lab-dashboard-latest');
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+}
+
+function describeMarker(rep, fallback = '—') {
+  if (!rep) return fallback;
+  const val = rep.value !== undefined ? rep.value : rep.impression;
+  const unit = rep.unit || '';
+  const status = rep.status ? ` (${rep.status})` : '';
+  return `${val || fallback} ${unit}`.trim() + status;
 }
 
 function hydrateStatus() {
@@ -295,23 +360,138 @@ function evaluateOrgans() {
   const alerts = [];
   const hydrationLow = bloodSignal?.textContent === 'Hydrate';
   const lungTight = labPills.lung?.textContent === 'Tight';
+  const labSnap = getLabSnapshot();
+  const bloodReports = labSnap?.bloodReports || [];
+  const imagingReports = labSnap?.imagingReports || [];
 
-  if (hydrationLow) {
-    setText('kidney_status', 'Dry');
+  const findReport = (needle) => bloodReports.find(rep => rep.name?.toLowerCase().includes(needle));
+  const kidneyRep = findReport('kidney');
+  const liverRep = findReport('liver');
+  const hba1cRep = findReport('hba1c');
+  const lipidRep = findReport('lipid');
+  const thyroidRep = findReport('thyroid');
+  const cbcRep = findReport('complete blood count');
+  const crpRep = findReport('crp');
+  const abdomenImg = imagingReports.find(rep => rep.name?.toLowerCase().includes('abdomen'));
+  const lungImg = imagingReports.find(rep => rep.name?.toLowerCase().includes('chest'));
+  const pelvisImg = imagingReports.find(rep => rep.name?.toLowerCase().includes('pelvis') || rep.name?.toLowerCase().includes('prostate'));
+
+  const vitals = window.hfVitals || {};
+  const bpHigh = vitals.bpS && vitals.bpS > 125;
+
+  if (hydrationLow || (kidneyRep && kidneyRep.status && kidneyRep.status !== 'normal')) {
+    setOrganStatus('kidney', hydrationLow ? 'Dry' : 'Load', hydrationLow ? 'warn' : 'warn');
     alerts.push({ type: 'warn', message: 'Hydration low — kidneys need water support.' });
   } else {
-    setText('kidney_status', 'Hydrated');
+    setOrganStatus('kidney', 'Hydrated', 'good');
   }
+  setText('kidney_markers', describeMarker(kidneyRep, 'No recent KFT'));
 
-  if (lungTight) {
-    setText('lung_status', 'Tight');
+  if (lungTight || (lungImg && lungImg.status !== 'clear')) {
+    setOrganStatus('lungs', 'Tight', 'danger');
     alerts.push({ type: 'danger', message: 'Spirometry tight. Practice pursed lip breathing.' });
   } else {
-    setText('lung_status', 'Free');
+    setOrganStatus('lungs', 'Free', 'good');
+  }
+  setText('lung_vitals', organMeta.vitals.lung?.textContent || 'Synced');
+
+  if (liverRep && liverRep.status && liverRep.status !== 'normal') {
+    setOrganStatus('liver', 'Loaded', 'warn');
+    alerts.push({ type: 'warn', message: 'LFT slightly up — avoid fried food and repeat.' });
+  } else {
+    setOrganStatus('liver', 'Healthy', 'good');
+  }
+  setText('liver_markers', describeMarker(liverRep, 'No recent LFT'));
+
+  if (crpRep && crpRep.status && crpRep.status !== 'normal') {
+    setOrganStatus('immune', 'Alert', 'warn');
+    alerts.push({ type: 'warn', message: 'Inflammation up — rest and hydrate.' });
+  } else {
+    setOrganStatus('immune', 'Calm', 'good');
+  }
+  setText('immune_state', describeMarker(crpRep, 'CRP calm'));
+
+  if (hba1cRep && hba1cRep.status && hba1cRep.status !== 'normal') {
+    setOrganStatus('endocrine', 'Glucose load', 'warn');
+  } else if (thyroidRep && thyroidRep.status && thyroidRep.status !== 'normal') {
+    setOrganStatus('endocrine', 'Thyroid watch', 'warn');
+  } else {
+    setOrganStatus('endocrine', 'Balanced', 'good');
+  }
+  setText('endocrine_state', `${describeMarker(hba1cRep, 'HbA1c pending')} • ${describeMarker(thyroidRep, 'Thyroid steady')}`);
+
+  if (lipidRep && lipidRep.status && lipidRep.status !== 'normal') {
+    setOrganStatus('heart', 'Elevated risk', 'warn');
+    alerts.push({ type: 'warn', message: 'Lipids up — move 15 minutes today.' });
+  } else {
+    setOrganStatus('heart', 'Good', 'good');
+  }
+  setText('heart_vitals', organMeta.vitals.heart?.textContent || 'Synced');
+
+  if (bpHigh) {
+    setOrganStatus('vascular', 'Elevated', 'warn');
+    alerts.push({ type: 'warn', message: 'BP trending high — relax shoulders and breathe out.' });
+  } else {
+    setOrganStatus('vascular', 'Open', 'good');
+  }
+  setText('vascular_state', vitals.bpS ? `${vitals.bpS}/${vitals.bpD}` : 'Syncing...');
+
+  if (abdomenImg && abdomenImg.status === 'follow-up') {
+    setOrganStatus('gi', 'Follow-up', 'warn');
+    alerts.push({ type: 'warn', message: 'Abdomen imaging flagged for review.' });
+  } else {
+    setOrganStatus('gi', 'Smooth', 'good');
+  }
+  setText('gi_state', describeMarker(abdomenImg, 'Hydration + nutrition synced'));
+
+  if (pelvisImg && pelvisImg.status === 'follow-up') {
+    setOrganStatus('reproductive', 'Review', 'warn');
+  } else {
+    setOrganStatus('reproductive', 'Clear', 'good');
+  }
+  setText('reproductive_state', describeMarker(pelvisImg, 'No scan alerts'));
+
+  setOrganStatus('brain', 'Calm', 'good');
+  setText('brain_state', 'Balanced focus');
+
+  setOrganStatus('dental', 'Bright', 'good');
+  setText('dental_state', 'CBCT clear');
+
+  if (hydrationLow) {
+    setOrganStatus('skin', 'Dry', 'warn');
+    setOrganStatus('eye', 'Tired', 'warn');
+  } else {
+    setOrganStatus('skin', 'Calm', 'good');
+    setOrganStatus('eye', 'Focused', 'good');
+  }
+  setText('skin_state', hydrationLow ? 'Moisturise + hydrate' : 'Barrier intact');
+  setText('eye_state', 'Blue light guard on');
+  setOrganStatus('ear', 'Clear', 'good');
+  setText('ear_state', 'No vertigo signals');
+  setOrganStatus('musculoskeletal', 'Supple', 'good');
+  setText('msk_state', 'Dexa + mobility stable');
+
+  if (labSnap) {
+    if (organMeta.lab.name) organMeta.lab.name.textContent = labSnap.lab || 'Synced lab';
+    if (organMeta.lab.updated) organMeta.lab.updated.textContent = `Updated ${new Date(labSnap.updated || Date.now()).toLocaleString()}`;
+    setText('sync_creatinine', describeMarker(findReport('creatinine'), '—'));
+    setText('sync_urea', describeMarker(findReport('urea'), '—'));
+    setText('sync_lft', describeMarker(liverRep, '—'));
+    setText('sync_crp', describeMarker(crpRep, '—'));
+    setText('sync_metabolic', describeMarker(hba1cRep || lipidRep, '—'));
+    setText('sync_thyroid', describeMarker(thyroidRep, '—'));
+    setText('sync_cbc', describeMarker(cbcRep, '—'));
+    setText('sync_imaging', describeMarker(lungImg || abdomenImg || pelvisImg, 'All clear'));
+  } else {
+    if (organMeta.lab.name) organMeta.lab.name.textContent = 'No lab synced';
+    if (organMeta.lab.updated) organMeta.lab.updated.textContent = 'Use Labs → Sync to push reports here.';
   }
 
   renderAlerts(alerts);
 }
+
+const refreshLabSync = document.getElementById('refresh_lab_sync');
+refreshLabSync?.addEventListener('click', evaluateOrgans);
 
 evaluateOrgans();
 setInterval(evaluateOrgans, 14000);
