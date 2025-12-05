@@ -386,6 +386,13 @@ header.hf-topbar {
 .timeline .item strong { font-size: 16px; }
 .timeline .meta { color: var(--muted); font-size: 13px; }
 .timeline .badge { align-self: center; }
+.timeline-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+.timeline-card { border: var(--border); background: var(--bg-glass); border-radius: 16px; padding: 14px; display: grid; gap: 10px; box-shadow: var(--shadow); }
+.timeline-card .head { display:flex; justify-content:space-between; gap:8px; align-items:center; }
+.timeline-card .meta { color: var(--muted); font-size: 13px; display:flex; gap:10px; flex-wrap:wrap; }
+.timeline-card .markers { display:flex; flex-wrap:wrap; gap:8px; }
+.timeline-card .markers .chip { background: rgba(109,225,227,0.12); border-color: rgba(109,225,227,0.3); }
+.timeline-card .next { display:flex; gap:8px; flex-wrap:wrap; }
 
 .pill-stack { list-style: none; padding: 0; margin: 10px 0 0; display: flex; flex-direction: column; gap: 8px; }
 .pill-stack li { background: var(--bg-glass); border: var(--border); padding: 10px 12px; border-radius: 12px; font-weight: 700; }
