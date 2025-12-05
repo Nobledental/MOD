@@ -1,5 +1,5 @@
 /* HealthFlo — Hospitals OS card stack
-   Loads providers.json + medicines.json + lab history into unified hospital cards
+   Minimal front cards + rich modal mapped to other pages
 */
 
 const qs = (sel, root = document) => root.querySelector(sel);
@@ -54,27 +54,12 @@ const PROC_MAP = {
 };
 
 const LAB_HISTORY = [
-  {
-    date: '2024-07-05',
-    title: 'CBC + Hydration check',
-    lab: 'Apollo Diagnostics',
-    status: 'Hydrate & recheck',
-  },
-  {
-    date: '2024-06-26',
-    title: 'LFT + KFT follow-up',
-    lab: 'Fortis Lab',
-    status: 'Stable',
-  },
-  {
-    date: '2024-06-14',
-    title: 'Cardiac markers',
-    lab: 'Max Lab',
-    status: 'Calm',
-  },
+  { date: '2024-07-05', title: 'CBC + Hydration check', lab: 'Apollo Diagnostics', status: 'Hydrate & recheck' },
+  { date: '2024-06-26', title: 'LFT + KFT follow-up', lab: 'Fortis Lab', status: 'Stable' },
+  { date: '2024-06-14', title: 'Cardiac markers', lab: 'Max Lab', status: 'Calm' },
 ];
 
-const DOC_NAMES = ['Aarav','Vivaan','Anaya','Rohan','Ira','Kabir','Myra','Advait','Kiara','Navya'];
+const DOC_NAMES = ['Aarav', 'Vivaan', 'Anaya', 'Rohan', 'Ira', 'Kabir', 'Myra', 'Advait', 'Kiara', 'Navya'];
 
 function toast(msg, ms = 2200) {
   const t = qs('#toast');
@@ -113,7 +98,7 @@ function buildProcedures(specs = []) {
 }
 
 function buildDoctors(specs = []) {
-  return pick(specs, 3).map((sp, idx) => ({
+  return pick(specs.length ? specs : ['General Medicine'], 3).map((sp, idx) => ({
     name: `Dr. ${DOC_NAMES[idx % DOC_NAMES.length]}`,
     spec: sp,
     slot: ['09:45', '11:10', '12:40', '15:30', '17:15'][idx % 5],
@@ -126,6 +111,11 @@ function buildPharmacy(medsFlat) {
     form: `${m.form} • ${m.strength || m.pack}`,
     price: fmtINR(m.price || m.mrp || 0),
   }));
+}
+
+function distanceFor(h) {
+  if (typeof h.distance_km === 'number' && !isNaN(h.distance_km)) return Number(h.distance_km.toFixed(1));
+  return Number((0.6 + Math.random() * 12).toFixed(1));
 }
 
 function renderMetrics(hospitals) {
@@ -141,106 +131,26 @@ function renderMetrics(hospitals) {
 function createCard(h, medsFlat) {
   const card = document.createElement('article');
   card.className = 'hospital-card';
-
-  const head = document.createElement('div');
-  head.className = 'card-head';
-  head.innerHTML = `
-    <div>
+  const distance = distanceFor(h);
+  card.innerHTML = `
+    <div class="card-top">
       <h3 class="card-title">${h.name}</h3>
-      <div class="meta">${h.type || 'Multi-speciality'} • ${h.address}</div>
-      <div class="badges">
-        <span class="badge">⭐ ${h.rating || '4.2'}</span>
-        <span class="badge">${h.beds || '—'} beds</span>
-        <span class="badge ${h.isCashless ? 'success' : 'warn'}">${h.isCashless ? 'Cashless ready' : 'Self-pay'}</span>
-        <span class="badge">${h.specialties?.slice(0,3).join(', ')}</span>
-      </div>
+      <div class="card-meta">📍 ${distance} km</div>
     </div>
-    <button class="btn ghost" type="button">Share</button>
+    <div class="card-actions">
+      <button class="btn primary" type="button">View</button>
+      <button class="btn emergency" type="button">Emergency</button>
+    </div>
   `;
-  head.querySelector('button')?.addEventListener('click', () =>
-    toast(`Share link copied for ${h.name}`)
-  );
 
-  const body = document.createElement('div');
-  body.className = 'card-body';
-
-  const doctorBlock = document.createElement('div');
-  doctorBlock.className = 'block';
-  doctorBlock.innerHTML = '<h4>👨‍⚕️ Appointments</h4>';
-  const docList = document.createElement('ul');
-  buildDoctors(h.specialties).forEach((d) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<div><strong>${d.name}</strong><br><small>${d.spec}</small></div><small>${d.slot}</small>`;
-    docList.appendChild(li);
+  card.addEventListener('click', () => openHospital(h, medsFlat, distance));
+  const btns = card.querySelectorAll('button');
+  btns[0]?.addEventListener('click', (e) => { e.stopPropagation(); openHospital(h, medsFlat, distance); });
+  btns[1]?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toast('Connecting you to emergency desk…');
+    setTimeout(() => window.open('tel:108', '_self'), 150);
   });
-  doctorBlock.appendChild(docList);
-  const docBtn = document.createElement('button');
-  docBtn.className = 'btn primary';
-  docBtn.textContent = 'Book doctor';
-  docBtn.addEventListener('click', () => toast(`Doctor booking sent to ${h.name}`));
-  doctorBlock.appendChild(docBtn);
-
-  const procBlock = document.createElement('div');
-  procBlock.className = 'block';
-  procBlock.innerHTML = '<h4>🏥 Procedures & surgeries</h4>';
-  const procList = document.createElement('ul');
-  buildProcedures(h.specialties).forEach((p) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<div><strong>${p.name}</strong><br><small>Pre-auth & stay included</small></div><strong>${p.price}</strong>`;
-    procList.appendChild(li);
-  });
-  procBlock.appendChild(procList);
-  const procBtn = document.createElement('button');
-  procBtn.className = 'btn primary';
-  procBtn.textContent = 'Plan procedure';
-  procBtn.addEventListener('click', () => toast(`Procedure enquiry queued for ${h.name}`));
-  procBlock.appendChild(procBtn);
-
-  const pharmBlock = document.createElement('div');
-  pharmBlock.className = 'block';
-  pharmBlock.innerHTML = '<h4>💊 Hospital pharmacy</h4>';
-  const medList = document.createElement('ul');
-  buildPharmacy(medsFlat).forEach((m) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<div><strong>${m.name}</strong><br><small>${m.form}</small></div><strong>${m.price}</strong>`;
-    medList.appendChild(li);
-  });
-  pharmBlock.appendChild(medList);
-  const medBtn = document.createElement('button');
-  medBtn.className = 'btn primary';
-  medBtn.textContent = 'Order medicines';
-  medBtn.addEventListener('click', () => toast(`Prescription upload started for ${h.name}`));
-  pharmBlock.appendChild(medBtn);
-
-  const labBlock = document.createElement('div');
-  labBlock.className = 'block';
-  labBlock.innerHTML = '<h4>🧪 Lab reports</h4>';
-  const labList = document.createElement('ul');
-  LAB_HISTORY.forEach((l) => {
-    const li = document.createElement('li');
-    li.innerHTML = `<div><strong>${l.title}</strong><br><small>${l.date} • ${l.lab}</small></div><small>${l.status}</small>`;
-    labList.appendChild(li);
-  });
-  labBlock.appendChild(labList);
-  const labBtn = document.createElement('button');
-  labBtn.className = 'btn primary';
-  labBtn.textContent = 'Book lab slot';
-  labBtn.addEventListener('click', () => toast(`Lab booking shared with ${h.name}`));
-  labBlock.appendChild(labBtn);
-
-  body.append(doctorBlock, procBlock, pharmBlock, labBlock);
-
-  const actions = document.createElement('div');
-  actions.className = 'actions';
-  ['Doctor', 'Procedure', 'Pharmacy', 'Lab'].forEach((tag) => {
-    const b = document.createElement('button');
-    b.className = 'btn ghost';
-    b.textContent = `${tag} quick book`;
-    b.addEventListener('click', () => toast(`${tag} flow opened for ${h.name}`));
-    actions.appendChild(b);
-  });
-
-  card.append(head, body, actions);
   return card;
 }
 
@@ -288,6 +198,148 @@ function bindTheme() {
   });
 }
 
+function serviceRail(h, medsFlat) {
+  const rail = qs('#serviceRail');
+  rail.innerHTML = '';
+  const distance = distanceFor(h);
+  const cards = [
+    { icon: '🩺', title: 'OPD', meta: 'Mon-Sat 9 AM - 7 PM', action: 'Book OPD', onClick: () => toast('OPD booking started') },
+    { icon: '🛏️', title: 'IPD', meta: `${h.beds || 120}+ beds • Private & Shared`, action: 'Plan admission', onClick: () => toast('IPD admission team alerted') },
+    { icon: '📱', title: 'Teleconsult', meta: 'Video / Audio', action: 'Start call', onClick: () => toast('Teleconsult link shared') },
+    { icon: '💊', title: 'Pharmacy', meta: 'In-hospital + delivery', action: 'Map medicines', onClick: () => toast('Prescription mapped from pharmacy page') },
+    { icon: '🧪', title: 'Lab', meta: 'Pathology • Radiology', action: 'Book lab', onClick: () => toast('Lab booking synced') },
+    { icon: '🚑', title: 'Emergency', meta: `${distance} km • 24×7 desk`, action: 'Call ER', onClick: () => window.open('tel:108', '_self') },
+  ];
+  cards.forEach((c) => {
+    const n = document.createElement('div');
+    n.className = 'rail-card';
+    n.innerHTML = `<h4>${c.icon} ${c.title}</h4><p>${c.meta}</p><button class="btn ghost" type="button">${c.action}</button>`;
+    n.querySelector('button')?.addEventListener('click', c.onClick);
+    rail.appendChild(n);
+  });
+}
+
+function renderDoctors(h) {
+  const wrap = qs('#doctorList');
+  wrap.innerHTML = '';
+  buildDoctors(h.specialties).forEach((d) => {
+    const chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.innerHTML = `<strong>${d.name}</strong><small>${d.spec}</small><small>${d.slot}</small>`;
+    wrap.appendChild(chip);
+  });
+}
+
+function renderProcedures(h) {
+  const wrap = qs('#procedureList');
+  wrap.innerHTML = '';
+  buildProcedures(h.specialties).forEach((p) => {
+    const li = document.createElement('div');
+    li.className = 'list-item';
+    li.innerHTML = `<div><strong>${p.name}</strong><br><span>Pre-auth • Stay included</span></div><strong>${p.price}</strong>`;
+    wrap.appendChild(li);
+  });
+}
+
+function renderMeds(medsFlat) {
+  const wrap = qs('#medList');
+  wrap.innerHTML = '';
+  buildPharmacy(medsFlat).forEach((m) => {
+    const li = document.createElement('div');
+    li.className = 'list-item';
+    li.innerHTML = `<div><strong>${m.name}</strong><br><span>${m.form}</span></div><strong>${m.price}</strong>`;
+    wrap.appendChild(li);
+  });
+}
+
+function renderLabs() {
+  const wrap = qs('#labList');
+  wrap.innerHTML = '';
+  LAB_HISTORY.forEach((l) => {
+    const li = document.createElement('div');
+    li.className = 'list-item';
+    li.innerHTML = `<div><strong>${l.title}</strong><br><span>${l.date} • ${l.lab}</span></div><span>${l.status}</span>`;
+    wrap.appendChild(li);
+  });
+}
+
+function gatherContext() {
+  const ctx = [];
+  const profile = (() => { try { return JSON.parse(localStorage.getItem('hf_profile') || 'null'); } catch { return null; } })();
+  if (profile?.name) ctx.push({ title: 'Profile shared', detail: `${profile.name} • ${profile.city || 'City unknown'}` });
+
+  const lastOrder = (() => { try { return JSON.parse(localStorage.getItem('hf-latest-order') || 'null'); } catch { return null; } })();
+  if (lastOrder?.item) ctx.push({ title: 'Latest pharmacy order', detail: `${lastOrder.item} • ${lastOrder.total || ''}` });
+
+  const labSync = (() => { try { return JSON.parse(localStorage.getItem('lab-dashboard-latest') || 'null'); } catch { return null; } })();
+  if (labSync?.reports?.length) ctx.push({ title: 'Recent lab report', detail: labSync.reports[0].title || 'Report shared' });
+
+  if (!ctx.length) ctx.push({ title: 'No synced context yet', detail: 'Bookings and records from other pages will appear here.' });
+  return ctx;
+}
+
+function renderContext() {
+  const wrap = qs('#contextGrid');
+  wrap.innerHTML = '';
+  gatherContext().forEach((c) => {
+    const card = document.createElement('div');
+    card.className = 'context-card';
+    card.innerHTML = `<strong>${c.title}</strong><span>${c.detail}</span>`;
+    wrap.appendChild(card);
+  });
+}
+
+function openHospital(h, medsFlat, distance) {
+  const modal = qs('#hospitalModal');
+  qs('#modalTitle').textContent = h.name;
+  qs('#modalCity').textContent = `${h.state || 'City'}`;
+  qs('#modalDistance').textContent = `${distance} km away`;
+  qs('#modalCashless').textContent = h.isCashless ? 'Cashless ready' : 'Self-pay';
+  qs('#modalCashless').classList.toggle('pill', true);
+  qs('#modalAddress').textContent = `${h.address || ''} • ${h.type || 'Multi-speciality'}`;
+
+  const tagWrap = qs('#modalTags');
+  tagWrap.innerHTML = '';
+  (h.specialties || []).slice(0, 4).forEach((sp) => {
+    const s = document.createElement('span');
+    s.className = 'pill soft';
+    s.textContent = sp;
+    tagWrap.appendChild(s);
+  });
+
+  serviceRail(h, medsFlat);
+  renderDoctors(h);
+  renderProcedures(h);
+  renderMeds(medsFlat);
+  renderLabs();
+  renderContext();
+
+  qs('#bookDoctor').onclick = () => toast('Doctor booking mapped to appointment flow');
+  qs('#bookProcedure').onclick = () => toast('Admission request sent with shared profile');
+  qs('#orderMeds').onclick = () => toast('Pharmacy mapped to hospital desk');
+  qs('#bookLab').onclick = () => toast('Lab / home visit shared with hospital');
+  qs('#refreshContext').onclick = renderContext;
+  qs('#modalShare').onclick = async () => {
+    const url = location.href.split('#')[0] + `#${h.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast('Share link copied');
+    } catch {
+      toast('Copy failed. Use Ctrl/Cmd+C');
+    }
+  };
+  qs('#modalClose').onclick = closeHospital;
+
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeHospital() {
+  const modal = qs('#hospitalModal');
+  modal.classList.remove('show');
+  modal.setAttribute('aria-hidden', 'true');
+}
+
 (async function init() {
   bindTheme();
   try {
@@ -296,9 +348,7 @@ function bindTheme() {
       loadJSON('medicines.json'),
     ]);
 
-    const hospitals = providerData.flatMap((p) =>
-      (p.hospitals || []).map((h) => ({ ...h, state: p.state }))
-    );
+    const hospitals = providerData.flatMap((p) => (p.hospitals || []).map((h) => ({ ...h, state: p.state })));
     const medsFlat = (medsJson.categories || []).flatMap((c) => c.medicines || []);
 
     renderMetrics(hospitals);
@@ -309,6 +359,9 @@ function bindTheme() {
       qs(`#${id}`)?.addEventListener('input', () => applyFilters(hospitals, medsFlat));
       qs(`#${id}`)?.addEventListener('change', () => applyFilters(hospitals, medsFlat));
     });
+
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHospital(); });
+    qs('#hospitalModal')?.addEventListener('click', (e) => { if (e.target.id === 'hospitalModal') closeHospital(); });
   } catch (err) {
     console.error(err);
     toast('Unable to load hospitals right now.');
