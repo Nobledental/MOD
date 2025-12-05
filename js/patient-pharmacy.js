@@ -73,6 +73,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnMedClose = qs('#btnMedClose');
 
   const themeToggle = qs('#themeToggle');
+  const mappedOrderName = qs('#mappedOrderName');
+  const mappingBadge = qs('#mappingBadge');
 
   themeToggle?.addEventListener('click', () => {
     const cur = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
@@ -292,6 +294,7 @@ document.addEventListener('DOMContentLoaded', () => {
     state.activeOrders.unshift(order);
     if (statOrders) statOrders.textContent = state.activeOrders.length.toString();
     if (statBuffer) statBuffer.textContent = '100%';
+    mapOrderToPages(med);
     const store = pharmacies.find((p) => (med.stores || []).includes(p.id)) || pharmacies[0];
     startLive(store);
     toast(`${med.brand} added — tracking live`);
@@ -356,6 +359,32 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statSubs) statSubs.textContent = '0';
     if (statOrders) statOrders.textContent = state.activeOrders.length.toString();
     if (statBuffer) statBuffer.textContent = '100%';
+    hydrateMapping();
+  }
+
+  function mapOrderToPages(med) {
+    const payload = { id: med.id, brand: med.brand, generic: med.generic, ts: Date.now() };
+    localStorage.setItem('hf-latest-order', JSON.stringify(payload));
+    renderOrderMapping(payload);
+  }
+
+  function renderOrderMapping(order) {
+    if (!order || !mappedOrderName || !mappingBadge) return;
+    mappedOrderName.textContent = `${order.brand} • synced to Dashboard, Health, Labs`;
+    mappingBadge.textContent = 'Synced across pages';
+    mappingBadge.classList.add('synced');
+  }
+
+  function hydrateMapping() {
+    try {
+      const saved = localStorage.getItem('hf-latest-order');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        renderOrderMapping(parsed);
+      }
+    } catch (err) {
+      console.warn('Unable to restore mapping', err);
+    }
   }
 
   initHandlers();
