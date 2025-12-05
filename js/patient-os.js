@@ -50,89 +50,101 @@ updateVitals();
 setInterval(updateVitals, 4500);
 
 // Engagement loop
-const streakProgress = document.getElementById('streak_progress');
-const streakValue = document.getElementById('streak_value');
-const streakHint = document.getElementById('streak_hint');
-const streakBadge = document.getElementById('streak_badge');
+const readinessProgress = document.getElementById('readiness_progress');
+const readinessValue = document.getElementById('readiness_value');
+const readinessHint = document.getElementById('readiness_hint');
+const readinessBadge = document.getElementById('readiness_badge');
 const checkinBtn = document.getElementById('checkin_btn');
 const checkinMsg = document.getElementById('checkin_msg');
-const ritualList = document.getElementById('ritual_list');
-const ritualShuffle = document.getElementById('ritual_shuffle');
-const dopamineFeed = document.getElementById('dopamine_feed');
-const shareStreak = document.getElementById('share_streak');
+const missionList = document.getElementById('mission_list');
+const missionShuffle = document.getElementById('mission_shuffle');
+const coachFeed = document.getElementById('coach_feed');
 const energyValue = document.getElementById('energy_value');
 const energyHint = document.getElementById('energy_hint');
 const moodValue = document.getElementById('mood_value');
 const boostButton = document.getElementById('boost_button');
+const recoveryBtn = document.getElementById('recovery_btn');
+const sleepDebt = document.getElementById('sleep_debt');
+const hrvSignal = document.getElementById('hrv_signal');
+const restTimer = document.getElementById('rest_timer');
 
 function setProgress(el, value) {
   if (!el) return;
   el.style.width = `${value}%`;
 }
 
-function renderStreak(progress = 72) {
-  if (!streakProgress || !streakValue) return;
-  setProgress(streakProgress, progress);
-  streakValue.textContent = `${progress}%`;
-  if (streakHint) streakHint.textContent = progress > 85 ? 'You are in the flow — 1 ritual left' : '3 rituals left today';
-  if (streakBadge) streakBadge.textContent = `${Math.floor(progress / 6)} days 🔥`;
+function renderReadiness(score = 72) {
+  if (!readinessProgress || !readinessValue) return;
+  setProgress(readinessProgress, score);
+  readinessValue.textContent = `${score}%`;
+  if (readinessHint) readinessHint.textContent = score > 85 ? 'You are balanced today' : 'Add water + a short walk';
+  if (readinessBadge) readinessBadge.textContent = score > 80 ? 'Synced just now' : 'Needs attention';
 }
 
-function shuffleRituals() {
-  if (!ritualList) return;
-  const items = Array.from(ritualList.querySelectorAll('li'));
+function shuffleMissions() {
+  if (!missionList) return;
+  const items = Array.from(missionList.querySelectorAll('li'));
   items.forEach(item => {
     const bar = item.querySelector('.mini-progress span');
-    const pct = Math.floor(Math.random() * 60) + 30;
+    const pct = Math.floor(Math.random() * 50) + 30;
     if (bar) bar.style.width = `${pct}%`;
   });
-  items.sort(() => Math.random() - 0.5).forEach(item => ritualList.appendChild(item));
+  items.sort(() => Math.random() - 0.5).forEach(item => missionList.appendChild(item));
 }
 
 function rotateFeed() {
-  if (!dopamineFeed) return;
+  if (!coachFeed) return;
   const updates = [
     'Hydration up 12% after your last sip.',
-    'SpO₂ steady. Keep the streak alive.',
-    'Lungs need a stretch. Try box breathing.',
-    'Night mode ready — prep for deep sleep.',
-    'Guardian pushed a calm playlist for you.',
+    'SpO₂ steady. Consider a stretch.',
+    'Sleep window looks good. Keep it.',
+    'Balance movement and rest for the next hour.',
+    'Save time: bundle lab pickup with your walk.',
   ];
   const feedItem = document.createElement('div');
   feedItem.className = 'feed-item';
   feedItem.textContent = updates[Math.floor(Math.random() * updates.length)];
-  dopamineFeed.prepend(feedItem);
-  if (dopamineFeed.children.length > 4) dopamineFeed.lastElementChild.remove();
+  coachFeed.prepend(feedItem);
+  if (coachFeed.children.length > 5) coachFeed.lastElementChild.remove();
 }
 
 function updateEnergy() {
   if (!energyValue || !energyHint) return;
   const value = Math.floor(Math.random() * 20) + 70;
   energyValue.textContent = `${value}%`;
-  energyHint.textContent = value > 85 ? 'Prime time — book your walk now' : 'Micro-boost ready';
+  energyHint.textContent = value > 85 ? 'Best time to move' : 'Short break recommended';
   if (moodValue) moodValue.textContent = value > 82 ? 'Flow' : 'Calm';
 }
 
+function updateRecovery() {
+  if (sleepDebt) sleepDebt.textContent = `${Math.floor(Math.random() * 40) - 20} min`;
+  if (hrvSignal) hrvSignal.textContent = Math.random() > 0.7 ? 'Slight dip' : 'Stable';
+  if (restTimer) restTimer.textContent = `${Math.floor(Math.random() * 25) + 10} min`;
+}
+
 checkinBtn?.addEventListener('click', () => {
-  const next = Math.min(100, parseInt(streakValue?.textContent || '70', 10) + 8);
-  renderStreak(next);
-  if (checkinMsg) checkinMsg.textContent = 'Check-in logged. Dopamine drip extended by 4 hours.';
+  const current = parseInt(readinessValue?.textContent || '70', 10) || 70;
+  const next = Math.min(100, current + 6);
+  renderReadiness(next);
+  if (checkinMsg) checkinMsg.textContent = 'Check-in logged. We will nudge only if balance slips.';
 });
 
-ritualShuffle?.addEventListener('click', shuffleRituals);
+missionShuffle?.addEventListener('click', shuffleMissions);
 boostButton?.addEventListener('click', () => {
   updateEnergy();
-  if (checkinMsg) checkinMsg.textContent = 'Focus boost applied. Mood stabilized.';
+  if (checkinMsg) checkinMsg.textContent = 'Coach adjusted your next step.';
 });
 
-shareStreak?.addEventListener('click', () => {
-  if (checkinMsg) checkinMsg.textContent = 'Link copied — flex your streak in family chat.';
+recoveryBtn?.addEventListener('click', () => {
+  updateRecovery();
+  if (checkinMsg) checkinMsg.textContent = 'Wind-down started with softer reminders.';
 });
 
-renderStreak();
-shuffleRituals();
+renderReadiness();
+shuffleMissions();
 updateEnergy();
-setInterval(() => renderStreak(Math.floor(Math.random() * 25) + 65), 10000);
+updateRecovery();
+setInterval(() => renderReadiness(Math.floor(Math.random() * 20) + 70), 10000);
 setInterval(rotateFeed, 15000);
 setInterval(updateEnergy, 12000);
 
