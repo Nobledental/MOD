@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="css/patient-labs.css" />
 </head>
 
-<body class="hf-body labs-shell">
+<body class="hf-body labs-shell fade-in-page">
   <!-- ===== Header ===== -->
   <header class="hf-header" role="banner">
     <div class="wrap header-inner">
@@ -53,19 +53,118 @@
       <div class="hero-copy">
         <p class="eyebrow">Labs OS • Discovery cockpit</p>
         <h1 id="heroTitle">Book home & in-lab tests near you</h1>
-        <p class="sub">15+ cities • Transparent pricing • Home visit option • WhatsApp confirmation</p>
+        <p class="sub">Premium glass UI to mirror your dashboard — smarter filters, concierge shortcuts, and richer lab intel.</p>
         <div class="hero-pills">
           <span class="pill soft">AI-assisted sorting</span>
           <span class="pill soft">Live distance</span>
           <span class="pill soft">One-tap WhatsApp</span>
         </div>
+        <div class="hero-actions" aria-label="Quick lab actions">
+          <button class="pill solid">Instant home pickup</button>
+          <button class="pill outline">24h reports</button>
+          <button class="pill outline">Doctor-reviewed</button>
+          <button class="pill ghost">Ask AI concierge</button>
+        </div>
       </div>
-      <div class="hero-kpis" aria-label="Key metrics">
-        <div class="kpi"><strong id="kLabs">—</strong><span>Labs</span></div>
-        <div class="kpi"><strong>15+</strong><span>Cities</span></div>
-        <div class="kpi"><strong>Fast</strong><span>Home pickup</span></div>
-        <div class="kpi pulse"><strong>Live</strong><span>Availability</span></div>
+      <div class="hero-right">
+        <div class="glass-stack">
+          <div class="hero-kpis" aria-label="Key metrics">
+            <div class="kpi"><strong id="kLabs">—</strong><span>Labs</span></div>
+            <div class="kpi"><strong id="statCities">15+</strong><span>Cities</span></div>
+            <div class="kpi"><strong id="statHomeLabs">—</strong><span>Home ready</span></div>
+            <div class="kpi pulse"><strong id="statAvgFee">—</strong><span>Avg. home fee</span></div>
+          </div>
+          <div class="concierge-card" role="presentation">
+            <div>
+              <p class="eyebrow">Concierge view</p>
+              <h3>Labs that feel like your dashboard</h3>
+              <p class="muted">Curated NABL partners with glass surfaces, ambient gradients, and motion that match your OS.</p>
+            </div>
+            <div class="inline-flags">
+              <span class="pill soft">Voice scheduling</span>
+              <span class="pill soft">Smart prep guide</span>
+              <span class="pill soft">Ambient safety</span>
+            </div>
+          </div>
+        </div>
       </div>
+    </div>
+  </section>
+
+  <section class="lab-bento wrap" aria-label="Premium lab shortcuts">
+    <div class="bento-card prime">
+      <div class="card-top">
+        <div>
+          <p class="eyebrow">Live concierge</p>
+          <h3>Curated picks near you</h3>
+          <p class="muted">Smartly arranges nearest, fastest reporting, and best home experience in one stream.</p>
+        </div>
+        <button class="btn btn-primary ripple pressable" type="button">Auto-book best slot</button>
+      </div>
+      <div class="signal-rows">
+        <div class="signal">
+          <span class="sig-dot"></span>
+          <div>
+            <strong id="statCoverage">—</strong>
+            <div class="muted">Cities covered with concierge</div>
+          </div>
+        </div>
+        <div class="signal">
+          <span class="sig-dot warm"></span>
+          <div>
+            <strong>WhatsApp ready</strong>
+            <div class="muted">Pre-filled directions and reports sharing</div>
+          </div>
+        </div>
+        <div class="signal">
+          <span class="sig-dot cool"></span>
+          <div>
+            <strong>Zero confusion</strong>
+            <div class="muted">Lab meaning in plain words inside each card</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bento-grid">
+      <article class="bento-tile">
+        <div class="tile-head">
+          <p class="eyebrow">Prep ready</p>
+          <span class="pill ghost">Safety-first</span>
+        </div>
+        <h4>Home pickup guardrails</h4>
+        <p class="muted">Identity QR, phlebotomist rating, and spill-safe kit reminders baked in.</p>
+        <div class="micro-metrics">
+          <div><strong>12</strong><small>step checklist</small></div>
+          <div><strong>4m</strong><small>avg response</small></div>
+        </div>
+      </article>
+
+      <article class="bento-tile">
+        <div class="tile-head">
+          <p class="eyebrow">Result clarity</p>
+          <span class="pill ghost">Explained</span>
+        </div>
+        <h4>Plain language meaning</h4>
+        <p class="muted">Each report comes with trendline, lifestyle nudge, and doctor-safe notes.</p>
+        <div class="micro-metrics">
+          <div><strong>+3</strong><small>insight layers</small></div>
+          <div><strong>24h</strong><small>turnaround</small></div>
+        </div>
+      </article>
+
+      <article class="bento-tile">
+        <div class="tile-head">
+          <p class="eyebrow">Wallet smart</p>
+          <span class="pill ghost">Transparent</span>
+        </div>
+        <h4>Avg home fee <span id="statHomeRange">—</span></h4>
+        <p class="muted">We surface partner labs with predictable fees and zero hidden add-ons.</p>
+        <div class="micro-metrics">
+          <div><strong>UPI</strong><small>scan & go</small></div>
+          <div><strong>EMI</strong><small>for bundles</small></div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -123,6 +222,8 @@
       <div class="chip">Transparent pricing</div>
       <div class="chip">WhatsApp confirmations</div>
       <div class="chip">Reschedule-friendly</div>
+      <div class="chip">Dashboard-grade motion</div>
+      <div class="chip">Voice-friendly concierge</div>
     </div>
   </section>
 
