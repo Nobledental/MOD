@@ -126,6 +126,8 @@ body{
 .labs-shell{padding-bottom:120px;}
 .wrap{width:min(1180px,92vw);margin:0 auto}
 .vh{position:absolute!important;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden;white-space:nowrap}
+.fade-in-page{animation:fadePage 520ms ease}
+@keyframes fadePage{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* ---------- Header ---------- */
 .hf-header{
@@ -153,6 +155,8 @@ html[data-theme="light"] .hf-header{background:rgba(255,255,255,.82);}
 .pill.soft{background:color-mix(in srgb, var(--brand-500) 18%, transparent);color:var(--text);border-color:color-mix(in srgb, var(--brand-500) 28%, transparent)}
 .pill.ghost{background:transparent;border-color:rgba(255,255,255,.16);color:var(--text)}
 .pill.danger{background:linear-gradient(135deg,#ff6b8a,#ff8e6b);color:#fff;border:0}
+.pill.solid{background:linear-gradient(135deg, var(--brand-700), #53e7c6);color:#fff;box-shadow:0 14px 40px rgba(83,231,198,.25);border:0}
+.pill.outline{background:transparent;border-color:rgba(255,255,255,.18);color:var(--text)}
 
 html[data-theme="light"] .nav-btn{border-color:rgba(0,0,0,.06)}
 html[data-theme="light"] .hf-icon{border-color:rgba(0,0,0,.08)}
@@ -199,23 +203,39 @@ html[data-theme="light"] .hf-icon{border-color:rgba(0,0,0,.08)}
 }
 
 /* ---------- Hero ---------- */
-.hero{position:relative; overflow:hidden; border-bottom:1px solid var(--border);}
-.hero .wrap{position:relative; background:color-mix(in srgb, var(--surface) 90%, rgba(255,255,255,.08)); border:1px solid var(--border); border-radius:20px; box-shadow:var(--elev-3); padding:18px; overflow:hidden}
-.hero::before{
-  content:""; position:absolute; inset:0; background:radial-gradient(120% 140% at 12% 12%, rgba(83, 231, 198, 0.14), transparent 42%),
-    radial-gradient(160% 110% at 90% 18%, rgba(95,160,255,.22), transparent 45%);
-  pointer-events:none; filter:blur(4px);
-}
-.hero-inner{display:grid; grid-template-columns: 1.4fr .9fr; gap:16px; align-items:center; padding:24px 0; position:relative; z-index:1}
-.hero h1{font-size:clamp(1.8rem,2.9vw,2.35rem); line-height:1.12; letter-spacing:.2px}
-.hero .sub{color:var(--muted); max-width:640px}
-.hero-pills{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px}
-.hero-kpis{display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap}
-.kpi{background:linear-gradient(160deg, color-mix(in srgb, var(--surface) 90%, rgba(255,255,255,.18)), var(--surface)); border:1px solid var(--border); border-radius:14px; padding:12px 14px; box-shadow:var(--elev-2); text-align:center; min-width:120px}
-.kpi strong{display:block; color:var(--brand-700); font-size:1.15rem; letter-spacing:.2px}
-.kpi.pulse strong{position:relative}
-.kpi.pulse strong::after{content:""; position:absolute; inset:-6px; border-radius:16px; box-shadow:0 0 0 0 rgba(95,160,255,.35); animation:pulse 2s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(95,160,255,.35)}70%{box-shadow:0 0 0 18px rgba(95,160,255,0)}100%{box-shadow:0 0 0 0 rgba(95,160,255,0)}}
+.hero{padding:52px 0 28px; position:relative; overflow:hidden;}
+.hero::after{content:""; position:absolute; inset:0; background:radial-gradient(520px 220px at 10% 16%, rgba(83,231,198,.14), transparent 52%), radial-gradient(620px 280px at 92% 10%, rgba(79,139,255,.18), transparent 50%); opacity:.8; pointer-events:none}
+.hero-inner{position:relative; display:grid; grid-template-columns:1.1fr 0.9fr; gap:28px; align-items:center; background:linear-gradient(135deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border:1px solid rgba(255,255,255,.08); border-radius:28px; padding:32px; box-shadow:var(--elev-3); backdrop-filter:blur(14px)}
+.hero-copy h1{font-size:2.4rem; letter-spacing:-0.4px; margin:6px 0 12px}
+.hero-copy .sub{color:var(--muted); max-width:620px}
+.hero-pills{display:flex; gap:10px; flex-wrap:wrap; margin:16px 0}
+.hero-actions{display:flex; gap:10px; flex-wrap:wrap; margin-top:12px}
+.hero-right{position:relative}
+.glass-stack{display:grid; gap:14px}
+.concierge-card{padding:18px; border-radius:18px; background:var(--surface); border:1px solid rgba(255,255,255,.12); box-shadow:var(--elev-2); display:grid; gap:12px}
+.concierge-card .inline-flags{display:flex; gap:8px; flex-wrap:wrap}
+.hero-kpis{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:10px}
+.kpi{background:var(--surface); border:1px solid rgba(255,255,255,.12); border-radius:16px; padding:14px; display:grid; gap:4px; box-shadow:var(--elev-1); text-align:center}
+.kpi strong{font-size:1.35rem}
+.kpi.pulse{animation:pulse 1400ms ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(83,231,198,.2)}50%{box-shadow:0 0 0 16px rgba(83,231,198,0)}}
+
+/* ---------- Bento / Premium grid ---------- */
+.lab-bento{display:grid; gap:18px; margin:26px auto 12px}
+.bento-card{background:var(--surface); border:1px solid rgba(255,255,255,.1); border-radius:24px; padding:20px; box-shadow:var(--elev-2); position:relative; overflow:hidden}
+.bento-card.prime::after{content:""; position:absolute; inset:0; background:radial-gradient(420px 220px at 18% 0%, rgba(83,231,198,.12), transparent 50%), radial-gradient(520px 240px at 92% 10%, rgba(79,139,255,.14), transparent 52%); pointer-events:none}
+.bento-card .card-top{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; position:relative; z-index:1}
+.signal-rows{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; position:relative; z-index:1; margin-top:14px}
+.signal{display:flex; gap:12px; align-items:flex-start; padding:14px; border-radius:16px; background:var(--surface-2); border:1px solid rgba(255,255,255,.08); box-shadow:var(--elev-1)}
+.sig-dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--brand-700),#53e7c6);box-shadow:0 0 0 8px rgba(83,231,198,.12)}
+.sig-dot.warm{background:linear-gradient(135deg,#ff8a6b,#ffc06b);box-shadow:0 0 0 8px rgba(255,192,107,.14)}
+.sig-dot.cool{background:linear-gradient(135deg,#7ba0ff,#c5e0ff);box-shadow:0 0 0 8px rgba(123,160,255,.14)}
+.bento-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:14px}
+.bento-tile{padding:18px; border-radius:18px; background:var(--surface); border:1px solid rgba(255,255,255,.08); box-shadow:var(--elev-1); display:grid; gap:10px}
+.tile-head{display:flex; justify-content:space-between; align-items:center; gap:10px}
+.bento-tile h4{font-size:1.05rem}
+.micro-metrics{display:flex; gap:12px; flex-wrap:wrap}
+.micro-metrics div{background:var(--surface-2); border:1px solid rgba(255,255,255,.08); padding:10px 12px; border-radius:12px; display:grid; gap:2px}
 .eyebrow{text-transform:uppercase; letter-spacing:1px; color:var(--muted); font-size:.82rem; margin-bottom:6px}
 html[data-theme="dark"] .kpi strong{color:#add4ff}
 
