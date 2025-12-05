@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const qs  = (sel, root=document) => root.querySelector(sel);
   const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
   const fmtINR = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+  const randomBetween = (min, max) => Number((Math.random() * (max - min) + min).toFixed(1));
 
   const deg2rad = d => d * (Math.PI/180);
   const haversineKm = (a, b) => {
@@ -149,6 +150,51 @@ document.addEventListener('DOMContentLoaded', () => {
   const img = () =>
     `https://images.unsplash.com/photo-1551601651-2a8555f1a136?q=80&auto=format&fit=crop&w=1200&h=675&crop=faces,edges`;
 
+  const seedHistory = [
+    {
+      date: '2024-07-05',
+      title: 'CBC + Hydration check',
+      lab: 'Apollo Diagnostics',
+      doctor: 'Dr. Vasudha Nene',
+      status: 'Hydrate & recheck',
+      markers: [
+        { name: 'HB', value: '12.8 g/dL', status: 'Borderline' },
+        { name: 'WBC', value: '7.9k', status: 'Watch infection' },
+        { name: 'Platelets', value: '2.5 L', status: 'Normal' }
+      ],
+      note: 'Looks mildly dry. ORS 500 ml today, repeat CBC in 72h. Mapped into Health board.',
+      next: ['ORS 500 ml', 'Repeat CBC in 3 days', 'Hydration reminder every 2h']
+    },
+    {
+      date: '2024-06-26',
+      title: 'LFT + KFT follow-up',
+      lab: 'Fortis Lab',
+      doctor: 'Dr. Niyati Rao',
+      status: 'Stable',
+      markers: [
+        { name: 'SGOT', value: '32 U/L', status: 'Normal' },
+        { name: 'Creatinine', value: '1.0 mg/dL', status: 'Clear' },
+        { name: 'Sodium', value: '139 mmol/L', status: 'Balanced' }
+      ],
+      note: 'Values are steady. Continue hydration, avoid heavy oil. Next check in 30 days.',
+      next: ['Avoid fried food x7d', 'Hydrate 2.5L/day']
+    },
+    {
+      date: '2024-06-14',
+      title: 'Cardiac markers',
+      lab: 'Max Lab',
+      doctor: 'Dr. Pranav Kulkarni',
+      status: 'Calm',
+      markers: [
+        { name: 'CRP', value: 'Low', status: 'Calm' },
+        { name: 'BNP', value: 'Normal', status: 'Clear' },
+        { name: 'Troponin', value: 'Normal', status: 'Clear' }
+      ],
+      note: 'No stress markers noted. Maintain walks + sleep hygiene.',
+      next: ['Walk 20 mins', 'Sleep 7.5h']
+    }
+  ];
+
   const labs = [
     { id:'lab01', name:'Apollo Diagnostics', city:'Mumbai', area:'Andheri', lat:19.118, lng:72.846, phone:'+912241234567', homeVisit:true, homeFee:129, img:img() },
     { id:'lab02', name:'Thyrocare Centre', city:'Mumbai', area:'Powai', lat:19.118, lng:72.905, phone:'+912242345678', homeVisit:true, homeFee:99, img:img() },
@@ -184,6 +230,44 @@ document.addEventListener('DOMContentLoaded', () => {
   let selections = {};
   const getSel = (labId) => (selections[labId] ||= { blood: new Set(), rad: new Set(), bloodHome: false });
 
+  const syncKey = 'lab-dashboard-latest';
+  const pullHistory = () => {
+    try {
+      return JSON.parse(localStorage.getItem(syncKey)) || {};
+    } catch {
+      return {};
+    }
+  };
+
+  const pushHistory = (payload = {}) => {
+    const existing = pullHistory();
+    const history = payload.history || existing.history || seedHistory;
+    const latestPanels = payload.latestPanels || existing.latestPanels || {};
+    const body = {
+      lab: payload.lab || existing.lab || 'Concierge lab',
+      updated: payload.updated || Date.now(),
+      history,
+      latestPanels
+    };
+    localStorage.setItem(syncKey, JSON.stringify(body));
+  };
+
+  const defaultPanels = () => ({
+    rbc: randomBetween(4.4, 5.2),
+    wbc: randomBetween(5.5, 7.9),
+    platelets: randomBetween(2.1, 3.4),
+    sgot: randomBetween(24, 36),
+    sgpt: randomBetween(22, 34),
+    bilirubin: randomBetween(0.7, 1.2),
+    creatinine: randomBetween(0.8, 1.2),
+    urea: randomBetween(18, 32),
+    sodium: randomBetween(136, 144),
+    troponin: 'Normal',
+    crp: Math.random() > 0.7 ? 'Mildly High' : 'Low',
+    bnp: 'Normal',
+    spirometry: Math.random() > 0.8 ? 'Mild restriction' : 'Normal'
+  });
+
   const profileKey = 'hf_profile';
   const loadProfile = () => { try { return JSON.parse(localStorage.getItem(profileKey)) || {}; } catch { return {}; } };
   const saveProfile = (p) => localStorage.setItem(profileKey, JSON.stringify(p));
@@ -208,6 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const statAvgFee = qs('#statAvgFee');
   const statCoverage = qs('#statCoverage');
   const statHomeRange = qs('#statHomeRange');
+  const doctorSync = qs('#doctorSync');
 
   // Modal elements
   const modal = qs('#labModal');
@@ -271,6 +356,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const profileSave = qs('#profileSave');
   const profileClear = qs('#profileClear');
 
+  const existingHistory = pullHistory();
+  if (!existingHistory.history) {
+    pushHistory({ history: seedHistory, latestPanels: defaultPanels() });
+  }
+
   /* -------------------------------
      Build cards grid
   --------------------------------*/
@@ -291,6 +381,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const titleEl = qs('.title', node);
     const subEl = qs('.sub', node);
     const badgesEl = qs('.badges', node);
+    const metaLine = qs('.meta-line', node);
+    const doctorNote = qs('.doctor-note', node);
     const btnView = qs('.btn-view', node);
     const btnDir = qs('.btn-dir', node);
     const btnCall = qs('.btn-call', node);
@@ -303,13 +395,28 @@ document.addEventListener('DOMContentLoaded', () => {
     [
       lab.homeVisit ? 'Home visit' : 'In-lab only',
       `${lab.blood.length} blood`,
-      `${lab.radiology.length} radiology`
+      `${lab.radiology.length} radiology`,
+      'Doctor mapped'
     ].forEach(t => {
       const s = document.createElement('span');
       s.className = 'pill';
       s.textContent = t;
       badgesEl.appendChild(s);
     });
+
+    metaLine.innerHTML = '';
+    [
+      lab.homeVisit ? `Home fee ${fmtINR(lab.homeFee)}` : 'Walk-in preferred',
+      'Panic handling ready',
+      'Report coaching'
+    ].forEach(t => {
+      const c = document.createElement('span');
+      c.className = 'chip';
+      c.textContent = t;
+      metaLine.appendChild(c);
+    });
+
+    if (doctorNote) doctorNote.textContent = `Doctor view: ${lab.homeVisit ? 'Safe for home pickup.' : 'Visit advised.'} We will map the ${lab.city} report date into your Health board automatically.`;
 
     distEl.textContent = lab.distanceKm != null ? `${lab.distanceKm} km` : '— km';
     btnDir.href = `https://www.google.com/maps?q=${encodeURIComponent(lab.name)}@${lab.lat},${lab.lng}`;
@@ -399,6 +506,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
    
+  doctorSync?.addEventListener('click', () => {
+    pushHistory({ updated: Date.now(), latestPanels: defaultPanels() });
+    toast('Doctor sync ready — Health board updated.');
+  });
+
   /* -------------------------------
      Geolocation
   --------------------------------*/
@@ -658,6 +770,25 @@ document.addEventListener('DOMContentLoaded', () => {
     toast('Profile cleared.');
   });
 
+  function syncBookingToHealth(lab, picksB, picksR, slot) {
+    const history = pullHistory().history ? [...pullHistory().history] : [...seedHistory];
+    const entry = {
+      date: slot,
+      title: `${lab.city} • Doctor follow-up`,
+      lab: lab.name,
+      doctor: 'HealthFlo doctor mode',
+      status: 'Scheduled',
+      markers: [
+        picksB[0] ? { name: picksB[0].name, value: fmtINR(picksB[0].price), status: 'Ordered' } : { name: 'Hydration', value: 'Guarded', status: 'Watch' },
+        picksR[0] ? { name: picksR[0].name, value: 'Scheduled', status: 'Next' } : { name: 'Vitals', value: 'Auto-sync', status: 'Ready' }
+      ],
+      note: `Doctor lens booked this slot. Reports will land on your Health timeline with prep + meaning.`,
+      next: ['Prep reminder set', 'WhatsApp share ready']
+    };
+    history.unshift(entry);
+    pushHistory({ lab: lab.name, updated: Date.now(), history: history.slice(0, 6), latestPanels: defaultPanels() });
+  }
+
   qs('#btnBookConfirm')?.addEventListener('click', () => {
     if (!currentLab) return;
     const sel = getSel(currentLab.id);
@@ -676,6 +807,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!date || !time) { toast('Choose date & time'); return; }
 
     const tot = parseInt(qs('#bookTotal').textContent.replace(/[^\d]/g,'')) || 0;
+    const slot = `${date} ${time}`;
 
     const lines = [
       `*Lab booking request*`,
@@ -683,7 +815,7 @@ document.addEventListener('DOMContentLoaded', () => {
       `Name: ${name}`,
       `Phone: ${phone}`,
       `Mode: ${qs('#modeHome').checked ? 'Home visit' : 'Visit lab'}`,
-      `Slot: ${date} ${time}`,
+      `Slot: ${slot}`,
       '',
       picksB.length ? `Blood (${picksB.length}):\n${picksB.map(t => `• ${t.name} — ${fmtINR(t.price)}`).join('\n')}${sel.bloodHome ? `\n• Home fee — ${fmtINR(currentLab.homeFee)}` : ''}` : '',
       picksR.length ? `Radiology (${picksR.length}):\n${picksR.map(t => `• ${t.name} — ${fmtINR(t.price)}`).join('\n')}` : '',
@@ -691,8 +823,9 @@ document.addEventListener('DOMContentLoaded', () => {
       `Total: ${fmtINR(tot)}`
     ].filter(Boolean).join('\n');
 
+    syncBookingToHealth(currentLab, picksB, picksR, slot);
     window.open(`https://wa.me/?text=${encodeURIComponent(lines)}`, '_blank');
-    toast('Opening WhatsApp…');
+    toast('Opening WhatsApp + syncing Health…');
   });
 
   [qs('#modeVisit'), qs('#modeHome')].forEach(r => r?.addEventListener('change', updateBookingSummary));
