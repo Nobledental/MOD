@@ -14849,4 +14849,82 @@
       }
     ]
   }
+  ,
+  {
+    "state": "Pharmacy Network",
+    "pharmacies": [
+      {
+        "id": "PHARM-HF-BUFFER",
+        "name": "HealthFlo Buffer Pharmacy",
+        "type": "Virtual Buffer",
+        "latitude": 20.5937,
+        "longitude": 78.9629,
+        "rating": 4.9,
+        "delivery": true,
+        "pickup": true,
+        "live": true,
+        "actsAsBuffer": true,
+        "coverage_km": 12,
+        "specialties": [
+          "Rx Validation",
+          "Cold Chain",
+          "Substitute Routing"
+        ],
+        "contact": "+91-9000000000",
+        "address": "Network Buffer across partnered hospital pharmacies",
+        "distance_km": null
+      },
+      {
+        "id": "PHARM-DEL-APOLLO",
+        "name": "Apollo Hospitals Pharmacy",
+        "type": "Hospital Pharmacy",
+        "latitude": 28.528,
+        "longitude": 77.219,
+        "rating": 4.5,
+        "delivery": true,
+        "pickup": true,
+        "live": true,
+        "actsAsBuffer": false,
+        "coverage_km": 10,
+        "specialties": ["Cold Chain", "WhatsApp updates"],
+        "contact": "+91-1149876543",
+        "address": "Saket, Delhi",
+        "distance_km": null
+      },
+      {
+        "id": "PHARM-NOIDA-FORTIS",
+        "name": "Fortis Hospital Pharmacy",
+        "type": "Hospital Pharmacy",
+        "latitude": 28.62,
+        "longitude": 77.363,
+        "rating": 4.4,
+        "delivery": true,
+        "pickup": true,
+        "live": false,
+        "actsAsBuffer": false,
+        "coverage_km": 9,
+        "specialties": ["Tele-consult", "Rx follow-up"],
+        "contact": "+91-1202223344",
+        "address": "Sector 62, Noida",
+        "distance_km": null
+      },
+      {
+        "id": "PHARM-MUM-KOKILABEN",
+        "name": "Kokilaben Hospital Pharmacy",
+        "type": "Hospital Pharmacy",
+        "latitude": 19.134,
+        "longitude": 72.833,
+        "rating": 4.6,
+        "delivery": true,
+        "pickup": true,
+        "live": true,
+        "actsAsBuffer": false,
+        "coverage_km": 8,
+        "specialties": ["Pack tracking", "Cold Chain"],
+        "contact": "+91-2261111111",
+        "address": "Andheri, Mumbai",
+        "distance_km": null
+      }
+    ]
+  }
 ]
