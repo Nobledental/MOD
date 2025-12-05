@@ -614,10 +614,46 @@ header.hf-topbar {
 
 footer { text-align: center; margin-top: 40px; color: var(--muted); }
 
+/* Neo dock quick navigation */
+.neo-dock {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--card);
+  border-radius: 999px;
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+  border: var(--border);
+  box-shadow: var(--shadow);
+  z-index: 12;
+}
+
+.dock-btn {
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 18px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-btn.active,
+.dock-btn:hover {
+  background: var(--card-strong);
+}
+
 @media (max-width: 720px) {
   .topbar-inner { flex-direction: column; align-items: flex-start; }
   .hf-nav { width: 100%; }
   .dashboard-grid { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .form-grid .full { grid-column: span 1; }
+  .neo-dock { width: calc(100% - 24px); justify-content: space-between; flex-wrap: wrap; }
 }
