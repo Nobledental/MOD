@@ -58,12 +58,25 @@
           <span class="pill soft">AI-assisted sorting</span>
           <span class="pill soft">Live distance</span>
           <span class="pill soft">One-tap WhatsApp</span>
+          <span class="pill soft">Doctor lens</span>
         </div>
         <div class="hero-actions" aria-label="Quick lab actions">
           <button class="pill solid">Instant home pickup</button>
           <button class="pill outline">24h reports</button>
           <button class="pill outline">Doctor-reviewed</button>
           <button class="pill ghost">Ask AI concierge</button>
+        </div>
+        <div class="doctor-voice">
+          <div>
+            <p class="eyebrow">Doctor voice</p>
+            <p class="muted">“I’m ranking labs like a clinician — prep readiness, panic handling, IV support, and infection guardrails.”</p>
+          </div>
+          <div class="doctor-checks" aria-label="Doctor-prep checklist">
+            <span class="chip">Prep scripts</span>
+            <span class="chip">IV-ready</span>
+            <span class="chip">Panic protocol</span>
+            <span class="chip">Paediatric-safe</span>
+          </div>
         </div>
       </div>
       <div class="hero-right">
@@ -84,6 +97,13 @@
               <span class="pill soft">Voice scheduling</span>
               <span class="pill soft">Smart prep guide</span>
               <span class="pill soft">Ambient safety</span>
+            </div>
+            <div class="doctor-inline">
+              <div>
+                <p class="eyebrow">Doctor actions</p>
+                <p class="muted">Maps your next lab report and date-wise vitals straight into Health.</p>
+              </div>
+              <button class="btn btn-primary ripple pressable" type="button" id="doctorSync">Sync to Health</button>
             </div>
           </div>
         </div>
@@ -165,6 +185,19 @@
           <div><strong>EMI</strong><small>for bundles</small></div>
         </div>
       </article>
+      <article class="bento-tile span2">
+        <div class="tile-head">
+          <p class="eyebrow">Doctor’s triage</p>
+          <span class="pill ghost">Behaves like a doctor</span>
+        </div>
+        <h4>Clinical-ready card design</h4>
+        <p class="muted">Each card now shows doctor persona, prep scripts, infection cover, and how it will land on your Health board.</p>
+        <div class="micro-metrics">
+          <div><strong>4</strong><small>doctor personas</small></div>
+          <div><strong>6</strong><small>synced dates</small></div>
+          <div><strong>Auto</strong><small>Health mapping</small></div>
+        </div>
+      </article>
     </div>
   </section>
 
@@ -241,11 +274,31 @@
       <figure class="media">
         <img src="" alt="" />
         <span class="distance" aria-label="Distance">— km</span>
+        <div class="media-overlay">
+          <div class="overlay-row">
+            <span class="pill ghost">Doctor ranked</span>
+            <span class="pill soft">IV-ready</span>
+          </div>
+          <div class="overlay-row mini">
+            <span class="chip">Prep kit</span>
+            <span class="chip">Pediatric safe</span>
+            <span class="chip">Infection guard</span>
+          </div>
+        </div>
       </figure>
       <div class="body">
-        <h3 class="title">Lab Name</h3>
+        <div class="title-row">
+          <h3 class="title">Lab Name</h3>
+          <span class="pill soft doctor-tag">Doctor lens</span>
+        </div>
         <div class="sub">Area • City</div>
+        <div class="meta-line">
+          <span class="chip">Home ready</span>
+          <span class="chip">Report coaching</span>
+          <span class="chip">WhatsApp concierge</span>
+        </div>
         <div class="badges" aria-label="Highlights"></div>
+        <div class="doctor-note">“Looks safe for home pickup. We’ll map the report date into your Health board automatically.”</div>
         <div class="cta">
           <button class="btn btn-primary btn-view ripple pressable" type="button">View</button>
           <a class="btn btn-ghost btn-dir ripple pressable" target="_blank" rel="noopener" role="button" aria-label="Get directions">Directions</a>
