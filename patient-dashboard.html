@@ -472,59 +472,93 @@
       </div>
     </section>
 
-    <!-- PROFILE & WALLET -->
-    <section class="profile-section" id="profile">
-      <div class="profile-card">
-        <div class="profile-avatar-wrap">
-          <img src="https://i.pravatar.cc/150" class="profile-avatar" alt="Profile avatar">
+    <!-- ENGAGEMENT LOOP -->
+    <section class="engagement-loop" id="engagement">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Guardian dopamine loop</p>
+          <h2 class="section-title">Daily streaks, rituals, and wins</h2>
+          <p class="section-sub">One-tap check-ins, micro actions, and progress bars keep you hooked to healthy routines.</p>
         </div>
-        <div class="profile-info-main">
-          <h2>Profile & wallet (separate page)</h2>
-          <p class="muted">Personal details, blood group, allergies, systemic conditions, insurance vault with TPAs, bank accounts, and CIBIL tracking.</p>
-          <div class="profile-grid">
-            <div class="p-tile">
-              <h5>Personal</h5>
-              <p>Age 29 • Male • India</p>
-            </div>
-            <div class="p-tile">
-              <h5>Medical</h5>
-              <p>Blood group O+ • No allergies noted</p>
-            </div>
-            <div class="p-tile">
-              <h5>Insurance</h5>
-              <p>Pick from all Indian insurers + TPA</p>
-            </div>
-            <div class="p-tile">
-              <h5>Finance</h5>
-              <p>CIBIL 742 • Bank linked</p>
-            </div>
-          </div>
-          <div class="inline-row">
-            <button class="pill solid">Open profile page</button>
-            <button class="pill ghost">Manage insurance</button>
-          </div>
-          <div class="inline-row">
-            <button class="pill outline">Financial / bank details</button>
-            <button class="pill ghost">Update allergies</button>
-          </div>
+        <div class="chip-row">
+          <span class="chip">Habit XP</span>
+          <span class="chip">Check-in streak</span>
+          <span class="chip">Social proof</span>
         </div>
       </div>
 
-      <div class="profile-card alt" id="qrRegistration">
-        <div class="profile-info-main">
-          <h3>Instant registration</h3>
-          <p class="muted">Use your unique QR or User ID to breeze through hospital / clinic / lab / pharmacy admissions.</p>
-          <div class="registration-row">
-            <div class="qr-block">
-              <div class="qr-placeholder">QR</div>
-              <small>User ID: HF-2048-NEO</small>
+      <div class="loop-grid">
+        <div class="loop-card streak">
+          <div class="card-head">
+            <h3>Neo streak</h3>
+            <span class="pill soft" id="streak_badge">12 days 🔥</span>
+          </div>
+          <p class="muted">Show up daily to lock bonuses. Miss two days and the streak cools down.</p>
+          <div class="progress-wrap">
+            <div class="progress-bar">
+              <div id="streak_progress" class="progress-fill" style="width: 72%"></div>
             </div>
-            <div class="reg-actions">
-              <button class="pill solid">Download QR</button>
-              <button class="pill ghost">Share with family</button>
-              <button class="pill outline">Check-in demo</button>
+            <div class="progress-meta">
+              <strong id="streak_value">72%</strong>
+              <small id="streak_hint">3 rituals left today</small>
             </div>
           </div>
+          <div class="inline-row">
+            <button class="pill solid" id="checkin_btn">One-tap check-in</button>
+            <button class="pill ghost" id="share_streak">Share win</button>
+          </div>
+          <p class="muted small" id="checkin_msg">Tap check-in to keep dopamine drip flowing.</p>
+        </div>
+
+        <div class="loop-card">
+          <div class="card-head">
+            <h3>Today’s rituals</h3>
+            <span class="pill soft">Live</span>
+          </div>
+          <ul class="ritual-list" id="ritual_list">
+            <li data-ritual="water"><span>500ml water</span><div class="mini-progress"><span style="width: 60%"></span></div></li>
+            <li data-ritual="walk"><span>20-min walk</span><div class="mini-progress"><span style="width: 35%"></span></div></li>
+            <li data-ritual="sleep"><span>Sleep on time</span><div class="mini-progress"><span style="width: 45%"></span></div></li>
+            <li data-ritual="meds"><span>Take meds</span><div class="mini-progress"><span style="width: 80%"></span></div></li>
+          </ul>
+          <button class="pill ghost" id="ritual_shuffle">Shuffle micro habits</button>
+        </div>
+
+        <div class="loop-card pulse">
+          <div class="card-head">
+            <h3>Dopamine feed</h3>
+            <span class="pill soft">Every 15s</span>
+          </div>
+          <div class="feed" id="dopamine_feed">
+            <div class="feed-item success">Hydration up 12% after your last sip.</div>
+            <div class="feed-item">SpO₂ steady. Keep the streak alive.</div>
+            <div class="feed-item warn">Lungs need a stretch. Try box breathing.</div>
+          </div>
+        </div>
+
+        <div class="loop-card rewards">
+          <div class="card-head">
+            <h3>Rewards & boosts</h3>
+            <span class="pill soft">Live</span>
+          </div>
+          <div class="reward-grid">
+            <div>
+              <p class="muted">Energy meter</p>
+              <strong id="energy_value">84%</strong>
+              <small id="energy_hint">Morning boost unlocked</small>
+            </div>
+            <div>
+              <p class="muted">Mood</p>
+              <strong id="mood_value">Calm</strong>
+              <small>Breath pacing on</small>
+            </div>
+            <div>
+              <p class="muted">AI companion</p>
+              <strong>Guardian</strong>
+              <small>+2 nudges today</small>
+            </div>
+          </div>
+          <button class="pill outline" id="boost_button">Claim focus boost</button>
         </div>
       </div>
     </section>
