@@ -147,8 +147,17 @@ document.addEventListener('DOMContentLoaded', () => {
     { name: 'ECG', price: 300 },
     { name: '2D Echo', price: 1800 }
   ];
-  const img = () =>
-    `https://images.unsplash.com/photo-1551601651-2a8555f1a136?q=80&auto=format&fit=crop&w=1200&h=675&crop=faces,edges`;
+  const premiumImages = [
+    'https://images.unsplash.com/photo-1631815588497-f7c56c1f2291?q=80&auto=format&fit=crop&w=1200&h=640',
+    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?q=80&auto=format&fit=crop&w=1200&h=640',
+    'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&auto=format&fit=crop&w=1200&h=640',
+    'https://images.unsplash.com/photo-1638202993928-7267aad84c6a?q=80&auto=format&fit=crop&w=1200&h=640',
+    'https://images.unsplash.com/photo-1631815588406-47c7b2611f47?q=80&auto=format&fit=crop&w=1200&h=640',
+    'https://images.unsplash.com/photo-1582719471374-d2e84ccf0f4b?q=80&auto=format&fit=crop&w=1200&h=640',
+    'https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&auto=format&fit=crop&w=1200&h=640',
+    'https://images.unsplash.com/photo-1538108149393-fbbd81895907?q=80&auto=format&fit=crop&w=1200&h=640'
+  ];
+  const img = (idx = 0) => premiumImages[idx % premiumImages.length];
 
   const seedHistory = [
     {
@@ -195,34 +204,80 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  const seedReports = [
+    {
+      name: 'CBC + Hydration check',
+      date: '2024-07-05 08:00',
+      lab: 'Apollo Diagnostics',
+      doctor: 'Dr. Vasudha Nene',
+      status: 'Ready',
+      type: 'blood',
+      pdf: 'assets/reports/lab-report.pdf',
+      ai: 'Hydration low — repeat CBC in 72h and drink 2.5L water.',
+    },
+    {
+      name: 'LFT + KFT follow-up',
+      date: '2024-06-26 10:00',
+      lab: 'Fortis Lab',
+      doctor: 'Dr. Niyati Rao',
+      status: 'Stable',
+      type: 'blood',
+      pdf: 'assets/reports/lab-report.pdf',
+      ai: 'Values steady. Avoid fried food and hydrate.',
+    },
+    {
+      name: 'Ultrasound Abdomen',
+      date: '2024-06-20 09:00',
+      lab: 'Max Lab',
+      doctor: 'Radiology desk',
+      status: 'Clear',
+      type: 'imaging',
+      pdf: 'assets/reports/imaging-report.pdf',
+      ai: 'No acute findings. Liver and kidneys normal.',
+    },
+    {
+      name: 'Cardiac markers + CRP',
+      date: '2024-06-14 11:00',
+      lab: 'Max Lab',
+      doctor: 'Dr. Pranav Kulkarni',
+      status: 'Calm',
+      type: 'blood',
+      pdf: 'assets/reports/lab-report.pdf',
+      ai: 'Inflammation low. Keep walks + sleep hygiene.',
+    },
+  ];
+
   const labs = [
-    { id:'lab01', name:'Apollo Diagnostics', city:'Mumbai', area:'Andheri', lat:19.118, lng:72.846, phone:'+912241234567', homeVisit:true, homeFee:129, img:img() },
-    { id:'lab02', name:'Thyrocare Centre', city:'Mumbai', area:'Powai', lat:19.118, lng:72.905, phone:'+912242345678', homeVisit:true, homeFee:99, img:img() },
-    { id:'lab03', name:'SRL Diagnostics', city:'Delhi', area:'Dwarka', lat:28.592, lng:77.046, phone:'+911145678901', homeVisit:true, homeFee:149, img:img() },
-    { id:'lab04', name:'Metropolis Lab', city:'Delhi', area:'Preet Vihar', lat:28.636, lng:77.289, phone:'+911123456789', homeVisit:true, homeFee:129, img:img() },
-    { id:'lab05', name:'Dr. Lal PathLabs', city:'Bengaluru', area:'Jayanagar', lat:12.925, lng:77.593, phone:'+918023456701', homeVisit:true, homeFee:119, img:img() },
-    { id:'lab06', name:'Vijaya Diagnostics', city:'Hyderabad', area:'Banjara Hills', lat:17.416, lng:78.448, phone:'+914040123456', homeVisit:true, homeFee:129, img:img() },
-    { id:'lab07', name:'Aster Labs', city:'Bengaluru', area:'Whitefield', lat:12.969, lng:77.749, phone:'+918022223333', homeVisit:true, homeFee:149, img:img() },
-    { id:'lab08', name:'Hitech Diagnostics', city:'Chennai', area:'T. Nagar', lat:13.041, lng:80.234, phone:'+914428765432', homeVisit:true, homeFee:109, img:img() },
-    { id:'lab09', name:'Kokilaben Ambani Lab', city:'Mumbai', area:'Four Bungalows', lat:19.134, lng:72.833, phone:'+912261111111', homeVisit:false, homeFee:0, img:img() },
-    { id:'lab10', name:'Max Lab', city:'Delhi', area:'Saket', lat:28.528, lng:77.219, phone:'+911149876543', homeVisit:true, homeFee:159, img:img() },
+    { id:'lab01', name:'Apollo Diagnostics', city:'Mumbai', area:'Andheri', lat:19.118, lng:72.846, phone:'+912241234567', homeVisit:true, homeFee:129, img:img(0) },
+    { id:'lab02', name:'Thyrocare Centre', city:'Mumbai', area:'Powai', lat:19.118, lng:72.905, phone:'+912242345678', homeVisit:true, homeFee:99, img:img(1) },
+    { id:'lab03', name:'SRL Diagnostics', city:'Delhi', area:'Dwarka', lat:28.592, lng:77.046, phone:'+911145678901', homeVisit:true, homeFee:149, img:img(2) },
+    { id:'lab04', name:'Metropolis Lab', city:'Delhi', area:'Preet Vihar', lat:28.636, lng:77.289, phone:'+911123456789', homeVisit:true, homeFee:129, img:img(3) },
+    { id:'lab05', name:'Dr. Lal PathLabs', city:'Bengaluru', area:'Jayanagar', lat:12.925, lng:77.593, phone:'+918023456701', homeVisit:true, homeFee:119, img:img(4) },
+    { id:'lab06', name:'Vijaya Diagnostics', city:'Hyderabad', area:'Banjara Hills', lat:17.416, lng:78.448, phone:'+914040123456', homeVisit:true, homeFee:129, img:img(5) },
+    { id:'lab07', name:'Aster Labs', city:'Bengaluru', area:'Whitefield', lat:12.969, lng:77.749, phone:'+918022223333', homeVisit:true, homeFee:149, img:img(6) },
+    { id:'lab08', name:'Hitech Diagnostics', city:'Chennai', area:'T. Nagar', lat:13.041, lng:80.234, phone:'+914428765432', homeVisit:true, homeFee:109, img:img(7) },
+    { id:'lab09', name:'Kokilaben Ambani Lab', city:'Mumbai', area:'Four Bungalows', lat:19.134, lng:72.833, phone:'+912261111111', homeVisit:false, homeFee:0, img:img(1) },
+    { id:'lab10', name:'Max Lab', city:'Delhi', area:'Saket', lat:28.528, lng:77.219, phone:'+911149876543', homeVisit:true, homeFee:159, img:img(2) },
     // FIXED: removed malformed "homeVisit(false){...}" and kept a single valid property
-    { id:'lab11', name:'Fortis Lab', city:'Noida', area:'Sector 62', lat:28.620, lng:77.363, phone:'+911202223344', homeVisit:true, homeFee:149, img:img() },
-    { id:'lab12', name:'Medall Diagnostics', city:'Chennai', area:'Adyar', lat:13.006, lng:80.257, phone:'+914443211234', homeVisit:true, homeFee:119, img:img() },
-    { id:'lab13', name:'Suburban Diagnostics', city:'Pune', area:'Aundh', lat:18.563, lng:73.807, phone:'+912040987654', homeVisit:true, homeFee:139, img:img() },
-    { id:'lab14', name:'Oncquest Labs', city:'Jaipur', area:'C-Scheme', lat:26.913, lng:75.789, phone:'+911414567890', homeVisit:true, homeFee:149, img:img() },
-    { id:'lab15', name:'Redcliffe Labs', city:'Lucknow', area:'Gomti Nagar', lat:26.853, lng:81.003, phone:'+915224567890', homeVisit:true, homeFee:119, img:img() },
-    { id:'lab16', name:'Healthians', city:'Gurugram', area:'DLF Phase 3', lat:28.494, lng:77.097, phone:'+911244567890', homeVisit:true, homeFee:99, img:img() },
-    { id:'lab17', name:'Diagno Labs', city:'Ahmedabad', area:'Navrangpura', lat:23.036, lng:72.558, phone:'+917926543210', homeVisit:true, homeFee:129, img:img() },
-    { id:'lab18', name:'Aarthi Scans & Labs', city:'Kochi', area:'Vytilla', lat:9.967, lng:76.318, phone:'+914844445555', homeVisit:true, homeFee:109, img:img() }
+    { id:'lab11', name:'Fortis Lab', city:'Noida', area:'Sector 62', lat:28.620, lng:77.363, phone:'+911202223344', homeVisit:true, homeFee:149, img:img(3) },
+    { id:'lab12', name:'Medall Diagnostics', city:'Chennai', area:'Adyar', lat:13.006, lng:80.257, phone:'+914443211234', homeVisit:true, homeFee:119, img:img(4) },
+    { id:'lab13', name:'Suburban Diagnostics', city:'Pune', area:'Aundh', lat:18.563, lng:73.807, phone:'+912040987654', homeVisit:true, homeFee:139, img:img(5) },
+    { id:'lab14', name:'Oncquest Labs', city:'Jaipur', area:'C-Scheme', lat:26.913, lng:75.789, phone:'+911414567890', homeVisit:true, homeFee:149, img:img(6) },
+    { id:'lab15', name:'Redcliffe Labs', city:'Lucknow', area:'Gomti Nagar', lat:26.853, lng:81.003, phone:'+915224567890', homeVisit:true, homeFee:119, img:img(7) },
+    { id:'lab16', name:'Healthians', city:'Gurugram', area:'DLF Phase 3', lat:28.494, lng:77.097, phone:'+911244567890', homeVisit:true, homeFee:99, img:img(0) },
+    { id:'lab17', name:'Diagno Labs', city:'Ahmedabad', area:'Navrangpura', lat:23.036, lng:72.558, phone:'+917926543210', homeVisit:true, homeFee:129, img:img(1) },
+    { id:'lab18', name:'Aarthi Scans & Labs', city:'Kochi', area:'Vytilla', lat:9.967, lng:76.318, phone:'+914844445555', homeVisit:true, homeFee:109, img:img(2) }
   ].map((lab, idx) => {
     const mul = 0.92 + (idx % 5) * 0.03;
     lab.blood = baseBlood.map(t => ({ ...t, price: Math.round(t.price * mul) }));
     lab.radiology = baseRad.map(t => ({ ...t, price: Math.round(t.price * (1.0 + (idx % 4) * 0.05)) }));
     lab.about = `${lab.name} offers NABL-grade diagnostics with accurate reporting and friendly staff. Home collection ${lab.homeVisit ? 'available' : 'not available'}.`;
+    lab.tat = idx % 3 === 0 ? '6-12h' : idx % 3 === 1 ? '12-24h' : '24-36h';
+    lab.persona = ['IV safety', 'Infection guard', 'Senior friendly', 'Pediatric comfort'][idx % 4];
+    lab.rating = (4.6 + (idx % 5) * 0.1).toFixed(1);
     return lab;
   });
-
+   
   /* -------------------------------
      State
   --------------------------------*/
@@ -243,11 +298,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const existing = pullHistory();
     const history = payload.history || existing.history || seedHistory;
     const latestPanels = payload.latestPanels || existing.latestPanels || {};
+    const reports = payload.reports || existing.reports || seedReports;
     const body = {
       lab: payload.lab || existing.lab || 'Concierge lab',
       updated: payload.updated || Date.now(),
       history,
-      latestPanels
+      latestPanels,
+      reports,
+      bloodReports: reports.filter(r => r.type !== 'imaging'),
+      imagingReports: reports.filter(r => r.type === 'imaging'),
     };
     localStorage.setItem(syncKey, JSON.stringify(body));
   };
@@ -269,7 +328,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   const profileKey = 'hf_profile';
-  const loadProfile = () => { try { return JSON.parse(localStorage.getItem(profileKey)) || {}; } catch { return {}; } };
+  const defaultProfile = { name: 'Aarav Mehta', phone: '9876543210', city: 'Mumbai', sort: 'nearest' };
+  const loadProfile = () => { try { return { ...defaultProfile, ...(JSON.parse(localStorage.getItem(profileKey)) || {}) }; } catch { return { ...defaultProfile }; } };
   const saveProfile = (p) => localStorage.setItem(profileKey, JSON.stringify(p));
 
   /* -------------------------------
@@ -358,7 +418,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const existingHistory = pullHistory();
   if (!existingHistory.history) {
-    pushHistory({ history: seedHistory, latestPanels: defaultPanels() });
+    pushHistory({ history: seedHistory, latestPanels: defaultPanels(), reports: seedReports });
   }
 
   /* -------------------------------
@@ -505,12 +565,58 @@ document.addEventListener('DOMContentLoaded', () => {
       statCoverage.textContent = `${cityTotal} cities`;
     }
   }
-   
-  doctorSync?.addEventListener('click', () => {
-    pushHistory({ updated: Date.now(), latestPanels: defaultPanels() });
-    toast('Doctor sync ready — Health board updated.');
-  });
 
+  function renderReports() {
+    if (!reportShelf) return;
+    const snap = pullHistory();
+    const reports = snap.reports && snap.reports.length ? snap.reports : seedReports;
+    reportShelf.innerHTML = '';
+    reports.slice(0, 6).forEach(rep => {
+      const card = document.createElement('article');
+      card.className = 'report-card';
+      const title = document.createElement('h4');
+      title.textContent = rep.name;
+      const meta = document.createElement('div');
+      meta.className = 'report-meta';
+      meta.innerHTML = `<span>${rep.lab}</span> • <span>${rep.doctor || 'Doctor lens'}</span> • <span>${rep.status || 'Ready'}</span> • <span>${new Date(rep.date).toLocaleString()}</span>`;
+      const tags = document.createElement('div');
+      tags.className = 'report-tags';
+      ['PDF ready', rep.type === 'imaging' ? 'Imaging' : 'Blood', 'Mirrors to Health', 'Doctor narration'].forEach(t => {
+        const chip = document.createElement('span');
+        chip.className = 'pill';
+        chip.textContent = t;
+        tags.appendChild(chip);
+      });
+      const ai = document.createElement('div');
+      ai.className = 'report-ai';
+      ai.textContent = rep.ai || 'Doctor review pending.';
+      const actions = document.createElement('div');
+      actions.className = 'report-actions';
+      const pdfBtn = document.createElement('a');
+      pdfBtn.className = 'btn btn-primary ripple pressable';
+      pdfBtn.href = rep.pdf;
+      pdfBtn.target = '_blank';
+      pdfBtn.rel = 'noopener';
+      pdfBtn.textContent = 'View PDF';
+      const shareBtn = document.createElement('a');
+      shareBtn.className = 'btn btn-ghost ripple pressable';
+      shareBtn.href = `https://wa.me/?text=${encodeURIComponent(`Lab report: ${rep.name}\n${rep.lab}\nStatus: ${rep.status}\nPDF: ${location.origin}/${rep.pdf}`)}`;
+      shareBtn.target = '_blank';
+      shareBtn.rel = 'noopener';
+      shareBtn.textContent = 'Share on WhatsApp';
+      actions.append(pdfBtn, shareBtn);
+      card.append(title, meta, tags, ai, actions);
+      reportShelf.appendChild(card);
+    });
+  }
+
+  doctorSync?.addEventListener('click', () => {
+    const snap = pullHistory();
+    pushHistory({ updated: Date.now(), latestPanels: defaultPanels(), history: snap.history || seedHistory, reports: snap.reports || seedReports });
+    toast('Doctor sync ready — Health board updated.');
+    renderReports();
+  });
+   
   /* -------------------------------
      Geolocation
   --------------------------------*/
@@ -590,6 +696,7 @@ document.addEventListener('DOMContentLoaded', () => {
     buildTests(lab, 'radiology');
     recalcTotals();
     updateBookingSummary();
+    applyProfileToBooking();
 
     tabs.forEach(b => b.classList.remove('is-active'));
     if (tabs[0]) tabs[0].classList.add('is-active');
@@ -745,33 +852,46 @@ document.addEventListener('DOMContentLoaded', () => {
   profileCity.value = prof.city || '';
   profileSort.value = prof.sort || 'nearest';
 
+  const applyProfileToBooking = () => {
+    qs('#bookName').value = profileName.value || defaultProfile.name;
+    qs('#bookPhone').value = profilePhone.value || defaultProfile.phone;
+  };
+  applyProfileToBooking();
+
   qs('#btnUseProfile')?.addEventListener('click', () => {
-    qs('#bookName').value = profileName.value || '';
-    qs('#bookPhone').value = profilePhone.value || '';
+    applyProfileToBooking();
     toast('Copied default profile to booking.');
   });
 
   profileSave?.addEventListener('click', () => {
     const p = {
-      name: profileName.value.trim(),
-      phone: profilePhone.value.trim(),
-      city: profileCity.value,
-      sort: profileSort.value
+      name: profileName.value.trim() || defaultProfile.name,
+      phone: profilePhone.value.trim() || defaultProfile.phone,
+      city: profileCity.value || defaultProfile.city,
+      sort: profileSort.value || defaultProfile.sort
     };
     saveProfile(p);
+    profileName.value = p.name;
+    profilePhone.value = p.phone;
+    profileCity.value = p.city;
+    profileSort.value = p.sort;
+    applyProfileToBooking();
     toast('Profile saved.');
   });
   profileClear?.addEventListener('click', () => {
-    profileName.value = '';
-    profilePhone.value = '';
-    profileCity.value = '';
-    profileSort.value = 'nearest';
-    saveProfile({});
-    toast('Profile cleared.');
+    profileName.value = defaultProfile.name;
+    profilePhone.value = defaultProfile.phone;
+    profileCity.value = defaultProfile.city;
+    profileSort.value = defaultProfile.sort;
+    saveProfile(defaultProfile);
+    applyProfileToBooking();
+    toast('Profile reset to doctor defaults.');
   });
 
   function syncBookingToHealth(lab, picksB, picksR, slot) {
-    const history = pullHistory().history ? [...pullHistory().history] : [...seedHistory];
+    const snap = pullHistory();
+    const history = snap.history ? [...snap.history] : [...seedHistory];
+    const reports = snap.reports ? [...snap.reports] : [...seedReports];
     const entry = {
       date: slot,
       title: `${lab.city} • Doctor follow-up`,
@@ -786,7 +906,19 @@ document.addEventListener('DOMContentLoaded', () => {
       next: ['Prep reminder set', 'WhatsApp share ready']
     };
     history.unshift(entry);
-    pushHistory({ lab: lab.name, updated: Date.now(), history: history.slice(0, 6), latestPanels: defaultPanels() });
+    const primaryPick = picksB[0] || picksR[0] || { name: 'Lab panel' };
+    const report = {
+      name: primaryPick.name,
+      date: slot,
+      lab: lab.name,
+      doctor: 'Doctor lens',
+      status: 'Scheduled',
+      type: picksR.length ? 'imaging' : 'blood',
+      pdf: picksR.length ? 'assets/reports/imaging-report.pdf' : 'assets/reports/lab-report.pdf',
+      ai: `Doctor mapped ${primaryPick.name} for ${lab.city}. Report will mirror into Health + Profile.`
+    };
+    reports.unshift(report);
+    pushHistory({ lab: lab.name, updated: Date.now(), history: history.slice(0, 6), latestPanels: defaultPanels(), reports: reports.slice(0, 12) });
   }
 
   qs('#btnBookConfirm')?.addEventListener('click', () => {
@@ -826,6 +958,7 @@ document.addEventListener('DOMContentLoaded', () => {
     syncBookingToHealth(currentLab, picksB, picksR, slot);
     window.open(`https://wa.me/?text=${encodeURIComponent(lines)}`, '_blank');
     toast('Opening WhatsApp + syncing Health…');
+    renderReports();
   });
 
   [qs('#modeVisit'), qs('#modeHome')].forEach(r => r?.addEventListener('change', updateBookingSummary));
@@ -845,5 +978,6 @@ document.addEventListener('DOMContentLoaded', () => {
   /* -------------------------------
      Initial render
   --------------------------------*/
+  renderReports();
   renderGrid();
 });
