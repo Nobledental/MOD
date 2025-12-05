@@ -114,7 +114,7 @@
 
     <section class="insights">
       <div class="card shine" aria-live="polite">
-        <div class="label-row" style="justify-content:space-between; align-items:center;">
+        <div class="label-row between">
           <div>
             <p class="chip">Health map & reports</p>
             <h3>Track lab reports, sync, or download PDFs</h3>
@@ -122,7 +122,7 @@
           </div>
           <div class="status-badge neutral" id="dashboardStatus">Demo snapshot</div>
         </div>
-        <div class="download-actions" style="margin-bottom:10px;">
+        <div class="download-actions padded">
           <button class="badge" id="downloadDashboardPdf" type="button">⬇️ Download PDF</button>
           <button class="badge ghost" id="syncFromLatest" type="button">🔁 Refresh dummy data</button>
         </div>
@@ -140,7 +140,7 @@
     </section>
 
     <section class="card" aria-live="polite">
-      <div class="label-row" style="justify-content:space-between; align-items:center; flex-wrap:wrap;">
+      <div class="label-row spread-wrap">
         <div>
           <p class="chip">Concierge bundles</p>
           <h3>Pre-built panels for faster ordering</h3>
@@ -227,7 +227,7 @@
             <button class="badge ghost" id="downloadPdf" type="button" data-ripple>⬇️ Download PDF</button>
           </div>
         </div>
-        <div class="reports-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+        <div class="reports-grid">
           <div class="report-card">
             <h4>Blood markers</h4>
             <div class="modal-list" id="reportBlood"></div>
@@ -249,7 +249,7 @@
               </div>
             </label>
             <label>Date & time
-              <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <div class="inline-inputs">
                 <input id="bookDate" type="date">
                 <input id="bookTime" type="time">
               </div>
@@ -288,7 +288,7 @@
                 <button class="badge primary" id="useProfile" type="button" data-ripple>Use profile</button>
               </div>
             </details>
-            <div class="card" style="padding:12px;">
+            <div class="card tight-pad">
               <p class="muted">Selected tests & total</p>
               <div id="bookSummary">No tests selected yet.</div>
               <strong id="bookTotal">₹0</strong>
@@ -320,22 +320,6 @@
         <button class="tiny badge book-now" data-action="book" type="button">Book now</button>
         <a class="tiny badge ghost" data-action="directions" target="_blank" rel="noopener">Directions</a>
         <a class="tiny badge ghost" data-action="call">Call</a>
-      </div>
-    </div>
-  </template>
-
-  <template id="testRowTpl">
-    <div class="test-row">
-      <label>
-        <input type="checkbox">
-        <div>
-          <span class="test-name"></span>
-          <p class="test-why"></p>
-        </div>
-      </label>
-      <div class="test-price-wrap">
-        <strong class="test-price"></strong>
-        <small class="muted test-range"></small>
       </div>
     </div>
   </template>
