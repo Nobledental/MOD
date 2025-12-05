@@ -1,4 +1,4 @@
-<!-- HealthFlo — Home Lab Tests (Light theme / pastel-green gradient) -->
+<!-- HealthFlo — Home Lab Tests (Labs OS skin) -->
 <!doctype html>
 <html lang="en" data-theme="light">
 <head>
@@ -6,24 +6,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>HealthFlo — Home Lab Tests</title>
   <meta name="description" content="Find nearby medical labs across India. Compare test prices, check home visit availability, and book appointments." />
-  <meta name="theme-color" content="#f6fff9" />
+  <meta name="theme-color" content="#0e1b3d" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/patient-labs.css" />
 </head>
 
-<body>
+<body class="hf-body labs-shell">
   <!-- ===== Header ===== -->
   <header class="hf-header" role="banner">
     <div class="wrap header-inner">
-      <a class="brand" href="#" aria-label="HealthFlo home">
-        <span class="dot" aria-hidden="true"></span>
-        <span class="brand-text">HealthFlo</span>
-      </a>
+      <div class="hf-logo" aria-label="HealthFlo OS">
+        <span class="logo-dot" aria-hidden="true"></span>
+        <div>
+          <div class="logo-title">HealthFlo OS</div>
+          <div class="logo-sub">Labs & diagnostics</div>
+        </div>
+      </div>
 
-      <div class="actions">
-        <button id="themeToggle" class="btn btn-ghost ripple pressable" type="button" title="Toggle theme" aria-pressed="false">🌗</button>
+      <nav class="hf-nav" aria-label="Primary navigation">
+        <a class="nav-btn" href="patient-dashboard.html">Dashboard</a>
+        <a class="nav-btn" href="patient-health.html">Health</a>
+        <a class="nav-btn" href="patient-organs.html">Organs</a>
+        <a class="nav-btn" href="patient-profile.html">Profile</a>
+        <a class="nav-btn" href="patient-hospitals.html">Hospitals</a>
+        <a class="nav-btn" href="patient-pharmacy.html">Pharmacy</a>
+        <a class="nav-btn active" href="patient-labs.html">Labs</a>
+        <a class="nav-btn" href="patient-devices.html">Devices</a>
+        <a class="nav-btn" href="patient-family.html">Family</a>
+        <a class="nav-btn" href="patient-insurance.html">Insurance</a>
+        <a class="nav-btn" href="patient-settings.html">Settings</a>
+      </nav>
+
+      <div class="hf-actions">
+        <button id="themeToggle" class="hf-icon ripple pressable" type="button" title="Toggle theme" aria-pressed="false">🌓</button>
+        <button class="hf-icon ripple pressable" type="button" aria-label="Notifications">🔔</button>
+        <button class="pill ghost ripple pressable" type="button">Quick book</button>
       </div>
     </div>
   </header>
@@ -32,13 +51,20 @@
   <section class="hero" aria-labelledby="heroTitle">
     <div class="wrap hero-inner">
       <div class="hero-copy">
+        <p class="eyebrow">Labs OS • Discovery cockpit</p>
         <h1 id="heroTitle">Book home & in-lab tests near you</h1>
         <p class="sub">15+ cities • Transparent pricing • Home visit option • WhatsApp confirmation</p>
+        <div class="hero-pills">
+          <span class="pill soft">AI-assisted sorting</span>
+          <span class="pill soft">Live distance</span>
+          <span class="pill soft">One-tap WhatsApp</span>
+        </div>
       </div>
       <div class="hero-kpis" aria-label="Key metrics">
         <div class="kpi"><strong id="kLabs">—</strong><span>Labs</span></div>
         <div class="kpi"><strong>15+</strong><span>Cities</span></div>
         <div class="kpi"><strong>Fast</strong><span>Home pickup</span></div>
+        <div class="kpi pulse"><strong>Live</strong><span>Availability</span></div>
       </div>
     </div>
   </section>
