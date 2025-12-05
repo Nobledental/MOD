@@ -135,6 +135,11 @@
     .sync-btn:active { transform:scale(0.97); }
     .status-line { color:var(--muted); font-weight:600; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px; }
+    .grid.skeleton { opacity:0.6; pointer-events:none; }
+    .skeleton-card { border:1px solid var(--border); border-radius:14px; padding:14px; background:var(--panel); box-shadow:var(--shadow); display:grid; gap:10px; }
+    .skeleton-line { height:12px; border-radius:8px; background:linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,255,255,0.12), rgba(255,255,255,0.04)); animation:skeleton 1.4s ease-in-out infinite; }
+    .skeleton-thumb { height:140px; border-radius:12px; background:linear-gradient(120deg, rgba(113,198,255,0.18), rgba(139,255,181,0.12)); animation:skeleton 1.6s ease-in-out infinite; }
+    @keyframes skeleton { 0% { background-position:0% 50%; } 100% { background-position:120% 50%; } }
     .lab-card { display:flex; flex-direction:column; gap:10px; cursor:pointer; transition:transform 0.2s, border 0.2s; }
     .lab-card:hover { transform:translateY(-4px); border-color:var(--primary); }
     .lab-img { width:100%; height:150px; border-radius:14px; object-fit:cover; background:linear-gradient(135deg, rgba(113,198,255,0.12), rgba(139,255,181,0.12)); }
@@ -152,6 +157,11 @@
     .ad-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; border:1px dashed var(--border); padding:10px 12px; border-radius:12px; background:linear-gradient(90deg, rgba(113,198,255,0.12), rgba(139,255,181,0.12)); box-shadow:var(--shadow); }
     .ad-bar .badge { background:var(--panel-2); }
     .download-actions { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .empty-state { text-align:center; padding:18px; border:1px dashed var(--border); border-radius:14px; background:var(--panel); color:var(--muted); font-weight:700; }
+    .bundle-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; }
+    .bundle { border:1px solid var(--border); border-radius:14px; padding:12px; background:var(--panel); box-shadow:var(--shadow); display:grid; gap:6px; }
+    .bundle strong { font-size:16px; }
+    .bundle .pill { background:var(--panel-2); }
     .modal { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:flex-end; justify-content:center; z-index:200; opacity:0; pointer-events:none; transition:0.25s ease; }
     .modal.show { opacity:1; pointer-events:auto; }
     .sheet { width:100%; max-width:1080px; max-height:90vh; border-radius:24px 24px 0 0; background:var(--panel); box-shadow:0 30px 60px rgba(0,0,0,0.45); overflow:hidden; display:flex; flex-direction:column; }
@@ -317,8 +327,25 @@
       </div>
     </section>
 
+    <section class="card" aria-live="polite">
+      <div class="label-row" style="justify-content:space-between; align-items:center; flex-wrap:wrap;">
+        <div>
+          <p class="chip">Concierge bundles</p>
+          <h3>Pre-built panels for faster ordering</h3>
+          <p class="muted">Tap a bundle to auto-select tests inside any lab modal. Designed to avoid decision fatigue.</p>
+        </div>
+        <div class="actions">
+          <button class="badge" type="button" id="openFirstLab" data-ripple>Open first lab</button>
+          <button class="badge ghost" type="button" id="showAllLabs" data-ripple>Show all labs</button>
+        </div>
+      </div>
+      <div class="bundle-row" id="bundleRow"></div>
+    </section>
+
     <section>
+      <div class="grid skeleton" id="labsSkeleton" aria-hidden="true"></div>
       <div class="grid" id="labsGrid" aria-live="polite"></div>
+      <div class="empty-state" id="labsEmpty" hidden>Filters returned no labs. Reset filters or tap "Show all labs".</div>
     </section>
   </main>
 
@@ -528,6 +555,8 @@
 
     const themeToggle = el('themeToggle');
     const labsGrid = el('labsGrid');
+    const labsSkeleton = el('labsSkeleton');
+    const labsEmpty = el('labsEmpty');
     const labCardTpl = el('labCardTpl');
     const testRowTpl = el('testRowTpl');
     const toast = el('toast');
@@ -557,6 +586,9 @@
     const downloadLandingPdf = el('downloadLandingPdf');
     const downloadDashboardPdf = el('downloadDashboardPdf');
     const syncFromLatest = el('syncFromLatest');
+    const bundleRow = el('bundleRow');
+    const openFirstLab = el('openFirstLab');
+    const showAllLabs = el('showAllLabs');
 
     const modal = el('labModal');
     const modalTitle = el('modalTitle');
@@ -618,6 +650,8 @@
     let currentLab = null;
     let userLocation = null;
     let latestReportForPdf = getFallbackSnapshot();
+    let lastResults = [];
+    let bundlePresets = [];
     
     const baseBlood = [
       { name: 'Complete Blood Count', price: 480, why: 'Screens anemia, infection and platelet issues in one sweep.', unit:'g/dL', range:[12,16] },
@@ -693,6 +727,13 @@
       { title:'Hospital lab bundle', tag:'CARE20', desc:'Save on MRI + CBC when booking hospital diagnostics.' },
       { title:'Early bird slots', tag:'SUNRISE', desc:'6–8 AM fasting slots with priority pickup.' },
       { title:'Family pack of 4', tag:'FAM4', desc:'Auto copy reports to all linked dashboards.' }
+    ];
+
+    bundlePresets = [
+      { name:'Preventive essentials (8)', desc:'CBC, LFT, KFT, lipids, HbA1c, thyroid, Vitamin D, CRP', blood:['Complete Blood Count','Lipid Profile','Liver Function Test','Kidney Function Test','HbA1c','Thyroid Panel','Vitamin D','CRP'], rad:[], home:true },
+      { name:'Cardio-metabolic clarity', desc:'Lipid, HbA1c, Iron studies + CT Brain or Chest X-Ray as indicated', blood:['Lipid Profile','HbA1c','Iron Studies'], rad:['Chest X-Ray','CT Brain'], home:false },
+      { name:'Bone & spine focus', desc:'Vitamin D, Ferritin + DEXA and MRI spine review', blood:['Vitamin D','Ferritin'], rad:['DEXA Scan','MRI Spine'], home:false },
+      { name:'Women’s wellness', desc:'CBC, thyroid, Vitamin D + Pelvic USG & mammography pairing', blood:['Complete Blood Count','Thyroid Panel','Vitamin D'], rad:['USG Pelvis','Mammography'], home:true }
     ];
 
     function initTheme() {
@@ -827,7 +868,10 @@
     }
 
     function renderLabs(list) {
+      lastResults = list;
+      renderSkeletonCards(false);
       labsGrid.innerHTML = '';
+      labsEmpty.hidden = !!list.length;
       const homeLabs = list.filter(l=>l.homeVisit).length;
       const radLabs = list.filter(l=>l.radiology.length).length;
       const avg = list.length ? list.reduce((a,l)=>a+l.blood[0].price,0)/list.length : 0;
@@ -841,6 +885,7 @@
         if (!metric) return;
         metric.classList.remove('animate'); metric.offsetWidth; metric.classList.add('animate');
       });
+      if (!list.length) return;
       list.forEach(lab => {
         const node = labCardTpl.content.firstElementChild.cloneNode(true);
         node.querySelector('.lab-img').src = lab.img;
@@ -880,6 +925,23 @@
       });
     }
 
+    function getFirstLab() {
+      return (lastResults && lastResults.length ? lastResults[0] : null) || labs[0];
+    }
+
+    function applyBundle(bundle) {
+      const lab = getFirstLab();
+      if (!lab) { showToast('Labs are still loading'); return; }
+      const sel = getSel(lab.id);
+      sel.blood.clear();
+      sel.rad.clear();
+      bundle.blood.forEach(name => { if (lab.blood.find(t => t.name === name)) sel.blood.add(name); });
+      bundle.rad.forEach(name => { if (lab.radiology.find(t => t.name === name)) sel.rad.add(name); });
+      sel.home = bundle.home && lab.homeVisit;
+      openModal(lab);
+      showToast(`${bundle.name} loaded in ${lab.name}`);
+    }
+
     function renderExplainers() {
       explainerList.innerHTML = '';
       const picked = [...baseBlood.slice(0,3), ...baseRad.slice(0,2)];
@@ -904,6 +966,35 @@
     function renderOffers() {
       renderOfferCards(offersStrip);
       renderOfferCards(secondaryOffers);
+    }
+
+    function renderBundles() {
+      bundleRow.innerHTML = '';
+      bundlePresets.forEach(bundle => {
+        const card = document.createElement('div');
+        card.className = 'bundle shine';
+        card.innerHTML = `
+          <strong>${bundle.name}</strong>
+          <p class="muted">${bundle.desc}</p>
+          <div class="label-row wrap">${bundle.blood.slice(0,3).map(b=>`<span class="pill">${b}</span>`).join('')} ${bundle.rad.slice(0,2).map(r=>`<span class="pill">${r}</span>`).join('')}</div>
+          <span class="pill ${bundle.home ? 'good' : ''}">${bundle.home ? 'Home ready' : 'Visit lab'}</span>
+        `;
+        card.addEventListener('click', () => applyBundle(bundle));
+        bundleRow.appendChild(card);
+      });
+    }
+
+    function renderSkeletonCards(show = true) {
+      labsSkeleton.innerHTML = '';
+      labsSkeleton.setAttribute('aria-hidden', show ? 'false' : 'true');
+      labsSkeleton.classList.toggle('skeleton', show);
+      if (!show) return;
+      for (let i = 0; i < 6; i++) {
+        const card = document.createElement('div');
+        card.className = 'skeleton-card';
+        card.innerHTML = '<div class="skeleton-thumb"></div><div class="skeleton-line" style="width:70%"></div><div class="skeleton-line" style="width:40%"></div><div class="label-row"><span class="skeleton-line" style="width:60px"></span><span class="skeleton-line" style="width:80px"></span></div>';
+        labsSkeleton.appendChild(card);
+      }
     }
 
     function renderDashboardSnapshot() {
@@ -1187,6 +1278,8 @@
     cityFilter.addEventListener('change', filterLabs);
     typeFilter.addEventListener('change', filterLabs);
     homeToggle.addEventListener('change', filterLabs);
+    openFirstLab.addEventListener('click', () => { const lab = getFirstLab(); if (lab) openModal(lab); else showToast('Labs are still loading'); });
+    showAllLabs.addEventListener('click', () => { searchInput.value=''; cityFilter.value=''; typeFilter.value=''; homeToggle.checked=false; nearestToggle.checked=true; filterLabs(); });
 
     modalCall.addEventListener('click', e => { if (modalCall.href.startsWith('tel:')) return; e.preventDefault(); window.location.href = modalCall.href; });
 
@@ -1206,12 +1299,14 @@
     }
 
     function init() {
+      renderSkeletonCards(true);
       initTheme();
       loadProfile();
       const savedLoc = localStorage.getItem('lab-location');
       if (savedLoc) { userLocation = JSON.parse(savedLoc); locationMeta.textContent = 'Saved'; }
       buildLabs();
       renderOffers();
+      renderBundles();
       renderDashboardSnapshot();
       filterLabs();
       initRipple();
