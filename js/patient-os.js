@@ -39,6 +39,9 @@ const organMeta = {
   },
 };
 
+const healthReportShelf = document.getElementById('health_report_shelf');
+const profileReportShelf = document.getElementById('profile_report_shelf');
+
 const organStatusEls = {
   heart: document.getElementById('heart_status'),
   lungs: document.getElementById('lung_status'),
@@ -366,6 +369,59 @@ function renderLabTimeline() {
 
 renderLabTimeline();
 setInterval(renderLabTimeline, 12000);
+setInterval(renderReportShelves, 12000);
+
+const fallbackReports = [
+  { name: 'CBC + Hydration check', lab: 'Apollo Diagnostics', doctor: 'Dr. Vasudha Nene', status: 'Ready', date: '2024-07-05 08:00', pdf: 'assets/reports/lab-report.pdf', type: 'blood', ai: 'Hydration low — repeat in 72h.' },
+  { name: 'LFT + KFT follow-up', lab: 'Fortis Lab', doctor: 'Dr. Niyati Rao', status: 'Stable', date: '2024-06-26 10:00', pdf: 'assets/reports/lab-report.pdf', type: 'blood', ai: 'Values steady. Avoid fried food.' },
+  { name: 'Ultrasound Abdomen', lab: 'Max Lab', doctor: 'Radiology desk', status: 'Clear', date: '2024-06-20 09:00', pdf: 'assets/reports/imaging-report.pdf', type: 'imaging', ai: 'No acute findings.' }
+];
+
+function renderReportShelves() {
+  if (!healthReportShelf && !profileReportShelf) return;
+  const snap = getLabSnapshot();
+  const reports = snap?.reports && snap.reports.length ? snap.reports : fallbackReports;
+  const shelves = [healthReportShelf, profileReportShelf].filter(Boolean);
+  shelves.forEach(el => {
+    el.innerHTML = '';
+    reports.slice(0, 6).forEach(rep => {
+      const card = document.createElement('div');
+      card.className = 'report-card';
+      const head = document.createElement('div');
+      head.innerHTML = `<h4>${rep.name}</h4><div class="report-meta"><span>${rep.lab}</span><span>${rep.doctor || 'Doctor lens'}</span><span>${rep.status || 'Ready'}</span><span>${new Date(rep.date).toLocaleString()}</span></div>`;
+      const tags = document.createElement('div');
+      tags.className = 'report-tags';
+      ['PDF ready', rep.type === 'imaging' ? 'Imaging' : 'Blood', 'Mirrors to dashboard'].forEach(t => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = t;
+        tags.appendChild(chip);
+      });
+      const ai = document.createElement('div');
+      ai.className = 'report-ai';
+      ai.textContent = rep.ai || 'Doctor review pending.';
+      const actions = document.createElement('div');
+      actions.className = 'report-actions';
+      const pdfBtn = document.createElement('a');
+      pdfBtn.className = 'badge';
+      pdfBtn.href = rep.pdf;
+      pdfBtn.target = '_blank';
+      pdfBtn.rel = 'noopener';
+      pdfBtn.textContent = 'View PDF';
+      const share = document.createElement('a');
+      share.className = 'badge';
+      share.href = `https://wa.me/?text=${encodeURIComponent(`Lab report: ${rep.name}\n${rep.lab}\nStatus: ${rep.status}\nPDF: ${location.origin}/${rep.pdf}`)}`;
+      share.target = '_blank';
+      share.rel = 'noopener';
+      share.textContent = 'Share';
+      actions.append(pdfBtn, share);
+      card.append(head, tags, ai, actions);
+      el.appendChild(card);
+    });
+  });
+}
+
+renderReportShelves();
 
 // Radiology + imaging live status
 const radiologyRows = document.querySelectorAll('[data-rad-study]');
