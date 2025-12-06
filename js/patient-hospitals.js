@@ -62,6 +62,13 @@ const LAB_HISTORY = [
 ];
 
 const DOC_NAMES = ['Aarav', 'Vivaan', 'Anaya', 'Rohan', 'Ira', 'Kabir', 'Myra', 'Advait', 'Kiara', 'Navya'];
+const LANG_SETS = [
+  ['English', 'Hindi'],
+  ['English', 'Hindi', 'Marathi'],
+  ['English', 'Hindi', 'Telugu'],
+  ['English', 'Hindi', 'Tamil'],
+  ['English', 'Kannada', 'Hindi'],
+];
 
 function toast(msg, ms = 2200) {
   const t = qs('#toast');
@@ -87,28 +94,46 @@ function pick(arr, n = 1) {
   return out;
 }
 
-function buildProcedures(specs = []) {
+function buildProcedures(specs = [], count = 20) {
   const collected = [];
   specs.forEach((sp) => {
     if (PROC_MAP[sp]) collected.push(...PROC_MAP[sp]);
   });
   if (!collected.length) collected.push(['Day care package', [12000, 22000]]);
-  return pick(collected, 4).map(([name, [lo, hi]]) => ({
+  while (collected.length < count) {
+    collected.push(['Comprehensive care bundle', [14000, 32000]]);
+  }
+  return pick(collected, count).map(([name, [lo, hi]], idx) => ({
+    id: `proc-${idx}-${name.toLowerCase().replace(/\s+/g, '-')}`,
     name,
     price: fmtINR(Math.round(lo + Math.random() * (hi - lo))),
+    meta: 'Pre-op • Procedure • Stay • Basic meds',
   }));
 }
 
-function buildDoctors(specs = []) {
-  return pick(specs.length ? specs : ['General Medicine'], 3).map((sp, idx) => ({
-    name: `Dr. ${DOC_NAMES[idx % DOC_NAMES.length]}`,
-    spec: sp,
-    slot: ['09:45', '11:10', '12:40', '15:30', '17:15'][idx % 5],
-  }));
+function buildDoctors(specs = [], count = 6) {
+  const slots = ['09:30 AM', '10:15 AM', '11:45 AM', '02:30 PM', '04:15 PM', '06:00 PM'];
+  return pick(specs.length ? specs : ['General Medicine'], count).map((sp, idx) => {
+    const exp = 3 + Math.floor(Math.random() * 22);
+    const fee = 300 + Math.floor(Math.random() * 700);
+    return {
+      id: `doc-${idx}-${sp}`,
+      name: `Dr. ${DOC_NAMES[idx % DOC_NAMES.length]} ${String.fromCharCode(65 + idx)}`,
+      spec: sp,
+      exp,
+      fee: fmtINR(fee),
+      slot: slots[idx % slots.length],
+      bio: `${sp} specialist with ${exp}+ yrs of experience. Expertise in minimally invasive care and patient education.`,
+      langs: LANG_SETS[idx % LANG_SETS.length].join(', '),
+      avatar: `https://picsum.photos/seed/doc-${idx}-${sp}/96/96`,
+      allSlots: pick(slots, 6),
+    };
+  });
 }
 
-function buildPharmacy(medsFlat) {
-  return pick(medsFlat, 4).map((m) => ({
+function buildPharmacy(medsFlat, count = 6) {
+  return pick(medsFlat, count).map((m, idx) => ({
+    id: `med-${idx}-${m.brand}`,
     name: m.brand,
     form: `${m.form} • ${m.strength || m.pack}`,
     price: fmtINR(m.price || m.mrp || 0),
@@ -137,6 +162,16 @@ function renderMetrics(hospitals) {
   qs('#metricHospitals').textContent = hospitals.length;
   qs('#metricCashless').textContent = cashless;
   qs('#metricRating').textContent = isNaN(avgRating) ? '—' : avgRating;
+}
+
+function coreServices(h) {
+  const distance = h.distance ?? distanceFor(h);
+  return [
+    { icon: '🩺', title: 'OPD', meta: 'Mon–Sat • 9 AM – 7 PM', action: 'Book OPD', on: () => toast('OPD booking started') },
+    { icon: '🛏️', title: 'IPD', meta: `${h.beds || 120}+ beds • Private & Shared`, action: 'Plan admission', on: () => toast('IPD admission team alerted') },
+    { icon: '📱', title: 'Teleconsult', meta: 'Video / Audio', action: 'Start call', on: () => toast('Teleconsult link shared') },
+    { icon: '🚑', title: 'Emergency', meta: `${distance} km • 24×7 desk`, action: 'Call ER', on: () => window.open('tel:108', '_self') },
+  ];
 }
 
 function createCard(h, medsFlat) {
@@ -170,11 +205,35 @@ function createCard(h, medsFlat) {
         <div class="card-info"><strong>${wait} min</strong><span>OPD wait now</span></div>
         <div class="card-info"><strong>${occupancy}%</strong><span>Occupancy pulse</span></div>
       </div>
-      <div class="card-inline">
-        <span class="chip-flat">${distance} km • Smart ETA</span>
-        <span class="chip-flat">${(h.specialties || []).length || 3} specialties</span>
-        <span class="chip-flat">${h.isCashless ? 'Cashless' : 'Self-pay / EMI'}</span>
-        <span class="chip-flat">AI concierge</span>
+    <div class="card-inline">
+      <span class="chip-flat">${distance} km • Smart ETA</span>
+      <span class="chip-flat">${(h.specialties || []).length || 3} specialties</span>
+      <span class="chip-flat">${h.isCashless ? 'Cashless' : 'Self-pay / EMI'}</span>
+      <span class="chip-flat">AI concierge</span>
+    </div>
+  </div>
+    <div class="card-explorer">
+      <div class="card-tabs" role="tablist">
+        <button class="card-tab active" data-pane="services" type="button">Services</button>
+        <button class="card-tab" data-pane="packages" type="button">Packages</button>
+        <button class="card-tab" data-pane="doctors" type="button">Doctors</button>
+        <button class="card-tab" data-pane="pharmacy" type="button">Pharmacy</button>
+        <button class="card-tab" data-pane="labs" type="button">Labs</button>
+      </div>
+      <div class="card-pane services-pane active" data-pane="services">
+        <div class="mini-services"></div>
+      </div>
+      <div class="card-pane packages-pane" data-pane="packages">
+        <div class="mini-list"></div>
+      </div>
+      <div class="card-pane doctors-pane" data-pane="doctors">
+        <div class="mini-list"></div>
+      </div>
+      <div class="card-pane pharmacy-pane" data-pane="pharmacy">
+        <div class="mini-list"></div>
+      </div>
+      <div class="card-pane labs-pane" data-pane="labs">
+        <div class="mini-list"></div>
       </div>
     </div>
     <div class="card-actions">
@@ -196,6 +255,72 @@ function createCard(h, medsFlat) {
     toast('Connecting you to emergency desk…');
     setTimeout(() => window.open('tel:108', '_self'), 150);
   });
+
+  // tab interactions
+  const paneTabs = card.querySelectorAll('.card-tab');
+  paneTabs.forEach((t) => {
+    t.addEventListener('click', (e) => {
+      e.stopPropagation();
+      paneTabs.forEach((x) => x.classList.remove('active'));
+      t.classList.add('active');
+      const key = t.dataset.pane;
+      card.querySelectorAll('.card-pane').forEach((p) => p.classList.toggle('active', p.dataset.pane === key));
+    });
+  });
+
+  // services pane
+  const miniServices = card.querySelector('.mini-services');
+  coreServices(h).forEach((svc) => {
+    const n = document.createElement('div');
+    n.className = 'mini-service';
+    n.innerHTML = `<h5>${svc.icon} ${svc.title}</h5><p>${svc.meta}</p><button class="mini-btn primary" type="button">${svc.action}</button>`;
+    n.querySelector('button')?.addEventListener('click', (ev) => { ev.stopPropagation(); svc.on(); });
+    miniServices.appendChild(n);
+  });
+
+  // packages pane (20 procedures)
+  const pkgList = card.querySelector('.packages-pane .mini-list');
+  (h.procedures || []).slice(0, 20).forEach((p) => {
+    const li = document.createElement('div');
+    li.className = 'mini-item';
+    li.innerHTML = `<div><strong>${p.name}</strong><br><span>${p.meta}</span></div><div class="mini-actions"><span class="chip-pill">${p.price}</span><button class="mini-btn primary" type="button">Enquire</button></div>`;
+    li.querySelector('button')?.addEventListener('click', (ev) => { ev.stopPropagation(); toast(`Enquiry sent for ${p.name}`); });
+    pkgList.appendChild(li);
+  });
+
+  // doctor pane
+  const docList = card.querySelector('.doctors-pane .mini-list');
+  (h.doctorsList || []).forEach((d) => {
+    const row = document.createElement('div');
+    row.className = 'mini-doctor';
+    row.innerHTML = `<div class="mini-doc-avatar"><img src="${d.avatar}" alt="${d.name}"></div><div class="mini-doc-meta"><strong>${d.name}</strong><span>${d.spec} • ${d.exp} yrs</span></div><div class="mini-doc-cta"><button class="mini-btn" type="button">Chat</button><button class="mini-btn primary" type="button">Book</button><button class="mini-btn" type="button">Profile</button></div>`;
+    const [chatBtn, bookBtn, profBtn] = row.querySelectorAll('button');
+    chatBtn.addEventListener('click', (ev) => { ev.stopPropagation(); toast(`Chat request sent to ${d.name}`); });
+    bookBtn.addEventListener('click', (ev) => { ev.stopPropagation(); toast(`Appointment held with ${d.name}`); });
+    profBtn.addEventListener('click', (ev) => { ev.stopPropagation(); openDoctorProfile(d, h); });
+    docList.appendChild(row);
+  });
+
+  // pharmacy pane
+  const medsList = card.querySelector('.pharmacy-pane .mini-list');
+  (h.meds || buildPharmacy(medsFlat)).forEach((m) => {
+    const li = document.createElement('div');
+    li.className = 'mini-item';
+    li.innerHTML = `<div><strong>${m.name}</strong><br><span>${m.form}</span></div><div class="mini-actions"><span class="chip-pill">${m.price}</span><button class="mini-btn" type="button">Add</button></div>`;
+    li.querySelector('button')?.addEventListener('click', (ev) => { ev.stopPropagation(); toast(`${m.name} mapped to pharmacy cart`); });
+    medsList.appendChild(li);
+  });
+
+  // labs pane
+  const labList = card.querySelector('.labs-pane .mini-list');
+  LAB_HISTORY.forEach((l) => {
+    const li = document.createElement('div');
+    li.className = 'mini-item';
+    li.innerHTML = `<div><strong>${l.title}</strong><br><span>${l.date} • ${l.lab}</span></div><div class="mini-actions"><span class="chip-pill">${l.status}</span><button class="mini-btn" type="button">View</button></div>`;
+    li.querySelector('button')?.addEventListener('click', (ev) => { ev.stopPropagation(); toast('Opening lab report history'); });
+    labList.appendChild(li);
+  });
+
   return card;
 }
 
@@ -277,19 +402,11 @@ function bindTheme() {
 function serviceRail(h, medsFlat, distance) {
   const rail = qs('#serviceRail');
   rail.innerHTML = '';
-  const cards = [
-    { icon: '🩺', title: 'OPD', meta: 'Mon-Sat 9 AM - 7 PM', action: 'Book OPD', onClick: () => toast('OPD booking started') },
-    { icon: '🛏️', title: 'IPD', meta: `${h.beds || 120}+ beds • Private & Shared`, action: 'Plan admission', onClick: () => toast('IPD admission team alerted') },
-    { icon: '📱', title: 'Teleconsult', meta: 'Video / Audio', action: 'Start call', onClick: () => toast('Teleconsult link shared') },
-    { icon: '💊', title: 'Pharmacy', meta: 'In-hospital + delivery', action: 'Map medicines', onClick: () => toast('Prescription mapped from pharmacy page') },
-    { icon: '🧪', title: 'Lab', meta: 'Pathology • Radiology', action: 'Book lab', onClick: () => toast('Lab booking synced') },
-    { icon: '🚑', title: 'Emergency', meta: `${distance} km • 24×7 desk`, action: 'Call ER', onClick: () => window.open('tel:108', '_self') },
-  ];
-  cards.forEach((c) => {
+  (h.servicesList || coreServices(h)).forEach((c) => {
     const n = document.createElement('div');
     n.className = 'rail-card';
     n.innerHTML = `<h4>${c.icon} ${c.title}</h4><p>${c.meta}</p><button class="btn ghost" type="button">${c.action}</button>`;
-    n.querySelector('button')?.addEventListener('click', c.onClick);
+    n.querySelector('button')?.addEventListener('click', c.on);
     rail.appendChild(n);
   });
 }
@@ -297,32 +414,38 @@ function serviceRail(h, medsFlat, distance) {
 function renderDoctors(h) {
   const wrap = qs('#doctorList');
   wrap.innerHTML = '';
-  buildDoctors(h.specialties).forEach((d) => {
-    const chip = document.createElement('div');
-    chip.className = 'chip';
-    chip.innerHTML = `<strong>${d.name}</strong><small>${d.spec}</small><small>${d.slot}</small>`;
-    wrap.appendChild(chip);
+  (h.doctorsList || buildDoctors(h.specialties)).forEach((d) => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `<div><strong>${d.name}</strong><br><span>${d.spec} • ${d.exp} yrs • ${d.langs || ''}</span></div><div class="mini-actions"><button class="mini-btn" type="button">Chat</button><button class="mini-btn primary" type="button">Book</button><button class="mini-btn" type="button">View profile</button></div>`;
+    const [chatBtn, bookBtn, profileBtn] = row.querySelectorAll('button');
+    chatBtn.addEventListener('click', () => toast(`Chat request sent to ${d.name}`));
+    bookBtn.addEventListener('click', () => toast(`Appointment held with ${d.name}`));
+    profileBtn.addEventListener('click', () => openDoctorProfile(d, h));
+    wrap.appendChild(row);
   });
 }
 
 function renderProcedures(h) {
   const wrap = qs('#procedureList');
   wrap.innerHTML = '';
-  buildProcedures(h.specialties).forEach((p) => {
+  (h.procedures || buildProcedures(h.specialties)).slice(0, 20).forEach((p) => {
     const li = document.createElement('div');
     li.className = 'list-item';
-    li.innerHTML = `<div><strong>${p.name}</strong><br><span>Pre-auth • Stay included</span></div><strong>${p.price}</strong>`;
+    li.innerHTML = `<div><strong>${p.name}</strong><br><span>${p.meta}</span></div><div class="mini-actions"><span class="chip-pill">${p.price}</span><button class="mini-btn primary" type="button">Enquire</button></div>`;
+    li.querySelector('button')?.addEventListener('click', () => toast(`Enquiry sent for ${p.name}`));
     wrap.appendChild(li);
   });
 }
 
-function renderMeds(medsFlat) {
+function renderMeds(medsFlat, h) {
   const wrap = qs('#medList');
   wrap.innerHTML = '';
-  buildPharmacy(medsFlat).forEach((m) => {
+  (h?.meds || buildPharmacy(medsFlat)).forEach((m) => {
     const li = document.createElement('div');
     li.className = 'list-item';
-    li.innerHTML = `<div><strong>${m.name}</strong><br><span>${m.form}</span></div><strong>${m.price}</strong>`;
+    li.innerHTML = `<div><strong>${m.name}</strong><br><span>${m.form}</span></div><div class="mini-actions"><span class="chip-pill">${m.price}</span><button class="mini-btn" type="button">Add</button></div>`;
+    li.querySelector('button')?.addEventListener('click', () => toast(`${m.name} mapped to hospital pharmacy`));
     wrap.appendChild(li);
   });
 }
@@ -333,7 +456,8 @@ function renderLabs() {
   LAB_HISTORY.forEach((l) => {
     const li = document.createElement('div');
     li.className = 'list-item';
-    li.innerHTML = `<div><strong>${l.title}</strong><br><span>${l.date} • ${l.lab}</span></div><span>${l.status}</span>`;
+    li.innerHTML = `<div><strong>${l.title}</strong><br><span>${l.date} • ${l.lab}</span></div><div class="mini-actions"><span class="chip-pill">${l.status}</span><button class="mini-btn" type="button">View</button></div>`;
+    li.querySelector('button')?.addEventListener('click', () => toast('Opening lab history…'));
     wrap.appendChild(li);
   });
 }
@@ -446,7 +570,7 @@ function openHospital(h, medsFlat) {
   serviceRail(h, medsFlat, distance);
   renderDoctors(h);
   renderProcedures(h);
-  renderMeds(medsFlat);
+  renderMeds(medsFlat, h);
   renderLabs();
   renderContext();
 
@@ -477,6 +601,58 @@ function closeHospital() {
   modal.setAttribute('aria-hidden', 'true');
 }
 
+function openDoctorProfile(doc, hospital) {
+  const modal = qs('#doctorProfile');
+  if (!modal) return;
+  qs('#docAvatar').src = doc.avatar;
+  qs('#docAvatar').alt = doc.name;
+  qs('#docName').textContent = doc.name;
+  qs('#docMeta').textContent = `${doc.spec} • ${doc.exp} yrs`;
+  const tags = qs('#docTags');
+  tags.innerHTML = '';
+  [
+    `Languages: ${doc.langs}`,
+    `Consultation Fee: ${doc.fee}`,
+    `Hospital: ${hospital.name}`,
+  ].forEach((t) => {
+    const chip = document.createElement('span');
+    chip.className = 'chip-pill';
+    chip.textContent = t;
+    tags.appendChild(chip);
+  });
+  qs('#docBio').textContent = doc.bio;
+  const slots = qs('#docSlots');
+  slots.innerHTML = '';
+  doc.allSlots.forEach((s, idx) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'slot-chip';
+    btn.textContent = s;
+    btn.addEventListener('click', () => {
+      qs('#docSlots').querySelectorAll('.slot-chip').forEach((c) => c.classList.remove('active'));
+      btn.classList.add('active');
+    });
+    if (idx === 0) btn.classList.add('active');
+    slots.appendChild(btn);
+  });
+
+  qs('#docChat').onclick = () => toast(`Chat request sent to ${doc.name}`);
+  qs('#docCall').onclick = () => toast('Hospital desk will connect you');
+  qs('#docBook').onclick = () => {
+    const chosen = qs('#docSlots .slot-chip.active');
+    toast(chosen ? `Booked ${doc.name} • ${chosen.textContent}` : 'Select a slot');
+  };
+  qs('#docClose').onclick = closeDoctorProfile;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+}
+
+function closeDoctorProfile() {
+  const modal = qs('#doctorProfile');
+  modal?.classList.remove('show');
+  modal?.setAttribute('aria-hidden', 'true');
+}
+
 (async function init() {
   bindTheme();
   try {
@@ -485,10 +661,19 @@ function closeHospital() {
       loadJSON('medicines.json'),
     ]);
 
-    const hospitals = providerData.flatMap((p) =>
-      (p.hospitals || []).map((h) => decorateHospital({ ...h, state: p.state })),
-    );
     const medsFlat = (medsJson.categories || []).flatMap((c) => c.medicines || []);
+    const hospitals = providerData.flatMap((p) =>
+      (p.hospitals || []).map((h) => {
+        const base = decorateHospital({ ...h, state: p.state });
+        return {
+          ...base,
+          procedures: buildProcedures(base.specialties, 20),
+          doctorsList: buildDoctors(base.specialties, 7),
+          meds: buildPharmacy(medsFlat, 6),
+          servicesList: coreServices(base),
+        };
+      }),
+    );
 
     renderMetrics(hospitals);
     populateStateFilter(hospitals);
@@ -503,6 +688,8 @@ function closeHospital() {
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHospital(); });
     qs('#hospitalModal')?.addEventListener('click', (e) => { if (e.target.id === 'hospitalModal') closeHospital(); });
+    qs('#doctorProfile')?.addEventListener('click', (e) => { if (e.target.id === 'doctorProfile') closeDoctorProfile(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeDoctorProfile(); });
   } catch (err) {
     console.error(err);
     toast('Unable to load hospitals right now.');
