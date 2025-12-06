@@ -66,148 +66,140 @@
     <section class="section">
       <header>
         <div>
-          <p class="chip">Organ grid</p>
-          <h2 class="section-title">Status per organ</h2>
-          <p class="section-sub">Tap any card for details. Data comes from vitals, CBC, LFT, KFT, CUE, cardiac markers, CBCT, spirometry.</p>
+          <p class="chip">Organ grid + immersive studio</p>
+          <h2 class="section-title">Immersive organ watch</h2>
+          <p class="section-sub">Status per organ with a 3D anatomy studio and live sync to dashboard, health, labs, vitals, pharmacy, and hospitals.</p>
         </div>
       </header>
-      <div class="list-grid organ-map">
-        <div class="card organ-card" data-organ="heart">
-          <div class="card-head"><h3>Heart</h3><span class="pill" id="heart_status">Good</span></div>
-          <p class="section-sub">Cardiac markers + ECG trend</p>
-          <div class="stat-line">Vitals: <strong id="heart_vitals">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="lungs">
-          <div class="card-head"><h3>Lungs</h3><span class="pill" id="lung_status">Free</span></div>
-          <p class="section-sub">Spirometry, SpO₂, respiratory rate</p>
-          <div class="stat-line">Breath: <strong id="lung_vitals">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="liver">
-          <div class="card-head"><h3>Liver</h3><span class="pill" id="liver_status">Healthy</span></div>
-          <p class="section-sub">LFT markers</p>
-          <div class="stat-line">Labs: <strong id="liver_markers">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="kidney">
-          <div class="card-head"><h3>Kidneys</h3><span class="pill" id="kidney_status">Hydrated</span></div>
-          <p class="section-sub">KFT + CUE</p>
-          <div class="stat-line">Labs: <strong id="kidney_markers">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="brain">
-          <div class="card-head"><h3>Brain</h3><span class="pill" id="brain_status">Calm</span></div>
-          <p class="section-sub">Sleep & stress signals</p>
-          <div class="stat-line">State: <strong id="brain_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="dental">
-          <div class="card-head"><h3>Dental</h3><span class="pill" id="dental_status">Bright</span></div>
-          <p class="section-sub">CBCT, cavities, gum health</p>
-          <div class="stat-line">Hygiene: <strong id="dental_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="vascular">
-          <div class="card-head"><h3>Vascular</h3><span class="pill" id="vascular_status">Open</span></div>
-          <p class="section-sub">Blood pressure & circulation</p>
-          <div class="stat-line">Flow: <strong id="vascular_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="endocrine">
-          <div class="card-head"><h3>Endocrine</h3><span class="pill" id="endocrine_status">Balanced</span></div>
-          <p class="section-sub">Thyroid, HbA1c, hormones</p>
-          <div class="stat-line">Signals: <strong id="endocrine_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="immune">
-          <div class="card-head"><h3>Immune</h3><span class="pill" id="immune_status">Calm</span></div>
-          <p class="section-sub">WBC, CRP, inflammation</p>
-          <div class="stat-line">Markers: <strong id="immune_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="musculoskeletal">
-          <div class="card-head"><h3>Musculoskeletal</h3><span class="pill" id="musculoskeletal_status">Supple</span></div>
-          <p class="section-sub">DEXA, mobility, pain diary</p>
-          <div class="stat-line">Support: <strong id="msk_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="gi">
-          <div class="card-head"><h3>Gut</h3><span class="pill" id="gi_status">Smooth</span></div>
-          <p class="section-sub">Nutrition, hydration, abdomen scans</p>
-          <div class="stat-line">Status: <strong id="gi_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="reproductive">
-          <div class="card-head"><h3>Reproductive</h3><span class="pill" id="reproductive_status">Clear</span></div>
-          <p class="section-sub">USG pelvis / prostate + hormones</p>
-          <div class="stat-line">Scan: <strong id="reproductive_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="skin">
-          <div class="card-head"><h3>Skin</h3><span class="pill" id="skin_status">Calm</span></div>
-          <p class="section-sub">Hydration + allergy watch</p>
-          <div class="stat-line">Barrier: <strong id="skin_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="eye">
-          <div class="card-head"><h3>Eyes</h3><span class="pill" id="eye_status">Focused</span></div>
-          <p class="section-sub">Vision strain + fundoscopy</p>
-          <div class="stat-line">Focus: <strong id="eye_state">—</strong></div>
-        </div>
-        <div class="card organ-card" data-organ="ear">
-          <div class="card-head"><h3>Ears</h3><span class="pill" id="ear_status">Clear</span></div>
-          <p class="section-sub">Hearing and balance</p>
-          <div class="stat-line">Sound: <strong id="ear_state">—</strong></div>
-        </div>
-      </div>
-    </section>
+      <div class="grid-two">
+        <div class="stack-gap">
+          <div class="list-grid organ-map">
+            <div class="card organ-card" data-organ="heart">
+              <div class="card-head"><h3>Heart</h3><span class="pill" id="heart_status">Good</span></div>
+              <p class="section-sub">Cardiac markers + ECG trend</p>
+              <div class="stat-line">Vitals: <strong id="heart_vitals">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="lungs">
+              <div class="card-head"><h3>Lungs</h3><span class="pill" id="lung_status">Free</span></div>
+              <p class="section-sub">Spirometry, SpO₂, respiratory rate</p>
+              <div class="stat-line">Breath: <strong id="lung_vitals">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="liver">
+              <div class="card-head"><h3>Liver</h3><span class="pill" id="liver_status">Healthy</span></div>
+              <p class="section-sub">LFT markers</p>
+              <div class="stat-line">Labs: <strong id="liver_markers">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="kidney">
+              <div class="card-head"><h3>Kidneys</h3><span class="pill" id="kidney_status">Hydrated</span></div>
+              <p class="section-sub">KFT + CUE</p>
+              <div class="stat-line">Labs: <strong id="kidney_markers">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="brain">
+              <div class="card-head"><h3>Brain</h3><span class="pill" id="brain_status">Calm</span></div>
+              <p class="section-sub">Sleep & stress signals</p>
+              <div class="stat-line">State: <strong id="brain_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="dental">
+              <div class="card-head"><h3>Dental</h3><span class="pill" id="dental_status">Bright</span></div>
+              <p class="section-sub">CBCT, cavities, gum health</p>
+              <div class="stat-line">Hygiene: <strong id="dental_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="vascular">
+              <div class="card-head"><h3>Vascular</h3><span class="pill" id="vascular_status">Open</span></div>
+              <p class="section-sub">Blood pressure & circulation</p>
+              <div class="stat-line">Flow: <strong id="vascular_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="endocrine">
+              <div class="card-head"><h3>Endocrine</h3><span class="pill" id="endocrine_status">Balanced</span></div>
+              <p class="section-sub">Thyroid, HbA1c, hormones</p>
+              <div class="stat-line">Signals: <strong id="endocrine_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="immune">
+              <div class="card-head"><h3>Immune</h3><span class="pill" id="immune_status">Calm</span></div>
+              <p class="section-sub">WBC, CRP, inflammation</p>
+              <div class="stat-line">Markers: <strong id="immune_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="musculoskeletal">
+              <div class="card-head"><h3>Musculoskeletal</h3><span class="pill" id="musculoskeletal_status">Supple</span></div>
+              <p class="section-sub">DEXA, mobility, pain diary</p>
+              <div class="stat-line">Support: <strong id="msk_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="gi">
+              <div class="card-head"><h3>Gut</h3><span class="pill" id="gi_status">Smooth</span></div>
+              <p class="section-sub">Nutrition, hydration, abdomen scans</p>
+              <div class="stat-line">Status: <strong id="gi_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="pancreas">
+              <div class="card-head"><h3>Pancreas</h3><span class="pill" id="pancreas_status">Steady</span></div>
+              <p class="section-sub">Glucose load + enzymes</p>
+              <div class="stat-line">Digestive: <strong id="pancreas_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="spleen">
+              <div class="card-head"><h3>Spleen & lymph</h3><span class="pill" id="spleen_status">Clear</span></div>
+              <p class="section-sub">Immune buffering + CBC</p>
+              <div class="stat-line">Defense: <strong id="spleen_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="reproductive">
+              <div class="card-head"><h3>Reproductive</h3><span class="pill" id="reproductive_status">Clear</span></div>
+              <p class="section-sub">USG pelvis / prostate + hormones</p>
+              <div class="stat-line">Scan: <strong id="reproductive_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="skin">
+              <div class="card-head"><h3>Skin</h3><span class="pill" id="skin_status">Calm</span></div>
+              <p class="section-sub">Hydration + allergy watch</p>
+              <div class="stat-line">Barrier: <strong id="skin_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="eye">
+              <div class="card-head"><h3>Eyes</h3><span class="pill" id="eye_status">Focused</span></div>
+              <p class="section-sub">Vision strain + fundoscopy</p>
+              <div class="stat-line">Focus: <strong id="eye_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="ear">
+              <div class="card-head"><h3>Ears</h3><span class="pill" id="ear_status">Clear</span></div>
+              <p class="section-sub">Hearing and balance</p>
+              <div class="stat-line">Sound: <strong id="ear_state">—</strong></div>
+            </div>
+            <div class="card organ-card" data-organ="bladder">
+              <div class="card-head"><h3>Bladder</h3><span class="pill" id="bladder_status">Clear</span></div>
+              <p class="section-sub">Hydration + UTI watch</p>
+              <div class="stat-line">Flow: <strong id="bladder_state">—</strong></div>
+            </div>
+          </div>
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">3D organs</p>
-          <h2 class="section-title">Immersive anatomy studio</h2>
-          <p class="section-sub">Interactive 3D meshes for heart, lungs, kidney, dental, brain, spine, and vascular flows with alerts mirrored on cards.</p>
+          <div class="card">
+            <div class="card-head"><h3>Organ data bridge</h3><span class="pill" id="organ_bridge_pill">Synced</span></div>
+            <p class="section-sub">Mirrors alerts and vitals to dashboard, health plan, labs, vitals, pharmacy, and hospitals without re-entry.</p>
+            <div class="grid-two">
+              <div class="stat-line">Dashboard: <strong id="sync_dashboard_status">Ready</strong></div>
+              <div class="stat-line">Health plan: <strong id="sync_health_status">Stable</strong></div>
+              <div class="stat-line">Labs: <strong id="sync_labs_status">Awaiting sync</strong></div>
+              <div class="stat-line">Vitals: <strong id="sync_vitals_status">Live</strong></div>
+              <div class="stat-line">Pharmacy: <strong id="sync_pharmacy_status">No pending meds</strong></div>
+              <div class="stat-line">Hospitals: <strong id="sync_hospital_status">No escalations</strong></div>
+            </div>
+            <div class="notice" id="organ_bridge_notice">All organ signals are mirrored to dashboard and consults.</div>
+            <div class="chip-row">
+              <a class="badge" href="patient-dashboard.html">Open dashboard</a>
+              <a class="badge" href="patient-health.html">Open health</a>
+              <a class="badge" href="patient-labs.html">Open labs</a>
+              <a class="badge" href="patient-pharmacy.html">Open pharmacy</a>
+              <a class="badge" href="patient-hospitals.html">Open hospitals</a>
+            </div>
+          </div>
         </div>
-      </header>
-      <div class="list-grid">
+
         <div class="card">
-          <h3>Heart 3D (demo)</h3>
-          <p class="section-sub">Rotate to inspect valves before booking a consult.</p>
+          <div class="card-head"><h3 id="organ_studio_title">Immersive anatomy studio</h3><span class="pill" id="organ_studio_status">Ready</span></div>
+          <p class="section-sub">Select an organ card to jump into 3D, align with labs, vitals, and consult readiness. Drop your .glb file in assets/models to override.</p>
           <div class="model-stage">
-            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" autoplay camera-controls auto-rotate ar-modes="scene-viewer webxr quick-look" shadow-intensity="0.6" interaction-prompt="none">
-              <div class="model-fallback">3D preview loads in modern browsers.</div>
+            <model-viewer id="organ_model_viewer" src="assets/models/patient-body.glb" data-fallback="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.7" interaction-prompt="none">
+              <div class="model-fallback">Immersive 3D organ mesh loads on supported browsers.</div>
             </model-viewer>
           </div>
-          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Cardiac markers steady</span></div>
-        </div>
-        <div class="card">
-          <h3>Lungs 3D (demo)</h3>
-          <p class="section-sub">Visualise airways alongside spirometry and SpO₂ trends.</p>
-          <div class="model-stage">
-            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.8">
-              <div class="model-fallback">3D lung mesh streams here.</div>
-            </model-viewer>
-          </div>
-          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Spirometry synced</span></div>
-        </div>
-        <div class="card">
-          <h3>Kidney & dental 3D (demo)</h3>
-          <p class="section-sub">Layer KFT, CUE, and CBCT outcomes with a 3D reference.</p>
-          <div class="model-stage">
-            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.7">
-              <div class="model-fallback">Kidney & dental mesh preview</div>
-            </model-viewer>
-          </div>
-          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Hydration + CBCT clean</span></div>
-        </div>
-        <div class="card">
-          <h3>Brain & spine 3D (demo)</h3>
-          <p class="section-sub">Review neuro and musculoskeletal balance before therapy.</p>
-          <div class="model-stage">
-            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.7">
-              <div class="model-fallback">Neuro + spine mesh preview</div>
-            </model-viewer>
-          </div>
-          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">Cognitive calm + flexible</span></div>
-        </div>
-        <div class="card">
-          <h3>Vascular flow (demo)</h3>
-          <p class="section-sub">BP, circulation, and perfusion cues stitched to live vitals.</p>
-          <div class="model-stage">
-            <model-viewer src="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/BrainStem/glTF-Binary/BrainStem.glb" camera-controls auto-rotate shadow-intensity="0.7">
-              <div class="model-fallback">Vascular mesh preview</div>
-            </model-viewer>
-          </div>
-          <div class="model-legend"><span class="legend-label">Status</span><span class="legend-sub">BP mirrored from vitals</span></div>
+          <div class="model-legend"><span class="legend-label" id="organ_studio_summary">Whole-body preview ready</span><span class="legend-sub" id="organ_studio_lab">Labs mirrored from dashboard</span></div>
+          <div class="stat-line">Vitals: <strong id="organ_studio_vitals">—</strong></div>
+          <div class="stat-line">Next action: <strong id="organ_studio_next">—</strong></div>
+          <div class="stat-line">Synced with: <strong id="organ_studio_sync">Dashboard · Health · Labs · Vitals · Pharmacy · Hospitals</strong></div>
         </div>
       </div>
     </section>
