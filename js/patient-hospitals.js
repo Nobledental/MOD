@@ -154,7 +154,7 @@ function createCard(h, medsFlat) {
       </div>
     </figure>
     <div class="card-top">
-      <h3 class="card-title">${h.name}</h3>
+      <h3 class="card-title"><span>${h.name}</span></h3>
       <p class="card-sub">${h.type || 'Multi-speciality'} • ${specialities}</p>
       <div class="card-info-grid">
         <div class="card-info"><strong>${h.beds || 140}+ beds</strong><span>Live bedboard</span></div>
