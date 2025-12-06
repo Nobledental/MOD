@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/patient-hospitals.css">
 </head>
 <body class="hf-body fade-in-page">
+  <a class="skip-link" href="#hospitalGrid">Skip to hospitals</a>
   <header class="hf-header">
     <div class="wrap header-inner">
       <div class="hf-logo">
@@ -68,6 +69,10 @@
         <select id="stateFilter"></select>
       </label>
       <label>
+        Specialty
+        <select id="specialtyFilter"></select>
+      </label>
+      <label>
         Cashless
         <select id="cashlessFilter">
           <option value="">Any</option>
@@ -75,6 +80,12 @@
           <option value="false">Non-cashless</option>
         </select>
       </label>
+      <div class="quick-row" aria-label="Quick filters">
+        <button class="chip-toggle" data-filter="nearby" type="button">Near me</button>
+        <button class="chip-toggle" data-filter="cashless" type="button">Cashless desk</button>
+        <button class="chip-toggle" data-filter="rating" type="button">4.5★+</button>
+        <button class="chip-toggle" data-filter="beds" type="button">150+ beds</button>
+      </div>
     </section>
 
     <section aria-live="polite" aria-label="Hospitals" class="hospital-grid" id="hospitalGrid"></section>
@@ -94,6 +105,7 @@
           <div class="modal-pills" id="modalTags"></div>
         </div>
         <div class="modal-actions">
+          <button class="pill" id="modalCall">Call</button>
           <button class="pill ghost" id="modalShare">Share</button>
           <button class="pill ghost" id="modalClose" aria-label="Close">✕</button>
         </div>
