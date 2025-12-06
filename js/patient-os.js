@@ -1,6 +1,11 @@
 const htmlEl = document.documentElement;
 const themeToggle = document.getElementById('themeToggle');
 
+const navContainer = document.querySelector('.hf-nav');
+const navVisible = document.getElementById('navVisible');
+const navDropdown = document.getElementById('navDropdown');
+const navMoreBtn = document.getElementById('navMoreBtn');
+
 function setTheme(mode) {
   htmlEl.setAttribute('data-theme', mode);
   localStorage.setItem('hf_theme', mode);
@@ -16,6 +21,46 @@ if (themeToggle) {
   });
 }
 
+function rebalanceNav() {
+  if (!navContainer || !navVisible || !navMoreBtn || !navDropdown) return;
+  [...navDropdown.children].forEach((link) => navVisible.appendChild(link));
+  const available = navContainer.clientWidth - navMoreBtn.offsetWidth - 12;
+  let needsOverflow = false;
+  const links = [...navVisible.children];
+  for (let i = links.length - 1; i >= 0; i -= 1) {
+    if (navVisible.scrollWidth > available) {
+      navDropdown.prepend(links[i]);
+      needsOverflow = true;
+    }
+  }
+  navMoreBtn.style.display = needsOverflow ? 'inline-flex' : 'none';
+  navContainer.classList.toggle('has-overflow', needsOverflow);
+  navMoreBtn.setAttribute('aria-expanded', navContainer.classList.contains('open'));
+}
+
+if (navMoreBtn) {
+  navMoreBtn.addEventListener('click', () => {
+    navContainer.classList.toggle('open');
+    if (navContainer.classList.contains('open')) {
+      navContainer.classList.add('has-overflow');
+    }
+    if (navDropdown) navDropdown.classList.toggle('open');
+    if (navMoreBtn.parentElement) navMoreBtn.parentElement.classList.toggle('open');
+    navMoreBtn.setAttribute('aria-expanded', navContainer.classList.contains('open'));
+  });
+
+  window.addEventListener('resize', rebalanceNav);
+  window.addEventListener('load', rebalanceNav);
+  document.addEventListener('click', (evt) => {
+    if (!navContainer.contains(evt.target)) {
+      navContainer.classList.remove('open');
+      if (navDropdown) navDropdown.classList.remove('open');
+      if (navMoreBtn.parentElement) navMoreBtn.parentElement.classList.remove('open');
+      navMoreBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+}
+
 // Live vitals demo
 const vitalsEl = {
   hr: document.getElementById('v_hr'),
@@ -23,6 +68,14 @@ const vitalsEl = {
   spo2: document.getElementById('v_spo2'),
   temp: document.getElementById('v_temp'),
   ai: document.getElementById('ai_summary'),
+};
+
+const tickerEls = {
+  hr: document.getElementById('ticker_hr'),
+  bp: document.getElementById('ticker_bp'),
+  appt: document.getElementById('ticker_appt'),
+  lab: document.getElementById('ticker_lab'),
+  travel: document.getElementById('ticker_travel'),
 };
 
 const sparkEls = {
@@ -149,6 +202,11 @@ function updateVitals() {
   if (sparkEls.bp) sparkEls.bp.textContent = `${bpS}/${bpD}`;
   if (sparkEls.spo2) sparkEls.spo2.textContent = `${spo2}%`;
   if (sparkEls.temp) sparkEls.temp.textContent = `${temp}°C`;
+  if (tickerEls.hr) tickerEls.hr.textContent = `${hr} bpm`;
+  if (tickerEls.bp) tickerEls.bp.textContent = `${bpS}/${bpD}`;
+  if (tickerEls.appt) tickerEls.appt.textContent = Math.random() > 0.5 ? 'Today • 6:10 PM' : 'Tomorrow • 9:40 AM';
+  if (tickerEls.lab) tickerEls.lab.textContent = `CBC • ${Math.random() > 0.5 ? 'Today' : 'Yesterday'}`;
+  if (tickerEls.travel) tickerEls.travel.textContent = `Cab ETA ${Math.floor(Math.random() * 6) + 6}m`;
   if (organMeta.vitals.hr) organMeta.vitals.hr.textContent = `${hr} bpm`;
   if (organMeta.vitals.bp) organMeta.vitals.bp.textContent = `${bpS}/${bpD}`;
   if (organMeta.vitals.spo2) organMeta.vitals.spo2.textContent = `${spo2}%`;
