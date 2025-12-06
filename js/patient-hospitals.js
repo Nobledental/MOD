@@ -120,6 +120,15 @@ function distanceFor(h) {
   return Number((0.6 + Math.random() * 12).toFixed(1));
 }
 
+function decorateHospital(h) {
+  const distance = distanceFor(h);
+  const wait = Math.round(5 + Math.random() * 25);
+  const occupancy = 64 + Math.round(Math.random() * 22);
+  const baseRating = typeof h.rating === 'number' ? h.rating : Number(h.rating) || 4 + Math.random() * 0.8;
+  const rating = Number(baseRating.toFixed(1));
+  return { ...h, distance, wait, occupancy, rating };
+}
+
 function renderMetrics(hospitals) {
   const states = new Set(hospitals.map((h) => h.state));
   const cashless = hospitals.filter((h) => h.isCashless).length;
@@ -133,10 +142,10 @@ function renderMetrics(hospitals) {
 function createCard(h, medsFlat) {
   const card = document.createElement('article');
   card.className = 'hospital-card';
-  const distance = distanceFor(h);
-  const rating = (h.rating || 4 + Math.random() * 0.8).toFixed(1);
-  const wait = Math.round(5 + Math.random() * 25);
-  const occupancy = 64 + Math.round(Math.random() * 22);
+  const distance = h.distance;
+  const rating = h.rating?.toFixed ? h.rating.toFixed(1) : Number(h.rating || 4.2).toFixed(1);
+  const wait = h.wait ?? Math.round(5 + Math.random() * 25);
+  const occupancy = h.occupancy ?? 64 + Math.round(Math.random() * 22);
   const specialities = (h.specialties || []).slice(0, 2).join(', ') || 'Tertiary care';
   card.innerHTML = `
     <figure class="card-visual">
@@ -174,14 +183,14 @@ function createCard(h, medsFlat) {
       <button class="btn emergency" type="button">Emergency</button>
     </div>
   `;
-   
-  card.addEventListener('click', () => openHospital(h, medsFlat, distance));
+
+  card.addEventListener('click', () => openHospital(h, medsFlat));
   const btns = card.querySelectorAll('button');
   btns[0]?.addEventListener('click', (e) => {
     e.stopPropagation();
     toast(`Routing to ${h.name} • ${distance} km`);
   });
-  btns[1]?.addEventListener('click', (e) => { e.stopPropagation(); openHospital(h, medsFlat, distance); });
+  btns[1]?.addEventListener('click', (e) => { e.stopPropagation(); openHospital(h, medsFlat); });
   btns[2]?.addEventListener('click', (e) => {
     e.stopPropagation();
     toast('Connecting you to emergency desk…');
@@ -200,12 +209,20 @@ function renderGrid(hospitals, medsFlat) {
   hospitals.forEach((h) => grid.appendChild(createCard(h, medsFlat)));
 }
 
+function activeQuickFilters() {
+  return qsa('.chip-toggle.active').map((c) => c.dataset.filter);
+}
+
 function applyFilters(allHospitals, medsFlat) {
   const q = qs('#searchInput').value.trim().toLowerCase();
   const state = qs('#stateFilter').value;
+  const specialty = qs('#specialtyFilter').value;
   const cashless = qs('#cashlessFilter').value;
+  const quick = activeQuickFilters();
+
   let list = allHospitals;
   if (state) list = list.filter((h) => h.state === state);
+  if (specialty) list = list.filter((h) => (h.specialties || []).includes(specialty));
   if (cashless) list = list.filter((h) => String(!!h.isCashless) === cashless);
   if (q) {
     list = list.filter((h) => {
@@ -213,6 +230,14 @@ function applyFilters(allHospitals, medsFlat) {
       return hay.includes(q);
     });
   }
+
+  quick.forEach((qf) => {
+    if (qf === 'nearby') list = list.filter((h) => h.distance <= 10);
+    if (qf === 'cashless') list = list.filter((h) => h.isCashless);
+    if (qf === 'rating') list = list.filter((h) => (h.rating || 0) >= 4.5);
+    if (qf === 'beds') list = list.filter((h) => (h.beds || 0) >= 150);
+  });
+
   renderGrid(list, medsFlat);
 }
 
@@ -220,6 +245,21 @@ function populateStateFilter(hospitals) {
   const sel = qs('#stateFilter');
   const states = Array.from(new Set(hospitals.map((h) => h.state))).sort();
   sel.innerHTML = '<option value="">All states</option>' + states.map((s) => `<option value="${s}">${s}</option>`).join('');
+}
+
+function populateSpecialtyFilter(hospitals) {
+  const sel = qs('#specialtyFilter');
+  const specs = Array.from(new Set(hospitals.flatMap((h) => h.specialties || []))).sort();
+  sel.innerHTML = '<option value="">All specialties</option>' + specs.map((s) => `<option value="${s}">${s}</option>`).join('');
+}
+
+function bindQuickFilters(allHospitals, medsFlat) {
+  qsa('.chip-toggle').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      btn.classList.toggle('active');
+      applyFilters(allHospitals, medsFlat);
+    });
+  });
 }
 
 function bindTheme() {
@@ -234,10 +274,9 @@ function bindTheme() {
   });
 }
 
-function serviceRail(h, medsFlat) {
+function serviceRail(h, medsFlat, distance) {
   const rail = qs('#serviceRail');
   rail.innerHTML = '';
-  const distance = distanceFor(h);
   const cards = [
     { icon: '🩺', title: 'OPD', meta: 'Mon-Sat 9 AM - 7 PM', action: 'Book OPD', onClick: () => toast('OPD booking started') },
     { icon: '🛏️', title: 'IPD', meta: `${h.beds || 120}+ beds • Private & Shared`, action: 'Plan admission', onClick: () => toast('IPD admission team alerted') },
@@ -329,8 +368,8 @@ function renderGlance(h, distance) {
   const wrap = qs('#glanceGrid');
   wrap.innerHTML = '';
   const rating = (h.rating || 4.2).toFixed(1);
-  const wait = Math.round(5 + Math.random() * 25);
-  const crowd = 68 + Math.round(Math.random() * 20);
+  const wait = h.wait ?? Math.round(5 + Math.random() * 25);
+  const crowd = h.occupancy ?? 68 + Math.round(Math.random() * 20);
   const cards = [
     { title: 'Experience', value: `⭐ ${rating}`, meta: 'Patient-rated comfort & care' },
     { title: 'Beds live', value: `${h.beds || 140}+`, meta: 'Including ICU & daycare' },
@@ -380,8 +419,9 @@ function renderOverlayBadges(h, distance) {
   wrap.appendChild(rowBottom);
 }
 
-function openHospital(h, medsFlat, distance) {
+function openHospital(h, medsFlat) {
   const modal = qs('#hospitalModal');
+  const distance = h.distance ?? distanceFor(h);
   qs('#modalTitle').textContent = h.name;
   qs('#modalCity').textContent = `${h.state || 'City'}`;
   qs('#modalDistance').textContent = `${distance} km away`;
@@ -403,7 +443,7 @@ function openHospital(h, medsFlat, distance) {
     tagWrap.appendChild(s);
   });
 
-  serviceRail(h, medsFlat);
+  serviceRail(h, medsFlat, distance);
   renderDoctors(h);
   renderProcedures(h);
   renderMeds(medsFlat);
@@ -415,6 +455,7 @@ function openHospital(h, medsFlat, distance) {
   qs('#orderMeds').onclick = () => toast('Pharmacy mapped to hospital desk');
   qs('#bookLab').onclick = () => toast('Lab / home visit shared with hospital');
   qs('#refreshContext').onclick = renderContext;
+  qs('#modalCall').onclick = () => window.open(`tel:${(h.contact || '').replace(/[^\d+]/g, '') || '108'}`, '_self');
   qs('#modalShare').onclick = async () => {
     const url = location.href.split('#')[0] + `#${h.id}`;
     try {
@@ -444,17 +485,21 @@ function closeHospital() {
       loadJSON('medicines.json'),
     ]);
 
-    const hospitals = providerData.flatMap((p) => (p.hospitals || []).map((h) => ({ ...h, state: p.state })));
+    const hospitals = providerData.flatMap((p) =>
+      (p.hospitals || []).map((h) => decorateHospital({ ...h, state: p.state })),
+    );
     const medsFlat = (medsJson.categories || []).flatMap((c) => c.medicines || []);
 
     renderMetrics(hospitals);
     populateStateFilter(hospitals);
+    populateSpecialtyFilter(hospitals);
     renderGrid(hospitals, medsFlat);
 
-    ['searchInput', 'stateFilter', 'cashlessFilter'].forEach((id) => {
+    ['searchInput', 'stateFilter', 'cashlessFilter', 'specialtyFilter'].forEach((id) => {
       qs(`#${id}`)?.addEventListener('input', () => applyFilters(hospitals, medsFlat));
       qs(`#${id}`)?.addEventListener('change', () => applyFilters(hospitals, medsFlat));
     });
+    bindQuickFilters(hospitals, medsFlat);
 
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHospital(); });
     qs('#hospitalModal')?.addEventListener('click', (e) => { if (e.target.id === 'hospitalModal') closeHospital(); });
