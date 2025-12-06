@@ -54,11 +54,39 @@ const organStatusEls = {
   immune: document.getElementById('immune_status'),
   musculoskeletal: document.getElementById('musculoskeletal_status'),
   gi: document.getElementById('gi_status'),
+  pancreas: document.getElementById('pancreas_status'),
+  spleen: document.getElementById('spleen_status'),
   reproductive: document.getElementById('reproductive_status'),
   skin: document.getElementById('skin_status'),
   eye: document.getElementById('eye_status'),
   ear: document.getElementById('ear_status'),
+  bladder: document.getElementById('bladder_status'),
 };
+
+const organStudioEls = {
+  model: document.getElementById('organ_model_viewer'),
+  title: document.getElementById('organ_studio_title'),
+  status: document.getElementById('organ_studio_status'),
+  summary: document.getElementById('organ_studio_summary'),
+  lab: document.getElementById('organ_studio_lab'),
+  vitals: document.getElementById('organ_studio_vitals'),
+  next: document.getElementById('organ_studio_next'),
+  sync: document.getElementById('organ_studio_sync'),
+};
+
+const organSyncEls = {
+  dashboard: document.getElementById('sync_dashboard_status'),
+  health: document.getElementById('sync_health_status'),
+  labs: document.getElementById('sync_labs_status'),
+  vitals: document.getElementById('sync_vitals_status'),
+  pharmacy: document.getElementById('sync_pharmacy_status'),
+  hospitals: document.getElementById('sync_hospital_status'),
+  pill: document.getElementById('organ_bridge_pill'),
+  notice: document.getElementById('organ_bridge_notice'),
+};
+
+const organCards = Array.from(document.querySelectorAll('.organ-card'));
+let activeOrgan = organCards[0]?.dataset.organ || 'heart';
 
 function randomBetween(min, max, fixed = 1) {
   return (Math.random() * (max - min) + min).toFixed(fixed);
@@ -86,10 +114,9 @@ function updateVitals() {
   if (vitalsEl.ai) {
     vitalsEl.ai.textContent = `Vitals steady. HR ${hr} bpm, BP ${bpS}/${bpD}, SpO₂ ${spo2}%. Stay hydrated.`;
   }
+  renderOrganStudio(activeOrgan);
+  renderSyncMatrix();
 }
-
-updateVitals();
-setInterval(updateVitals, 4500);
 
 // Engagement loop
 const readinessProgress = document.getElementById('readiness_progress');
@@ -189,6 +216,8 @@ updateRecovery();
 setInterval(() => renderReadiness(Math.floor(Math.random() * 20) + 70), 10000);
 setInterval(rotateFeed, 15000);
 setInterval(updateEnergy, 12000);
+updateVitals();
+setInterval(updateVitals, 4500);
 
 // Blood & hydration
 const bloodSignal = document.getElementById('blood_signal');
@@ -204,6 +233,189 @@ function setOrganStatus(key, value, tone = 'good') {
   el.classList.remove('good', 'warn', 'danger');
   if (tone) el.classList.add(tone);
 }
+
+const organLibrary = {
+  heart: {
+    title: 'Heart perfusion studio',
+    summary: 'Cardiac markers steady',
+    lab: 'Lipids + troponin mirrored',
+    next: '10 min walk today',
+    model: 'assets/models/heart.glb',
+  },
+  lungs: {
+    title: 'Lung capacity studio',
+    summary: 'Breath cycle relaxed',
+    lab: 'Spirometry + SpO₂ live',
+    next: 'Pursed lip breathing',
+    model: 'assets/models/lungs.glb',
+  },
+  liver: {
+    title: 'Liver metabolism studio',
+    summary: 'Detox trend steady',
+    lab: 'LFT mirrored',
+    next: 'Low oil meals',
+    model: 'assets/models/liver.glb',
+  },
+  kidney: {
+    title: 'Renal hydration studio',
+    summary: 'Hydration in watch',
+    lab: 'KFT + CUE mirrored',
+    next: 'Sip 500 ml water',
+    model: 'assets/models/kidney.glb',
+  },
+  brain: {
+    title: 'Brain & focus studio',
+    summary: 'Cognitive calm',
+    lab: 'Sleep + stress map',
+    next: 'Screen break 10m',
+    model: 'assets/models/brain.glb',
+  },
+  dental: {
+    title: 'Dental & jaw studio',
+    summary: 'CBCT clean',
+    lab: 'Gum health mirrored',
+    next: 'Floss reminder',
+    model: 'assets/models/dental.glb',
+  },
+  vascular: {
+    title: 'Vascular flow studio',
+    summary: 'Circulation steady',
+    lab: 'BP + perfusion',
+    next: 'Shoulder roll x5',
+    model: 'assets/models/vascular.glb',
+  },
+  endocrine: {
+    title: 'Endocrine balance studio',
+    summary: 'Hormone rhythm balanced',
+    lab: 'HbA1c + thyroid',
+    next: 'Protein-rich snack',
+    model: 'assets/models/endocrine.glb',
+  },
+  immune: {
+    title: 'Immune calm studio',
+    summary: 'Inflammation low',
+    lab: 'CRP + WBC mirrored',
+    next: 'Rest & fluids',
+    model: 'assets/models/immune.glb',
+  },
+  musculoskeletal: {
+    title: 'Musculoskeletal studio',
+    summary: 'Mobility steady',
+    lab: 'DEXA + pain diary',
+    next: 'Stretch hamstrings',
+    model: 'assets/models/spine.glb',
+  },
+  gi: {
+    title: 'Gut & GIT studio',
+    summary: 'Digestive calm',
+    lab: 'CUE + abdomen sync',
+    next: 'Hydrate before meals',
+    model: 'assets/models/gut.glb',
+  },
+  pancreas: {
+    title: 'Pancreas studio',
+    summary: 'Glucose handling',
+    lab: 'HbA1c mirrored',
+    next: 'Walk after meals',
+    model: 'assets/models/pancreas.glb',
+  },
+  spleen: {
+    title: 'Spleen & lymph studio',
+    summary: 'Immune buffering',
+    lab: 'CBC linked',
+    next: 'Check CBC in labs',
+    model: 'assets/models/spleen.glb',
+  },
+  reproductive: {
+    title: 'Reproductive studio',
+    summary: 'Pelvic scan steady',
+    lab: 'Hormones mirrored',
+    next: 'Track cycle/PSA',
+    model: 'assets/models/reproductive.glb',
+  },
+  skin: {
+    title: 'Skin barrier studio',
+    summary: 'Hydration linked',
+    lab: 'Allergy watch',
+    next: 'Moisturise now',
+    model: 'assets/models/skin.glb',
+  },
+  eye: {
+    title: 'Eye strain studio',
+    summary: 'Vision guarded',
+    lab: 'Fundoscopy sync',
+    next: '20-20-20 break',
+    model: 'assets/models/eye.glb',
+  },
+  ear: {
+    title: 'Ear & balance studio',
+    summary: 'Hearing stable',
+    lab: 'Audiogram sync',
+    next: 'Volume under 60%',
+    model: 'assets/models/ear.glb',
+  },
+  bladder: {
+    title: 'Bladder & UTI studio',
+    summary: 'Hydration linked',
+    lab: 'CUE mirrored',
+    next: 'Water + frequent voids',
+    model: 'assets/models/bladder.glb',
+  },
+};
+
+function setModelSource(src) {
+  if (!organStudioEls.model) return;
+  const fallback = organStudioEls.model.dataset.fallback;
+  organStudioEls.model.src = src || fallback || organStudioEls.model.getAttribute('src');
+  organStudioEls.model.addEventListener('error', () => {
+    if (fallback && organStudioEls.model.src !== fallback) {
+      organStudioEls.model.src = fallback;
+    }
+  });
+}
+
+function renderOrganStudio(organKey = activeOrgan) {
+  const config = organLibrary[organKey] || organLibrary.heart;
+  const status = organStatusEls[organKey]?.textContent || 'Steady';
+  const state = document.getElementById(`${organKey}_state`)?.textContent || config.summary || 'Synced';
+  const vitals = organMeta.vitals.heart?.textContent || '—';
+  const blendedVitals = organMeta.vitals[organKey]?.textContent || vitals;
+
+  if (organStudioEls.title) organStudioEls.title.textContent = config.title;
+  if (organStudioEls.summary) organStudioEls.summary.textContent = state;
+  if (organStudioEls.lab) organStudioEls.lab.textContent = config.lab || 'Labs mirrored from dashboard';
+  if (organStudioEls.vitals) organStudioEls.vitals.textContent = blendedVitals || 'Vitals syncing';
+  if (organStudioEls.next) organStudioEls.next.textContent = config.next || 'Follow dashboard plan';
+  if (organStudioEls.sync) organStudioEls.sync.textContent = 'Dashboard · Health · Labs · Vitals · Pharmacy · Hospitals';
+  if (organStudioEls.status) {
+    organStudioEls.status.textContent = status;
+    organStudioEls.status.className = 'pill';
+    organStudioEls.status.classList.add(status.toLowerCase().includes('alert') ? 'warn' : 'good');
+  }
+  setModelSource(config.model);
+}
+
+function renderSyncMatrix() {
+  if (!organSyncEls.dashboard && !organSyncEls.pill) return;
+  const alerts = organAlertBadge ? parseInt(organAlertBadge.textContent, 10) || 0 : 0;
+  if (organSyncEls.dashboard) organSyncEls.dashboard.textContent = alerts ? `${alerts} alert mirror` : 'Ready';
+  if (organSyncEls.health) organSyncEls.health.textContent = readinessValue ? `${readinessValue.textContent} readiness` : 'Stable';
+  if (organSyncEls.labs) organSyncEls.labs.textContent = organMeta.lab.name?.textContent || 'Awaiting sync';
+  if (organSyncEls.vitals) organSyncEls.vitals.textContent = organMeta.vitals.bp?.textContent ? `BP ${organMeta.vitals.bp.textContent}` : 'Live';
+  if (organSyncEls.pharmacy) organSyncEls.pharmacy.textContent = 'Meds mirrored to pharmacy';
+  if (organSyncEls.hospitals) organSyncEls.hospitals.textContent = 'Consult escalation off';
+  if (organSyncEls.pill) organSyncEls.pill.textContent = alerts ? 'Attention' : 'Synced';
+  if (organSyncEls.notice) organSyncEls.notice.textContent = alerts ? 'Alerts mirrored to dashboard, hospitals, and pharmacy.' : 'All organ signals are mirrored to dashboard and consults.';
+}
+
+organCards.forEach(card => {
+  card.addEventListener('click', () => {
+    organCards.forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    activeOrgan = card.dataset.organ;
+    renderOrganStudio(activeOrgan);
+  });
+});
 
 function getLabSnapshot() {
   const raw = localStorage.getItem('lab-dashboard-latest');
@@ -524,20 +736,27 @@ function evaluateOrgans() {
 
   if (crpRep && crpRep.status && crpRep.status !== 'normal') {
     setOrganStatus('immune', 'Alert', 'warn');
+    setOrganStatus('spleen', 'Overworking', 'warn');
     alerts.push({ type: 'warn', message: 'Inflammation up — rest and hydrate.' });
   } else {
     setOrganStatus('immune', 'Calm', 'good');
+    setOrganStatus('spleen', 'Clear', 'good');
   }
   setText('immune_state', describeMarker(crpRep, 'CRP calm'));
+  setText('spleen_state', describeMarker(cbcRep, 'CBC balanced'));
 
   if (hba1cRep && hba1cRep.status && hba1cRep.status !== 'normal') {
     setOrganStatus('endocrine', 'Glucose load', 'warn');
+    setOrganStatus('pancreas', 'Glucose load', 'warn');
   } else if (thyroidRep && thyroidRep.status && thyroidRep.status !== 'normal') {
     setOrganStatus('endocrine', 'Thyroid watch', 'warn');
+    setOrganStatus('pancreas', 'Balance', 'good');
   } else {
     setOrganStatus('endocrine', 'Balanced', 'good');
+    setOrganStatus('pancreas', 'Steady', 'good');
   }
   setText('endocrine_state', `${describeMarker(hba1cRep, 'HbA1c pending')} • ${describeMarker(thyroidRep, 'Thyroid steady')}`);
+  setText('pancreas_state', describeMarker(hba1cRep, 'Digestive enzymes steady'));
 
   if (lipidRep && lipidRep.status && lipidRep.status !== 'normal') {
     setOrganStatus('heart', 'Elevated risk', 'warn');
@@ -579,9 +798,11 @@ function evaluateOrgans() {
   if (hydrationLow) {
     setOrganStatus('skin', 'Dry', 'warn');
     setOrganStatus('eye', 'Tired', 'warn');
+    setOrganStatus('bladder', 'Concentrated', 'warn');
   } else {
     setOrganStatus('skin', 'Calm', 'good');
     setOrganStatus('eye', 'Focused', 'good');
+    setOrganStatus('bladder', 'Clear', 'good');
   }
   setText('skin_state', hydrationLow ? 'Moisturise + hydrate' : 'Barrier intact');
   setText('eye_state', 'Blue light guard on');
@@ -589,6 +810,7 @@ function evaluateOrgans() {
   setText('ear_state', 'No vertigo signals');
   setOrganStatus('musculoskeletal', 'Supple', 'good');
   setText('msk_state', 'Dexa + mobility stable');
+  setText('bladder_state', hydrationLow ? 'Hydration low — increase intake' : 'Hydration adequate');
 
   if (labSnap) {
     if (organMeta.lab.name) organMeta.lab.name.textContent = labSnap.lab || 'Synced lab';
@@ -607,6 +829,8 @@ function evaluateOrgans() {
   }
 
   renderAlerts(alerts);
+  renderOrganStudio(activeOrgan);
+  renderSyncMatrix();
 }
 
 const refreshLabSync = document.getElementById('refresh_lab_sync');
