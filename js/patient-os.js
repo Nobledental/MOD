@@ -25,6 +25,18 @@ const vitalsEl = {
   ai: document.getElementById('ai_summary'),
 };
 
+const sparkEls = {
+  hr: document.getElementById('spark_hr'),
+  bp: document.getElementById('spark_bp'),
+  spo2: document.getElementById('spark_spo2'),
+  temp: document.getElementById('spark_temp'),
+  badge: document.getElementById('vital_status_badge'),
+  pulse: document.getElementById('vital_pulse'),
+  wave: document.getElementById('vital_wave'),
+};
+
+const askAIButton = document.getElementById('ask_ai');
+
 const organMeta = {
   vitals: {
     hr: document.getElementById('organ_vitals_hr'),
@@ -85,11 +97,38 @@ const organSyncEls = {
   notice: document.getElementById('organ_bridge_notice'),
 };
 
+const organSyncLite = {
+  heart: document.getElementById('sync_heart_status'),
+  lung: document.getElementById('sync_lung_status'),
+  filter: document.getElementById('sync_filter_status'),
+  pill: document.getElementById('organ_sync_pill'),
+};
+
+const labTimelineEl = document.getElementById('lab_timeline');
+
 const organCards = Array.from(document.querySelectorAll('.organ-card'));
 let activeOrgan = organCards[0]?.dataset.organ || 'heart';
 
 function randomBetween(min, max, fixed = 1) {
   return (Math.random() * (max - min) + min).toFixed(fixed);
+}
+
+function drawWave(canvas, points) {
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const width = canvas.width = canvas.clientWidth;
+  const height = canvas.height = canvas.clientHeight;
+  ctx.clearRect(0, 0, width, height);
+  ctx.strokeStyle = '#5df2d6';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  points.forEach((val, idx) => {
+    const x = (idx / (points.length - 1)) * width;
+    const y = height - (val / 120) * height;
+    if (idx === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
 }
 
 function updateVitals() {
@@ -106,6 +145,10 @@ function updateVitals() {
   vitalsEl.bp.textContent = `${bpS}/${bpD}`;
   vitalsEl.spo2.textContent = `${spo2}%`;
   vitalsEl.temp.textContent = `${temp}°C`;
+  if (sparkEls.hr) sparkEls.hr.textContent = `${hr} bpm`;
+  if (sparkEls.bp) sparkEls.bp.textContent = `${bpS}/${bpD}`;
+  if (sparkEls.spo2) sparkEls.spo2.textContent = `${spo2}%`;
+  if (sparkEls.temp) sparkEls.temp.textContent = `${temp}°C`;
   if (organMeta.vitals.hr) organMeta.vitals.hr.textContent = `${hr} bpm`;
   if (organMeta.vitals.bp) organMeta.vitals.bp.textContent = `${bpS}/${bpD}`;
   if (organMeta.vitals.spo2) organMeta.vitals.spo2.textContent = `${spo2}%`;
@@ -114,6 +157,20 @@ function updateVitals() {
   if (vitalsEl.ai) {
     vitalsEl.ai.textContent = `Vitals steady. HR ${hr} bpm, BP ${bpS}/${bpD}, SpO₂ ${spo2}%. Stay hydrated.`;
   }
+  if (sparkEls.pulse) {
+    sparkEls.pulse.querySelectorAll('.pulse-bar').forEach((bar, idx) => {
+      const heights = [hr, bpS, spo2, parseFloat(temp) * 10];
+      bar.style.height = `${60 + (heights[idx] % 40)}px`;
+    });
+  }
+  if (sparkEls.wave) {
+    const points = Array.from({ length: 18 }, () => Math.floor(Math.random() * 40) + hr);
+    drawWave(sparkEls.wave, points);
+  }
+  if (sparkEls.badge) {
+    sparkEls.badge.textContent = spo2 < 96 ? 'Watch' : 'Stable';
+  }
+  syncLiteStatuses({ hr, spo2 });
   renderOrganStudio(activeOrgan);
   renderSyncMatrix();
 }
@@ -191,6 +248,34 @@ function updateRecovery() {
   if (restTimer) restTimer.textContent = `${Math.floor(Math.random() * 25) + 10} min`;
 }
 
+function renderLabTimeline() {
+  if (!labTimelineEl) return;
+  const entries = [
+    { when: 'Today', title: 'CBC balanced', note: 'HB steady, no infection signals.', state: 'good' },
+    { when: 'Yesterday', title: 'LFT clear', note: 'Liver numbers in safe range.', state: 'info' },
+    { when: 'Last week', title: 'Hydration dip', note: 'Added 1L reminder for the day.', state: 'warn' },
+  ];
+  labTimelineEl.innerHTML = '';
+  entries.forEach(item => {
+    const li = document.createElement('li');
+    li.innerHTML = `
+      <div class="dot ${item.state}"></div>
+      <div>
+        <p class="muted">${item.when}</p>
+        <strong>${item.title}</strong>
+        <small>${item.note}</small>
+      </div>`;
+    labTimelineEl.appendChild(li);
+  });
+}
+
+function syncLiteStatuses({ hr, spo2 }) {
+  if (organSyncLite.heart) organSyncLite.heart.textContent = hr > 95 ? 'Pace calm down' : 'Calm rhythm';
+  if (organSyncLite.lung) organSyncLite.lung.textContent = spo2 < 97 ? 'Breathe easy, sip water' : 'Smooth breath';
+  if (organSyncLite.filter) organSyncLite.filter.textContent = hr > 100 ? 'Hydrate for kidneys' : 'Detox good';
+  if (organSyncLite.pill) organSyncLite.pill.textContent = spo2 < 97 ? 'Syncing' : 'Synced';
+}
+
 checkinBtn?.addEventListener('click', () => {
   const current = parseInt(readinessValue?.textContent || '70', 10) || 70;
   const next = Math.min(100, current + 6);
@@ -209,10 +294,17 @@ recoveryBtn?.addEventListener('click', () => {
   if (checkinMsg) checkinMsg.textContent = 'Wind-down started with softer reminders.';
 });
 
+askAIButton?.addEventListener('click', () => {
+  if (vitalsEl.ai) {
+    vitalsEl.ai.textContent = 'AI Guardian: HR, BP, and SpO₂ look steady. Keep sipping pani and stretch for 5 minutes.';
+  }
+});
+
 renderReadiness();
 shuffleMissions();
 updateEnergy();
 updateRecovery();
+renderLabTimeline();
 setInterval(() => renderReadiness(Math.floor(Math.random() * 20) + 70), 10000);
 setInterval(rotateFeed, 15000);
 setInterval(updateEnergy, 12000);
