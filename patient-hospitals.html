@@ -131,7 +131,7 @@
               </div>
               <button class="pill" id="bookDoctor">Book OPD</button>
             </div>
-            <div class="chip-list" id="doctorList"></div>
+            <div class="list" id="doctorList"></div>
           </section>
 
           <section class="modal-block">
@@ -177,6 +177,39 @@
             </div>
             <div class="context-grid" id="contextGrid"></div>
           </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="doctorProfile" class="doc-modal" role="dialog" aria-hidden="true" aria-label="Doctor profile">
+    <div class="doc-card">
+      <header class="doc-head">
+        <div class="doc-head-main">
+          <div class="doc-avatar" id="docAvatarWrap"><img id="docAvatar" src="" alt="Doctor avatar"></div>
+          <div>
+            <div class="doc-name" id="docName">Doctor Name</div>
+            <div class="doc-sub" id="docMeta">Speciality • Experience</div>
+            <div class="doc-tags" id="docTags"></div>
+          </div>
+        </div>
+        <button class="pill ghost" id="docClose" aria-label="Close doctor profile">✕</button>
+      </header>
+      <div class="doc-body">
+        <div class="doc-about">
+          <strong>About</strong>
+          <p id="docBio">—</p>
+        </div>
+        <div class="doc-slots">
+          <div class="doc-slot-head">
+            <strong>Available slots</strong>
+            <button class="pill" id="docBook">Book Slot</button>
+          </div>
+          <div class="slot-grid" id="docSlots"></div>
+        </div>
+        <div class="doc-cta-row">
+          <button class="pill" id="docChat">Chat</button>
+          <button class="pill" id="docCall">Call hospital</button>
         </div>
       </div>
     </div>
