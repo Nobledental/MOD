@@ -136,6 +136,8 @@ function createCard(h, medsFlat) {
   const distance = distanceFor(h);
   const rating = (h.rating || 4 + Math.random() * 0.8).toFixed(1);
   const wait = Math.round(5 + Math.random() * 25);
+  const occupancy = 64 + Math.round(Math.random() * 22);
+  const specialities = (h.specialties || []).slice(0, 2).join(', ') || 'Tertiary care';
   card.innerHTML = `
     <figure class="card-visual">
       <img src="${imageFor(h)}" alt="${h.name} image" loading="lazy">
@@ -153,11 +155,17 @@ function createCard(h, medsFlat) {
     </figure>
     <div class="card-top">
       <h3 class="card-title">${h.name}</h3>
-      <p class="card-sub">${h.type || 'Multi-speciality'} • ${(h.specialties || []).slice(0, 2).join(', ') || 'Tertiary care'}</p>
-      <div class="card-meta-row">
-        <span class="pill badge">${h.beds || 140}+ beds</span>
-        <span class="pill badge">${(h.specialties || []).length || 3} specialities</span>
-        <span class="pill badge neon">AI navigation</span>
+      <p class="card-sub">${h.type || 'Multi-speciality'} • ${specialities}</p>
+      <div class="card-info-grid">
+        <div class="card-info"><strong>${h.beds || 140}+ beds</strong><span>Live bedboard</span></div>
+        <div class="card-info"><strong>${wait} min</strong><span>OPD wait now</span></div>
+        <div class="card-info"><strong>${occupancy}%</strong><span>Occupancy pulse</span></div>
+      </div>
+      <div class="card-inline">
+        <span class="chip-flat">${distance} km • Smart ETA</span>
+        <span class="chip-flat">${(h.specialties || []).length || 3} specialties</span>
+        <span class="chip-flat">${h.isCashless ? 'Cashless' : 'Self-pay / EMI'}</span>
+        <span class="chip-flat">AI concierge</span>
       </div>
     </div>
     <div class="card-actions">
@@ -166,7 +174,7 @@ function createCard(h, medsFlat) {
       <button class="btn emergency" type="button">Emergency</button>
     </div>
   `;
-
+   
   card.addEventListener('click', () => openHospital(h, medsFlat, distance));
   const btns = card.querySelectorAll('button');
   btns[0]?.addEventListener('click', (e) => {
