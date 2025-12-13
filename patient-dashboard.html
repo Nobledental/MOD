@@ -1654,20 +1654,20 @@
             const fileName = ORGAN_MODEL_MAP[type] || `${type}.glb`;
             const url = `${MODEL_BASE_PATH}${fileName}`;
 
-            loader.load(url, (gltf) => {
+           loader.load(url, (gltf) => {
                 const model = gltf.scene;
                 const box = new THREE.Box3().setFromObject(model);
-                const size = box.getSize(new THREE.Vector3()).length();
-                const center = box.getCenter(new THREE.Vector3());
-                
-                // Normalize Size
-                const scaleFactor = 6 / size;
+                const size = box.getSize(new THREE.Vector3());
+
+                // Normalize Size using the largest dimension to keep proportions consistent
+                const maxDim = Math.max(size.x, size.y, size.z);
+                const scaleFactor = 6 / maxDim;
                 model.scale.setScalar(scaleFactor);
-                
-                // Center it
-                model.position.x += (model.position.x - center.x) * scaleFactor;
-                model.position.y += (model.position.y - center.y) * scaleFactor;
-                model.position.z += (model.position.z - center.z) * scaleFactor;
+
+                // Re-center the model at the origin so it sits in the middle of the stage
+                box.setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                model.position.sub(center);
                 
                 group.add(model);
             }, undefined, (error) => {
