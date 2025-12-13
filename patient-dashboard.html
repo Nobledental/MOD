@@ -143,6 +143,19 @@
             backdrop-filter: var(--glass-blur);
             flex-shrink: 0;
         }
+        .sidebar .menu-stack { display: flex; flex-direction: column; gap: 14px; width: 100%; align-items: center; }
+        .sidebar-utilities {
+            width: 100%; padding: 0 14px; display: flex; flex-direction: column; gap: 10px; align-items: stretch;
+        }
+        .sidebar-utilities .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; padding: 0 4px; }
+        .sidebar-utilities button {
+            width: 100%; display: flex; flex-direction: column; gap: 6px; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); color: var(--text-white);
+            border-radius: 16px; padding: 12px 8px; cursor: pointer; transition: 0.3s;
+        }
+        .sidebar-utilities button:hover { border-color: rgba(59,130,246,0.5); box-shadow: 0 10px 20px rgba(0,0,0,0.2); transform: translateY(-2px); }
+        .sidebar-utilities i { font-size: 20px; color: var(--color-blue); }
+        .sidebar-utilities span { font-size: 11px; font-weight: 700; color: var(--text-white); }
         .bottom-nav {
             display: none;
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -353,7 +366,7 @@
             transform: translateY(-2px);
             border-color: rgba(59, 130, 246, 0.3);
         }
-        .organ-item i, .organ-item svg { font-size: 20px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        .organ-item i, .organ-item svg { font-size: 20px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; width: 22px; height: 22px; }
         
         .organ-item.selected {
             background: linear-gradient(145deg, rgba(59, 130, 246, 0.15), rgba(0,0,0,0));
@@ -674,11 +687,21 @@
         <div class="dashboard-body">
             <div class="sidebar">
                 <div class="logo">H<span>+</span></div>
-                <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
-                <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
-                <div class="menu-item"><i class="ph ph-file-text"></i></div>
-                <div class="menu-item"><i class="ph ph-user"></i></div>
-                <div class="menu-item"><i class="ph ph-squares-four"></i></div>
+                <div class="menu-stack">
+                    <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
+                    <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
+                    <div class="menu-item"><i class="ph ph-file-text"></i></div>
+                    <div class="menu-item"><i class="ph ph-user"></i></div>
+                    <div class="menu-item"><i class="ph ph-squares-four"></i></div>
+                </div>
+                <div class="sidebar-utilities">
+                    <div class="label">Care tools</div>
+                    <button data-open-modal="video-modal"><i class="ph ph-video-camera"></i><span>Video Call</span></button>
+                    <button data-open-modal="pharmacy-modal"><i class="ph ph-pill"></i><span>Refill Rx</span></button>
+                    <button data-open-modal="files-modal"><i class="ph ph-folder"></i><span>Files</span></button>
+                    <button data-open-modal="insurance-modal"><i class="ph ph-shield-check"></i><span>Insurance</span></button>
+                    <button data-open-modal="faceid-overlay"><i class="ph ph-lock"></i><span>Secure</span></button>
+                </div>
                 <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
             </div>
 
@@ -824,19 +847,11 @@
             <div class="nav-items">
                 <button><i class="ph-fill ph-heartbeat"></i></button>
                 <button><i class="ph ph-brain"></i></button>
-                <button id="open-video"><i class="ph ph-video-camera"></i></button>
-                <button id="open-pharmacy"><i class="ph ph-pill"></i></button>
-                <button id="open-files"><i class="ph ph-folder"></i></button>
+                <button data-open-modal="video-modal"><i class="ph ph-video-camera"></i></button>
+                <button data-open-modal="pharmacy-modal"><i class="ph ph-pill"></i></button>
+                <button data-open-modal="files-modal"><i class="ph ph-folder"></i></button>
             </div>
         <div class="mobile-link-strip" id="mobile-nav-links"></div>
-        </div>
-
-        <div class="utility-launchers">
-            <button id="launch-video">Video Call</button>
-            <button id="launch-pharmacy">Refill Rx</button>
-            <button id="launch-files">Files</button>
-            <button id="launch-insurance">Insurance</button>
-            <button id="launch-faceid">Secure</button>
         </div>
 
         <div class="chat-drawer" id="chat-drawer">
@@ -926,6 +941,8 @@
     <script>
         // --- 1. EXPANDED SVG ICONS FOR ALL ORGANS ---
         const ORGAN_SVGS = {
+            heart: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-7-10A4.5 4.5 0 0 1 9.5 6 4.5 4.5 0 0 1 12 7.5 4.5 4.5 0 0 1 14.5 6 4.5 4.5 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg>`,
+            brain: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3a3 3 0 0 0-3 3v2a3 3 0 0 0-2 3v1a3 3 0 0 0 3 3h2v-2m4-10a3 3 0 0 1 3 3v2a3 3 0 0 1 2 3v1a3 3 0 0 1-3 3h-2v-2"/><path d="M9 3v8m6-8v8"/></svg>`,
             liver: `<svg viewBox="0 0 24 24"><path d="M20.5 13.5c-.5-3.5-3.5-6.5-8.5-6.5s-8 3-8 6.5c0 3.5 3 6.5 6 6.5 1.5 0 3-.5 4.5-1.5 3.5-2.5 5.5-3.5 6-5z" /><path d="M8 8.5v3" /></svg>`,
             lungs: `<svg viewBox="0 0 24 24"><path d="M12 2v20M6 5c-2.2 0-4 2.2-4 5.5S4 19 6.5 19 11 17 11 12 8.2 5 6 5zM18 5c2.2 0 4 2.2 4 5.5S20 19 17.5 19 13 17 13 12 15.8 5 18 5z" /></svg>`,
             kidneys: `<svg viewBox="0 0 24 24"><path d="M7.5 6c-2.5 0-4.5 2-4.5 5.5s3 7.5 6 7.5c2 0 3-1.5 3-4-1 1-3 0-3-2s2-3.5 4.5-3.5c-1-2.5-3.5-3.5-6-3.5z" /><path d="M16.5 6c2.5 0 4.5 2 4.5 5.5s-3 7.5-6 7.5c-2 0-3-1.5-3-4 1 1 3 0 3-2s-2-3.5-4.5-3.5c1-2.5 3.5-3.5 6-3.5z" /></svg>`,
@@ -935,14 +952,18 @@
             bladder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4c-4 0-7 3-7 7v4c0 4 3 7 7 7s7-3 7-7v-4c0-4-3-7-7-7z"/><path d="M12 18v4"/></svg>`,
             spleen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="6" ry="9" /><path d="M12 3v18"/></svg>`,
             thyroid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 6c0-2.2 2.2-4 5-4s5 1.8 5 4c0 1.5-1 2.8-2.5 3.5L12 14l-2.5-4.5C8 8.8 7 7.5 7 6z"/><path d="M12 14v6"/></svg>`,
-            eyes: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>`
+            eyes: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>`,
+            gallbladder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3c-3 0-6 2.5-6 6 0 2 .5 3.5 1.5 4.5L12 18l2.5-4.5C15.5 12.5 16 11 16 9c0-1.5-.5-3-2-3z"/><path d="M12 18v3"/></svg>`,
+            adrenal: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14c0-5 3-8 8-8s8 3 8 8c0 3-2 5-5 5H9c-3 0-5-2-5-5z"/><path d="M9 12c1-1 3-1 4 0l2 2"/></svg>`,
+            uterus: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 10c0-2 1.5-3.5 3.5-3.5H16c2 0 3.5 1.5 3.5 3.5 0 1.8-1.2 3.2-3 3.4l-2.5.3V21h-4v-7.3l-2.5-.3c-1.8-.2-3-1.6-3-3.4z"/><path d="M9 6v2m6-2v2"/></svg>`,
+            prostate: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4c-4 0-6 3-6 6s2 6 6 6 6-3 6-6-2-6-6-6z"/><path d="M9 16v3c0 .6.4 1 1 1h4c.6 0 1-.4 1-1v-3"/></svg>`
         };
 
         // --- 2. COMPREHENSIVE ORGAN DATA & VITALS ---
         const ORGAN_DATA = {
             heart: {
                 title: "Cardiovascular System",
-                mainStat: "BPM", animKey: "bpm", simValue: 80, icon: "ph-heart",
+                mainStat: "BPM", animKey: "bpm", simValue: 80, icon: "svg-heart",
                 stats: [
                     { id: "c1", title: "Blood Pressure", base: 116, unit: "/70", icon: "ph-drop", type: "bp" },
                     { id: "c2", title: "Heart Rate", base: 80, unit: "bpm", icon: "ph-heartbeat", type: "bpm" },
@@ -953,7 +974,7 @@
             },
             brain: {
                 title: "Nervous System",
-                mainStat: "Hz", animKey: "hz", simValue: 14, icon: "ph-brain",
+                mainStat: "Hz", animKey: "hz", simValue: 14, icon: "svg-brain",
                 stats: [
                     { id: "c1", title: "Brain Waves", base: 14, unit: "Hz", icon: "ph-wave-sine", type: "hz" },
                     { id: "c2", title: "Cognitive Load", base: 45, unit: "%", icon: "ph-lightning", type: "perc" },
@@ -1071,6 +1092,50 @@
                     { id: "c4", title: "Dryness Index", base: 12, unit: "%", icon: "ph-drop-half", type: "perc" }
                 ],
                 abnormal: { msg: "Light sensitivity flagged.", action: "Route to ophthalmic screening." }
+            },
+            gallbladder: {
+                title: "Biliary System",
+                mainStat: "Flow", animKey: "bile", simValue: 72, icon: "svg-gallbladder",
+                stats: [
+                    { id: "c1", title: "Bile Flow", base: 72, unit: "%", icon: "ph-wave-sine", type: "perc" },
+                    { id: "c2", title: "Cholesterol", base: 180, unit: "mg", icon: "ph-flask", type: "norm" },
+                    { id: "c3", title: "Stones Risk", base: 8, unit: "%", icon: "ph-warning", type: "perc" },
+                    { id: "c4", title: "pH", base: 7.2, unit: "pH", icon: "ph-drop", type: "ph" }
+                ],
+                abnormal: { msg: "Biliary slowdown detected.", action: "Schedule ultrasound." }
+            },
+            adrenal: {
+                title: "Adrenal Axis",
+                mainStat: "Cortisol", animKey: "cortisol", simValue: 14, icon: "svg-adrenal",
+                stats: [
+                    { id: "c1", title: "Cortisol", base: 14, unit: "µg/dL", icon: "ph-flashlight", type: "norm" },
+                    { id: "c2", title: "Aldosterone", base: 7, unit: "ng/dL", icon: "ph-lightning", type: "norm" },
+                    { id: "c3", title: "Stress Index", base: 32, unit: "%", icon: "ph-activity", type: "perc" },
+                    { id: "c4", title: "BP Support", base: 110, unit: "mmHg", icon: "ph-gauge", type: "bp" }
+                ],
+                abnormal: { msg: "Cortisol spike.", action: "Order serum cortisol + ACTH." }
+            },
+            uterus: {
+                title: "Reproductive System",
+                mainStat: "Cycle", animKey: "cycle", simValue: 28, icon: "svg-uterus",
+                stats: [
+                    { id: "c1", title: "Cycle Day", base: 14, unit: "day", icon: "ph-calendar-blank", type: "norm" },
+                    { id: "c2", title: "Endometrium", base: 8, unit: "mm", icon: "ph-clipboard-text", type: "norm" },
+                    { id: "c3", title: "Hormone Balance", base: 92, unit: "%", icon: "ph-sparkle", type: "perc" },
+                    { id: "c4", title: "Pain Index", base: 12, unit: "%", icon: "ph-thermometer-simple", type: "perc" }
+                ],
+                abnormal: { msg: "Cycle irregularity noted.", action: "Check hormones + ultrasound." }
+            },
+            prostate: {
+                title: "Prostate Health",
+                mainStat: "PSA", animKey: "psa", simValue: 1.2, icon: "svg-prostate",
+                stats: [
+                    { id: "c1", title: "PSA", base: 1.2, unit: "ng/mL", icon: "ph-flask", type: "norm" },
+                    { id: "c2", title: "Flow Score", base: 92, unit: "%", icon: "ph-waves", type: "perc" },
+                    { id: "c3", title: "Nocturia", base: 1, unit: "x", icon: "ph-moon", type: "norm" },
+                    { id: "c4", title: "Inflammation", base: 6, unit: "%", icon: "ph-activity", type: "perc" }
+                ],
+                abnormal: { msg: "PSA trending high.", action: "Consider DRE + MRI." }
             }
         };
         
@@ -1105,7 +1170,11 @@
             bladder: 'bladder.glb',
             spleen: 'spleen.glb',
             thyroid: 'thyroid.glb',
-            eyes: 'eyes.glb'
+            eyes: 'eyes.glb',
+            gallbladder: 'gallbladder.glb',
+            adrenal: 'adrenal.glb',
+            uterus: 'uterus.glb',
+            prostate: 'prostate.glb'
         };
 
         const ORGAN_PAGE_LINKS = {
@@ -1120,13 +1189,18 @@
             bladder: 'patient-organs.html#bladder',
             spleen: 'patient-organs.html#spleen',
             thyroid: 'patient-organs.html#thyroid',
-            eyes: 'patient-organs.html#eyes'
+            eyes: 'patient-organs.html#eyes',
+            gallbladder: 'patient-organs.html#gallbladder',
+            adrenal: 'patient-organs.html#adrenal',
+            uterus: 'patient-organs.html#uterus',
+            prostate: 'patient-organs.html#prostate'
         };
 
         // --- THREE.JS SETUP ---
         let scene, camera, renderer, group, particles;
         let controls, spotLight;
         const gltfLoader = new THREE.GLTFLoader();
+        const STANDARD_MODEL_SIZE = 5.5;
 
         const initThree = () => {
             const container = document.getElementById('model-3d-container');
@@ -1146,10 +1220,14 @@
             controls.enableDamping = true;
             controls.autoRotate = true;
             controls.autoRotateSpeed = 2.0;
+            controls.enableZoom = false;
+            controls.enablePan = false;
+            controls.minDistance = camera.position.length();
+            controls.maxDistance = camera.position.length();
 
             // Particles
             const particlesGeo = new THREE.BufferGeometry();
-            const pCount = 300; 
+            const pCount = 300;
             const pArray = new Float32Array(pCount * 3);
             for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 15;
             particlesGeo.setAttribute("position", new THREE.BufferAttribute(pArray, 3));
@@ -1175,7 +1253,6 @@
                 if (group) {
                    const scale = 1 + Math.sin(t * 1.5) * 0.02;
                    group.scale.set(scale, scale, scale);
-                   if(group.userData.ring) group.userData.ring.rotation.z += 0.005;
                 }
                 if(particles) particles.rotation.y += 0.001;
                 renderer.render(scene, camera);
@@ -1199,7 +1276,8 @@
             const colors = {
                 heart: 0xff3b3b, brain: 0x0ae0ff, liver: 0xd97757, lungs: 0xffa8d9,
                 kidneys: 0xc27e5c, stomach: 0xff9e9e, intestines: 0xffc4a3, pancreas: 0xffd670,
-                bladder: 0xffea00, spleen: 0x9370db, thyroid: 0xffb7b2, eyes: 0x7dd3fc
+                bladder: 0xffea00, spleen: 0x9370db, thyroid: 0xffb7b2, eyes: 0x7dd3fc,
+                gallbladder: 0x4ade80, adrenal: 0xf97316, uterus: 0xec4899, prostate: 0x22c55e
             };
             return colors[type] || 0x3b82f6;
         };
@@ -1241,45 +1319,32 @@
             gltfLoader.load(modelUrl, (gltf) => {
                 const model = gltf.scene || gltf.scenes[0];
 
-                // Preserve uploaded materials but enhance glow + encoding
                 model.traverse((node) => {
-                    if (node.isMesh && node.material) {
-                        const mat = Array.isArray(node.material) ? node.material : [node.material];
-                        mat.forEach(m => {
-                            if (m.map) m.map.encoding = THREE.sRGBEncoding;
-                            m.emissive = new THREE.Color(color);
-                            m.emissiveIntensity = IS_DISEASED_MODE ? 0.55 : 0.25;
-                            m.metalness = m.metalness ?? 0.4;
-                            m.roughness = m.roughness ?? 0.45;
-                            m.needsUpdate = true;
-                        });
+                    if (node.isMesh && node.material && node.material.map) {
+                        node.material.map.encoding = THREE.sRGBEncoding;
                     }
                 });
 
-                // Center and Scale
-                const box = new THREE.Box3().setFromObject(model);
-                const size = new THREE.Vector3();
-                box.getSize(size);
-                const maxAxis = Math.max(size.x, size.y, size.z) || 1;
-                model.scale.setScalar(4.5 / maxAxis);
-                box.getCenter(model.position).multiplyScalar(-1);
-                controls.target.set(0, 0, 0);
-                controls.update();
-
+                centerAndScaleModel(model);
                 group.add(model);
 
             }, undefined, (error) => {
                 // FALLBACK: If GitHub file doesn't exist yet, show procedural shape
                 createProceduralFallback(type, color);
             });
+        };
 
-            // Add Sci-Fi Ring
-            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); 
-            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
-            ring.rotation.x = Math.PI / 2;
-            group.add(ring);
-            group.userData.ring = ring; 
+        const centerAndScaleModel = (model) => {
+            const box = new THREE.Box3().setFromObject(model);
+            const size = box.getSize(new THREE.Vector3());
+            const center = box.getCenter(new THREE.Vector3());
+            const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+            const scale = STANDARD_MODEL_SIZE / maxAxis;
+            model.scale.setScalar(scale);
+            model.position.sub(center);
+            controls.target.set(0, 0, 0);
+            controls.update();
+            camera.lookAt(0, 0, 0);
         };
 
         const createProceduralFallback = (type, color) => {
@@ -1297,14 +1362,18 @@
                 case 'liver': geometry = new THREE.ConeGeometry(2, 3, 32); break;
                 default: geometry = new THREE.OctahedronGeometry(2.0, 0);
             }
-            const coreMat = new THREE.MeshPhongMaterial({ color: color, emissive: color, emissiveIntensity: 0.4, transparent: true, opacity: 0.9, flatShading: true });
+            const coreMat = new THREE.MeshStandardMaterial({
+                color: color,
+                metalness: 0.35,
+                roughness: 0.32,
+                clearcoat: 0.6,
+                clearcoatRoughness: 0.25,
+                transparent: true,
+                opacity: 0.94,
+            });
             const coreMesh = new THREE.Mesh(geometry, coreMat);
+            centerAndScaleModel(coreMesh);
             group.add(coreMesh);
-            const wireGeo = new THREE.WireframeGeometry(geometry);
-            const wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
-            const wireMesh = new THREE.LineSegments(wireGeo, wireMat);
-            wireMesh.scale.setScalar(1.1);
-            group.add(wireMesh);
         };
 
         const getLocationSnapshot = () => new Promise(resolve => {
@@ -1644,7 +1713,7 @@
             setTimeout(hideBootScreen, 4500);
 
             const skipBtn = document.getElementById('skip-boot');
-            if(skipBtn) skipBtn.addEventListener('click', hideBootScreen); 
+            if(skipBtn) skipBtn.addEventListener('click', hideBootScreen);
 
             generateOrganButtons();
             initThree();
@@ -1653,6 +1722,23 @@
             persistVitalsSnapshot();
             setInterval(persistVitalsSnapshot, 600000);
 
+            const openModal = (target) => {
+                const el = document.getElementById(target);
+                if(!el) return;
+                el.style.display = 'flex';
+                if (target === 'faceid-overlay') {
+                    const status = document.getElementById('faceid-text');
+                    if (status) {
+                        status.innerText = 'Scanning Face ID...';
+                        setTimeout(() => status.innerText = 'Secure tunnel ready', 1200);
+                        setTimeout(() => el.style.display = 'none', 2200);
+                    }
+                }
+            };
+            document.querySelectorAll('[data-open-modal]').forEach(btn => {
+                btn.addEventListener('click', () => openModal(btn.dataset.openModal));
+            });
+            
             // Event Listeners
             const tray = document.querySelector('.organ-tray');
             tray.addEventListener('click', (e) => {
@@ -1666,15 +1752,12 @@
                 loadOrganModel(organ);
                 updateUI(organ);
             });
-            
+
             // Modal Logic
             document.querySelectorAll('.ghost-btn').forEach(btn => btn.addEventListener('click', (e) => {
                 const target = e.target.dataset.close;
                 if(target) document.getElementById(target).style.display = 'none';
             }));
-
-            // Launchers
-            document.getElementById('launch-files').addEventListener('click', () => document.getElementById('files-modal').style.display = 'flex');
 
             // SIMULATE DENGUE BUTTON
             document.getElementById('simulate-dengue').addEventListener('click', () => {
