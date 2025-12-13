@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Health flo OS - NEO (Bio-Sync Enabled)</title>
+    <title>Health flo OS - NEO 2.0 (Pro)</title>
     
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Three.js Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js OrbitControls -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Three.js GLTFLoader (kept for compatibility if needed in future) -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     
     <style>
         :root {
-            /* Theme Variables */
-            --bg-radial: radial-gradient(circle at 20% 30%, #506176 0%, #1a1f2b 55%, #0E121B 100%);
+            /* Theme Variables - Dark Default */
+            --bg-radial: radial-gradient(circle at 20% 30%, #2b303b 0%, #1a1f2b 55%, #050608 100%);
             
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
@@ -24,49 +28,88 @@
             --text-white: #ffffff;
             --text-muted: #94a3b8;
 
+            /* Component Specifics */
+            --sidebar-bg: rgba(255, 255, 255, 0.02);
+            --card-hover-bg: rgba(30, 35, 45, 0.9);
+            --pill-active-text: #ffffff;
+
             /* Status Colors */
-            --color-blue: #0A84FF;
+            --color-blue: #3b82f6;
+            --color-cyan: #06b6d4;
             --color-yellow: #f59e0b;
             --color-red: #ef4444;
             
-            --accent-blue: #2563eb;
+            --accent-blue: #3b82f6;
             --card-bg: rgba(22, 28, 38, 0.6);
             --card-border: rgba(255, 255, 255, 0.05);
             --card-active-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
         }
 
         body.theme-white {
-            --bg-radial: radial-gradient(circle at 20% 30%, #f5f7fb 0%, #e3e8f3 55%, #d8deea 100%);
-            --glass-bg: rgba(255, 255, 255, 0.65);
-            --glass-border: rgba(0, 0, 0, 0.06);
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --card-border: rgba(15, 23, 42, 0.08);
-            --card-active-bg: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(226, 232, 240, 0.9) 100%);
-            --text-white: #0f172a;
-            --text-muted: #475569;
+            /* High Contrast Light Theme */
+            --bg-radial: radial-gradient(circle at 20% 30%, #f0f4f8 0%, #e2e8f0 55%, #cbd5e1 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(51, 65, 85, 0.15); /* Stronger border for light mode */
+            --glass-blur: blur(24px);
+            
+            --text-white: #0f172a; /* Slate 900 - Deep dark blue/black for text */
+            --text-muted: #475569; /* Slate 600 - Medium dark for subtitles */
+
+            --sidebar-bg: rgba(255, 255, 255, 0.5);
+            --card-hover-bg: #ffffff;
+            --pill-active-text: #1e3a8a; /* Dark blue for active pill text */
+
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(51, 65, 85, 0.1);
+            --card-active-bg: linear-gradient(135deg, #dbeafe 0%, #ffffff 100%);
         }
 
         /* RESET */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         
         /* CUSTOM SCROLLBARS */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+        ::-webkit-scrollbar-thumb:hover { background: var(--color-blue); }
+        
+        /* Adjust scrollbar for light theme */
+        body.theme-white ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
 
         body {
             height: 100vh; width: 100vw;
             background: var(--bg-radial);
             overflow: hidden; user-select: none;
-            color: white;
+            color: var(--text-white);
+            transition: color 0.3s, background 0.3s;
         }
+
+        /* BOOT SCREEN */
+        .boot-screen {
+            position: fixed; inset: 0; background: #000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--color-blue); font-family: 'Courier New', monospace;
+            transition: opacity 0.8s ease-out;
+        }
+        .boot-loader {
+            width: 200px; height: 2px; background: rgba(59, 130, 246, 0.3); margin-top: 20px;
+            position: relative; overflow: hidden;
+        }
+        .boot-bar {
+            position: absolute; left: 0; top: 0; height: 100%; width: 0%;
+            background: var(--color-blue); box-shadow: 0 0 10px var(--color-blue);
+            animation: loadBar 2.5s ease-in-out forwards;
+        }
+        .boot-text { font-size: 12px; margin-top: 10px; letter-spacing: 2px; opacity: 0.8; }
+        @keyframes loadBar { 0% { width: 0%; } 40% { width: 30%; } 80% { width: 90%; } 100% { width: 100%; } }
 
         /* LAYOUT CONTAINER */
         .app-container {
             width: 100vw; height: 100vh;
             background: transparent;
             display: flex; flex-direction: column; overflow: hidden; position: relative;
+            opacity: 0; transition: opacity 1s;
         }
 
         /* BROWSER BAR */
@@ -80,8 +123,8 @@
         }
         .window-controls { display: flex; gap: 8px; margin-right: 12px; }
         .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
-        .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
-        .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
+        .branding-right { margin-left: auto; font-weight: 700; color: var(--text-white); letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
+        .branding-right span { color: var(--color-blue); text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
 
         /* DASHBOARD BODY */
         .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
@@ -91,14 +134,14 @@
             width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
             border-right: 1px solid var(--glass-border);
             z-index: 10;
-            background: rgba(255, 255, 255, 0.02);
+            background: var(--sidebar-bg);
             backdrop-filter: var(--glass-blur);
             flex-shrink: 0;
         }
         .bottom-nav {
             display: none;
             position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             backdrop-filter: blur(12px);
             border-top: 1px solid var(--glass-border);
             padding: 10px 18px;
@@ -106,20 +149,20 @@
         }
         .bottom-nav .nav-items { display: flex; justify-content: space-between; align-items: center; }
         .bottom-nav button {
-            background: transparent; border: none; color: white; font-size: 22px; width: 20%; padding: 10px 0;
+            background: transparent; border: none; color: var(--text-white); font-size: 22px; width: 20%; padding: 10px 0;
         }
-        .logo { font-weight: 800; color: white; font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
+        .logo { font-weight: 800; color: var(--text-white); font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
         .logo span { color: var(--color-blue); }
         .menu-item {
             width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
             color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
         }
-        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .menu-item:hover { color: var(--text-white); background: rgba(125, 125, 125, 0.1); }
         .menu-item.active { 
-            background: rgba(255, 255, 255, 0.08); 
-            color: white; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(59, 130, 246, 0.1); 
+            color: var(--color-blue); 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); 
+            border: 1px solid rgba(59, 130, 246, 0.2);
         }
         
         /* MAIN GRID */
@@ -140,22 +183,22 @@
         .top-toggles { display: flex; gap: 10px; }
         .toggle-pill {
             padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
-            color: var(--text-muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            color: var(--text-muted); background: rgba(125, 125, 125, 0.1); border: 1px solid var(--glass-border);
             cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
         }
         .toggle-pill.active {
-            background: rgba(10, 132, 255, 0.2); color: white; border-color: rgba(10, 132, 255, 0.4);
-            display: flex; align-items: center; gap: 8px;
+            background: rgba(59, 130, 246, 0.2); color: var(--pill-active-text); border-color: rgba(59, 130, 246, 0.5);
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
         }
         .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
 
         .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
-        .page-title h1 { font-size: 56px; font-weight: 700; color: white; line-height: 1; letter-spacing: -2px; }
+        .page-title h1 { font-size: 56px; font-weight: 700; color: var(--text-white); line-height: 1; letter-spacing: -2px; }
         .page-title h1 span { font-weight: 300; opacity: 0.8; }
 
         .theme-toggle {
             padding: 8px 14px; border-radius: 12px; border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.08); color: white; cursor: pointer; font-weight: 700; font-size: 12px;
+            background: rgba(125, 125, 125, 0.1); color: var(--text-white); cursor: pointer; font-weight: 700; font-size: 12px;
         }
 
         /* 3D STAGE */
@@ -165,22 +208,22 @@
             display: flex; justify-content: center; align-items: center;
         }
         #model-3d-container {
-            width: 100%; height: 100%; position: absolute; top: -30%; left: -30%; z-index: 1;
-            opacity: 0; animation: fadeIn 1.5s ease-out forwards; cursor: grab;
+            width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
+            opacity: 0; animation: fadeIn 1.5s ease-out forwards;
         }
-        #model-3d-container:active { cursor: grabbing; }
+        /* No specific cursor style, handled by OrbitControls */
 
         /* Animated Rings Background */
         .rings {
-            position: absolute; width: 550px; height: 550px; border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.03); 
-            background: radial-gradient(circle, rgba(10, 132, 255, 0.03) 0%, transparent 60%);
-            z-index: 0; animation: spin 40s linear infinite;
+            position: absolute; width: 600px; height: 600px; border-radius: 50%;
+            border: 1px solid var(--glass-border); 
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
+            z-index: 0; animation: spin 60s linear infinite;
         }
         .rings::before {
             content: ''; position: absolute; top: 50px; left: 50px; right: 50px; bottom: 50px;
-            border-radius: 50%; border: 1px dashed rgba(255,255,255,0.05);
-            animation: spinReverse 30s linear infinite;
+            border-radius: 50%; border: 1px dashed var(--glass-border);
+            animation: spinReverse 40s linear infinite;
         }
         
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -189,17 +232,18 @@
 
         .scanner-line {
             position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--color-blue), transparent);
-            box-shadow: 0 0 20px var(--color-blue);
-            animation: scan-down 4s ease-in-out infinite; z-index: 2; opacity: 0.5;
+            background: linear-gradient(90deg, transparent, var(--color-cyan), transparent);
+            box-shadow: 0 0 20px var(--color-cyan);
+            animation: scan-down 3s ease-in-out infinite; z-index: 2; opacity: 0.3;
+            pointer-events: none;
         }
-        @keyframes scan-down { 0% { top: 10%; opacity: 0; } 50% { opacity: 0.8; } 100% { top: 90%; opacity: 0; } }
+        @keyframes scan-down { 0% { top: 5%; opacity: 0; } 50% { opacity: 0.6; } 100% { top: 95%; opacity: 0; } }
 
         .floating-stat {
-            background: rgba(20, 25, 35, 0.6); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.08); border-radius: 18px;
+            background: var(--card-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 18px;
             padding: 14px 16px; width: 100%; z-index: 10;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             display: flex; flex-direction: column; gap: 8px;
             margin-bottom: 14px;
         }
@@ -222,7 +266,12 @@
             border: 1px solid var(--card-border); position: relative; overflow: hidden; transition: 0.3s;
         }
         
-        .data-card:hover { border-color: rgba(255,255,255,0.15); background: rgba(30, 35, 45, 0.8); transform: translateY(-2px); }
+        .data-card:hover { 
+            border-color: rgba(59, 130, 246, 0.4); 
+            background: var(--card-hover-bg); 
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); 
+        }
 
         /* SCANNING STATE CSS */
         .scanning-text {
@@ -237,16 +286,16 @@
         .data-card.active-blue {
             background: var(--card-active-bg); 
             border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 20px 50px -20px rgba(30, 58, 138, 0.4);
+            box-shadow: 0 20px 50px -20px rgba(30, 58, 138, 0.15);
         }
         .data-card.state-yellow {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(125, 125, 125, 0.05) 100%);
             border: 1px solid rgba(245, 158, 11, 0.4);
         }
         .data-card.state-yellow .card-icon { color: var(--color-yellow); }
         
         .data-card.state-red {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(125, 125, 125, 0.05) 100%);
             border: 1px solid rgba(239, 68, 68, 0.4);
             box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
         }
@@ -255,10 +304,10 @@
         .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; z-index: 2; }
         .card-icon { font-size: 20px; transition: color 0.3s; }
         .card-title { font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 600; }
-        .card-val { font-size: 22px; font-weight: 700; color: white; letter-spacing: -0.5px; transition: 0.3s; }
+        .card-val { font-size: 22px; font-weight: 700; color: var(--text-white); letter-spacing: -0.5px; transition: 0.3s; }
         
         .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 45px; margin-top: auto; z-index: 2; }
-        .bar { flex: 1; background: rgba(255,255,255,0.1); border-radius: 4px; transition: height 0.5s ease-in-out, background 0.3s; }
+        .bar { flex: 1; background: rgba(125,125,125,0.15); border-radius: 4px; transition: height 0.5s ease-in-out, background 0.3s; }
         .bar.act { background: currentColor; }
         
         .blue-square-val {
@@ -279,43 +328,43 @@
         .organ-tray {
             display: flex;
             flex-wrap: wrap; /* Allows wrapping to form rows */
-            gap: 12px;
+            gap: 10px;
             padding-bottom: 10px;
             margin-bottom: 10px;
         }
 
         .organ-item {
-            width: 60px; height: 60px; /* Compact size */
-            background: rgba(255,255,255,0.01);
+            width: 48px; height: 48px; /* Compact size */
+            background: rgba(125,125,125,0.05);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(15px);
             border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center;
             position: relative; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             flex-shrink: 0;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
         }
         .premium-icon {
-            position: absolute; top: 6px; right: 6px;
-            width: 16px; height: 16px; border-radius: 6px;
+            position: absolute; top: 4px; right: 4px;
+            width: 12px; height: 12px; border-radius: 6px;
             background: linear-gradient(135deg, #ffd166, #f97316);
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
         }
-        .premium-icon i { font-size: 12px; color: #1f2937; }
+        .premium-icon i { font-size: 8px; color: #1f2937; }
         .organ-item:hover {
-            background: rgba(255,255,255,0.05);
+            background: rgba(125,125,125,0.1);
             transform: translateY(-3px);
-            border-color: rgba(255,255,255,0.2);
+            border-color: rgba(59, 130, 246, 0.3);
         }
-        .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        .organ-item i, .organ-item svg { font-size: 20px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
         
         .organ-item.selected {
-            background: linear-gradient(145deg, rgba(10, 132, 255, 0.15), rgba(0,0,0,0));
+            background: linear-gradient(145deg, rgba(59, 130, 246, 0.15), rgba(0,0,0,0));
             border: 1px solid var(--color-blue);
-            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), inset 0 0 20px rgba(10, 132, 255, 0.1);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1);
         }
         .organ-item.selected i, .organ-item.selected svg {
-            color: white; stroke: white; filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.8)); transform: scale(1.1);
+            color: var(--text-white); stroke: var(--text-white); filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8)); transform: scale(1.1);
         }
         
         .organ-name-mini { display: none; } /* Hide text for compact grid */
@@ -331,31 +380,31 @@
         /* SCHEDULE AREA */
         .schedule-area {
             flex: 1; /* Fill remaining height */
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
             backdrop-filter: blur(24px);
             border-radius: 28px; padding: 24px;
             border: 1px solid var(--glass-border); display: flex; flex-direction: column; z-index: 5;
         }
         .ai-panel {
-            margin-top: 12px; padding: 16px; background: rgba(10, 132, 255, 0.08);
-            border-radius: 16px; border: 1px solid rgba(10, 132, 255, 0.2); transition: 0.3s;
+            margin-top: 12px; padding: 16px; background: rgba(59, 130, 246, 0.08);
+            border-radius: 16px; border: 1px solid rgba(59, 130, 246, 0.2); transition: 0.3s;
         }
         .ai-panel .typing { font-style: italic; color: var(--text-muted); font-size: 12px; margin-top: 6px; display: none; }
         .ai-panel.warn { background: rgba(239, 68, 68, 0.1); border-color: var(--color-red); }
         .ai-title { font-size: 11px; font-weight: 800; color: var(--color-blue); margin-bottom: 6px; display: block; letter-spacing: 1px; }
-        .ai-text { font-size: 12px; line-height: 1.5; color: #cbd5e1; }
+        .ai-text { font-size: 12px; line-height: 1.5; color: var(--text-muted); }
 
         .next-checkup {
-            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 16px;
+            background: rgba(125,125,125,0.05); border-radius: 16px; padding: 16px;
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 24px; color: white; border: 1px solid rgba(255,255,255,0.03);
+            margin-bottom: 24px; color: var(--text-white); border: 1px solid var(--glass-border);
         }
         .date-nav {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
-            background: rgba(0,0,0,0.2); padding: 6px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.03);
+            background: rgba(0,0,0,0.05); padding: 6px; border-radius: 100px; border: 1px solid var(--glass-border);
         }
         .nav-arrow { 
-            width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); 
+            width: 28px; height: 28px; border-radius: 50%; background: rgba(125,125,125,0.1); 
             display: flex; justify-content: center; align-items: center; font-size: 14px; color: #9ca3af; cursor: pointer; transition: 0.2s;
         }
         .doc-list { display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; }
@@ -363,31 +412,31 @@
             display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 16px; 
             transition: 0.2s; cursor: pointer; border: 1px solid transparent;
         }
-        .doc-row:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.04); }
+        .doc-row:hover { background: rgba(125,125,125,0.08); border-color: var(--glass-border); }
         .doc-img { width: 40px; height: 40px; border-radius: 12px; object-fit: cover; }
         .consult-btn {
-            margin-top: 24px; background: linear-gradient(135deg, #0A84FF, #006CFF); color: white; border: none; padding: 14px;
+            margin-top: 24px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 14px;
             border-radius: 100px; font-weight: 700; font-size: 13px; cursor: pointer;
             display: flex; justify-content: center; align-items: center; gap: 10px;
-            box-shadow: 0 10px 30px -5px rgba(10, 132, 255, 0.4); transition: 0.3s;
+            box-shadow: 0 10px 30px -5px rgba(59, 130, 246, 0.4); transition: 0.3s;
         }
 
         /* Sound Button */
         .sound-btn {
             position: absolute; top: 20px; left: 20px;
             width: 44px; height: 44px; border-radius: 50%;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(125,125,125,0.1); border: 1px solid var(--glass-border);
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; z-index: 100; color: white; transition: 0.3s;
+            cursor: pointer; z-index: 100; color: var(--text-white); transition: 0.3s;
             backdrop-filter: blur(5px);
         }
-        .sound-btn:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+        .sound-btn:hover { background: rgba(125,125,125,0.2); transform: scale(1.05); }
         
         .sound-btn.active {
             color: var(--color-blue);
-            background: rgba(10, 132, 255, 0.15);
+            background: rgba(59, 130, 246, 0.15);
             border-color: var(--color-blue);
-            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
         }
         .sound-btn.active i {
             animation: pulseIcon 1.5s infinite;
@@ -397,19 +446,19 @@
         .chat-drawer {
             position: fixed; right: 24px; bottom: 80px; width: 320px; max-width: 90vw;
             background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 12px;
-            backdrop-filter: blur(18px); box-shadow: 0 20px 40px rgba(0,0,0,0.25); z-index: 40;
+            backdrop-filter: blur(18px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); z-index: 40;
         }
-        .chat-drawer h4 { margin-bottom: 8px; color: white; display: flex; align-items: center; gap: 6px; font-size: 13px; }
+        .chat-drawer h4 { margin-bottom: 8px; color: var(--text-white); display: flex; align-items: center; gap: 6px; font-size: 13px; }
         .chat-messages { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .chat-bubble { padding: 10px 12px; border-radius: 14px; font-size: 12px; line-height: 1.4; }
-        .chat-bubble.user { background: rgba(255,255,255,0.08); align-self: flex-end; }
+        .chat-bubble { padding: 10px 12px; border-radius: 14px; font-size: 12px; line-height: 1.4; color: var(--text-white); }
+        .chat-bubble.user { background: rgba(125,125,125,0.1); align-self: flex-end; }
         .chat-bubble.bot { background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37,99,235,0.3); }
         .chat-input-row { display: flex; gap: 8px; margin-top: 8px; }
-        .chat-input-row input { flex: 1; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.05); color: white; }
+        .chat-input-row input { flex: 1; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(125,125,125,0.05); color: var(--text-white); }
         .chat-input-row button { padding: 10px 12px; border-radius: 12px; border: none; background: var(--accent-blue); color: white; font-weight: 700; cursor: pointer; }
 
         .utility-launchers { position: fixed; left: 24px; bottom: 80px; display: flex; gap: 10px; z-index: 40; }
-        .utility-launchers button { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.08); color: white; cursor: pointer; font-size: 12px; }
+        .utility-launchers button { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(125,125,125,0.1); color: var(--text-white); cursor: pointer; font-size: 12px; }
 
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: none;
@@ -417,22 +466,22 @@
         }
         .modal-box {
             width: min(520px, 90vw); background: var(--card-bg); border-radius: 20px; border: 1px solid var(--card-border);
-            padding: 20px; color: white; box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            padding: 20px; color: var(--text-white); box-shadow: 0 20px 40px rgba(0,0,0,0.3);
         }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .modal-header h3 { font-size: 16px; }
         .modal-body { font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 10px; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-        .ghost-btn { background: transparent; color: white; border: 1px solid var(--glass-border); padding: 10px 12px; border-radius: 12px; cursor: pointer; }
+        .ghost-btn { background: transparent; color: var(--text-white); border: 1px solid var(--glass-border); padding: 10px 12px; border-radius: 12px; cursor: pointer; }
         .primary-btn { background: var(--accent-blue); color: white; border: none; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
 
-        .sos-btn { position: fixed; right: 24px; bottom: 24px; width: 140px; height: 50px; border-radius: 16px; border: 1px solid rgba(239,68,68,0.3); background: rgba(239,68,68,0.12); color: white; font-weight: 800; cursor: pointer; box-shadow: 0 10px 30px rgba(239,68,68,0.3); }
+        .sos-btn { position: fixed; right: 24px; bottom: 24px; width: 140px; height: 50px; border-radius: 16px; border: 1px solid rgba(239,68,68,0.3); background: rgba(239,68,68,0.12); color: var(--text-white); font-weight: 800; cursor: pointer; box-shadow: 0 10px 30px rgba(239,68,68,0.3); }
         .sos-btn.holding { background: rgba(239,68,68,0.25); }
 
         .file-list { display: flex; flex-direction: column; gap: 8px; }
-        .file-item { padding: 10px 12px; border: 1px solid var(--glass-border); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.04); }
+        .file-item { padding: 10px 12px; border: 1px solid var(--glass-border); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(125,125,125,0.05); }
 
-        .toast { position: fixed; top: 80px; right: 24px; background: rgba(16,185,129,0.2); color: white; padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.4); display: none; z-index: 80; }
+        .toast { position: fixed; top: 80px; right: 24px; background: rgba(16,185,129,0.2); color: var(--text-white); padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.4); display: none; z-index: 80; }
 
         .faceid-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 70; }
         .faceid-box { width: 320px; height: 380px; border: 2px solid #0A84FF; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
@@ -480,7 +529,14 @@
 </head>
 <body>
 
-    <div class="app-container">
+    <!-- BOOT SCREEN -->
+    <div class="boot-screen" id="boot-screen">
+        <div class="logo" style="font-size:32px;">H<span>+</span> OS</div>
+        <div class="boot-loader"><div class="boot-bar"></div></div>
+        <div class="boot-text">INITIALIZING BIO-SYNC PROTOCOLS...</div>
+    </div>
+
+    <div class="app-container" id="app-container">
         <div class="browser-bar">
             <div class="window-controls">
                 <div class="window-dot" style="background: #ef4444;"></div>
@@ -489,7 +545,7 @@
             </div>
             <div class="nav-icons"><i class="ph ph-caret-left"></i><i class="ph ph-caret-right"></i></div>
             <div class="url-bar"><i class="ph-fill ph-lock-key"></i><span>Healthflo.com</span><i class="ph ph-arrow-clockwise" style="margin-left: auto;"></i></div>
-            <div class="branding-right">Health flo <span>OS NEO</span></div>
+            <div class="branding-right">Health flo <span>OS NEO 2.0</span></div>
         </div>
 
         <div class="dashboard-body">
@@ -532,9 +588,10 @@
                             <div class="live-badge"><div class="live-dot"></div> LIVE</div>
                             <span style="font-size:12px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
                         </div>
-                        <div style="font-size:26px; font-weight:800; color:white; margin-bottom:4px;" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
-                        <svg width="100%" height="30" viewBox="0 0 100 30" id="live-ecg-svg">
-                            <path id="live-ecg-path" d="M0,15 L10,15 L15,5 L20,25 L25,10 L30,20 L40,15 L50,15 L55,5 L60,25 L65,10 L70,20 L80,15 L100,15" fill="none" stroke="#0A84FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        <div style="font-size:26px; font-weight:800; margin-bottom:4px; color: var(--text-white);" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
+                        <!-- Animated SVG Graph -->
+                        <svg width="100%" height="30" viewBox="0 0 200 30" id="live-ecg-svg" preserveAspectRatio="none">
+                            <path id="live-ecg-path" d="" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
                     <div class="section-header" style="margin-bottom:8px;"><div class="blue-dot"></div> AI Analysis</div>
@@ -595,11 +652,11 @@
                             <i class="ph-fill ph-calendar-check" style="font-size:24px; color: var(--color-blue);"></i>
                         </div>
                         <div class="date-nav">
-                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:13px; color:white; font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
+                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:13px; color:var(--text-white); font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
                         </div>
                         <div class="doc-list">
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
                         </div>
                         <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
                     </div>
@@ -654,7 +711,7 @@
                 <div class="modal-header"><h3>Pharmacy Refill</h3><button class="ghost-btn" data-close="pharmacy-modal">Close</button></div>
                 <div class="modal-body">
                     <p>Select prescription to refill:</p>
-                    <select id="rx-select" style="padding:10px; border-radius:10px; border:1px solid var(--glass-border); background: rgba(255,255,255,0.05); color:white;">
+                    <select id="rx-select" style="padding:10px; border-radius:10px; border:1px solid var(--glass-border); background: rgba(255,255,255,0.05); color:var(--text-white);">
                         <option>Atenolol 25mg</option>
                         <option>Losartan 50mg</option>
                         <option>Metformin 500mg</option>
@@ -692,30 +749,6 @@
     </div>
     
     <script>
-        // --- CONFIGURATION ---
-        // UPDATE: Switched to jsDelivr CDN. This is much more stable than raw.githubusercontent.com
-        // for loading 3D models in production apps.
-        const MODEL_BASE_PATH = '3d_models/';
-        const MODEL_FILES = {
-            heart: 'heart.glb',
-            brain: 'brain.glb',
-            liver: 'liver.glb',
-            lungs: 'lungs.glb',
-            kidneys: 'kidneys.glb',
-            eyes: 'eyes.glb',
-            stomach: 'stomach.glb',
-            intestines: 'intestines.glb',
-            pancreas: 'pancreas.glb',
-            gallbladder: 'gallbladder.glb',
-            urinary: 'urinary.glb',
-            skeletal: 'skeletal.glb',
-            cells: 'cells.glb',
-            immune: 'immune.glb',
-            dental: 'dental.glb',
-            breast: 'breast.glb',
-            ligaments: 'ligaments.glb'
-        };
-        
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
             liver: `<svg viewBox="0 0 24 24"><path d="M20.5 13.5c-.5-3.5-3.5-6.5-8.5-6.5s-8 3-8 6.5c0 3.5 3 6.5 6 6.5 1.5 0 3-.5 4.5-1.5 3.5-2.5 5.5-3.5 6-5z" /><path d="M8 8.5v3" /></svg>`,
@@ -1305,11 +1338,48 @@
             persistVitalsSnapshot();
         };
 
+        // --- ANIMATED ECG LOGIC ---
+        let ecgPoints = [];
+        const ecgMaxPoints = 100;
+        let ecgPhase = 0;
+
+        const updateECGGraph = () => {
+            // Generate a simple ECG wave pattern
+            ecgPhase += 0.15;
+            
+            // Basic baseline noise
+            let y = 15 + (Math.random() - 0.5) * 2; 
+
+            // Periodic heartbeat spikes
+            const beat = ecgPhase % (Math.PI * 2);
+            if (beat > 0 && beat < 0.2) y -= 5; // P wave
+            if (beat > 0.3 && beat < 0.4) y += 5; // Q
+            if (beat > 0.4 && beat < 0.6) y -= 25; // R (spike)
+            if (beat > 0.6 && beat < 0.7) y += 8; // S
+            if (beat > 0.9 && beat < 1.2) y -= 4; // T wave
+
+            // Clamp
+            y = Math.max(2, Math.min(28, y));
+
+            ecgPoints.push(y);
+            if (ecgPoints.length > ecgMaxPoints) ecgPoints.shift();
+
+            // Construct SVG path string
+            const width = 200;
+            const step = width / ecgMaxPoints;
+            let d = `M 0 ${ecgPoints[0] || 15}`;
+            for (let i = 1; i < ecgPoints.length; i++) {
+                d += ` L ${i * step} ${ecgPoints[i]}`;
+            }
+            document.getElementById('live-ecg-path').setAttribute('d', d);
+        };
+
         const startLiveSimulation = (organ) => {
             liveIntervals.forEach(clearInterval);
             liveIntervals = [];
             const data = ORGAN_DATA[organ];
 
+            // Slow update for cards
             const mainInt = setInterval(() => {
                 let hasAlert = false;
                 data.stats.forEach((s, i) => {
@@ -1341,13 +1411,16 @@
 
             }, 2000);
             liveIntervals.push(mainInt);
+
+            // Fast update for ECG (approx 30fps)
+            const ecgInt = setInterval(updateECGGraph, 33);
+            liveIntervals.push(ecgInt);
         };
 
-        // --- THREE.JS ENGINE ---
+        // --- THREE.JS ENGINE (UPGRADED) ---
         let scene, camera, renderer, group, particles;
+        let controls; // OrbitControls
         let isDragging = false;
-        let previousMousePosition = { x: 0, y: 0 };
-        let mouseX = 0, mouseY = 0;
         let spotLight;
         let brainEffectGroup = null;
         let liverLight = null;
@@ -1373,11 +1446,11 @@
 
             if (type === 'brain') {
                 brainEffectGroup = new THREE.Group();
-                for (let i = 0; i < 18; i++) {
+                for (let i = 0; i < 20; i++) {
                     const start = new THREE.Vector3((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
-                    const end = start.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5));
+                    const end = start.clone().add(new THREE.Vector3((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2));
                     const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
-                    const mat = new THREE.LineBasicMaterial({ color: 0x7ef9ff, transparent: true, opacity: 0.5 });
+                    const mat = new THREE.LineBasicMaterial({ color: 0x0ae0ff, transparent: true, opacity: 0.4 });
                     const line = new THREE.Line(geo, mat);
                     brainEffectGroup.add(line);
                 }
@@ -1385,8 +1458,8 @@
             }
 
             if (type === 'liver') {
-                liverLight = new THREE.PointLight(0xffc27a, 2.8, 70);
-                liverLight.position.set(0, 3, 8);
+                liverLight = new THREE.PointLight(0xd97757, 2.0, 50);
+                liverLight.position.set(2, 2, 5);
                 scene.add(liverLight);
             }
         };
@@ -1397,43 +1470,55 @@
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 1, 16);
+            camera.position.set(0, 0, 14);
 
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.2;
+            renderer.toneMappingExposure = 1.3;
             
             container.appendChild(renderer.domElement);
 
+            // CONTROLS (NEW)
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.enableZoom = false; // Keep it clean
+            controls.autoRotate = true;
+            controls.autoRotateSpeed = 2.0;
+
             // Particles
             const particlesGeo = new THREE.BufferGeometry();
-            const pCount = 200;
+            const pCount = 300; // More particles
             const pArray = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 20;
+            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 25;
 
             particlesGeo.setAttribute("position", new THREE.BufferAttribute(pArray, 3));
             const particlesMat = new THREE.PointsMaterial({
-                size: 0.05,
+                size: 0.04,
                 color: 0x3b82f6,
                 transparent: true,
-                opacity: 0.6
+                opacity: 0.4,
+                blending: THREE.AdditiveBlending
             });
 
             particles = new THREE.Points(particlesGeo, particlesMat);
             scene.add(particles);
 
             // Lighting
-            const ambient = new THREE.AmbientLight(0xffffff, 0.2); 
+            const ambient = new THREE.AmbientLight(0xffffff, 0.1); 
             scene.add(ambient);
             
-            spotLight = new THREE.SpotLight(0xffffff, 2); 
-            spotLight.position.set(15, 20, 20); spotLight.angle = 0.6; spotLight.penumbra = 1; 
+            spotLight = new THREE.SpotLight(0xffffff, 3); 
+            spotLight.position.set(10, 10, 10); 
+            spotLight.angle = 0.5; 
+            spotLight.penumbra = 1; 
             scene.add(spotLight);
             
-            const rimLight = new THREE.PointLight(0xff0055, 3, 50); rimLight.position.set(-10, 5, -5); scene.add(rimLight);
-            const fillLight = new THREE.PointLight(0x3b82f6, 1, 50); fillLight.position.set(10, -10, 10); scene.add(fillLight);
+            const rimLight = new THREE.PointLight(0x3b82f6, 4, 50); 
+            rimLight.position.set(-10, 5, -5); 
+            scene.add(rimLight);
 
             loadOrganModel('heart');
             
@@ -1444,7 +1529,9 @@
                 const t = clock.getElapsedTime();
                 const simVal = ORGAN_DATA[activeOrgan].simValue || 1;
 
-                if (group && !isDragging) {
+                controls.update(); // Required for damping
+
+                if (group) {
                     const type = group.userData.type;
                     const baseScale = group.userData.baseScale || 1;
 
@@ -1452,58 +1539,33 @@
                         // Heart Animation (Scaling for heartbeat effect)
                         const speed = simVal / 60;
                         const beat = Math.sin(t * speed * Math.PI * 2);
-                        const scale = baseScale * (beat > 0.8 ? 1 + (beat-0.8)*0.4 : 1);
-
+                        const scale = baseScale * (beat > 0.8 ? 1 + (beat-0.8)*0.3 : 1);
                         group.scale.set(scale, scale, scale);
-                        group.rotation.y = Math.sin(t * 0.5) * 0.1 + (mouseX * 0.5);
-                        group.rotation.x = Math.cos(t * 0.3) * 0.05 + (mouseY * 0.2);
-
-                        spotLight.intensity = 2.2 + (scale - baseScale) * 10;
-                        spotLight.color.set(0xffffff);
+                        
+                        // Pulse Light
+                        spotLight.intensity = 2.5 + (scale - baseScale) * 10;
                     } else {
-                        // All Other Imported Models (Generic Rotation/Pulse)
-                        group.rotation.y += 0.005;
-                        const pulse = baseScale * (1 + Math.sin(t * 2) * 0.02);
+                        // Gentle Float
+                        const pulse = baseScale * (1 + Math.sin(t * 2) * 0.01);
                         group.scale.set(pulse, pulse, pulse);
-
-                        const isLiver = activeOrgan === 'liver';
-                        spotLight.color.set(isLiver ? 0xffd199 : 0xffffff);
-                        spotLight.intensity = isLiver ? 3 : 2.2;
                     }
                 }
 
                 if (brainEffectGroup) {
+                    brainEffectGroup.rotation.y -= 0.005;
                     brainEffectGroup.children.forEach((line, idx) => {
-                        line.material.opacity = 0.25 + Math.abs(Math.sin(t * 6 + idx)) * 0.35;
-                        line.rotation.y += 0.002;
+                        line.material.opacity = 0.1 + Math.abs(Math.sin(t * 3 + idx)) * 0.3;
                     });
                 }
 
                 if (liverLight) {
-                    liverLight.intensity = 2.6 + Math.sin(t * 1.5) * 0.3;
+                    liverLight.intensity = 2.0 + Math.sin(t * 2) * 0.5;
                 }
 
-                if(particles) particles.rotation.y += 0.0005;
+                if(particles) particles.rotation.y += 0.001;
                 renderer.render(scene, camera);
             };
             animate();
-
-            // INPUT HANDLERS
-            container.addEventListener('mousemove', (e) => {
-                const rect = container.getBoundingClientRect();
-                mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-                mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-                
-                if (isDragging && group) {
-                    const deltaMove = { x: e.offsetX - previousMousePosition.x, y: e.offsetY - previousMousePosition.y };
-                    group.rotation.y += deltaMove.x * 0.01;
-                    group.rotation.x += deltaMove.y * 0.01;
-                }
-                previousMousePosition = { x: e.offsetX, y: e.offsetY };
-            });
-            
-            container.addEventListener('mousedown', () => isDragging = true);
-            document.addEventListener('mouseup', () => isDragging = false);
 
             window.addEventListener('resize', () => {
                 camera.aspect = container.clientWidth / container.clientHeight;
@@ -1512,54 +1574,89 @@
             });
         };
 
+        // --- PROCEDURAL HELPERS ---
+        const getOrganColor = (type) => {
+            const colors = {
+                heart: 0xff3b3b,
+                brain: 0x0ae0ff,
+                liver: 0xd97757,
+                lungs: 0xffa8d9,
+                kidneys: 0xc27e5c,
+                stomach: 0xff9e9e,
+                intestines: 0xffc4a3,
+                pancreas: 0xffd670,
+                gallbladder: 0x60d394,
+                urinary: 0xffea00,
+                skeletal: 0xffffff,
+                cells: 0xcd93ff,
+                immune: 0x50c878,
+                dental: 0xfdfdfd,
+                breast: 0xffb7b2,
+                ligaments: 0xeeeeee
+            };
+            return colors[type] || 0x3b82f6;
+        };
+
+        const getOrganGeometry = (type) => {
+            switch(type) {
+                case 'heart': return new THREE.IcosahedronGeometry(3.2, 1);
+                case 'brain': return new THREE.DodecahedronGeometry(3.0, 1);
+                case 'liver': return new THREE.OctahedronGeometry(3.0, 2);
+                case 'lungs': return new THREE.SphereGeometry(3.0, 16, 16);
+                case 'cells': return new THREE.IcosahedronGeometry(2.5, 2);
+                default: return new THREE.OctahedronGeometry(2.8, 0);
+            }
+        };
+
         const loadOrganModel = (type) => {
             if (group) scene.remove(group);
             group = new THREE.Group();
             group.userData.type = type;
-            group.userData.baseScale = 1.3;
-            group.scale.setScalar(group.userData.baseScale);
+            group.userData.baseScale = 1;
             scene.add(group);
 
             applyOrganEffects(type);
 
-            // UNIFIED LOADER: Now loads external GLB for ALL types (including heart and cells)
-            const loader = new THREE.GLTFLoader();
-            const modelFile = MODEL_FILES[type] || `${type}.glb`;
-            const url = `${MODEL_BASE_PATH}${modelFile}`;
-
-            loader.load(url, (gltf) => {
-                const model = gltf.scene;
-                const box = new THREE.Box3().setFromObject(model);
-                const size = box.getSize(new THREE.Vector3()).length();
-                const center = box.getCenter(new THREE.Vector3());
-
-                // Normalize Size
-                let scaleFactor = 11 / size;
-                model.scale.setScalar(scaleFactor);
-                
-                // Center it
-                model.position.x += (model.position.x - center.x) * scaleFactor;
-                model.position.y += (model.position.y - center.y) * scaleFactor;
-                model.position.z += (model.position.z - center.z) * scaleFactor;
-                
-                group.add(model);
-            }, undefined, (error) => {
-                // FALLBACK: If model fails to load, show a placeholder wireframe shape
-                console.warn(`Failed to load ${type}.glb from ${url}. Using fallback.`, error);
-                
-                const geo = new THREE.IcosahedronGeometry(2.5, 1);
-                const mat = new THREE.MeshStandardMaterial({ 
-                    color: 0x0A84FF, 
-                    wireframe: true, 
-                    transparent: true, 
-                    opacity: 0.5 
-                });
-                const fallbackMesh = new THREE.Mesh(geo, mat);
-                group.add(fallbackMesh);
+            // PROCEDURAL HOLOGRAPHIC GENERATION
+            const color = getOrganColor(type);
+            const geometry = getOrganGeometry(type);
+            
+            // 1. Holographic Shell (Wireframe)
+            const wireMat = new THREE.MeshBasicMaterial({
+                color: color,
+                wireframe: true,
+                transparent: true,
+                opacity: 0.15,
+                blending: THREE.AdditiveBlending
             });
+            const wireMesh = new THREE.Mesh(geometry, wireMat);
+            group.add(wireMesh);
+
+            // 2. Inner Glow Core
+            const coreMat = new THREE.MeshPhongMaterial({
+                color: color,
+                transparent: true,
+                opacity: 0.8,
+                shininess: 80,
+                emissive: color,
+                emissiveIntensity: 0.2,
+                flatShading: true 
+            });
+            const coreMesh = new THREE.Mesh(geometry.clone(), coreMat);
+            coreMesh.scale.setScalar(0.85); // Slightly smaller
+            group.add(coreMesh);
         };
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Boot Screen Logic
+            setTimeout(() => {
+                document.getElementById('boot-screen').style.opacity = '0';
+                document.getElementById('app-container').style.opacity = '1';
+                setTimeout(() => {
+                    document.getElementById('boot-screen').style.display = 'none';
+                }, 800);
+            }, 2800);
+
             generateOrganButtons();
             initThree();
             updateUI('heart');
