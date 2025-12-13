@@ -90,11 +90,12 @@
             width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
             color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
         }
+        .menu-item:link, .menu-item:visited { text-decoration: none; color: var(--text-muted); }
         .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
-        .menu-item.active { 
-            background: rgba(255, 255, 255, 0.08); 
-            color: white; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -102,10 +103,75 @@
         .main-content {
             flex: 1; padding: 30px 40px;
             display: grid;
-            grid-template-columns: 1.2fr 1fr 340px; 
+            grid-template-columns: 1.2fr 1fr 340px;
             grid-template-rows: auto 1fr; /* Optimized rows */
             gap: 30px; overflow-y: auto; position: relative;
         }
+
+        .insights-panel {
+            margin-top: 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 16px 18px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .insight-card {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .micro-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            width: fit-content;
+        }
+
+        .insight-title { color: white; font-weight: 700; font-size: 14px; }
+        .insight-sub { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
+
+        .progress-rail { width: 100%; height: 7px; border-radius: 10px; background: rgba(255,255,255,0.08); overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #0A84FF, #22d3ee); border-radius: 10px; }
+
+        .resource-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .resource-chip {
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04);
+            border-radius: 14px;
+            padding: 8px 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .resource-chip small { color: var(--text-muted); font-weight: 500; }
 
         /* HEADER */
         .header-section {
@@ -290,13 +356,268 @@
             pointer-events: none; white-space: nowrap; z-index: 20;
         }
 
+        
+@@ -68,67 +68,133 @@
+            flex-shrink: 0;
+            flex-shrink: 0;
+        }
+        }
+        .window-controls { display: flex; gap: 8px; margin-right: 12px; }
+        .window-controls { display: flex; gap: 8px; margin-right: 12px; }
+        .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
+        .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
+        .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
+        .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
+        .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
+        .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
+
+
+        /* DASHBOARD BODY */
+        /* DASHBOARD BODY */
+        .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+        .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+
+        /* SIDEBAR */
+        /* SIDEBAR */
+        .sidebar {
+        .sidebar {
+            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
+            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
+            border-right: 1px solid var(--glass-border); 
+            border-right: 1px solid var(--glass-border); 
+            z-index: 10; 
+            z-index: 10; 
+            background: rgba(255, 255, 255, 0.02);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
+            flex-shrink: 0;
+            flex-shrink: 0;
+        }
+        }
+        .logo { font-weight: 800; color: white; font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
+        .logo { font-weight: 800; color: white; font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
+        .logo span { color: var(--color-blue); }
+        .logo span { color: var(--color-blue); }
+        .menu-item {
+        .menu-item {
+            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+        }
+        }
+        .menu-item:link, .menu-item:visited { text-decoration: none; color: var(--text-muted); }
+        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .menu-item.active { 
+        .menu-item.active {
+            background: rgba(255, 255, 255, 0.08); 
+            background: rgba(255, 255, 255, 0.08);
+            color: white; 
+            color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        }
+
+
+        /* MAIN GRID */
+        /* MAIN GRID */
+        .main-content {
+        .main-content {
+            flex: 1; padding: 30px 40px;
+            flex: 1; padding: 30px 40px;
+            display: grid;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 340px; 
+            grid-template-columns: 1.2fr 1fr 340px;
+            grid-template-rows: auto 1fr; /* Optimized rows */
+            grid-template-rows: auto 1fr; /* Optimized rows */
+            gap: 30px; overflow-y: auto; position: relative;
+            gap: 30px; overflow-y: auto; position: relative;
+        }
+        }
+
+
+        .insights-panel {
+            margin-top: 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 16px 18px;
+            backdrop-filter: blur(16px);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .insight-card {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .micro-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            width: fit-content;
+        }
+
+        .insight-title { color: white; font-weight: 700; font-size: 14px; }
+        .insight-sub { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
+
+        .progress-rail { width: 100%; height: 7px; border-radius: 10px; background: rgba(255,255,255,0.08); overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #0A84FF, #22d3ee); border-radius: 10px; }
+
+        .resource-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .resource-chip {
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04);
+            border-radius: 14px;
+            padding: 8px 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .resource-chip small { color: var(--text-muted); font-weight: 500; }
+
+        /* HEADER */
+        /* HEADER */
+        .header-section {
+        .header-section {
+            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
+            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 10px; z-index: 5;
+            margin-bottom: 10px; z-index: 5;
+        }
+        }
+        .header-left { display: flex; flex-direction: column; gap: 15px; }
+        .header-left { display: flex; flex-direction: column; gap: 15px; }
+        .top-toggles { display: flex; gap: 10px; }
+        .top-toggles { display: flex; gap: 10px; }
+        .toggle-pill {
+        .toggle-pill {
+            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
+            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
+            color: var(--text-muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            color: var(--text-muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+        }
+        }
+        .toggle-pill.active {
+        .toggle-pill.active {
+            background: rgba(10, 132, 255, 0.2); color: white; border-color: rgba(10, 132, 255, 0.4);
+            background: rgba(10, 132, 255, 0.2); color: white; border-color: rgba(10, 132, 255, 0.4);
+            display: flex; align-items: center; gap: 8px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        }
+        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
+        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
+
+
+        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .page-title h1 { font-size: 56px; font-weight: 700; color: white; line-height: 1; letter-spacing: -2px; }
+        .page-title h1 { font-size: 56px; font-weight: 700; color: white; line-height: 1; letter-spacing: -2px; }
+        .page-title h1 span { font-weight: 300; opacity: 0.8; }
+        .page-title h1 span { font-weight: 300; opacity: 0.8; }
+
+
+        /* 3D STAGE */
+        /* 3D STAGE */
+        .heart-stage {
+        .heart-stage {
+            grid-column: 1; grid-row: 2 / -1; /* Full height */
+            grid-column: 1; grid-row: 2 / -1; /* Full height */
+@@ -271,55 +337,99 @@
+        }
+        }
+        .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        
+        
+        .organ-item.selected {
+        .organ-item.selected {
+            background: linear-gradient(145deg, rgba(10, 132, 255, 0.15), rgba(0,0,0,0));
+            background: linear-gradient(145deg, rgba(10, 132, 255, 0.15), rgba(0,0,0,0));
+            border: 1px solid var(--color-blue);
+            border: 1px solid var(--color-blue);
+            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), inset 0 0 20px rgba(10, 132, 255, 0.1);
+            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), inset 0 0 20px rgba(10, 132, 255, 0.1);
+        }
+        }
+        .organ-item.selected i, .organ-item.selected svg {
+        .organ-item.selected i, .organ-item.selected svg {
+            color: white; stroke: white; filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.8)); transform: scale(1.1);
+            color: white; stroke: white; filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.8)); transform: scale(1.1);
+        }
+        }
+        
+        
+        .organ-name-mini { display: none; } /* Hide text for compact grid */
+        .organ-name-mini { display: none; } /* Hide text for compact grid */
+
+
+        .organ-label {
+        .organ-label {
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            background: #ffffff; color: #000; font-size: 10px; font-weight: 800;
+            background: #ffffff; color: #000; font-size: 10px; font-weight: 800;
+            padding: 2px 8px; border-radius: 100px;
+            padding: 2px 8px; border-radius: 100px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; white-space: nowrap; z-index: 20;
+            pointer-events: none; white-space: nowrap; z-index: 20;
+        }
+        }
+
+
+        /* SCHEDULE AREA */
         /* SCHEDULE AREA */
         .schedule-area {
+        .schedule-area {
             flex: 1; /* Fill remaining height */
+            flex: 1; /* Fill remaining height */
+            background: rgba(255, 255, 255, 0.03); 
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(24px);
+            backdrop-filter: blur(24px);
+            border-radius: 28px; padding: 24px;
             border-radius: 28px; padding: 24px;
             border: 1px solid var(--glass-border); display: flex; flex-direction: column; z-index: 5;
+            border: 1px solid var(--glass-border); display: flex; flex-direction: column; z-index: 5;
+        }
         }
 
         .link-suite {
@@ -445,12 +766,12 @@
         <div class="dashboard-body">
             <div class="sidebar">
                 <div class="logo">H<span>+</span></div>
-                <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
-                <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
-                <div class="menu-item"><i class="ph ph-file-text"></i></div>
-                <div class="menu-item"><i class="ph ph-user"></i></div>
-                <div class="menu-item"><i class="ph ph-squares-four"></i></div>
-                <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
+                <a class="menu-item active" href="patient-dashboard.html" aria-label="Dashboard"><i class="ph-fill ph-heartbeat"></i></a>
+                <a class="menu-item" href="patient-health.html" aria-label="Health Plan"><i class="ph ph-chat-circle-dots"></i></a>
+                <a class="menu-item" href="patient-labs.html" aria-label="Labs"><i class="ph ph-file-text"></i></a>
+                <a class="menu-item" href="patient-profile.html" aria-label="Profile"><i class="ph ph-user"></i></a>
+                <a class="menu-item" href="patient-organs.html" aria-label="Organs"><i class="ph ph-squares-four"></i></a>
+                <a class="menu-item" href="patient-settings.html" aria-label="Settings" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></a>
             </div>
 
             <div class="main-content">
@@ -520,6 +841,45 @@
                             <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 L10,25 L20,15 L30,25 L40,15 L50,25 L60,15 L100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
                         </div>
                     </div>
+
+                    <div class="insights-panel">
+                        <div style="display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+                            <div class="section-header" style="margin-bottom:0;"><div class="blue-dot"></div> Guided Health Tracks</div>
+                            <div class="micro-pill"><i class="ph ph-compass"></i> Everyday language</div>
+                        </div>
+                        <div class="insight-grid">
+                            <div class="insight-card">
+                                <div class="micro-pill"><i class="ph ph-heart"></i> Cardio basics</div>
+                                <div class="insight-title">Stay in the blue zone</div>
+                                <div class="insight-sub">Walk 20 mins after meals and keep your resting rate near the calm range.</div>
+                                <div class="progress-rail"><div class="progress-bar" style="width:72%"></div></div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="micro-pill"><i class="ph ph-bandaids"></i> Preventive check</div>
+                                <div class="insight-title">Labs to watch</div>
+                                <div class="insight-sub">Keep kidneys, liver, and heart markers aligned with your care plan.</div>
+                                <div class="progress-rail"><div class="progress-bar" style="width:64%"></div></div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="micro-pill"><i class="ph ph-moon-stars"></i> Recovery</div>
+                                <div class="insight-title">Sleep & recharge</div>
+                                <div class="insight-sub">Aim for 7-8 hours, dim screens by 10pm, and hydrate before bed.</div>
+                                <div class="progress-rail"><div class="progress-bar" style="width:58%"></div></div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="micro-pill"><i class="ph ph-apple-logo"></i> Nutrition</div>
+                                <div class="insight-title">Everyday plate</div>
+                                <div class="insight-sub">Fill half your plate with greens, lean protein, and steady water sips.</div>
+                                <div class="progress-rail"><div class="progress-bar" style="width:69%"></div></div>
+                            </div>
+                        </div>
+                        <div class="resource-links">
+                            <a class="resource-chip" href="patient-health.html"><i class="ph ph-hand-heart"></i> See my plan <small>guided steps</small></a>
+                            <a class="resource-chip" href="patient-labs.html"><i class="ph ph-flask"></i> Labs at a glance <small>plain words</small></a>
+                            <a class="resource-chip" href="patient-insurance.html"><i class="ph ph-shield-check"></i> Coverage tips <small>what's included</small></a>
+                            <a class="resource-chip" href="patient-pharmacy.html"><i class="ph ph-pill"></i> Med reminders <small>everyday language</small></a>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="right-column">
@@ -567,9 +927,17 @@
     
     <script>
         // --- CONFIGURATION ---
-        // UPDATE: Switched to jsDelivr CDN. This is much more stable than raw.githubusercontent.com
-        // for loading 3D models in production apps.
-        const GITHUB_REPO_PATH = 'https://cdn.jsdelivr.net/gh/Nobledental/ULTRA-MOD@main/3d_models/'; 
+        // Load GLB assets directly from the local 3d_models directory for offline-friendly usage.
+        const MODEL_BASE_PATH = './3d_models/';
+        const ORGAN_MODEL_MAP = {
+            heart: 'heart.glb',
+            brain: 'brain.glb',
+            lungs: 'lungs.glb',
+            liver: 'liver.glb',
+            cirrhotic_liver: 'cirrhotic_liver.glb',
+            kidneys: 'kidneys.glb',
+            eyes: 'eyes.glb'
+        }; 
         
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
@@ -655,7 +1023,7 @@
                 ],
                 abnormal: { msg: "Low Filtration.", action: "Increase fluid intake." }
             },
-            eyes: {
+           eyes: {
                 title: "Vision & Eye Health",
                 mainStat: "Focus",
                 animKey: "vis",
@@ -823,6 +1191,20 @@
                 ],
                 abnormal: { msg: "Compensated cirrhosis.", action: "Schedule hepatology consult." }
             },
+            cirrhotic_liver: {
+                title: "Liver - Cirrhotic Model",
+                mainStat: "Fibrosis",
+                animKey: "fib",
+                simValue: 3,
+                icon: "svg-liver",
+                stats: [
+                    { id: "c1", title: "Fibrosis Score", base: 3, unit: "/6", icon: "ph-warning", type: "norm" },
+                    { id: "c2", title: "Portal Pressure", base: 12, unit: "mmHg", icon: "ph-gauge", type: "norm" },
+                    { id: "c3", title: "Albumin", base: 3.2, unit: "g/dL", icon: "ph-egg", type: "norm" },
+                    { id: "c4", title: "Ascites Risk", base: 8, unit: "%", icon: "ph-activity", type: "perc" }
+                ],
+                abnormal: { msg: "Compensated cirrhosis.", action: "Schedule hepatology consult." }
+            },
             breast: {
                 title: "Breast Tissue",
                 mainStat: "Dense",
@@ -851,6 +1233,13 @@
                 ],
                 abnormal: { msg: "Stiffness.", action: "Mobility exercises." }
             }
+        };
+
+        const CONNECTED_LINKS = {
+            health: { id: 'link-health', copy: 'link-health-copy', href: 'patient-health.html' },
+            organs: { id: 'link-organs', copy: 'link-organs-copy', href: 'patient-organs.html' },
+            labs: { id: 'link-labs', copy: 'link-labs-copy', href: 'patient-labs.html' },
+            pharmacy: { id: 'link-pharmacy', copy: 'link-pharmacy-copy', href: 'patient-pharmacy.html' }
         };
 
         const CONNECTED_LINKS = {
@@ -1259,8 +1648,9 @@
 
             // UNIFIED LOADER: Now loads external GLB for ALL types (including heart and cells)
             const loader = new THREE.GLTFLoader();
-            const url = `${GITHUB_REPO_PATH}${type}.glb`;
-            
+            const fileName = ORGAN_MODEL_MAP[type] || `${type}.glb`;
+            const url = `${MODEL_BASE_PATH}${fileName}`;
+
             loader.load(url, (gltf) => {
                 const model = gltf.scene;
                 const box = new THREE.Box3().setFromObject(model);
