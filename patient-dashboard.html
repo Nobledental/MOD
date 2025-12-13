@@ -167,11 +167,12 @@
         @keyframes scan-down { 0% { top: 10%; opacity: 0; } 50% { opacity: 0.8; } 100% { top: 90%; opacity: 0; } }
 
         .floating-stat {
-            position: absolute; bottom: 40px; left: 20px;
             background: rgba(20, 25, 35, 0.6); backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
-            padding: 16px 20px; width: 220px; z-index: 10;
+            padding: 16px 20px; width: 100%; z-index: 10;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column; gap: 10px;
+            margin-bottom: 18px;
         }
         .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
         .live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
@@ -256,7 +257,7 @@
 
         .organ-item {
             width: 60px; height: 60px; /* Compact size */
-            background: rgba(255,255,255,0.01); 
+            background: rgba(255,255,255,0.01);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(15px);
             border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -264,9 +265,17 @@
             flex-shrink: 0;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
         }
-        .organ-item:hover { 
-            background: rgba(255,255,255,0.05); 
-            transform: translateY(-3px); 
+        .premium-icon {
+            position: absolute; top: 6px; right: 6px;
+            width: 16px; height: 16px; border-radius: 6px;
+            background: linear-gradient(135deg, #ffd166, #f97316);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
+        }
+        .premium-icon i { font-size: 12px; color: #1f2937; }
+        .organ-item:hover {
+            background: rgba(255,255,255,0.05);
+            transform: translateY(-3px);
             border-color: rgba(255,255,255,0.2);
         }
         .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
@@ -429,19 +438,19 @@
                     <div class="rings"></div>
                     <div class="scanner-line"></div>
                     <div id="model-3d-container"></div>
-                    
+                </div>
+
+                <div class="stats-area">
                     <div class="floating-stat" id="float-card">
-                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
                             <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+                            <span style="font-size:12px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
                         </div>
-                        <div style="font-size:24px; font-weight:800; color:white; margin-bottom:4px;" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
+                        <div style="font-size:26px; font-weight:800; color:white; margin-bottom:4px;" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
                         <svg width="100%" height="30" viewBox="0 0 100 30" id="live-ecg-svg">
                             <path id="live-ecg-path" d="M0,15 L10,15 L15,5 L20,25 L25,10 L30,20 L40,15 L50,15 L55,5 L60,25 L65,10 L70,20 L80,15 L100,15" fill="none" stroke="#0A84FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </div>
-                </div>
-
-                <div class="stats-area">
                     <div class="section-header"><div class="blue-dot"></div> <span id="section-title">My Heart Condition</span></div>
                     <div class="cards-grid">
                         <div class="data-card state-blue" id="card-1">
@@ -922,6 +931,7 @@
                 }
 
                 btn.innerHTML = `
+                    <div class="premium-icon"><i class="ph-fill ph-seal-check"></i></div>
                     ${iconHtml}
                     <span class="organ-name-mini">${key.toUpperCase()}</span>
                     ${key === 'heart' ? '<div class="organ-label">My Heart</div>' : ''}
@@ -1039,6 +1049,47 @@
         let previousMousePosition = { x: 0, y: 0 };
         let mouseX = 0, mouseY = 0;
         let spotLight;
+        let brainEffectGroup = null;
+        let liverLight = null;
+
+        const clearOrganEffects = () => {
+            if (brainEffectGroup) {
+                scene.remove(brainEffectGroup);
+                brainEffectGroup.children.forEach((child) => {
+                    child.geometry?.dispose?.();
+                    child.material?.dispose?.();
+                });
+                brainEffectGroup = null;
+            }
+            if (liverLight) {
+                scene.remove(liverLight);
+                liverLight = null;
+            }
+        };
+
+        const applyOrganEffects = (type) => {
+            clearOrganEffects();
+            if (!scene) return;
+
+            if (type === 'brain') {
+                brainEffectGroup = new THREE.Group();
+                for (let i = 0; i < 18; i++) {
+                    const start = new THREE.Vector3((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
+                    const end = start.clone().add(new THREE.Vector3((Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5, (Math.random() - 0.5) * 1.5));
+                    const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
+                    const mat = new THREE.LineBasicMaterial({ color: 0x7ef9ff, transparent: true, opacity: 0.5 });
+                    const line = new THREE.Line(geo, mat);
+                    brainEffectGroup.add(line);
+                }
+                scene.add(brainEffectGroup);
+            }
+
+            if (type === 'liver') {
+                liverLight = new THREE.PointLight(0xffc27a, 2.8, 70);
+                liverLight.position.set(0, 3, 8);
+                scene.add(liverLight);
+            }
+        };
 
         const initThree = () => {
             const container = document.getElementById('model-3d-container');
@@ -1095,31 +1146,48 @@
 
                 if (group && !isDragging) {
                     const type = group.userData.type;
-                    
+                    const baseScale = group.userData.baseScale || 1;
+
                     if (type === 'heart') {
                         // Heart Animation (Scaling for heartbeat effect)
-                        const speed = simVal / 60; 
+                        const speed = simVal / 60;
                         const beat = Math.sin(t * speed * Math.PI * 2);
-                        const scale = beat > 0.8 ? 1 + (beat-0.8)*0.4 : 1;
-                        
+                        const scale = baseScale * (beat > 0.8 ? 1 + (beat-0.8)*0.4 : 1);
+
                         group.scale.set(scale, scale, scale);
                         group.rotation.y = Math.sin(t * 0.5) * 0.1 + (mouseX * 0.5);
                         group.rotation.x = Math.cos(t * 0.3) * 0.05 + (mouseY * 0.2);
-                        
-                        spotLight.intensity = 2 + (scale - 1) * 8; 
+
+                        spotLight.intensity = 2.2 + (scale - baseScale) * 10;
+                        spotLight.color.set(0xffffff);
                     } else {
                         // All Other Imported Models (Generic Rotation/Pulse)
                         group.rotation.y += 0.005;
-                        const pulse = 1 + Math.sin(t * 2) * 0.01;
-                        group.scale.set(pulse * 2, pulse * 2, pulse * 2); 
+                        const pulse = baseScale * (1 + Math.sin(t * 2) * 0.02);
+                        group.scale.set(pulse, pulse, pulse);
+
+                        const isLiver = activeOrgan === 'liver';
+                        spotLight.color.set(isLiver ? 0xffd199 : 0xffffff);
+                        spotLight.intensity = isLiver ? 3 : 2.2;
                     }
                 }
-                
+
+                if (brainEffectGroup) {
+                    brainEffectGroup.children.forEach((line, idx) => {
+                        line.material.opacity = 0.25 + Math.abs(Math.sin(t * 6 + idx)) * 0.35;
+                        line.rotation.y += 0.002;
+                    });
+                }
+
+                if (liverLight) {
+                    liverLight.intensity = 2.6 + Math.sin(t * 1.5) * 0.3;
+                }
+
                 if(particles) particles.rotation.y += 0.0005;
                 renderer.render(scene, camera);
             };
             animate();
-
+            
             // INPUT HANDLERS
             container.addEventListener('mousemove', (e) => {
                 const rect = container.getBoundingClientRect();
@@ -1148,21 +1216,25 @@
             if (group) scene.remove(group);
             group = new THREE.Group();
             group.userData.type = type;
+            group.userData.baseScale = type === 'heart' ? 0.85 : 1;
             scene.add(group);
+
+            applyOrganEffects(type);
 
             // UNIFIED LOADER: Now loads external GLB for ALL types (including heart and cells)
             const loader = new THREE.GLTFLoader();
             const modelFile = MODEL_FILES[type] || `${type}.glb`;
             const url = `${MODEL_BASE_PATH}${modelFile}`;
-            
+
             loader.load(url, (gltf) => {
                 const model = gltf.scene;
                 const box = new THREE.Box3().setFromObject(model);
                 const size = box.getSize(new THREE.Vector3()).length();
                 const center = box.getCenter(new THREE.Vector3());
-                
+
                 // Normalize Size
-                const scaleFactor = 6 / size;
+                let scaleFactor = 6 / size;
+                if (type === 'heart') scaleFactor *= 0.65;
                 model.scale.setScalar(scaleFactor);
                 
                 // Center it
