@@ -514,7 +514,15 @@
         // --- CONFIGURATION ---
         // UPDATE: Switched to jsDelivr CDN. This is much more stable than raw.githubusercontent.com
         // for loading 3D models in production apps.
-        const GITHUB_REPO_PATH = 'https://cdn.jsdelivr.net/gh/Nobledental/ULTRA-MOD@main/3d_models/'; 
+        const MODEL_BASE_PATH = '3d_models/';
+        const MODEL_FILES = {
+            heart: 'heart.glb',
+            brain: 'brain.glb',
+            liver: 'liver.glb',
+            lungs: 'lungs.glb',
+            kidneys: 'kidneys.glb',
+            eyes: 'eyes.glb'
+        }; 
         
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
@@ -1144,7 +1152,8 @@
 
             // UNIFIED LOADER: Now loads external GLB for ALL types (including heart and cells)
             const loader = new THREE.GLTFLoader();
-            const url = `${GITHUB_REPO_PATH}${type}.glb`;
+            const modelFile = MODEL_FILES[type] || `${type}.glb`;
+            const url = `${MODEL_BASE_PATH}${modelFile}`;
             
             loader.load(url, (gltf) => {
                 const model = gltf.scene;
