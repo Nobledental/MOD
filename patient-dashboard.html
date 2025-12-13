@@ -455,6 +455,26 @@
         .guidance-list li { display: flex; gap: 6px; align-items: flex-start; }
         .guidance-list li::before { content: "•"; color: #ef4444; font-weight: bold; }
 
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .health-card {
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .health-card h4 { margin-bottom: 6px; font-size: 14px; display: flex; align-items: center; gap: 6px; }
+        .health-card p { font-size: 12px; color: var(--text-muted); }
+        .badge-line { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .badge-line span {
+            padding: 4px 8px; border-radius: 999px; border: 1px solid var(--glass-border);
+            font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.04);
+        }
+
         .next-checkup {
             background: rgba(125,125,125,0.05); border-radius: 14px; padding: 10px;
             display: flex; align-items: center; justify-content: space-between;
@@ -721,8 +741,32 @@
                         <div class="next-checkup">
                             <div><div style="font-size:10px; color:#9ca3af; margin-bottom:2px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 13px;">Fri, 24 Mar</div></div>
                             <i class="ph-fill ph-calendar-check" style="font-size:20px; color: var(--color-blue);"></i>
+                         </div>
+
+                        <div class="section-header" style="margin-bottom:8px; margin-top:4px;"><div class="blue-dot"></div> Version 3 · Health map</div>
+                        <div class="health-grid">
+                            <div class="health-card" id="health-condition-card">
+                                <h4><i class="ph ph-pulse"></i> Condition</h4>
+                                <p id="health-condition-text">Reading lab + vitals to declare health.</p>
+                                <div class="badge-line" id="health-monitor-badges"></div>
+                            </div>
+                            <div class="health-card" id="visit-card">
+                                <h4><i class="ph ph-first-aid"></i> Visit / Admit</h4>
+                                <p id="visit-advice">Doctor visit guidance will appear here.</p>
+                                <div class="badge-line" id="visit-why"></div>
+                            </div>
+                            <div class="health-card" id="upcoming-card">
+                                <h4><i class="ph ph-calendar"></i> Upcoming</h4>
+                                <p id="upcoming-list">Lab tests, appointments, medicines will list here.</p>
+                                <div class="badge-line" id="upcoming-badges"></div>
+                            </div>
+                            <div class="health-card" id="family-share-card">
+                                <h4><i class="ph ph-users-three"></i> Family shares</h4>
+                                <p id="family-share-text">Share dashboard with trusted profiles.</p>
+                                <div class="badge-line" id="family-share-badges"></div>
+                            </div>
                         </div>
-                        
+
                     </div>
 
                 </div>
@@ -977,14 +1021,18 @@
             nausea: 'Mild', faint: 'Critical', fever: 'Mild'
         };
 
-        // GLOBAL STATES
+         // GLOBAL STATES
         let activeOrgan = 'heart';
         let liveIntervals = [];
         let IS_DISEASED_MODE = false;
         let CURRENT_DISEASE = null;
+        let currentVitalsSnapshot = { organ: 'heart', stats: [], ts: Date.now(), location: null };
+        const LAB_SYNC_KEY = 'lab-dashboard-latest';
+        const HEALTH_STATUS_KEY = 'health-board-status';
+        const FAMILY_KEY = 'family-profiles';
 
         // --- 3. MAPPING LOGIC FOR GITHUB 3D MODELS ---
-        const GITHUB_BASE = 'https://raw.githubusercontent.com/Nobledental/MOD/main/3d_models/';
+        const GITHUB_BASE = './3d_models/';
         
         const ORGAN_MODEL_MAP = {
             heart: 'heart.glb',
@@ -1171,6 +1219,129 @@
             group.add(wireMesh);
         };
 
+        const getLocationSnapshot = () => new Promise(resolve => {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude, label: 'GPS' }),
+                    () => resolve({ lat: 28.6139, lon: 77.2090, label: 'Fallback' }),
+                    { timeout: 4000 }
+                );
+            } else {
+                resolve({ lat: 28.6139, lon: 77.2090, label: 'Fallback' });
+            }
+        });
+
+        const persistVitalsSnapshot = () => {
+            if (!currentVitalsSnapshot.stats.length) return;
+            getLocationSnapshot().then(loc => {
+                const payload = { ...currentVitalsSnapshot, ts: Date.now(), location: loc };
+                localStorage.setItem('dashboardVitals', JSON.stringify(payload));
+                const log = JSON.parse(localStorage.getItem('medicalLog') || '[]');
+                log.push({ ts: payload.ts, category: 'Vitals', organ: payload.organ, stats: payload.stats, location: loc });
+                localStorage.setItem('medicalLog', JSON.stringify(log.slice(-300)));
+                localStorage.setItem('lastLogTs', payload.ts);
+            });
+        };
+
+        const parseLabSnapshot = () => {
+            try { return JSON.parse(localStorage.getItem(LAB_SYNC_KEY)) || {}; }
+            catch { return {}; }
+        };
+
+        const loadFamilyProfiles = () => {
+            try {
+                const stored = JSON.parse(localStorage.getItem(FAMILY_KEY) || '[]');
+                if (stored.length) return stored;
+            } catch {}
+            return [
+                { name: 'Riya (Sister)', role: 'Viewer', canShare: true },
+                { name: 'Anand (Dad)', role: 'Guardian', canShare: true },
+                { name: 'Priya (Partner)', role: 'Admin', canShare: true }
+            ];
+        };
+
+        const writeHealthStatus = (payload) => {
+            localStorage.setItem(HEALTH_STATUS_KEY, JSON.stringify({ ...payload, updated: Date.now() }));
+        };
+
+        const evaluateHealthFromLabs = () => {
+            const snap = parseLabSnapshot();
+            const panels = snap.latestPanels || {};
+            const reports = (snap.reports || []).slice().sort((a, b) => new Date(b.date) - new Date(a.date));
+            const latestReport = reports[0];
+
+            let condition = 'Healthy';
+            const reasons = [];
+            const monitor = ['Heart rate', 'BP', 'Hydration'];
+            let advice = 'Vitals steady. Routine follow-up.';
+
+            const platelets = parseFloat(panels.platelets || 0);
+            const wbc = parseFloat(panels.wbc || 0);
+            const temperature = panels.temperature || 98.6;
+
+            if (latestReport && /dengue/i.test(latestReport.name)) {
+                condition = 'Dengue';
+                reasons.push('Latest lab tagged dengue.');
+                advice = 'Doctor review required. Admit if bleeding or platelets keep falling.';
+                monitor.push('Platelets', 'Temperature', 'Hydration');
+                activateDiseaseMode('Dengue Positive');
+            } else if (latestReport && /malaria/i.test(latestReport.name)) {
+                condition = 'Malaria';
+                reasons.push('Malaria assay flagged.');
+                advice = 'Doctor visit needed; monitor fever spikes and hydration.';
+                monitor.push('Temperature', 'Hydration', 'BP');
+            }
+
+            if (platelets && platelets < 1.5) {
+                condition = 'Dengue';
+                reasons.push('Platelets trending low.');
+            }
+            if (wbc && wbc < 4) reasons.push('WBC low — infection watch');
+            if (temperature && temperature > 100.4) monitor.push('Fever trend');
+
+            const visitBadges = [];
+            if (condition === 'Healthy') visitBadges.push('Home care');
+            if (condition === 'Dengue') visitBadges.push('CBC every 24h', 'Admit if platelets <20k');
+            if (condition === 'Malaria') visitBadges.push('Monitor fever q6h', 'Hydrate 2.5L/day');
+
+            const upcoming = [];
+            if (latestReport) upcoming.push(`${latestReport.name} • ${new Date(latestReport.date).toLocaleDateString()}`);
+            (snap.history || []).filter(h => h.status === 'Scheduled').slice(0, 2).forEach(h => upcoming.push(`${h.title} • ${h.date}`));
+
+            const meds = ['Orders mirrored to pharmacy', 'Delivery tracker ready'];
+
+            const family = loadFamilyProfiles();
+            const shareBadges = family.filter(f => f.canShare).map(f => `${f.name} • ${f.role}`);
+
+            document.getElementById('health-condition-text').innerText = `${condition} — ${reasons[0] || 'Labs look calm.'}`;
+            const monitorWrap = document.getElementById('health-monitor-badges');
+            monitorWrap.innerHTML = '';
+            monitor.forEach(item => {
+                const span = document.createElement('span'); span.innerText = item; monitorWrap.appendChild(span);
+            });
+
+            document.getElementById('visit-advice').innerText = advice;
+            const visitWrap = document.getElementById('visit-why');
+            visitWrap.innerHTML = '';
+            visitBadges.forEach(item => { const s=document.createElement('span'); s.innerText=item; visitWrap.appendChild(s); });
+
+            const upcomingList = document.getElementById('upcoming-list');
+            upcomingList.innerText = upcoming.length ? upcoming.join(' · ') : 'No new bookings — auto-sync on next lab booking.';
+            const upcomingBadges = document.getElementById('upcoming-badges');
+            upcomingBadges.innerHTML = '';
+            meds.concat(upcoming.slice(0,2)).forEach(item => { const s=document.createElement('span'); s.innerText=item; upcomingBadges.appendChild(s); });
+
+            const familyText = document.getElementById('family-share-text');
+            familyText.innerText = shareBadges.length ? 'Dashboard shared live.' : 'Family mirroring off.';
+            const familyBadges = document.getElementById('family-share-badges');
+            familyBadges.innerHTML = '';
+            shareBadges.forEach(item => { const s=document.createElement('span'); s.innerText=item; familyBadges.appendChild(s); });
+
+            document.getElementById('ai-text').innerText = `${condition} mode: ${advice}`;
+
+            writeHealthStatus({ condition, monitor, advice, reasons, upcoming, meds, latestReport });
+        };
+
         // --- DASHBOARD UI UPDATES ---
         const getColorClass = (val, type) => {
             // Logic for critical values
@@ -1183,7 +1354,7 @@
             return Math.random() > 0.95 ? 'state-red' : 'state-blue';
         };
 
-        const updateCardValue = (idx, val, unit, type) => {
+        const updateCardValue = (idx, val, unit, type, title) => {
             const card = document.getElementById(`card-${idx}`);
             const state = getColorClass(val, type);
             
@@ -1193,8 +1364,13 @@
 
             if(idx !== 2) card.className = `data-card ${finalState}`;
             else card.className = finalState === 'state-red' ? `data-card state-red` : `data-card active-blue`;
-            
+
             document.getElementById(`c${idx}-val`).innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
+
+            const statTitle = title || document.getElementById(`c${idx}-title`)?.innerText || 'Stat';
+            currentVitalsSnapshot.organ = activeOrgan;
+            currentVitalsSnapshot.ts = Date.now();
+            currentVitalsSnapshot.stats[idx - 1] = { label: statTitle, val: `${val} ${unit}` };
             
             // Sync Main Stats if card 2
             if (idx === 2) {
@@ -1224,7 +1400,7 @@
                     if (s.title === "WBC Count") s.base = 2.1; // Low
                 }
 
-                updateCardValue(idx, s.base, s.unit, s.type);
+                updateCardValue(idx, s.base, s.unit, s.type, s.title);
             });
             startLiveSimulation(organType);
         };
@@ -1249,7 +1425,7 @@
                     let newVal = Math.floor(val + flux);
                     if(s.unit === 'pH' || s.unit.includes('L') || (s.unit === 'k' && newVal < 10)) newVal = (val + flux/10).toFixed(1);
                     
-                    updateCardValue(i+1, newVal, s.unit, s.type);
+                    updateCardValue(i+1, newVal, s.unit, s.type, s.title);
                 });
                 document.querySelectorAll('.bar').forEach(b => b.style.height = `${30 + Math.random() * 70}%`);
             }, 2000);
@@ -1338,6 +1514,9 @@
             generateOrganButtons();
             initThree();
             updateUI('heart');
+            evaluateHealthFromLabs();
+            persistVitalsSnapshot();
+            setInterval(persistVitalsSnapshot, 600000);
 
             // Event Listeners
             const tray = document.querySelector('.organ-tray');
@@ -1366,8 +1545,9 @@
             document.getElementById('simulate-dengue').addEventListener('click', () => {
                 document.getElementById('files-modal').style.display = 'none';
                 activateDiseaseMode('Dengue Positive');
+                evaluateHealthFromLabs();
             });
-            
+
             document.getElementById('theme-toggle').addEventListener('click', () => {
                 document.body.classList.toggle('theme-white');
             });
