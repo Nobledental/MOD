@@ -8,9 +8,7 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Three.js Core -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Three.js OrbitControls -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     
@@ -36,6 +34,7 @@
             --color-cyan: #06b6d4;
             --color-yellow: #f59e0b;
             --color-red: #ef4444;
+            --color-green: #10b981;
             
             --accent-blue: #3b82f6;
             --card-bg: rgba(22, 28, 38, 0.6);
@@ -258,6 +257,7 @@
             border-radius: 28px;
             border: 1px solid var(--glass-border);
             background: rgba(0,0,0,0.1);
+            overflow: hidden; /* Fix overflow */
         }
         #model-3d-container {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
@@ -371,6 +371,14 @@
         .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
         .live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* READINESS CARD (New Feature) */
+        .readiness-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0,0,0,0));
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+        .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { height: 100%; background: #10b981; width: 85%; border-radius: 10px; box-shadow: 0 0 10px #10b981; transition: width 1s; }
 
         /* STATS GRID */
         .section-header { font-size: 13px; font-weight: 700; color: var(--color-blue); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -589,7 +597,6 @@
 </head>
 <body>
 
-    <!-- BOOT SCREEN -->
     <div class="boot-screen" id="boot-screen">
         <div class="logo" style="font-size:32px;">H<span>+</span> OS</div>
         <div class="boot-loader"><div class="boot-bar"></div></div>
@@ -636,7 +643,6 @@
                     <button class="theme-toggle" id="theme-toggle">White Theme</button>
                 </div>
 
-                <!-- LEFT PANEL: 3D HERO + ORGAN DOCK -->
                 <div class="left-panel-container">
                     <div class="heart-stage">
                         <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
@@ -651,15 +657,27 @@
                     </div>
                 </div>
 
-                <!-- RIGHT PANEL: DATA + SCHEDULE -->
                 <div class="right-panel-container">
+                    
+                    <div class="floating-stat readiness-card" id="readiness-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <span style="font-size:11px; color:#10b981; font-weight:700; text-transform:uppercase;">Bio-Readiness</span>
+                                <div style="font-size:20px; font-weight:800; color: var(--text-white);">85% <span style="font-size:12px; font-weight:500; opacity:0.7">Optimal</span></div>
+                            </div>
+                            <i class="ph-fill ph-lightning" style="font-size:24px; color:#10b981;"></i>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="readiness-bar"></div>
+                        </div>
+                    </div>
+
                     <div class="floating-stat" id="float-card">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <div class="live-badge"><div class="live-dot"></div> LIVE</div>
                             <span style="font-size:12px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
                         </div>
                         <div style="font-size:26px; font-weight:800; margin-bottom:4px; color: var(--text-white);" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
-                        <!-- Animated SVG Graph -->
                         <svg width="100%" height="30" viewBox="0 0 200 30" id="live-ecg-svg" preserveAspectRatio="none">
                             <path id="live-ecg-path" d="" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
@@ -671,8 +689,7 @@
                         <div class="typing" id="ai-typing">AI is typing...</div>
                     </div>
                     
-                    <div class="ai-panel" id="diagnosis-panel" style="display: none;"> <!-- Hidden by default, shown by logic -->
-                        <span class="ai-title">DIAGNOSIS PANEL</span>
+                    <div class="ai-panel" id="diagnosis-panel" style="display: none;"> <span class="ai-title">DIAGNOSIS PANEL</span>
                         <p class="ai-text" id="diagnosis-text">No critical keywords detected. Keep monitoring.</p>
                     </div>
 
@@ -747,6 +764,7 @@
             <button id="launch-video">Video Call</button>
             <button id="launch-pharmacy">Refill Rx</button>
             <button id="launch-files">Files</button>
+            <button id="launch-insurance">Insurance</button>
             <button id="launch-faceid">Secure</button>
         </div>
 
@@ -785,6 +803,22 @@
                         <option>Metformin 500mg</option>
                     </select>
                     <div class="modal-actions"><button class="primary-btn" id="submit-rx">Submit Refill</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay" id="insurance-modal">
+            <div class="modal-box">
+                <div class="modal-header"><h3>AI Insurance Desk</h3><button class="ghost-btn" data-close="insurance-modal">Close</button></div>
+                <div class="modal-body">
+                    <p>File a reimbursement claim instantly.</p>
+                    <input type="text" placeholder="Hospital Name" style="padding:10px; border-radius:10px; border:1px solid var(--glass-border); background: rgba(255,255,255,0.05); color:white;">
+                    <div style="display:flex; justify-content:space-between; background:rgba(16,185,129,0.1); padding:10px; border-radius:10px;">
+                        <span>Approval Probability</span>
+                        <strong style="color:#10b981;">94%</strong>
+                    </div>
+                    <div class="file-item">Upload Bill <button class="ghost-btn" style="font-size:10px;">Select</button></div>
+                    <div class="modal-actions"><button class="primary-btn" id="submit-claim">File Claim</button></div>
                 </div>
             </div>
         </div>
@@ -898,174 +932,6 @@
                     { id: "c4", title: "Hydration", base: 92, unit: "%", icon: "ph-drop-half", type: "perc" }
                 ],
                 abnormal: { msg: "Low Filtration.", action: "Increase fluid intake." }
-            },
-            stomach: {
-                title: "Gastric Health",
-                mainStat: "pH",
-                animKey: "ph",
-                simValue: 2,
-                icon: "svg-stomach",
-                stats: [
-                    { id: "c1", title: "Acidity (pH)", base: 2.1, unit: "pH", icon: "ph-drop", type: "norm" },
-                    { id: "c2", title: "Motility", base: 3, unit: "cpm", icon: "ph-waves", type: "norm" },
-                    { id: "c3", title: "Digestion", base: 94, unit: "%", icon: "ph-percent", type: "perc" },
-                    { id: "c4", title: "Microbiome", base: 90, unit: "Sc", icon: "ph-plant", type: "norm" }
-                ],
-                abnormal: { msg: "High Acidity.", action: "Antacid recommended." }
-            },
-            intestines: {
-                title: "Intestinal Tract",
-                mainStat: "Absorp",
-                animKey: "mot",
-                simValue: 95,
-                icon: "svg-intestines", 
-                stats: [
-                    { id: "c1", title: "Peristalsis", base: 8, unit: "/min", icon: "ph-arrows-left-right", type: "norm" },
-                    { id: "c2", title: "Absorption", base: 95, unit: "%", icon: "ph-arrow-fat-lines-in", type: "perc" },
-                    { id: "c3", title: "Flora", base: 92, unit: "%", icon: "ph-plant", type: "norm" },
-                    { id: "c4", title: "Fiber Intake", base: 25, unit: "g", icon: "ph-carrot", type: "norm" }
-                ],
-                abnormal: { msg: "Slow Transit.", action: "Increase fiber intake." }
-            },
-            eyes: {
-                title: "Ocular Health",
-                mainStat: "Vision",
-                animKey: "vis",
-                simValue: 20,
-                icon: "ph-eye",
-                stats: [
-                    { id: "c1", title: "Acuity (R)", base: 20, unit: "/20", icon: "ph-eye", type: "norm" },
-                    { id: "c2", title: "Acuity (L)", base: 20, unit: "/20", icon: "ph-eye", type: "norm" },
-                    { id: "c3", title: "Pressure", base: 16, unit: "mmHg", icon: "ph-gauge", type: "norm" },
-                    { id: "c4", title: "Response", base: 150, unit: "ms", icon: "ph-timer", type: "norm" }
-                ],
-                abnormal: { msg: "Elevated IOP.", action: "Glaucoma screening." }
-            },
-            pancreas: {
-                title: "Pancreatic System",
-                mainStat: "Insulin",
-                animKey: "ins",
-                simValue: 12,
-                icon: "svg-pancreas",
-                stats: [
-                    { id: "c1", title: "Insulin", base: 12, unit: "uIU", icon: "ph-drop", type: "norm" },
-                    { id: "c2", title: "Glucose", base: 92, unit: "mg", icon: "ph-cube", type: "norm" },
-                    { id: "c3", title: "Lipase", base: 45, unit: "U/L", icon: "ph-flask", type: "norm" },
-                    { id: "c4", title: "Amylase", base: 55, unit: "U/L", icon: "ph-test-tube", type: "norm" }
-                ],
-                abnormal: { msg: "Sugar Spike.", action: "Monitor carbohydrate intake." }
-            },
-            gallbladder: {
-                title: "Gallbladder",
-                mainStat: "Bile",
-                animKey: "bile",
-                simValue: 100,
-                icon: "svg-gallbladder",
-                stats: [
-                    { id: "c1", title: "Bile Flow", base: 100, unit: "%", icon: "ph-waves", type: "norm" },
-                    { id: "c2", title: "Calculi", base: 0, unit: "cnt", icon: "ph-prohibit", type: "norm" },
-                    { id: "c3", title: "Wall Thick", base: 2, unit: "mm", icon: "ph-ruler", type: "norm" },
-                    { id: "c4", title: "Ejection", base: 65, unit: "%", icon: "ph-arrow-fat-up", type: "norm" }
-                ],
-                abnormal: { msg: "Flow Reduced.", action: "Ultrasound advised." }
-            },
-            urinary: {
-                title: "Urinary Tract",
-                mainStat: "Output",
-                animKey: "out",
-                simValue: 1500,
-                icon: "svg-urinary",
-                stats: [
-                    { id: "c1", title: "24h Output", base: 1.5, unit: "L", icon: "ph-drop", type: "norm" },
-                    { id: "c2", title: "pH Level", base: 6.0, unit: "pH", icon: "ph-test-tube", type: "norm" },
-                    { id: "c3", title: "Specific Grav", base: 1.01, unit: "sg", icon: "ph-flask", type: "norm" },
-                    { id: "c4", title: "Leukocytes", base: 0, unit: "neg", icon: "ph-shield", type: "norm" }
-                ],
-                abnormal: { msg: "Trace Protein.", action: "Retest in 24 hours." }
-            },
-            skeletal: {
-                title: "Skeletal System",
-                mainStat: "Density",
-                animKey: "den",
-                simValue: 0,
-                icon: "ph-bone",
-                stats: [
-                    { id: "c1", title: "Bone Density", base: 0.5, unit: "T", icon: "ph-chart-bar", type: "norm" },
-                    { id: "c2", title: "Calcium", base: 9.4, unit: "mg", icon: "ph-drop", type: "norm" },
-                    { id: "c3", title: "Vit D3", base: 45, unit: "ng", icon: "ph-sun", type: "norm" },
-                    { id: "c4", title: "Marrow Act", base: 98, unit: "%", icon: "ph-activity", type: "perc" }
-                ],
-                abnormal: { msg: "Mild Osteopenia.", action: "Increase Calcium/D3." }
-            },
-            cells: {
-                title: "Cellular Health",
-                mainStat: "Count",
-                animKey: "wbc",
-                simValue: 6.5,
-                icon: "ph-dna",
-                stats: [
-                    { id: "c1", title: "WBC Count", base: 6.5, unit: "k", icon: "ph-shield-check", type: "norm" },
-                    { id: "c2", title: "RBC Count", base: 5.1, unit: "M", icon: "ph-drop", type: "norm" },
-                    { id: "c3", title: "Platelets", base: 250, unit: "k", icon: "ph-bandaids", type: "norm" },
-                    { id: "c4", title: "Regen Rate", base: 95, unit: "%", icon: "ph-arrows-clockwise", type: "perc" }
-                ],
-                abnormal: { msg: "Low Platelets.", action: "Hematology consult." }
-            },
-            immune: {
-                title: "Immune System",
-                mainStat: "Resp",
-                animKey: "imm",
-                simValue: 98,
-                icon: "ph-shield-star",
-                stats: [
-                    { id: "c1", title: "Response", base: 98, unit: "%", icon: "ph-lightning", type: "perc" },
-                    { id: "c2", title: "Neutrophils", base: 60, unit: "%", icon: "ph-chart-pie", type: "norm" },
-                    { id: "c3", title: "Lymphocytes", base: 30, unit: "%", icon: "ph-users", type: "norm" },
-                    { id: "c4", title: "Inflammation", base: 0.3, unit: "CRP", icon: "ph-fire", type: "norm" }
-                ],
-                abnormal: { msg: "Elevated CRP.", action: "Check for infection." }
-            },
-            dental: {
-                title: "Dental Health",
-                mainStat: "Plaque",
-                animKey: "den",
-                simValue: 5,
-                icon: "ph-smiley",
-                stats: [
-                    { id: "c1", title: "Plaque Idx", base: 5, unit: "%", icon: "ph-sparkle", type: "norm" },
-                    { id: "c2", title: "Gum Health", base: 98, unit: "%", icon: "ph-heart", type: "perc" },
-                    { id: "c3", title: "Enamel", base: 95, unit: "%", icon: "ph-shield", type: "perc" },
-                    { id: "c4", title: "pH Balance", base: 7.0, unit: "pH", icon: "ph-drop", type: "norm" }
-                ],
-                abnormal: { msg: "Gingivitis Risk.", action: "Hygiene review." }
-            },
-            breast: {
-                title: "Breast Tissue",
-                mainStat: "Dense",
-                animKey: "br",
-                simValue: 2,
-                icon: "ph-gender-female",
-                stats: [
-                    { id: "c1", title: "Density", base: 2, unit: "Cat", icon: "ph-squares-four", type: "norm" },
-                    { id: "c2", title: "Vascularity", base: "Norm", unit: "", icon: "ph-waves", type: "norm" },
-                    { id: "c3", title: "Lymph Nodes", base: "Clrv", unit: "", icon: "ph-check-circle", type: "norm" },
-                    { id: "c4", title: "Asymmetry", base: 0, unit: "%", icon: "ph-scales", type: "norm" }
-                ],
-                abnormal: { msg: "Dense Tissue.", action: "Annual mammogram." }
-            },
-            ligaments: {
-                title: "Joints & Ligaments",
-                mainStat: "Flex",
-                animKey: "flx",
-                simValue: 85,
-                icon: "ph-person-simple-run",
-                stats: [
-                    { id: "c1", title: "Flexibility", base: 85, unit: "%", icon: "ph-arrows-out", type: "perc" },
-                    { id: "c2", title: "Synovial Fld", base: 100, unit: "%", icon: "ph-drop", type: "norm" },
-                    { id: "c3", title: "Inflammation", base: 2, unit: "%", icon: "ph-fire", type: "norm" },
-                    { id: "c4", title: "Cartilage", base: 90, unit: "%", icon: "ph-circle-notch", type: "norm" }
-                ],
-                abnormal: { msg: "Stiffness.", action: "Mobility exercises." }
             }
         };
 
@@ -1122,7 +988,6 @@
         };
 
         // --- BIO-SYNC AUDIO ENGINE ---
-        // Generates pleasant procedural heart sounds based on BPM
         const AudioEngine = {
             ctx: null,
             nextNoteTime: 0.0,
@@ -1139,14 +1004,12 @@
 
             toggle: function() {
                 this.init();
-                // Resume context if suspended (common in browsers preventing autoplay)
                 if (this.ctx.state === 'suspended') {
                     this.ctx.resume();
                 }
                 
                 this.isPlaying = !this.isPlaying;
                 
-                // Visual feedback for audio button
                 const btn = document.getElementById('sound-toggle');
                 if(this.isPlaying) btn.classList.add('active');
                 else btn.classList.remove('active');
@@ -1165,7 +1028,6 @@
             },
 
             scheduleHeartbeat: function(time) {
-                // "LUB" Sound (Low, Thud)
                 const osc1 = this.ctx.createOscillator();
                 const gain1 = this.ctx.createGain();
                 const filter1 = this.ctx.createBiquadFilter();
@@ -1177,7 +1039,6 @@
                 filter1.type = 'lowpass';
                 filter1.frequency.value = 180;
 
-                // Envelope
                 gain1.gain.setValueAtTime(0, time);
                 gain1.gain.linearRampToValueAtTime(0.8, time + 0.02);
                 gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
@@ -1189,8 +1050,7 @@
                 osc1.start(time);
                 osc1.stop(time + 0.2);
 
-                // "DUB" Sound (Slightly higher, sharper)
-                const t2 = time + 0.25; // Delay for Dub
+                const t2 = time + 0.25; 
                 const osc2 = this.ctx.createOscillator();
                 const gain2 = this.ctx.createGain();
                 const filter2 = this.ctx.createBiquadFilter();
@@ -1219,8 +1079,6 @@
                     if(activeOrgan === 'heart') {
                         this.scheduleHeartbeat(this.nextNoteTime);
                     }
-                    // Add logic for other organ sounds if needed
-                    
                     const secondsPerBeat = 60.0 / this.bpm;
                     this.nextNoteTime += secondsPerBeat;
                 }
@@ -1244,7 +1102,7 @@
         const updateDiagnosisPanel = (keyword, risk) => {
             const diag = document.getElementById('diagnosis-panel');
             const text = document.getElementById('diagnosis-text');
-            if(diag.style.display === 'none') diag.style.display = 'block'; // Ensure visible when active
+            if(diag.style.display === 'none') diag.style.display = 'block'; 
             
             diag.className = 'ai-panel' + (risk === 'Critical' || risk === 'Severe' ? ' warn' : '');
             text.innerText = risk ? `${risk} risk symptom detected (${keyword}). Notify clinician.` : 'No critical keywords detected. Keep monitoring.';
@@ -1325,11 +1183,10 @@
                 btn.className = `organ-item ${key === 'heart' ? 'selected' : ''}`;
                 btn.dataset.organ = key;
                 
-                // Logic to use custom SVG if available, else fallback to Phosphor icon class
                 let iconHtml = '';
                 if (data.icon.startsWith('svg-')) {
                     const svgKey = data.icon.split('-')[1];
-                    iconHtml = ORGAN_SVGS[svgKey] || '<i class="ph ph-warning"></i>'; // Fallback
+                    iconHtml = ORGAN_SVGS[svgKey] || '<i class="ph ph-warning"></i>'; 
                 } else {
                     iconHtml = `<i class="ph ${data.icon}"></i>`;
                 }
@@ -1420,27 +1277,19 @@
         let ecgPhase = 0;
 
         const updateECGGraph = () => {
-            // Generate a simple ECG wave pattern
             ecgPhase += 0.15;
-            
-            // Basic baseline noise
             let y = 15 + (Math.random() - 0.5) * 2; 
-
-            // Periodic heartbeat spikes
             const beat = ecgPhase % (Math.PI * 2);
-            if (beat > 0 && beat < 0.2) y -= 5; // P wave
-            if (beat > 0.3 && beat < 0.4) y += 5; // Q
-            if (beat > 0.4 && beat < 0.6) y -= 25; // R (spike)
-            if (beat > 0.6 && beat < 0.7) y += 8; // S
-            if (beat > 0.9 && beat < 1.2) y -= 4; // T wave
-
-            // Clamp
+            if (beat > 0 && beat < 0.2) y -= 5;
+            if (beat > 0.3 && beat < 0.4) y += 5;
+            if (beat > 0.4 && beat < 0.6) y -= 25;
+            if (beat > 0.6 && beat < 0.7) y += 8;
+            if (beat > 0.9 && beat < 1.2) y -= 4;
             y = Math.max(2, Math.min(28, y));
 
             ecgPoints.push(y);
             if (ecgPoints.length > ecgMaxPoints) ecgPoints.shift();
 
-            // Construct SVG path string
             const width = 200;
             const step = width / ecgMaxPoints;
             let d = `M 0 ${ecgPoints[0] || 15}`;
@@ -1455,11 +1304,19 @@
             liveIntervals = [];
             const data = ORGAN_DATA[organ];
 
-            // Slow update for cards
+            // Update Readiness Score Bar
+            const updateReadiness = () => {
+                const bar = document.getElementById('readiness-bar');
+                if(bar) {
+                    const w = 70 + Math.random() * 25;
+                    bar.style.width = `${w}%`;
+                }
+            };
+
             const mainInt = setInterval(() => {
                 let hasAlert = false;
                 data.stats.forEach((s, i) => {
-                    if (typeof s.base === 'string') return; // Skip text based stats
+                    if (typeof s.base === 'string') return;
 
                     let val = parseFloat(s.base);
                     let flux = (Math.random() - 0.5) * (val * 0.15); 
@@ -1474,12 +1331,10 @@
                     updateCardValue(i+1, newVal, s.unit, s.type);
                 });
                 
-                // Added: Randomize Bar Chart for visual liveliness
                 const bars = document.querySelectorAll('#blood-chart .bar');
                 bars.forEach(bar => {
-                     // Keep them moving slightly
-                     const h = 30 + Math.random() * 60;
-                     bar.style.height = `${h}%`;
+                      const h = 30 + Math.random() * 60;
+                      bar.style.height = `${h}%`;
                 });
 
                 const aiPanel = document.getElementById('ai-panel');
@@ -1492,63 +1347,47 @@
                     document.getElementById('ai-title').innerText = "AI ANALYSIS";
                     document.getElementById('ai-text').innerText = "Vital signs are stable. No immediate irregularities detected.";
                 }
+                
+                updateReadiness();
 
             }, 2000);
             liveIntervals.push(mainInt);
 
-            // Fast update for ECG (approx 30fps)
             const ecgInt = setInterval(updateECGGraph, 33);
             liveIntervals.push(ecgInt);
         };
 
-        // --- THREE.JS ENGINE ---
+        // --- THREE.JS ENGINE (FIXED & COMPACT) ---
         let scene, camera, renderer, group, particles;
-        let controls; // OrbitControls
+        let controls; 
         let spotLight;
         let brainEffectGroup = null;
         let liverLight = null;
         const gltfLoader = new THREE.GLTFLoader();
-        const ORGAN_MODEL_MAP = {
-            heart: '3d_models/heart.glb',
-            brain: '3d_models/brain.glb',
-            liver: '3d_models/liver.glb',
-            lungs: '3d_models/lungs.glb',
-            kidneys: '3d_models/kidneys.glb',
-            eyes: '3d_models/eyes.glb'
-        };
 
         const clearOrganEffects = () => {
             if (brainEffectGroup) {
                 scene.remove(brainEffectGroup);
-                brainEffectGroup.children.forEach((child) => {
-                    child.geometry?.dispose?.();
-                    child.material?.dispose?.();
-                });
+                brainEffectGroup.children.forEach(child => { child.geometry?.dispose(); child.material?.dispose(); });
                 brainEffectGroup = null;
             }
-            if (liverLight) {
-                scene.remove(liverLight);
-                liverLight = null;
-            }
+            if (liverLight) { scene.remove(liverLight); liverLight = null; }
         };
 
         const applyOrganEffects = (type) => {
             clearOrganEffects();
             if (!scene) return;
-
             if (type === 'brain') {
                 brainEffectGroup = new THREE.Group();
                 for (let i = 0; i < 20; i++) {
-                    const start = new THREE.Vector3((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
-                    const end = start.clone().add(new THREE.Vector3((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2));
+                    const start = new THREE.Vector3((Math.random()-0.5)*3, (Math.random()-0.5)*3, (Math.random()-0.5)*3);
+                    const end = start.clone().add(new THREE.Vector3((Math.random()-0.5)*2, (Math.random()-0.5)*2, (Math.random()-0.5)*2));
                     const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
                     const mat = new THREE.LineBasicMaterial({ color: 0x0ae0ff, transparent: true, opacity: 0.4 });
-                    const line = new THREE.Line(geo, mat);
-                    brainEffectGroup.add(line);
+                    brainEffectGroup.add(new THREE.Line(geo, mat));
                 }
                 scene.add(brainEffectGroup);
             }
-
             if (type === 'liver') {
                 liverLight = new THREE.PointLight(0xd97757, 2.0, 50);
                 liverLight.position.set(2, 2, 5);
@@ -1562,7 +1401,7 @@
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 0, 14);
+            camera.position.set(0, 0, 10); // Closer camera for compact look
 
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
@@ -1572,7 +1411,6 @@
             
             container.appendChild(renderer.domElement);
 
-            // CONTROLS
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
@@ -1580,32 +1418,25 @@
             controls.autoRotate = true;
             controls.autoRotateSpeed = 2.0;
 
-            // Particles
             const particlesGeo = new THREE.BufferGeometry();
             const pCount = 300; 
             const pArray = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 25;
+            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 15; // Compact particles
 
             particlesGeo.setAttribute("position", new THREE.BufferAttribute(pArray, 3));
             const particlesMat = new THREE.PointsMaterial({
-                size: 0.04,
-                color: 0x3b82f6,
-                transparent: true,
-                opacity: 0.4,
-                blending: THREE.AdditiveBlending
+                size: 0.04, color: 0x3b82f6, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending
             });
 
             particles = new THREE.Points(particlesGeo, particlesMat);
             scene.add(particles);
 
-            // Lighting
             const ambient = new THREE.AmbientLight(0xffffff, 0.1); 
             scene.add(ambient);
             
             spotLight = new THREE.SpotLight(0xffffff, 3); 
             spotLight.position.set(10, 10, 10); 
             spotLight.angle = 0.5; 
-            spotLight.penumbra = 1; 
             scene.add(spotLight);
             
             const rimLight = new THREE.PointLight(0x3b82f6, 4, 50); 
@@ -1614,32 +1445,30 @@
 
             loadOrganModel('heart');
             
-            // --- ANIMATION LOOP ---
             const clock = new THREE.Clock();
             const animate = () => {
                 requestAnimationFrame(animate);
                 const t = clock.getElapsedTime();
                 const simVal = ORGAN_DATA[activeOrgan].simValue || 1;
 
-                controls.update(); // Required for damping
+                controls.update();
 
                 if (group) {
                     const type = group.userData.type;
                     const baseScale = group.userData.baseScale || 1;
 
                     if (type === 'heart') {
-                        // Heart Animation (Scaling for heartbeat effect)
                         const speed = simVal / 60;
                         const beat = Math.sin(t * speed * Math.PI * 2);
-                        const scale = baseScale * (beat > 0.8 ? 1 + (beat-0.8)*0.3 : 1);
+                        const scale = baseScale * (beat > 0.8 ? 1 + (beat-0.8)*0.2 : 1);
                         group.scale.set(scale, scale, scale);
-                        
-                        // Pulse Light
                         spotLight.intensity = 2.5 + (scale - baseScale) * 10;
                     } else {
-                        // Gentle Float
                         const pulse = baseScale * (1 + Math.sin(t * 2) * 0.01);
                         group.scale.set(pulse, pulse, pulse);
+                    }
+                    if(group.userData.ring) {
+                        group.userData.ring.rotation.z += 0.005;
                     }
                 }
 
@@ -1666,50 +1495,31 @@
             });
         };
 
-        // --- PROCEDURAL HELPERS ---
         const getOrganColor = (type) => {
             const colors = {
-                heart: 0xff3b3b,
-                brain: 0x0ae0ff,
-                liver: 0xd97757,
-                lungs: 0xffa8d9,
-                kidneys: 0xc27e5c,
-                stomach: 0xff9e9e,
-                intestines: 0xffc4a3,
-                pancreas: 0xffd670,
-                gallbladder: 0x60d394,
-                urinary: 0xffea00,
-                skeletal: 0xffffff,
-                cells: 0xcd93ff,
-                immune: 0x50c878,
-                dental: 0xfdfdfd,
-                breast: 0xffb7b2,
-                ligaments: 0xeeeeee
+                heart: 0xff3b3b, brain: 0x0ae0ff, liver: 0xd97757, lungs: 0xffa8d9,
+                kidneys: 0xc27e5c, stomach: 0xff9e9e, intestines: 0xffc4a3, pancreas: 0xffd670,
+                gallbladder: 0x60d394, urinary: 0xffea00, skeletal: 0xffffff, cells: 0xcd93ff,
+                immune: 0x50c878, dental: 0xfdfdfd, breast: 0xffb7b2, ligaments: 0xeeeeee
             };
             return colors[type] || 0x3b82f6;
         };
 
-        const getOrganGeometry = (type) => {
-            switch(type) {
-                case 'heart': return new THREE.IcosahedronGeometry(3.2, 1);
-                case 'brain': return new THREE.DodecahedronGeometry(3.0, 1);
-                case 'liver': return new THREE.OctahedronGeometry(3.0, 2);
-                case 'lungs': return new THREE.SphereGeometry(3.0, 16, 16);
-                case 'cells': return new THREE.IcosahedronGeometry(2.5, 2);
-                default: return new THREE.OctahedronGeometry(2.8, 0);
-            }
-        };
-
+        // FIXED: Compact 3D Model Loading Logic
         const loadOrganModel = (type) => {
+            // 1. Strict Cleanup to prevent fusing
             if (group) {
-                // Cleanup old geometry/materials
-                group.children.forEach(child => {
-                    if(child.geometry) child.geometry.dispose();
-                    if(child.material) child.material.dispose();
+                group.traverse((obj) => {
+                    if (obj.geometry) obj.geometry.dispose();
+                    if (obj.material) {
+                        if(Array.isArray(obj.material)) obj.material.forEach(m=>m.dispose());
+                        else obj.material.dispose();
+                    }
                 });
                 scene.remove(group);
+                group = null;
             }
-            
+
             group = new THREE.Group();
             group.userData.type = type;
             group.userData.baseScale = 1;
@@ -1718,67 +1528,39 @@
             applyOrganEffects(type);
 
             const color = getOrganColor(type);
-            const geometry = getOrganGeometry(type);
+            
+            // 2. Compact Procedural Geometries
+            let geometry;
+            switch (type) {
+                case 'heart': geometry = new THREE.IcosahedronGeometry(2.2, 1); break; // Reduced size
+                case 'brain': geometry = new THREE.DodecahedronGeometry(2.2, 0); break;
+                case 'lungs': geometry = new THREE.CapsuleGeometry(1.5, 3, 4, 16); break;
+                case 'liver': geometry = new THREE.TetrahedronGeometry(2.5, 2); break;
+                default: geometry = new THREE.OctahedronGeometry(2.0, 0);
+            }
 
-            const addProceduralShell = () => {
-                const wireMat = new THREE.MeshBasicMaterial({
-                    color: color,
-                    wireframe: true,
-                    transparent: true,
-                    opacity: 0.15,
-                    blending: THREE.AdditiveBlending
-                });
-                const wireMesh = new THREE.Mesh(geometry, wireMat);
-                group.add(wireMesh);
-
-                const coreMat = new THREE.MeshPhongMaterial({
-                    color: color,
-                    transparent: true,
-                    opacity: 0.8,
-                    shininess: 80,
-                    emissive: color,
-                    emissiveIntensity: 0.2,
-                    flatShading: true
-                });
-                const coreMesh = new THREE.Mesh(geometry.clone(), coreMat);
-                coreMesh.scale.setScalar(0.85);
-                group.add(coreMesh);
-            };
-
-            const modelSrc = ORGAN_MODEL_MAP[type];
-            addProceduralShell();
-            if (!modelSrc) return;
-
-            gltfLoader.load(modelSrc, (gltf) => {
-                const model = gltf.scene || gltf.scenes?.[0];
-                if (!model) return;
-
-                model.traverse((node) => {
-                    if (node.isMesh) {
-                        node.material = node.material.clone();
-                        node.material.color = new THREE.Color(color);
-                        node.material.emissive = new THREE.Color(color);
-                        node.material.emissiveIntensity = 0.25;
-                        node.material.transparent = true;
-                        node.material.opacity = 0.9;
-                        node.castShadow = true;
-                        node.receiveShadow = true;
-                    }
-                });
-
-                const box = new THREE.Box3().setFromObject(model);
-                const size = new THREE.Vector3();
-                box.getSize(size);
-                const maxAxis = Math.max(size.x, size.y, size.z) || 1;
-                const scale = 6 / maxAxis;
-                model.scale.setScalar(scale);
-                box.getCenter(model.position).multiplyScalar(-1);
-                model.position.y -= 0.3;
-                model.rotation.y = Math.PI * 0.25;
-
-                group.add(model);
-                group.userData.baseScale = 1;
+            // Inner Core (Holographic Glow)
+            const coreMat = new THREE.MeshPhongMaterial({
+                color: color, emissive: color, emissiveIntensity: 0.6,
+                transparent: true, opacity: 0.9, flatShading: true, shininess: 100
             });
+            const coreMesh = new THREE.Mesh(geometry, coreMat);
+            group.add(coreMesh);
+
+            // Outer Wireframe (Scanner Effect)
+            const wireGeo = new THREE.WireframeGeometry(geometry);
+            const wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
+            const wireMesh = new THREE.LineSegments(wireGeo, wireMat);
+            wireMesh.scale.setScalar(1.1);
+            group.add(wireMesh);
+
+            // Sci-Fi Ring
+            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); // Tighter ring
+            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            group.add(ring);
+            group.userData.ring = ring; 
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -1818,14 +1600,13 @@
                 });
             }
             
-            // Boot Screen Logic
             setTimeout(() => {
                 document.getElementById('boot-screen').style.opacity = '0';
                 document.getElementById('app-container').style.opacity = '1';
                 setTimeout(() => {
                     document.getElementById('boot-screen').style.display = 'none';
                 }, 800);
-            }, 2000); // Reduced slightly for better UX
+            }, 2000); 
 
             generateOrganButtons();
             initThree();
@@ -1837,14 +1618,12 @@
 
             document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
 
-            // Theme toggle
             const themeBtn = document.getElementById('theme-toggle');
             themeBtn.addEventListener('click', () => {
                 document.body.classList.toggle('theme-white');
                 themeBtn.innerText = document.body.classList.contains('theme-white') ? 'Default Theme' : 'White Theme';
             });
 
-            // Sound Toggle
             const soundBtn = document.getElementById('sound-toggle');
             soundBtn.addEventListener('click', () => {
                 const isActive = AudioEngine.toggle();
@@ -1852,7 +1631,6 @@
                 soundBtn.style.background = isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
             });
 
-            // Chat
             const chatInput = document.getElementById('chat-input');
             const chatSend = document.getElementById('chat-send');
             const typingEl = document.getElementById('ai-typing');
@@ -1873,7 +1651,6 @@
             chatSend.addEventListener('click', handleSend);
             chatInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleSend(); });
 
-            // Telemedicine
             const openVideo = () => openModal('video-modal');
             document.getElementById('launch-video').addEventListener('click', openVideo);
             document.getElementById('open-video').addEventListener('click', openVideo);
@@ -1886,7 +1663,6 @@
                 closeModal('video-modal');
             });
 
-            // Pharmacy
             const openPharmacy = () => openModal('pharmacy-modal');
             document.getElementById('launch-pharmacy').addEventListener('click', openPharmacy);
             document.getElementById('open-pharmacy').addEventListener('click', openPharmacy);
@@ -1896,7 +1672,14 @@
                 closeModal('pharmacy-modal');
             });
 
-            // Files + FaceID
+            // NEW: Insurance Logic
+            const openInsurance = () => openModal('insurance-modal');
+            document.getElementById('launch-insurance').addEventListener('click', openInsurance);
+            document.getElementById('submit-claim').addEventListener('click', () => {
+                showToast('Claim submitted to AI desk.');
+                closeModal('insurance-modal');
+            });
+
             const runFaceID = (onPass) => {
                 const overlay = document.getElementById('faceid-overlay');
                 const text = document.getElementById('faceid-text');
@@ -1918,7 +1701,6 @@
                 showToast(`${btn.dataset.file} downloading...`);
             }));
 
-            // SOS button hold
             const sosBtn = document.getElementById('sos-btn');
             let sosTimer = null;
             sosBtn.addEventListener('mousedown', () => {
@@ -1931,11 +1713,9 @@
                 sosBtn.innerText = 'Hold for SOS';
             }));
 
-            // Logging every 10 minutes plus immediate seed
             setTimeout(appendMedicalLog, 2000);
             setInterval(() => { appendMedicalLog(); }, 600000);
 
-            // Delegate events for dynamically created buttons
             const tray = document.querySelector('.organ-tray');
             tray.addEventListener('click', (e) => {
                 const btn = e.target.closest('.organ-item');
