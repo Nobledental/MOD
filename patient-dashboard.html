@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Health flo OS - NEO 2.0 (Pro)</title>
+    <title>Health flo OS - NEO 3.0 (Pro)</title>
     
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -136,26 +136,45 @@
 
         /* SIDEBAR */
         .sidebar {
-            width: 80px; display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 30px;
+            width: 280px; display: flex; flex-direction: column; align-items: stretch; padding: 24px; gap: 16px;
             border-right: 1px solid var(--glass-border);
             z-index: 10;
             background: var(--sidebar-bg);
             backdrop-filter: var(--glass-blur);
             flex-shrink: 0;
         }
-        .sidebar .menu-stack { display: flex; flex-direction: column; gap: 14px; width: 100%; align-items: center; }
+        .sidebar .menu-stack { display: flex; flex-direction: column; gap: 10px; width: 100%; align-items: stretch; }
+        .sidebar .logo { font-size: 28px; }
+        .sidebar-top { display: flex; flex-direction: column; gap: 10px; }
+        .version-pill { align-self: flex-start; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--glass-border); background: rgba(59,130,246,0.12); color: var(--text-white); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+        .patient-quick { background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .patient-quick .name { font-weight: 800; font-size: 16px; }
+        .pill-row { display: flex; gap: 6px; flex-wrap: wrap; }
+        .pill { padding: 6px 10px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.15); font-size: 11px; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px; }
+        .pill i { color: var(--accent-blue); }
+        .nav-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 4px 0; }
+        .sidebar-nav { display: flex; flex-direction: column; gap: 8px; }
+        .nav-link { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 12px; color: var(--text-white); text-decoration: none; border: 1px solid transparent; font-weight: 600; font-size: 13px; }
+        .nav-link i { color: var(--accent-blue); }
+        .nav-link.active, .nav-link:hover { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); }
+        .nav-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+        .nav-chip-tile { padding: 12px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.04); color: var(--text-white); text-decoration: none; display: flex; flex-direction: column; gap: 8px; font-size: 12px; }
+        .nav-chip-tile strong { font-size: 13px; }
+        .family-watch { padding: 12px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(16,185,129,0.08); color: var(--text-white); display: flex; flex-direction: column; gap: 6px; font-size: 12px; }
+        .family-watch .avatars { display: flex; gap: 6px; }
+        .family-watch .avatar { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.2); display: grid; place-items: center; font-size: 12px; font-weight: 800; }
         .sidebar-utilities {
-            width: 100%; padding: 0 14px; display: flex; flex-direction: column; gap: 10px; align-items: stretch;
+            width: 100%; display: flex; flex-direction: column; gap: 10px; align-items: stretch;
         }
-        .sidebar-utilities .label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; padding: 0 4px; }
+        .sidebar-utilities .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; padding: 0 4px; }
         .sidebar-utilities button {
-            width: 100%; display: flex; flex-direction: column; gap: 6px; align-items: center; justify-content: center;
+            width: 100%; display: flex; flex-direction: row; gap: 8px; align-items: center; justify-content: flex-start;
             background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); color: var(--text-white);
-            border-radius: 16px; padding: 12px 8px; cursor: pointer; transition: 0.3s;
+            border-radius: 12px; padding: 12px 10px; cursor: pointer; transition: 0.3s; font-weight: 700; font-size: 12px;
         }
         .sidebar-utilities button:hover { border-color: rgba(59,130,246,0.5); box-shadow: 0 10px 20px rgba(0,0,0,0.2); transform: translateY(-2px); }
-        .sidebar-utilities i { font-size: 20px; color: var(--color-blue); }
-        .sidebar-utilities span { font-size: 11px; font-weight: 700; color: var(--text-white); }
+        .sidebar-utilities i { font-size: 18px; color: var(--color-blue); }
+        .sidebar-utilities span { font-size: 12px; font-weight: 700; color: var(--text-white); }
         .bottom-nav {
             display: none;
             position: fixed; bottom: 0; left: 0; right: 0;
@@ -531,6 +550,15 @@
             font-size: 11px; color: var(--text-muted); background: rgba(255,255,255,0.04);
         }
 
+        .sync-board { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; margin-top: 10px; }
+        .sync-card { border: 1px solid var(--glass-border); border-radius: 14px; padding: 12px; background: rgba(255,255,255,0.03); display: flex; flex-direction: column; gap: 6px; }
+        .sync-card .title { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 13px; }
+        .sync-card .title i { color: var(--accent-blue); }
+        .sync-card .desc { color: var(--text-muted); font-size: 12px; }
+        .sync-card .meta { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #10b981; font-weight: 700; }
+        .sync-card .meta .dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.6); }
+        .sync-card a { color: var(--accent-blue); font-weight: 700; font-size: 12px; text-decoration: none; }
+
         .next-checkup {
             background: rgba(125,125,125,0.05); border-radius: 14px; padding: 10px;
             display: flex; align-items: center; justify-content: space-between;
@@ -581,11 +609,12 @@
         @keyframes pulseIcon { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
         .chat-drawer {
-            position: fixed; right: 24px; bottom: 80px; width: 320px; max-width: 90vw;
+            position: relative; width: 100%;
             background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 12px;
-            backdrop-filter: blur(18px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); z-index: 40;
+            backdrop-filter: blur(18px); box-shadow: 0 10px 30px rgba(0,0,0,0.12); z-index: 1;
         }
-        .chat-drawer h4 { margin-bottom: 8px; color: var(--text-white); display: flex; align-items: center; gap: 6px; font-size: 13px; }
+        .chat-drawer h4 { margin-bottom: 8px; color: var(--text-white); display: flex; align-items: center; gap: 6px; font-size: 13px; justify-content: space-between; }
+        .chat-drawer .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 10px rgba(16,185,129,0.7); }
         .chat-messages { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
         .chat-bubble { padding: 10px 12px; border-radius: 14px; font-size: 12px; line-height: 1.4; color: var(--text-white); }
         .chat-bubble.user { background: rgba(125,125,125,0.1); align-self: flex-end; }
@@ -681,19 +710,65 @@
             </div>
             <div class="nav-icons"><i class="ph ph-caret-left"></i><i class="ph ph-caret-right"></i></div>
             <div class="url-bar"><i class="ph-fill ph-lock-key"></i><span>Healthflo.com</span><i class="ph ph-arrow-clockwise" style="margin-left: auto;"></i></div>
-            <div class="branding-right">Health flo <span>OS NEO 2.0</span></div>
+            <div class="branding-right">Health flo <span>OS NEO 3.0 Pro</span></div>
         </div>
 
         <div class="dashboard-body">
             <div class="sidebar">
-                <div class="logo">H<span>+</span></div>
-                <div class="menu-stack">
-                    <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
-                    <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
-                    <div class="menu-item"><i class="ph ph-file-text"></i></div>
-                    <div class="menu-item"><i class="ph ph-user"></i></div>
-                    <div class="menu-item"><i class="ph ph-squares-four"></i></div>
+                <div class="sidebar-top">
+                    <div class="logo">H<span>+</span></div>
+                    <div class="version-pill"><i class="ph ph-seal-check"></i> Version 3 Pro</div>
+                    <div class="patient-quick">
+                        <div class="name">Dhivakaran</div>
+                        <div class="pill-row">
+                            <div class="pill"><i class="ph ph-pulse"></i>Daily readiness 92%</div>
+                            <div class="pill"><i class="ph ph-users-three"></i>Family tracking ON</div>
+                            <div class="pill"><i class="ph ph-shield-check"></i>Synced to devices</div>
+                        </div>
+                    </div>
                 </div>
+
+                <div class="sidebar-nav">
+                    <div class="nav-label">Care navigation</div>
+                    <a class="nav-link active" href="patient-dashboard.html"><i class="ph-fill ph-heartbeat"></i>Daily dashboard</a>
+                    <a class="nav-link" href="patient-health.html"><i class="ph ph-activity"></i>Health graph</a>
+                    <a class="nav-link" href="patient-labs.html"><i class="ph ph-flask"></i>Latest labs</a>
+                    <a class="nav-link" href="patient-devices.html"><i class="ph ph-wifi-high"></i>Device streams</a>
+                    <a class="nav-link" href="patient-profile.html"><i class="ph ph-user"></i>Patient profile</a>
+                    <a class="nav-link" href="patient-settings.html"><i class="ph ph-gear"></i>Settings</a>
+                </div>
+
+                <div class="nav-label">Family + quick sync</div>
+                <div class="nav-grid">
+                    <a class="nav-chip-tile" href="patient-family.html"><strong>Family watch</strong><span>Notify caregivers instantly</span></a>
+                    <a class="nav-chip-tile" href="patient-log.html"><strong>Daily log</strong><span>Minute-by-minute recap</span></a>
+                    <a class="nav-chip-tile" href="patient-insurance.html"><strong>Insurance desk</strong><span>Pre-approvals + claims</span></a>
+                    <a class="nav-chip-tile" href="patient-settings.html"><strong>Preferences</strong><span>Sync all modules</span></a>
+                </div>
+
+                <div class="family-watch">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <strong>Family is watching</strong>
+                        <span style="color:#10b981; font-weight:700; font-size:12px;">Live</span>
+                    </div>
+                    <div class="avatars">
+                        <div class="avatar">R</div>
+                        <div class="avatar">A</div>
+                        <div class="avatar">P</div>
+                        <div class="avatar" style="background:rgba(59,130,246,0.4);">+</div>
+                    </div>
+                    <div style="color:var(--text-muted); font-size:12px;">Share-ready links for guardians and partner.</div>
+                </div>
+
+                <div class="chat-drawer" id="chat-drawer">
+                    <h4><span><i class="ph ph-robot"></i> AI Assistant</span><span class="status-dot"></span></h4>
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="chat-input-row">
+                        <input type="text" id="chat-input" placeholder="Describe symptoms e.g. pain, bleeding" />
+                        <button id="chat-send"><i class="ph ph-paper-plane-tilt"></i></button>
+                    </div>
+                </div>
+
                 <div class="sidebar-utilities">
                     <div class="label">Care tools</div>
                     <button data-open-modal="video-modal"><i class="ph ph-video-camera"></i><span>Video Call</span></button>
@@ -701,8 +776,8 @@
                     <button data-open-modal="files-modal"><i class="ph ph-folder"></i><span>Files</span></button>
                     <button data-open-modal="insurance-modal"><i class="ph ph-shield-check"></i><span>Insurance</span></button>
                     <button data-open-modal="faceid-overlay"><i class="ph ph-lock"></i><span>Secure</span></button>
+                    <button style="color:#ef4444; border-color: rgba(239,68,68,0.4);"><i class="ph ph-power"></i><span>Log out</span></button>
                 </div>
-                <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
             </div>
 
             <div class="main-content">
@@ -836,6 +911,34 @@
                             </div>
                         </div>
 
+                        <div class="section-header" style="margin-bottom:8px; margin-top:6px;"><div class="blue-dot"></div> Version 3 Pro · Sync center</div>
+                        <div class="sync-board" id="sync-board">
+                            <div class="sync-card">
+                                <div class="title"><i class="ph ph-gear-six"></i>Profile + settings</div>
+                                <div class="desc">Linked to patient profile and settings for consistent alerts and privacy.</div>
+                                <div class="meta"><span class="dot"></span> Synced</div>
+                                <a href="patient-settings.html">Open settings</a>
+                            </div>
+                            <div class="sync-card">
+                                <div class="title"><i class="ph ph-users"></i>Family oversight</div>
+                                <div class="desc">Guardians are watching the dashboard; daily summaries are shared.</div>
+                                <div class="meta"><span class="dot"></span> Live watchers 3</div>
+                                <a href="patient-family.html">Manage family access</a>
+                            </div>
+                            <div class="sync-card">
+                                <div class="title"><i class="ph ph-flask"></i>Labs + health pages</div>
+                                <div class="desc">Readiness pulls from labs, organs, and device streams across pages.</div>
+                                <div class="meta"><span class="dot"></span> Synced to dashboard</div>
+                                <a href="patient-health.html">View health graph</a>
+                            </div>
+                            <div class="sync-card">
+                                <div class="title"><i class="ph ph-shield-check"></i>Safety routines</div>
+                                <div class="desc">SOS, secure face ID, and insurance desk are pinned for quick use.</div>
+                                <div class="meta"><span class="dot"></span> Ready for daily checks</div>
+                                <a href="patient-insurance.html">Open insurance desk</a>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -852,15 +955,6 @@
                 <button data-open-modal="files-modal"><i class="ph ph-folder"></i></button>
             </div>
         <div class="mobile-link-strip" id="mobile-nav-links"></div>
-        </div>
-
-        <div class="chat-drawer" id="chat-drawer">
-            <h4><i class="ph ph-robot"></i> AI Assistant</h4>
-            <div class="chat-messages" id="chat-messages"></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Describe symptoms e.g. pain, bleeding" />
-                <button id="chat-send"><i class="ph ph-paper-plane-tilt"></i></button>
-            </div>
         </div>
 
         <button class="sos-btn" id="sos-btn">Hold for SOS</button>
@@ -1725,7 +1819,8 @@
                 { label: 'Organs', href: 'patient-organs.html', icon: 'ph ph-brain' },
                 { label: 'Health', href: 'patient-health.html', icon: 'ph ph-activity' },
                 { label: 'Labs', href: 'patient-labs.html', icon: 'ph ph-flask' },
-                { label: 'Profile', href: 'patient-profile.html', icon: 'ph ph-user' }
+                { label: 'Profile', href: 'patient-profile.html', icon: 'ph ph-user' },
+                { label: 'Settings', href: 'patient-settings.html', icon: 'ph ph-gear' }
             ];
             const pageNav = document.getElementById('page-nav');
             if(pageNav) {
@@ -1742,7 +1837,8 @@
                 { label: 'Devices', href: 'patient-devices.html', icon: 'ph-devices' },
                 { label: 'Pharmacy', href: 'patient-pharmacy.html', icon: 'ph-capsules' },
                 { label: 'Family', href: 'patient-family.html', icon: 'ph-users' },
-                { label: 'Insurance', href: 'patient-insurance.html', icon: 'ph-shield-check' }
+                { label: 'Insurance', href: 'patient-insurance.html', icon: 'ph-shield-check' },
+                { label: 'Settings', href: 'patient-settings.html', icon: 'ph-gear' }
             ];
             const navigatorRow = document.getElementById('navigator-links');
             if(navigatorRow) {
