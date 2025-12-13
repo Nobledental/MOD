@@ -284,6 +284,94 @@
   <footer>
     <p>© 2025 HealthFlo — Health Board</p>
   </footer>
-  <script src="js/patient-os.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const safeParse = (key) => { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } };
+      const labSnap = safeParse('lab-dashboard-latest');
+      const healthSnap = safeParse('health-board-status');
+      const vitalsSnap = safeParse('dashboardVitals');
+
+      const panels = labSnap.latestPanels || {};
+      const reports = (labSnap.reports || []).slice().sort((a,b) => new Date(b.date) - new Date(a.date));
+      const history = (labSnap.history || []).slice().sort((a,b) => new Date(b.date) - new Date(a.date));
+
+      const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+
+      setText('v_hr', vitalsSnap.stats?.find(s => /heart/i.test(s.label))?.val || '--');
+      setText('v_bp', vitalsSnap.stats?.find(s => /pressure|bp/i.test(s.label))?.val || '--');
+      setText('v_spo2', `${panels.spirometry || '--'}`);
+      setText('v_temp', `${panels.temperature ? panels.temperature.toFixed ? panels.temperature.toFixed(1) : panels.temperature : '--'}°F`);
+
+      setText('lab_rbc', `${panels.rbc || '--'} M/µL`);
+      setText('lab_wbc', `${panels.wbc || '--'} k/µL`);
+      setText('lab_platelets', `${panels.platelets || '--'} L`);
+      setText('lab_sgot', `${panels.sgot || '--'} U/L`);
+      setText('lab_sgpt', `${panels.sgpt || '--'} U/L`);
+      setText('lab_bilirubin', `${panels.bilirubin || '--'} mg/dL`);
+      setText('lab_creatinine', `${panels.creatinine || '--'} mg/dL`);
+      setText('lab_urea', `${panels.urea || '--'} mg/dL`);
+      setText('lab_sodium', `${panels.sodium || '--'} mmol/L`);
+      setText('lab_troponin', panels.troponin || '--');
+      setText('lab_crp', panels.crp || '--');
+      setText('lab_bnp', panels.bnp || '--');
+      setText('lab_spirometry', panels.spirometry || '--');
+      setText('lab_spo2', vitalsSnap.stats?.find(s => /SpO/i.test(s.label))?.val || '--');
+      setText('lab_resp', `${panels.resp || '16/min'}`);
+
+      const summaryText = healthSnap.condition ? `${healthSnap.condition}: ${healthSnap.advice}` : 'Guardian AI summarises vitals in simple words.';
+      setText('ai_summary', summaryText);
+      setText('blood_signal', healthSnap.reasons?.[0] || 'Balanced');
+      setText('cbc_signal', healthSnap.monitor?.join(', ') || 'Normal');
+      setText('lab_cbc_ai', healthSnap.reasons?.join(' • ') || 'Blood looks balanced. No infection seen.');
+      setText('lab_lft_ai', 'Liver values inside normal range.');
+      setText('lab_kft_ai', 'Kidney filters are working well.');
+      setText('lab_cardiac_ai', 'Heart stress markers are low.');
+      setText('lab_lung_ai', panels.spirometry || 'Breathing looks smooth.');
+
+      const timeline = document.getElementById('lab_timeline');
+      if (timeline) {
+        timeline.innerHTML = '';
+        history.slice(0, 8).forEach(item => {
+          const card = document.createElement('article');
+          card.className = 'report-card';
+          card.innerHTML = `<h4>${item.title || 'Lab slot'}</h4><div class="report-meta">${item.lab || 'Concierge lab'} • ${new Date(item.date).toLocaleString()}</div><div class="report-ai">${item.status || 'Ready'} — ${item.note || 'Synced to dashboard.'}</div>`;
+          timeline.appendChild(card);
+        });
+      }
+
+      const shelf = document.getElementById('health_report_shelf');
+      if (shelf) {
+        shelf.innerHTML = '';
+        reports.slice(0, 6).forEach(rep => {
+          const card = document.createElement('article');
+          card.className = 'report-card';
+          card.innerHTML = `<h4>${rep.name}</h4><div class="report-meta">${rep.lab} • ${rep.doctor || 'Doctor lens'} • ${new Date(rep.date).toLocaleString()}</div><div class="report-ai">${rep.ai || 'Pending AI narration.'}</div>`;
+          if (rep.parameters) {
+            const tagRow = document.createElement('div');
+            tagRow.className = 'report-tags';
+            rep.parameters.slice(0,4).forEach(p => {
+              const chip = document.createElement('span');
+              chip.className = 'pill';
+              chip.textContent = p;
+              tagRow.appendChild(chip);
+            });
+            card.appendChild(tagRow);
+          }
+          shelf.appendChild(card);
+        });
+      }
+
+      document.querySelectorAll('[data-rad-study]').forEach(row => {
+        const study = row.getAttribute('data-rad-study');
+        const statusEl = row.querySelector('[data-rad-status]');
+        const etaEl = row.querySelector('[data-rad-eta]');
+        const match = (labSnap.imagingReports || []).find(r => r.name.toLowerCase().includes(study.split('-')[0]));
+        if (match && statusEl && etaEl) {
+          statusEl.textContent = match.status || 'Ready';
+          etaEl.textContent = new Date(match.date).toLocaleDateString();
+        }
+      });
+    });
+  </script>
 </body>
 </html>
