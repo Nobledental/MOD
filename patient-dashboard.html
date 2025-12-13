@@ -72,32 +72,6 @@
         .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
         .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
 
-        /* Header Search / Quick Links */
-        .search-suite { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 620px; margin-left: auto; position: relative; }
-        .search-bar { flex: 1; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); position: relative; }
-        .search-bar i { color: var(--text-muted); font-size: 18px; }
-        .search-input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 13px; }
-        .search-input::placeholder { color: var(--text-muted); }
-        .search-results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: rgba(12,16,24,0.95); border: 1px solid var(--glass-border); border-radius: 14px; padding: 8px; box-shadow: 0 15px 40px rgba(0,0,0,0.35); display: none; flex-direction: column; gap: 6px; z-index: 50; max-height: 320px; overflow-y: auto; }
-        .search-results.show { display: flex; }
-        .search-result { width: 100%; text-align: left; background: rgba(255,255,255,0.03); border: 1px solid transparent; border-radius: 12px; color: white; padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
-        .search-result small { color: var(--text-muted); font-weight: 600; font-size: 11px; margin-left: auto; }
-        .search-result:hover { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); }
-        .header-nav { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); padding: 8px 10px; border-radius: 14px; }
-        .nav-link-pill {
-            padding: 8px 14px;
-            border-radius: 12px;
-            background: transparent;
-            color: var(--text-muted);
-            font-weight: 700;
-            font-size: 12px;
-            text-decoration: none;
-            border: 1px solid transparent;
-            transition: 0.2s;
-        }
-        .nav-link-pill:hover { color: white; border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
-        .nav-link-pill.active { color: white; background: rgba(10,132,255,0.16); border-color: rgba(10,132,255,0.35); box-shadow: 0 0 10px rgba(10,132,255,0.3); }
-
         /* DASHBOARD BODY */
         .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
 
@@ -116,12 +90,11 @@
             width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
             color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
         }
-        .menu-item:link, .menu-item:visited { text-decoration: none; color: var(--text-muted); }
         .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.08);
-            color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        .menu-item.active { 
+            background: rgba(255, 255, 255, 0.08); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
             border: 1px solid rgba(255,255,255,0.1);
         }
 
@@ -129,80 +102,15 @@
         .main-content {
             flex: 1; padding: 30px 40px;
             display: grid;
-            grid-template-columns: 1.1fr 1fr 360px;
-            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 1.2fr 1fr 340px; 
+            grid-template-rows: auto 1fr; /* Optimized rows */
             gap: 30px; overflow-y: auto; position: relative;
         }
 
-        .insights-panel {
-            margin-top: 20px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 16px 18px;
-            backdrop-filter: blur(16px);
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .insight-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .insight-card {
-            background: rgba(0,0,0,0.25);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .micro-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            width: fit-content;
-        }
-
-        .insight-title { color: white; font-weight: 700; font-size: 14px; }
-        .insight-sub { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
-
-        .progress-rail { width: 100%; height: 7px; border-radius: 10px; background: rgba(255,255,255,0.08); overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #0A84FF, #22d3ee); border-radius: 10px; }
-
-        .resource-links { display: flex; gap: 10px; flex-wrap: wrap; }
-        .resource-chip {
-            border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.04);
-            border-radius: 14px;
-            padding: 8px 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 12px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .resource-chip small { color: var(--text-muted); font-weight: 500; }
-
         /* HEADER */
         .header-section {
-            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 6px; z-index: 5;
+            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 10px; z-index: 5;
         }
         .header-left { display: flex; flex-direction: column; gap: 15px; }
         .top-toggles { display: flex; gap: 10px; }
@@ -223,15 +131,12 @@
 
         /* 3D STAGE */
         .heart-stage {
-            grid-column: 1; grid-row: 2 / span 1;
+            grid-column: 1; grid-row: 2 / -1; /* Full height */
             position: relative;
             display: flex; justify-content: center; align-items: center;
-            min-height: 520px;
-            overflow: visible;
         }
-        #model-3d-container {
-            width: 100%; height: 100%; position: relative; z-index: 1;
-            display: flex; align-items: center; justify-content: center;
+        #model-3d-container { 
+            width: 140%; height: 140%; position: absolute; top: -20%; left: -20%; z-index: 1; 
             opacity: 0; animation: fadeIn 1.5s ease-out forwards; cursor: grab;
         }
         #model-3d-container:active { cursor: grabbing; }
@@ -273,7 +178,7 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* STATS GRID */
-        .stats-area { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; z-index: 5; }
+        .stats-area { grid-column: 2; grid-row: 2 / -1; display: flex; flex-direction: column; z-index: 5; } /* Full height */
         .section-header { font-size: 13px; font-weight: 700; color: var(--color-blue); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .blue-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
 
@@ -335,7 +240,7 @@
 
         /* RIGHT COLUMN (Organ Icons + Schedule) */
         .right-column {
-            grid-column: 3; grid-row: 2;
+            grid-column: 3; grid-row: 2 / -1;
             display: flex; flex-direction: column; gap: 20px;
             overflow-y: auto; padding-right: 5px;
         }
@@ -385,312 +290,13 @@
             pointer-events: none; white-space: nowrap; z-index: 20;
         }
 
-        
-@@ -68,67 +68,133 @@
-            flex-shrink: 0;
-            flex-shrink: 0;
-        }
-        }
-        .window-controls { display: flex; gap: 8px; margin-right: 12px; }
-        .window-controls { display: flex; gap: 8px; margin-right: 12px; }
-        .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
-        .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
-        .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
-        .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
-        .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
-        .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
-
-
-        /* DASHBOARD BODY */
-        /* DASHBOARD BODY */
-        .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
-        .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
-
-
-        /* SIDEBAR */
-        /* SIDEBAR */
-        .sidebar {
-        .sidebar {
-            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
-            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
-            border-right: 1px solid var(--glass-border); 
-            border-right: 1px solid var(--glass-border); 
-            z-index: 10; 
-            z-index: 10; 
-            background: rgba(255, 255, 255, 0.02);
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: var(--glass-blur);
-            backdrop-filter: var(--glass-blur);
-            flex-shrink: 0;
-            flex-shrink: 0;
-        }
-        }
-        .logo { font-weight: 800; color: white; font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
-        .logo { font-weight: 800; color: white; font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
-        .logo span { color: var(--color-blue); }
-        .logo span { color: var(--color-blue); }
-        .menu-item {
-        .menu-item {
-            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
-            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
-            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
-            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
-        }
-        }
-        .menu-item:link, .menu-item:visited { text-decoration: none; color: var(--text-muted); }
-        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
-        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
-        .menu-item.active { 
-        .menu-item.active {
-            background: rgba(255, 255, 255, 0.08); 
-            background: rgba(255, 255, 255, 0.08);
-            color: white; 
-            color: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        }
-
-
-        /* MAIN GRID */
-        /* MAIN GRID */
-        .main-content {
-        .main-content {
-            flex: 1; padding: 30px 40px;
-            flex: 1; padding: 30px 40px;
-            display: grid;
-            display: grid;
-            grid-template-columns: 1.2fr 1fr 340px; 
-            grid-template-columns: 1.2fr 1fr 340px;
-            grid-template-rows: auto 1fr; /* Optimized rows */
-            grid-template-rows: auto 1fr; /* Optimized rows */
-            gap: 30px; overflow-y: auto; position: relative;
-            gap: 30px; overflow-y: auto; position: relative;
-        }
-        }
-
-
-        .insights-panel {
-            margin-top: 20px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 16px 18px;
-            backdrop-filter: blur(16px);
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .insight-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-        }
-
-        .insight-card {
-            background: rgba(0,0,0,0.25);
-            border: 1px solid var(--glass-border);
-            border-radius: 14px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .micro-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.3px;
-            width: fit-content;
-        }
-
-        .insight-title { color: white; font-weight: 700; font-size: 14px; }
-        .insight-sub { color: var(--text-muted); font-size: 12px; line-height: 1.4; }
-
-        .progress-rail { width: 100%; height: 7px; border-radius: 10px; background: rgba(255,255,255,0.08); overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #0A84FF, #22d3ee); border-radius: 10px; }
-
-        .resource-links { display: flex; gap: 10px; flex-wrap: wrap; }
-        .resource-chip {
-            border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.04);
-            border-radius: 14px;
-            padding: 8px 12px;
-            color: white;
-            font-weight: 600;
-            font-size: 12px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .resource-chip small { color: var(--text-muted); font-weight: 500; }
-
-        /* HEADER */
-        /* HEADER */
-        .header-section {
-        .header-section {
-            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
-            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 10px; z-index: 5;
-            margin-bottom: 10px; z-index: 5;
-        }
-        }
-        .header-left { display: flex; flex-direction: column; gap: 15px; }
-        .header-left { display: flex; flex-direction: column; gap: 15px; }
-        .top-toggles { display: flex; gap: 10px; }
-        .top-toggles { display: flex; gap: 10px; }
-        .toggle-pill {
-        .toggle-pill {
-            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
-            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
-            color: var(--text-muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
-            color: var(--text-muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
-            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
-            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
-        }
-        }
-        .toggle-pill.active {
-        .toggle-pill.active {
-            background: rgba(10, 132, 255, 0.2); color: white; border-color: rgba(10, 132, 255, 0.4);
-            background: rgba(10, 132, 255, 0.2); color: white; border-color: rgba(10, 132, 255, 0.4);
-            display: flex; align-items: center; gap: 8px;
-            display: flex; align-items: center; gap: 8px;
-        }
-        }
-        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
-        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
-
-
-        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
-        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
-        .page-title h1 { font-size: 56px; font-weight: 700; color: white; line-height: 1; letter-spacing: -2px; }
-        .page-title h1 { font-size: 56px; font-weight: 700; color: white; line-height: 1; letter-spacing: -2px; }
-        .page-title h1 span { font-weight: 300; opacity: 0.8; }
-        .page-title h1 span { font-weight: 300; opacity: 0.8; }
-
-
-        /* 3D STAGE */
-        /* 3D STAGE */
-        .heart-stage {
-        .heart-stage {
-            grid-column: 1; grid-row: 2 / -1; /* Full height */
-            grid-column: 1; grid-row: 2 / -1; /* Full height */
-@@ -271,55 +337,99 @@
-        }
-        }
-        .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
-        .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
-        
-        
-        .organ-item.selected {
-        .organ-item.selected {
-            background: linear-gradient(145deg, rgba(10, 132, 255, 0.15), rgba(0,0,0,0));
-            background: linear-gradient(145deg, rgba(10, 132, 255, 0.15), rgba(0,0,0,0));
-            border: 1px solid var(--color-blue);
-            border: 1px solid var(--color-blue);
-            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), inset 0 0 20px rgba(10, 132, 255, 0.1);
-            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), inset 0 0 20px rgba(10, 132, 255, 0.1);
-        }
-        }
-        .organ-item.selected i, .organ-item.selected svg {
-        .organ-item.selected i, .organ-item.selected svg {
-            color: white; stroke: white; filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.8)); transform: scale(1.1);
-            color: white; stroke: white; filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.8)); transform: scale(1.1);
-        }
-        }
-        
-        
-        .organ-name-mini { display: none; } /* Hide text for compact grid */
-        .organ-name-mini { display: none; } /* Hide text for compact grid */
-
-
-        .organ-label {
-        .organ-label {
-            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
-            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
-            background: #ffffff; color: #000; font-size: 10px; font-weight: 800;
-            background: #ffffff; color: #000; font-size: 10px; font-weight: 800;
-            padding: 2px 8px; border-radius: 100px;
-            padding: 2px 8px; border-radius: 100px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; white-space: nowrap; z-index: 20;
-            pointer-events: none; white-space: nowrap; z-index: 20;
-        }
-        }
-
-
-        /* SCHEDULE AREA */
         /* SCHEDULE AREA */
         .schedule-area {
-        .schedule-area {
-            flex: 1; /* Fill remaining height */
             flex: 1; /* Fill remaining height */
             background: rgba(255, 255, 255, 0.03); 
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(24px);
             backdrop-filter: blur(24px);
             border-radius: 28px; padding: 24px;
-            border-radius: 28px; padding: 24px;
             border: 1px solid var(--glass-border); display: flex; flex-direction: column; z-index: 5;
-            border: 1px solid var(--glass-border); display: flex; flex-direction: column; z-index: 5;
-        }
-        }
-
-        .link-suite {
-            margin-top: 16px;
-            padding: 14px;
-            border-radius: 18px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255, 255, 255, 0.02);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .link-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-        }
-
-        .link-tile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-radius: 14px;
-            border: 1px solid rgba(255,255,255,0.05);
-            background: rgba(255,255,255,0.03);
-            color: white;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 12px;
-            transition: 0.2s;
-        }
-
-        .link-tile:hover {
-            border-color: rgba(255,255,255,0.12);
-            transform: translateY(-1px);
-        }
-
-        .link-tile small {
-            display: block;
-            color: var(--text-muted);
-            font-weight: 500;
-            line-height: 1.3;
         }
         .ai-panel {
             margin-top: 20px; padding: 16px; background: rgba(10, 132, 255, 0.08); 
@@ -725,15 +331,6 @@
             border-radius: 100px; font-weight: 700; font-size: 13px; cursor: pointer;
             display: flex; justify-content: center; align-items: center; gap: 10px;
             box-shadow: 0 10px 30px -5px rgba(10, 132, 255, 0.4); transition: 0.3s;
-        }
-
-        .insight-row {
-            grid-column: 2 / span 2;
-            grid-row: 3;
-            display: grid;
-            grid-template-columns: 1.3fr 0.7fr;
-            gap: 20px;
-            align-items: stretch;
         }
 
         /* Sound Button */
@@ -775,8 +372,7 @@
 
         @media (max-width: 768px) {
             .browser-bar { padding: 0 16px; justify-content: space-between; }
-            .search-suite { max-width: 100%; }
-            .model-link { display: none; }
+            .url-bar { display: none; }
             .nav-icons { display: none; }
             .main-content { padding: 16px; gap: 20px; display: flex; flex-direction: column; }
             .page-title h1 { font-size: 36px; }
@@ -798,32 +394,19 @@
                 <div class="window-dot" style="background: #10b981;"></div>
             </div>
             <div class="nav-icons"><i class="ph ph-caret-left"></i><i class="ph ph-caret-right"></i></div>
-            <div class="search-suite">
-                <div class="search-bar">
-                    <i class="ph-bold ph-magnifying-glass"></i>
-                    <input class="search-input" id="page-search" type="text" placeholder="Search pages or 3D models..." autocomplete="off" />
-                    <div class="search-results" id="search-results"></div>
-                </div>
-                <div class="header-nav" aria-label="Primary navigation">
-                    <a class="nav-link-pill active" href="patient-dashboard.html">Dashboard</a>
-                    <a class="nav-link-pill" href="patient-health.html">Care Plan</a>
-                    <a class="nav-link-pill" href="patient-labs.html">Labs</a>
-                    <a class="nav-link-pill" href="patient-devices.html">Devices</a>
-                    <a class="nav-link-pill" href="patient-organs.html">Organs</a>
-                </div>
-            </div>
+            <div class="url-bar"><i class="ph-fill ph-lock-key"></i><span>Healthflo.com</span><i class="ph ph-arrow-clockwise" style="margin-left: auto;"></i></div>
             <div class="branding-right">Health flo <span>OS NEO</span></div>
         </div>
-        
+
         <div class="dashboard-body">
             <div class="sidebar">
                 <div class="logo">H<span>+</span></div>
-                <a class="menu-item active" href="patient-dashboard.html" aria-label="Dashboard"><i class="ph-fill ph-heartbeat"></i></a>
-                <a class="menu-item" href="patient-health.html" aria-label="Health Plan"><i class="ph ph-chat-circle-dots"></i></a>
-                <a class="menu-item" href="patient-labs.html" aria-label="Labs"><i class="ph ph-file-text"></i></a>
-                <a class="menu-item" href="patient-profile.html" aria-label="Profile"><i class="ph ph-user"></i></a>
-                <a class="menu-item" href="patient-organs.html" aria-label="Organs"><i class="ph ph-squares-four"></i></a>
-                <a class="menu-item" href="patient-settings.html" aria-label="Settings" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></a>
+                <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
+                <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
+                <div class="menu-item"><i class="ph ph-file-text"></i></div>
+                <div class="menu-item"><i class="ph ph-user"></i></div>
+                <div class="menu-item"><i class="ph ph-squares-four"></i></div>
+                <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
             </div>
 
             <div class="main-content">
@@ -899,51 +482,10 @@
                     <div class="section-header"><div class="blue-dot"></div> Select Organ</div>
                     <div class="organ-tray">
                         </div>
-                </div>
-
-                <div class="insight-row">
-                    <div class="insights-panel">
-                        <div style="display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
-                            <div class="section-header" style="margin-bottom:0;"><div class="blue-dot"></div> Guided Health Tracks</div>
-                            <div class="micro-pill"><i class="ph ph-compass"></i> Everyday language</div>
-                        </div>
-                        <div class="insight-grid">
-                            <div class="insight-card">
-                                <div class="micro-pill"><i class="ph ph-heart"></i> Cardio basics</div>
-                                <div class="insight-title">Stay in the blue zone</div>
-                                <div class="insight-sub">Walk 20 mins after meals and keep your resting rate near the calm range.</div>
-                                <div class="progress-rail"><div class="progress-bar" style="width:72%"></div></div>
-                            </div>
-                            <div class="insight-card">
-                                <div class="micro-pill"><i class="ph ph-bandaids"></i> Preventive check</div>
-                                <div class="insight-title">Labs to watch</div>
-                                <div class="insight-sub">Keep kidneys, liver, and heart markers aligned with your care plan.</div>
-                                <div class="progress-rail"><div class="progress-bar" style="width:64%"></div></div>
-                            </div>
-                            <div class="insight-card">
-                                <div class="micro-pill"><i class="ph ph-moon-stars"></i> Recovery</div>
-                                <div class="insight-title">Sleep & recharge</div>
-                                <div class="insight-sub">Aim for 7-8 hours, dim screens by 10pm, and hydrate before bed.</div>
-                                <div class="progress-rail"><div class="progress-bar" style="width:58%"></div></div>
-                            </div>
-                            <div class="insight-card">
-                                <div class="micro-pill"><i class="ph ph-apple-logo"></i> Nutrition</div>
-                                <div class="insight-title">Everyday plate</div>
-                                <div class="insight-sub">Fill half your plate with greens, lean protein, and steady water sips.</div>
-                                <div class="progress-rail"><div class="progress-bar" style="width:69%"></div></div>
-                            </div>
-                        </div>
-                        <div class="resource-links">
-                            <a class="resource-chip" href="patient-health.html"><i class="ph ph-hand-heart"></i> See my plan <small>guided steps</small></a>
-                            <a class="resource-chip" href="patient-labs.html"><i class="ph ph-flask"></i> Labs at a glance <small>plain words</small></a>
-                            <a class="resource-chip" href="patient-insurance.html"><i class="ph ph-shield-check"></i> Coverage tips <small>what's included</small></a>
-                            <a class="resource-chip" href="patient-pharmacy.html"><i class="ph ph-pill"></i> Med reminders <small>everyday language</small></a>
-                        </div>
-                    </div>
 
                     <div class="schedule-area">
                         <div class="section-header" style="margin-bottom:10px;"><div class="blue-dot"></div> AI Analysis</div>
-
+                        
                         <div class="ai-panel" id="ai-panel">
                             <span class="ai-title" id="ai-title">AI ANALYSIS</span>
                             <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
@@ -960,17 +502,6 @@
                             <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
                             <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
                         </div>
-                        
-                        <div class="link-suite">
-                            <div class="section-header" style="margin-bottom:0;"><div class="blue-dot"></div> Connected Pages</div>
-                            <p style="color:var(--text-muted); font-size:12px; margin:0;">Deep-link this organ to other Health Flo OS experiences.</p>
-                            <div class="link-grid">
-                                <a class="link-tile" id="link-health" href="patient-health.html"><i class="ph ph-activity"></i><div><div>Health plan</div><small id="link-health-copy">Open care plan</small></div></a>
-                                <a class="link-tile" id="link-organs" href="patient-organs.html"><i class="ph ph-hand-heart"></i><div><div>Organ watch</div><small id="link-organs-copy">3D studio jump</small></div></a>
-                                <a class="link-tile" id="link-labs" href="patient-labs.html"><i class="ph ph-flask"></i><div><div>Labs</div><small id="link-labs-copy">Mirror organ markers</small></div></a>
-                                <a class="link-tile" id="link-pharmacy" href="patient-pharmacy.html"><i class="ph ph-pill"></i><div><div>Pharmacy</div><small id="link-pharmacy-copy">Dose guard</small></div></a>
-                            </div>
-                        </div>
                         <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
                     </div>
                 </div>
@@ -981,33 +512,9 @@
     
     <script>
         // --- CONFIGURATION ---
-        // Load GLB assets directly from the local 3d_models directory for offline-friendly usage.
-        const MODEL_BASE_PATH = './3d_models/';
-        const ORGAN_MODEL_MAP = {
-            heart: 'heart.glb',
-            brain: 'brain.glb',
-            lungs: 'lungs.glb',
-            liver: 'liver.glb',
-            cirrhotic_liver: 'cirrhotic_liver.glb',
-            kidneys: 'kidneys.glb',
-            eyes: 'eyes.glb'
-        };
-
-        // Quick navigation targets surfaced in the header search
-        const PAGE_LINKS = [
-            { label: 'Dashboard', url: 'patient-dashboard.html', detail: 'Live vitals overview', tags: ['home', 'overview', 'heart'] },
-            { label: 'Health Plan', url: 'patient-health.html', detail: 'Care tasks & routines', tags: ['plan', 'tasks', 'care'] },
-            { label: 'Labs', url: 'patient-labs.html', detail: 'Results & markers', tags: ['labs', 'reports'] },
-            { label: 'Organs / 3D models', url: 'patient-organs.html', detail: 'Atlas + 3D viewer', tags: ['organs', '3d', 'models', 'atlas'] },
-            { label: 'Pharmacy', url: 'patient-pharmacy.html', detail: 'Meds & refills', tags: ['meds', 'pharmacy', 'prescriptions'] },
-            { label: 'Hospitals', url: 'patient-hospitals.html', detail: 'Care network', tags: ['hospitals', 'providers'] },
-            { label: 'Devices', url: 'patient-devices.html', detail: 'Linked wearables', tags: ['devices', 'wearables'] },
-            { label: 'Family', url: 'patient-family.html', detail: 'Care circle', tags: ['family', 'contacts'] },
-            { label: 'Profile', url: 'patient-profile.html', detail: 'Patient identity', tags: ['profile', 'user'] },
-            { label: 'Insurance', url: 'patient-insurance.html', detail: 'Coverage & claims', tags: ['insurance', 'claims'] },
-            { label: 'Settings', url: 'patient-settings.html', detail: 'System preferences', tags: ['settings', 'theme'] },
-            { label: '3D Model Shelf', url: 'patient-organs.html#models', detail: 'Jump to model gallery', tags: ['models', 'gallery', 'viewer'] }
-        ];
+        // UPDATE: Switched to jsDelivr CDN. This is much more stable than raw.githubusercontent.com
+        // for loading 3D models in production apps.
+        const GITHUB_REPO_PATH = 'https://cdn.jsdelivr.net/gh/Nobledental/ULTRA-MOD@main/3d_models/'; 
         
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
@@ -1026,7 +533,7 @@
             heart: {
                 title: "My Heart Condition",
                 mainStat: "BPM",
-                animKey: "bpm",
+                animKey: "bpm", 
                 simValue: 80,
                 icon: "ph-heart",
                 stats: [
@@ -1092,20 +599,6 @@
                     { id: "c4", title: "Hydration", base: 92, unit: "%", icon: "ph-drop-half", type: "perc" }
                 ],
                 abnormal: { msg: "Low Filtration.", action: "Increase fluid intake." }
-            },
-           eyes: {
-                title: "Vision & Eye Health",
-                mainStat: "Focus",
-                animKey: "vis",
-                simValue: 20,
-                icon: "ph-eye",
-                stats: [
-                    { id: "c1", title: "IOP", base: 16, unit: "mmHg", icon: "ph-eye", type: "norm" },
-                    { id: "c2", title: "Visual Acuity", base: 20, unit: "/20", icon: "ph-browsers", type: "norm" },
-                    { id: "c3", title: "Dryness", base: 12, unit: "%", icon: "ph-drop-half", type: "perc" },
-                    { id: "c4", title: "Blue Light", base: 45, unit: "%", icon: "ph-device-mobile", type: "norm" }
-                ],
-                abnormal: { msg: "Dry eye detected.", action: "Add lubrication drops + breaks." }
             },
             stomach: {
                 title: "Gastric Health",
@@ -1247,34 +740,6 @@
                 ],
                 abnormal: { msg: "Gingivitis Risk.", action: "Hygiene review." }
             },
-            cirrhotic_liver: {
-                title: "Liver - Cirrhotic Model",
-                mainStat: "Fibrosis",
-                animKey: "fib",
-                simValue: 3,
-                icon: "svg-liver",
-                stats: [
-                    { id: "c1", title: "Fibrosis Score", base: 3, unit: "/6", icon: "ph-warning", type: "norm" },
-                    { id: "c2", title: "Portal Pressure", base: 12, unit: "mmHg", icon: "ph-gauge", type: "norm" },
-                    { id: "c3", title: "Albumin", base: 3.2, unit: "g/dL", icon: "ph-egg", type: "norm" },
-                    { id: "c4", title: "Ascites Risk", base: 8, unit: "%", icon: "ph-activity", type: "perc" }
-                ],
-                abnormal: { msg: "Compensated cirrhosis.", action: "Schedule hepatology consult." }
-            },
-            cirrhotic_liver: {
-                title: "Liver - Cirrhotic Model",
-                mainStat: "Fibrosis",
-                animKey: "fib",
-                simValue: 3,
-                icon: "svg-liver",
-                stats: [
-                    { id: "c1", title: "Fibrosis Score", base: 3, unit: "/6", icon: "ph-warning", type: "norm" },
-                    { id: "c2", title: "Portal Pressure", base: 12, unit: "mmHg", icon: "ph-gauge", type: "norm" },
-                    { id: "c3", title: "Albumin", base: 3.2, unit: "g/dL", icon: "ph-egg", type: "norm" },
-                    { id: "c4", title: "Ascites Risk", base: 8, unit: "%", icon: "ph-activity", type: "perc" }
-                ],
-                abnormal: { msg: "Compensated cirrhosis.", action: "Schedule hepatology consult." }
-            },
             breast: {
                 title: "Breast Tissue",
                 mainStat: "Dense",
@@ -1303,71 +768,6 @@
                 ],
                 abnormal: { msg: "Stiffness.", action: "Mobility exercises." }
             }
-        };
-
-        const CONNECTED_LINKS = {
-            health: { id: 'link-health', copy: 'link-health-copy', href: 'patient-health.html' },
-            organs: { id: 'link-organs', copy: 'link-organs-copy', href: 'patient-organs.html' },
-            labs: { id: 'link-labs', copy: 'link-labs-copy', href: 'patient-labs.html' },
-            pharmacy: { id: 'link-pharmacy', copy: 'link-pharmacy-copy', href: 'patient-pharmacy.html' }
-        };
-
-        const CONNECTED_LINKS = {
-            health: { id: 'link-health', copy: 'link-health-copy', href: 'patient-health.html' },
-            organs: { id: 'link-organs', copy: 'link-organs-copy', href: 'patient-organs.html' },
-            labs: { id: 'link-labs', copy: 'link-labs-copy', href: 'patient-labs.html' },
-            pharmacy: { id: 'link-pharmacy', copy: 'link-pharmacy-copy', href: 'patient-pharmacy.html' }
-        };
-
-        const renderSearchResults = (query = '') => {
-            const input = document.getElementById('page-search');
-            const results = document.getElementById('search-results');
-            if (!input || !results) return;
-
-            const normalized = query.trim().toLowerCase();
-            const matches = PAGE_LINKS.filter(link =>
-                !normalized ||
-                link.label.toLowerCase().includes(normalized) ||
-                link.tags.some(tag => tag.includes(normalized))
-            ).slice(0, 7);
-
-            results.innerHTML = matches.map(link => `
-                <button class="search-result" data-url="${link.url}" type="button">
-                    <span>${link.label}</span>
-                    <small>${link.detail}</small>
-                </button>
-            `).join('');
-
-            if (matches.length && (normalized || document.activeElement === input)) results.classList.add('show');
-            else results.classList.remove('show');
-        };
-
-        const initSearchBar = () => {
-            const input = document.getElementById('page-search');
-            const results = document.getElementById('search-results');
-            if (!input || !results) return;
-
-            renderSearchResults('');
-
-            input.addEventListener('input', () => renderSearchResults(input.value));
-            input.addEventListener('focus', () => renderSearchResults(input.value));
-            input.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') {
-                    const first = results.querySelector('.search-result');
-                    if (first) window.location.href = first.dataset.url;
-                }
-            });
-
-            results.addEventListener('mousedown', (e) => {
-                const btn = e.target.closest('.search-result');
-                if (btn) window.location.href = btn.dataset.url;
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!results.contains(e.target) && e.target !== input) {
-                    results.classList.remove('show');
-                }
-            });
         };
 
         const getColorClass = (val, type) => {
@@ -1522,37 +922,12 @@
             });
         };
 
-        const formatOrganTitle = (key) => key.split('_').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
-
-        const updateLinkSuite = (organType) => {
-            const label = formatOrganTitle(organType);
-
-            Object.entries(CONNECTED_LINKS).forEach(([slot, cfg]) => {
-                const anchor = document.getElementById(cfg.id);
-                const copyEl = document.getElementById(cfg.copy);
-
-                if(anchor) anchor.href = `${cfg.href}?organ=${organType}`;
-
-                if(copyEl) {
-                    const line = {
-                        health: `Push ${label} plan`,
-                        organs: `Inspect ${label} in 3D`,
-                        labs: `Cross-check labs for ${label}`,
-                        pharmacy: `Dose match for ${label}`
-                    }[slot];
-                    copyEl.textContent = line || copyEl.textContent;
-                }
-            });
-        };
-
         const updateUI = (organType) => {
             activeOrgan = organType;
             const data = ORGAN_DATA[organType];
-
+            
             // Audio Sync
             AudioEngine.setBPM(data.simValue);
-
-            updateLinkSuite(organType);
 
             // Text Updates
             document.getElementById('section-title').innerHTML = `<div class="blue-dot"></div> ${data.title}`;
@@ -1769,23 +1144,22 @@
 
             // UNIFIED LOADER: Now loads external GLB for ALL types (including heart and cells)
             const loader = new THREE.GLTFLoader();
-            const fileName = ORGAN_MODEL_MAP[type] || `${type}.glb`;
-            const url = `${MODEL_BASE_PATH}${fileName}`;
-
-           loader.load(url, (gltf) => {
+            const url = `${GITHUB_REPO_PATH}${type}.glb`;
+            
+            loader.load(url, (gltf) => {
                 const model = gltf.scene;
                 const box = new THREE.Box3().setFromObject(model);
-                const size = box.getSize(new THREE.Vector3());
-
-                // Normalize Size using the largest dimension to keep proportions consistent
-                const maxDim = Math.max(size.x, size.y, size.z);
-                const scaleFactor = 6 / maxDim;
-                model.scale.setScalar(scaleFactor);
-
-                // Re-center the model at the origin so it sits in the middle of the stage
-                box.setFromObject(model);
+                const size = box.getSize(new THREE.Vector3()).length();
                 const center = box.getCenter(new THREE.Vector3());
-                model.position.sub(center);
+                
+                // Normalize Size
+                const scaleFactor = 6 / size;
+                model.scale.setScalar(scaleFactor);
+                
+                // Center it
+                model.position.x += (model.position.x - center.x) * scaleFactor;
+                model.position.y += (model.position.y - center.y) * scaleFactor;
+                model.position.z += (model.position.z - center.z) * scaleFactor;
                 
                 group.add(model);
             }, undefined, (error) => {
@@ -1806,7 +1180,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             generateOrganButtons();
-            initSearchBar();
             initThree();
             updateUI('heart');
 
