@@ -151,6 +151,24 @@
         .bottom-nav button {
             background: transparent; border: none; color: var(--text-white); font-size: 22px; width: 20%; padding: 10px 0;
         }
+        .mobile-link-strip {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-top: 8px;
+            margin-top: 8px;
+            border-top: 1px solid var(--glass-border);
+        }
+        .mobile-link-strip a {
+            white-space: nowrap;
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-white);
+            font-size: 12px;
+            text-decoration: none;
+        }
         .logo { font-weight: 800; color: var(--text-white); font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
         .logo span { color: var(--color-blue); }
         .menu-item {
@@ -185,6 +203,33 @@
             padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
             color: var(--text-muted); background: rgba(125, 125, 125, 0.1); border: 1px solid var(--glass-border);
             cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+        }
+        .page-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .page-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-white);
+            font-size: 12px;
+            text-decoration: none;
+            transition: 0.2s;
+            backdrop-filter: blur(10px);
+        }
+        .page-nav a:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            color: var(--color-blue);
+        }
+        .page-nav a .ph {
+            font-size: 16px;
         }
         .toggle-pill.active {
             background: rgba(59, 130, 246, 0.2); color: var(--pill-active-text); border-color: rgba(59, 130, 246, 0.5);
@@ -590,6 +635,7 @@
                             <h2>Hi Dhivakaran,</h2>
                             <h1>Overview <span>Conditions</span></h1>
                         </div>
+                        <div class="page-nav" id="page-nav"></div>
                     </div>
                     <button class="theme-toggle" id="theme-toggle">White Theme</button>
                 </div>
@@ -698,6 +744,7 @@
                 <button id="open-pharmacy"><i class="ph ph-pill"></i></button>
                 <button id="open-files"><i class="ph ph-folder"></i></button>
             </div>
+        <div class="mobile-link-strip" id="mobile-nav-links"></div>
         </div>
 
         <div class="utility-launchers">
@@ -1352,14 +1399,18 @@
             const el = document.getElementById(`c${idx}-val`);
             el.innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
 
-            if (idx === 2) {
+            const activeData = ORGAN_DATA[activeOrgan];
+            const shouldDrivePulse = type === activeData.animKey;
+
+            if (idx === 2 || shouldDrivePulse) {
                 document.getElementById('main-stat').innerHTML = `${val} <span style="font-size:12px;font-weight:500;">${unit}</span>`;
                 const boxBpm = document.getElementById('box-bpm');
                 if(boxBpm) boxBpm.innerText = val;
 
-                if(ORGAN_DATA[activeOrgan].animKey === type) {
-                    ORGAN_DATA[activeOrgan].simValue = val;
-                    AudioEngine.setBPM(val);
+                if(shouldDrivePulse) {
+                    const bpmNumber = parseFloat(val) || activeData.simValue;
+                    activeData.simValue = bpmNumber;
+                    AudioEngine.setBPM(bpmNumber);
                 }
             }
             persistVitalsSnapshot();
@@ -1674,7 +1725,635 @@
             group.add(coreMesh);
         };
 
+        
+@@ -129,85 +129,130 @@
+        /* DASHBOARD BODY */
+        /* DASHBOARD BODY */
+        .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+        .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+
+        /* SIDEBAR */
+        /* SIDEBAR */
+        .sidebar {
+        .sidebar {
+            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
+            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
+            border-right: 1px solid var(--glass-border);
+            border-right: 1px solid var(--glass-border);
+            z-index: 10;
+            z-index: 10;
+            background: var(--sidebar-bg);
+            background: var(--sidebar-bg);
+            backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
+            flex-shrink: 0;
+            flex-shrink: 0;
+        }
+        }
+        .bottom-nav {
+        .bottom-nav {
+            display: none;
+            display: none;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid var(--glass-border);
+            border-top: 1px solid var(--glass-border);
+            padding: 10px 18px;
+            padding: 10px 18px;
+            z-index: 50;
+            z-index: 50;
+        }
+        }
+        .bottom-nav .nav-items { display: flex; justify-content: space-between; align-items: center; }
+        .bottom-nav .nav-items { display: flex; justify-content: space-between; align-items: center; }
+        .bottom-nav button {
+        .bottom-nav button {
+            background: transparent; border: none; color: var(--text-white); font-size: 22px; width: 20%; padding: 10px 0;
+            background: transparent; border: none; color: var(--text-white); font-size: 22px; width: 20%; padding: 10px 0;
+        }
+        }
+        .mobile-link-strip {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-top: 8px;
+            margin-top: 8px;
+            border-top: 1px solid var(--glass-border);
+        }
+        .mobile-link-strip a {
+            white-space: nowrap;
+            padding: 8px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.05);
+            color: var(--text-white);
+            font-size: 12px;
+            text-decoration: none;
+        }
+        .logo { font-weight: 800; color: var(--text-white); font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
+        .logo { font-weight: 800; color: var(--text-white); font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
+        .logo span { color: var(--color-blue); }
+        .logo span { color: var(--color-blue); }
+        .menu-item {
+        .menu-item {
+            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+        }
+        }
+        .menu-item:hover { color: var(--text-white); background: rgba(125, 125, 125, 0.1); }
+        .menu-item:hover { color: var(--text-white); background: rgba(125, 125, 125, 0.1); }
+        .menu-item.active { 
+        .menu-item.active { 
+            background: rgba(59, 130, 246, 0.1); 
+            background: rgba(59, 130, 246, 0.1); 
+            color: var(--color-blue); 
+            color: var(--color-blue); 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); 
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        }
+        
+        
+        /* MAIN GRID - RESTRUCTURED */
+        /* MAIN GRID - RESTRUCTURED */
+        .main-content {
+        .main-content {
+            flex: 1; padding: 30px 40px;
+            flex: 1; padding: 30px 40px;
+            display: grid;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr; /* 2 Column Split */
+            grid-template-columns: 1.4fr 1fr; /* 2 Column Split */
+            grid-template-rows: auto 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 30px; overflow-y: auto; position: relative;
+            gap: 30px; overflow-y: auto; position: relative;
+        }
+        }
+
+
+        /* HEADER */
+        /* HEADER */
+        .header-section {
+        .header-section {
+            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
+            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 10px; z-index: 5;
+            margin-bottom: 10px; z-index: 5;
+        }
+        }
+        .header-left { display: flex; flex-direction: column; gap: 15px; }
+        .header-left { display: flex; flex-direction: column; gap: 15px; }
+        .top-toggles { display: flex; gap: 10px; }
+        .top-toggles { display: flex; gap: 10px; }
+        .toggle-pill {
+        .toggle-pill {
+            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
+            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
+            color: var(--text-muted); background: rgba(125, 125, 125, 0.1); border: 1px solid var(--glass-border);
+            color: var(--text-muted); background: rgba(125, 125, 125, 0.1); border: 1px solid var(--glass-border);
+            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+        }
+        }
+        .page-nav {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .page-nav a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-white);
+            font-size: 12px;
+            text-decoration: none;
+            transition: 0.2s;
+            backdrop-filter: blur(10px);
+        }
+        .page-nav a:hover {
+            border-color: rgba(59, 130, 246, 0.4);
+            color: var(--color-blue);
+        }
+        .page-nav a .ph {
+            font-size: 16px;
+        }
+        .toggle-pill.active {
+        .toggle-pill.active {
+            background: rgba(59, 130, 246, 0.2); color: var(--pill-active-text); border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.2); color: var(--pill-active-text); border-color: rgba(59, 130, 246, 0.5);
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+        }
+        }
+        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
+        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
+
+
+        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .page-title h1 { font-size: 56px; font-weight: 700; color: var(--text-white); line-height: 1; letter-spacing: -2px; }
+        .page-title h1 { font-size: 56px; font-weight: 700; color: var(--text-white); line-height: 1; letter-spacing: -2px; }
+        .page-title h1 span { font-weight: 300; opacity: 0.8; }
+        .page-title h1 span { font-weight: 300; opacity: 0.8; }
+
+
+        .theme-toggle {
+        .theme-toggle {
+            padding: 8px 14px; border-radius: 12px; border: 1px solid var(--glass-border);
+            padding: 8px 14px; border-radius: 12px; border: 1px solid var(--glass-border);
+            background: rgba(125, 125, 125, 0.1); color: var(--text-white); cursor: pointer; font-weight: 700; font-size: 12px;
+            background: rgba(125, 125, 125, 0.1); color: var(--text-white); cursor: pointer; font-weight: 700; font-size: 12px;
+        }
+        }
+
+
+        /* LEFT PANEL (3D + ORGANS) */
+        /* LEFT PANEL (3D + ORGANS) */
+        .left-panel-container {
+        .left-panel-container {
+            grid-column: 1; grid-row: 2;
+            grid-column: 1; grid-row: 2;
+            display: flex; flex-direction: column; gap: 20px;
+            display: flex; flex-direction: column; gap: 20px;
+            position: relative;
+            position: relative;
+        }
+        }
+
+
+        /* 3D STAGE */
+        /* 3D STAGE */
+        .heart-stage {
+        .heart-stage {
+            flex: 1; min-height: 400px;
+            flex: 1; min-height: 400px;
+@@ -568,50 +613,51 @@
+        </div>
+        </div>
+
+
+        <div class="dashboard-body">
+        <div class="dashboard-body">
+            <div class="sidebar">
+            <div class="sidebar">
+                <div class="logo">H<span>+</span></div>
+                <div class="logo">H<span>+</span></div>
+                <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
+                <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
+                <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
+                <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
+                <div class="menu-item"><i class="ph ph-file-text"></i></div>
+                <div class="menu-item"><i class="ph ph-file-text"></i></div>
+                <div class="menu-item"><i class="ph ph-user"></i></div>
+                <div class="menu-item"><i class="ph ph-user"></i></div>
+                <div class="menu-item"><i class="ph ph-squares-four"></i></div>
+                <div class="menu-item"><i class="ph ph-squares-four"></i></div>
+                <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
+                <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
+            </div>
+            </div>
+
+
+            <div class="main-content">
+            <div class="main-content">
+                
+                
+                <div class="header-section">
+                <div class="header-section">
+                    <div class="header-left">
+                    <div class="header-left">
+                        <div class="top-toggles">
+                        <div class="top-toggles">
+                            <div class="toggle-pill">Diagnose</div>
+                            <div class="toggle-pill">Diagnose</div>
+                            <div class="toggle-pill active" id="mode-pill"><div class="active-dot"></div> My Heart</div>
+                            <div class="toggle-pill active" id="mode-pill"><div class="active-dot"></div> My Heart</div>
+                        </div>
+                        </div>
+                        <div class="page-title">
+                        <div class="page-title">
+                            <h2>Hi Dhivakaran,</h2>
+                            <h2>Hi Dhivakaran,</h2>
+                            <h1>Overview <span>Conditions</span></h1>
+                            <h1>Overview <span>Conditions</span></h1>
+                        </div>
+                        </div>
+                        <div class="page-nav" id="page-nav"></div>
+                    </div>
+                    </div>
+                    <button class="theme-toggle" id="theme-toggle">White Theme</button>
+                    <button class="theme-toggle" id="theme-toggle">White Theme</button>
+                </div>
+                </div>
+
+
+                <!-- LEFT PANEL: 3D HERO + ORGAN DOCK -->
+                <!-- LEFT PANEL: 3D HERO + ORGAN DOCK -->
+                <div class="left-panel-container">
+                <div class="left-panel-container">
+                    <div class="heart-stage">
+                    <div class="heart-stage">
+                        <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
+                        <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
+                        <div class="rings"></div>
+                        <div class="rings"></div>
+                        <div class="scanner-line"></div>
+                        <div class="scanner-line"></div>
+                        <div id="model-3d-container"></div>
+                        <div id="model-3d-container"></div>
+                    </div>
+                    </div>
+                    
+                    
+                    <div class="organ-tray-wrapper">
+                    <div class="organ-tray-wrapper">
+                        <div class="section-header mini">Select Organ System</div>
+                        <div class="section-header mini">Select Organ System</div>
+                        <div class="organ-tray"></div>
+                        <div class="organ-tray"></div>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+
+                <!-- RIGHT PANEL: DATA + SCHEDULE -->
+                <!-- RIGHT PANEL: DATA + SCHEDULE -->
+                <div class="right-panel-container">
+                <div class="right-panel-container">
+                    <div class="floating-stat" id="float-card">
+                    <div class="floating-stat" id="float-card">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+                            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+                            <span style="font-size:12px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
+                            <span style="font-size:12px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
+@@ -676,50 +722,51 @@
+                            <div><div style="font-size:11px; color:#9ca3af; margin-bottom:4px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 15px;">Fri, 24 Mar</div></div>
+                            <div><div style="font-size:11px; color:#9ca3af; margin-bottom:4px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 15px;">Fri, 24 Mar</div></div>
+                            <i class="ph-fill ph-calendar-check" style="font-size:24px; color: var(--color-blue);"></i>
+                            <i class="ph-fill ph-calendar-check" style="font-size:24px; color: var(--color-blue);"></i>
+                        </div>
+                        </div>
+                        <div class="date-nav">
+                        <div class="date-nav">
+                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:13px; color:var(--text-white); font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
+                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:13px; color:var(--text-white); font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
+                        </div>
+                        </div>
+                        <div class="doc-list">
+                        <div class="doc-list">
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
+                        </div>
+                        </div>
+                        <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
+                        <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+
+
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+        <div class="bottom-nav">
+        <div class="bottom-nav">
+            <div class="nav-items">
+            <div class="nav-items">
+                <button><i class="ph-fill ph-heartbeat"></i></button>
+                <button><i class="ph-fill ph-heartbeat"></i></button>
+                <button><i class="ph ph-brain"></i></button>
+                <button><i class="ph ph-brain"></i></button>
+                <button id="open-video"><i class="ph ph-video-camera"></i></button>
+                <button id="open-video"><i class="ph ph-video-camera"></i></button>
+                <button id="open-pharmacy"><i class="ph ph-pill"></i></button>
+                <button id="open-pharmacy"><i class="ph ph-pill"></i></button>
+                <button id="open-files"><i class="ph ph-folder"></i></button>
+                <button id="open-files"><i class="ph ph-folder"></i></button>
+            </div>
+            </div>
+            <div class="mobile-link-strip" id="mobile-nav-links"></div>
+        </div>
+        </div>
+
+
+        <div class="utility-launchers">
+        <div class="utility-launchers">
+            <button id="launch-video">Video Call</button>
+            <button id="launch-video">Video Call</button>
+            <button id="launch-pharmacy">Refill Rx</button>
+            <button id="launch-pharmacy">Refill Rx</button>
+            <button id="launch-files">Files</button>
+            <button id="launch-files">Files</button>
+            <button id="launch-faceid">Secure</button>
+            <button id="launch-faceid">Secure</button>
+        </div>
+        </div>
+
+
+        <div class="chat-drawer" id="chat-drawer">
+        <div class="chat-drawer" id="chat-drawer">
+            <h4><i class="ph ph-robot"></i> AI Assistant</h4>
+            <h4><i class="ph ph-robot"></i> AI Assistant</h4>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-messages" id="chat-messages"></div>
+            <div class="chat-input-row">
+            <div class="chat-input-row">
+                <input type="text" id="chat-input" placeholder="Describe symptoms e.g. pain, bleeding" />
+                <input type="text" id="chat-input" placeholder="Describe symptoms e.g. pain, bleeding" />
+                <button id="chat-send"><i class="ph ph-paper-plane-tilt"></i></button>
+                <button id="chat-send"><i class="ph ph-paper-plane-tilt"></i></button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+
+        <button class="sos-btn" id="sos-btn">Hold for SOS</button>
+        <button class="sos-btn" id="sos-btn">Hold for SOS</button>
+
+
+        <div class="modal-overlay" id="video-modal">
+        <div class="modal-overlay" id="video-modal">
+            <div class="modal-box">
+            <div class="modal-box">
+                <div class="modal-header"><h3>Telemedicine Call</h3><button class="ghost-btn" data-close="video-modal">Close</button></div>
+                <div class="modal-header"><h3>Telemedicine Call</h3><button class="ghost-btn" data-close="video-modal">Close</button></div>
+                <div class="modal-body">
+                <div class="modal-body">
+                    <p>Connecting to Dr. Lee... camera <strong id="cam-state">ON</strong></p>
+                    <p>Connecting to Dr. Lee... camera <strong id="cam-state">ON</strong></p>
+@@ -1330,58 +1377,62 @@
+
+
+            // Simulate Scan Delay then reveal
+            // Simulate Scan Delay then reveal
+            setTimeout(() => {
+            setTimeout(() => {
+                data.stats.forEach((s, i) => {
+                data.stats.forEach((s, i) => {
+                    const idx = i + 1;
+                    const idx = i + 1;
+                    updateCardValue(idx, s.base, s.unit, s.type);
+                    updateCardValue(idx, s.base, s.unit, s.type);
+                });
+                });
+                startLiveSimulation(organType);
+                startLiveSimulation(organType);
+            }, 800);
+            }, 800);
+        };
+        };
+
+
+        const updateCardValue = (idx, val, unit, type) => {
+        const updateCardValue = (idx, val, unit, type) => {
+            const card = document.getElementById(`card-${idx}`);
+            const card = document.getElementById(`card-${idx}`);
+            const state = getColorClass(val, type);
+            const state = getColorClass(val, type);
+            
+            
+            if(idx !== 2) {
+            if(idx !== 2) {
+                card.className = `data-card ${state}`;
+                card.className = `data-card ${state}`;
+            } else {
+            } else {
+                if(state === 'state-red') card.className = `data-card state-red`;
+                if(state === 'state-red') card.className = `data-card state-red`;
+                else card.className = `data-card active-blue`;
+                else card.className = `data-card active-blue`;
+            }
+            }
+            
+            
+            const el = document.getElementById(`c${idx}-val`);
+            const el = document.getElementById(`c${idx}-val`);
+            el.innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
+            el.innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
+
+
+            if (idx === 2) {
+            const activeData = ORGAN_DATA[activeOrgan];
+            const shouldDrivePulse = type === activeData.animKey;
+
+            if (idx === 2 || shouldDrivePulse) {
+                document.getElementById('main-stat').innerHTML = `${val} <span style="font-size:12px;font-weight:500;">${unit}</span>`;
+                document.getElementById('main-stat').innerHTML = `${val} <span style="font-size:12px;font-weight:500;">${unit}</span>`;
+                const boxBpm = document.getElementById('box-bpm');
+                const boxBpm = document.getElementById('box-bpm');
+                if(boxBpm) boxBpm.innerText = val;
+                if(boxBpm) boxBpm.innerText = val;
+
+
+                if(ORGAN_DATA[activeOrgan].animKey === type) {
+                if(shouldDrivePulse) {
+                    ORGAN_DATA[activeOrgan].simValue = val;
+                    const bpmNumber = parseFloat(val) || activeData.simValue;
+                    AudioEngine.setBPM(val);
+                    activeData.simValue = bpmNumber;
+                    AudioEngine.setBPM(bpmNumber);
+                }
+                }
+            }
+            }
+            persistVitalsSnapshot();
+            persistVitalsSnapshot();
+        };
+        };
+
+
+        // --- ANIMATED ECG LOGIC ---
+        // --- ANIMATED ECG LOGIC ---
+        let ecgPoints = [];
+        let ecgPoints = [];
+        const ecgMaxPoints = 100;
+        const ecgMaxPoints = 100;
+        let ecgPhase = 0;
+        let ecgPhase = 0;
+
+
+        const updateECGGraph = () => {
+        const updateECGGraph = () => {
+            // Generate a simple ECG wave pattern
+            // Generate a simple ECG wave pattern
+            ecgPhase += 0.15;
+            ecgPhase += 0.15;
+            
+            
+            // Basic baseline noise
+            // Basic baseline noise
+            let y = 15 + (Math.random() - 0.5) * 2; 
+            let y = 15 + (Math.random() - 0.5) * 2; 
+
+
+            // Periodic heartbeat spikes
+            // Periodic heartbeat spikes
+            const beat = ecgPhase % (Math.PI * 2);
+            const beat = ecgPhase % (Math.PI * 2);
+            if (beat > 0 && beat < 0.2) y -= 5; // P wave
+            if (beat > 0 && beat < 0.2) y -= 5; // P wave
+            if (beat > 0.3 && beat < 0.4) y += 5; // Q
+            if (beat > 0.3 && beat < 0.4) y += 5; // Q
+            if (beat > 0.4 && beat < 0.6) y -= 25; // R (spike)
+            if (beat > 0.4 && beat < 0.6) y -= 25; // R (spike)
+            if (beat > 0.6 && beat < 0.7) y += 8; // S
+            if (beat > 0.6 && beat < 0.7) y += 8; // S
+            if (beat > 0.9 && beat < 1.2) y -= 4; // T wave
+            if (beat > 0.9 && beat < 1.2) y -= 4; // T wave
+
+
+@@ -1653,50 +1704,86 @@
+                color: color,
+                color: color,
+                wireframe: true,
+                wireframe: true,
+                transparent: true,
+                transparent: true,
+                opacity: 0.15,
+                opacity: 0.15,
+                blending: THREE.AdditiveBlending
+                blending: THREE.AdditiveBlending
+            });
+            });
+            const wireMesh = new THREE.Mesh(geometry, wireMat);
+            const wireMesh = new THREE.Mesh(geometry, wireMat);
+            group.add(wireMesh);
+            group.add(wireMesh);
+
+
+            // 2. Inner Glow Core
+            // 2. Inner Glow Core
+            const coreMat = new THREE.MeshPhongMaterial({
+            const coreMat = new THREE.MeshPhongMaterial({
+                color: color,
+                color: color,
+                transparent: true,
+                transparent: true,
+                opacity: 0.8,
+                opacity: 0.8,
+                shininess: 80,
+                shininess: 80,
+                emissive: color,
+                emissive: color,
+                emissiveIntensity: 0.2,
+                emissiveIntensity: 0.2,
+                flatShading: true 
+                flatShading: true 
+            });
+            });
+            const coreMesh = new THREE.Mesh(geometry.clone(), coreMat);
+            const coreMesh = new THREE.Mesh(geometry.clone(), coreMat);
+            coreMesh.scale.setScalar(0.85); // Slightly smaller
+            coreMesh.scale.setScalar(0.85); // Slightly smaller
+            group.add(coreMesh);
+            group.add(coreMesh);
+        };
+        };
+
+
         document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', () => {
+            const PAGES = [
+                { label: 'Dashboard', href: 'patient-dashboard.html', icon: 'ph-fill ph-heartbeat' },
+                { label: 'Organs', href: 'patient-organs.html', icon: 'ph ph-brain' },
+                { label: 'Health', href: 'patient-health.html', icon: 'ph ph-activity' },
+                { label: 'Labs', href: 'patient-labs.html', icon: 'ph ph-flask' },
+                { label: 'Hospitals', href: 'patient-hospitals.html', icon: 'ph ph-hospital' },
+                { label: 'Pharmacy', href: 'patient-pharmacy.html', icon: 'ph ph-pill' },
+                { label: 'Devices', href: 'patient-devices.html', icon: 'ph ph-device-mobile' },
+                { label: 'Insurance', href: 'patient-insurance.html', icon: 'ph ph-shield-check' },
+                { label: 'Family', href: 'patient-family.html', icon: 'ph ph-users-three' },
+                { label: 'Profile', href: 'patient-profile.html', icon: 'ph ph-user' },
+                { label: 'Settings', href: 'patient-settings.html', icon: 'ph ph-gear-six' },
+                { label: 'Medical Log', href: 'patient-log.html', icon: 'ph ph-clipboard-text' }
+            ];
+
+            const pageNav = document.getElementById('page-nav');
+            const mobileNavLinks = document.getElementById('mobile-nav-links');
+
+            if(pageNav) {
+                PAGES.forEach(p => {
+                    const link = document.createElement('a');
+                    link.href = p.href;
+                    link.innerHTML = `<i class="${p.icon}"></i>${p.label}`;
+                    pageNav.appendChild(link);
+                });
+            }
+
+            if(mobileNavLinks) {
+                PAGES.forEach(p => {
+                    const link = document.createElement('a');
+                    link.href = p.href;
+                    link.innerText = p.label;
+                    mobileNavLinks.appendChild(link);
+                });
+            }
+          
             // Boot Screen Logic
             setTimeout(() => {
                 document.getElementById('boot-screen').style.opacity = '0';
