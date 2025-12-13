@@ -1,1194 +1,1216 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="matte">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthFlo — Patient OS V15 Ultra Modular</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Health flo OS - NEO (Bio-Sync Enabled)</title>
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <style>
+        :root {
+            /* Theme Variables */
+            --bg-radial: radial-gradient(circle at 20% 30%, #506176 0%, #1a1f2b 55%, #0E121B 100%);
+            
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-blur: blur(24px);
+            
+            --text-white: #ffffff;
+            --text-muted: #94a3b8;
 
-  <!-- Model Viewer -->
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+            /* Status Colors */
+            --color-blue: #0A84FF;
+            --color-yellow: #f59e0b;
+            --color-red: #ef4444;
+            
+            --accent-blue: #2563eb;
+            --card-bg: rgba(22, 28, 38, 0.6);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --card-active-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+        }
 
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+        /* RESET */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+        
+        /* CUSTOM SCROLLBARS */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/patient-dashboard.css">
+        body {
+            height: 100vh; width: 100vw;
+            background: var(--bg-radial);
+            overflow: hidden; user-select: none;
+            color: white;
+        }
+
+        /* LAYOUT CONTAINER */
+        .app-container {
+            width: 100vw; height: 100vh;
+            background: transparent;
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
+        }
+
+        /* BROWSER BAR */
+        .browser-bar {
+            height: 60px; display: flex; align-items: center; padding: 0 32px; gap: 24px;
+            border-bottom: 1px solid var(--glass-border); 
+            background: rgba(0,0,0,0.2); 
+            backdrop-filter: blur(10px);
+            z-index: 20;
+            flex-shrink: 0;
+        }
+        .window-controls { display: flex; gap: 8px; margin-right: 12px; }
+        .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
+        .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
+        .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
+
+        /* DASHBOARD BODY */
+        .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
+            border-right: 1px solid var(--glass-border); 
+            z-index: 10; 
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: var(--glass-blur);
+            flex-shrink: 0;
+        }
+        .logo { font-weight: 800; color: white; font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
+        .logo span { color: var(--color-blue); }
+        .menu-item {
+            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+        }
+        .menu-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .menu-item.active { 
+            background: rgba(255, 255, 255, 0.08); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2); 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* MAIN GRID */
+        .main-content {
+            flex: 1; padding: 30px 40px;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr 340px; 
+            grid-template-rows: auto 1fr; /* Optimized rows */
+            gap: 30px; overflow-y: auto; position: relative;
+        }
+
+        /* HEADER */
+        .header-section {
+            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 10px; z-index: 5;
+        }
+        .header-left { display: flex; flex-direction: column; gap: 15px; }
+        .top-toggles { display: flex; gap: 10px; }
+        .toggle-pill {
+            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
+            color: var(--text-muted); background: rgba(255, 255, 255, 0.05); border: 1px solid var(--glass-border);
+            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
+        }
+        .toggle-pill.active {
+            background: rgba(10, 132, 255, 0.2); color: white; border-color: rgba(10, 132, 255, 0.4);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
+
+        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
+        .page-title h1 { font-size: 56px; font-weight: 700; color: white; line-height: 1; letter-spacing: -2px; }
+        .page-title h1 span { font-weight: 300; opacity: 0.8; }
+
+        /* 3D STAGE */
+        .heart-stage {
+            grid-column: 1; grid-row: 2 / -1; /* Full height */
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+        }
+        #model-3d-container { 
+            width: 140%; height: 140%; position: absolute; top: -20%; left: -20%; z-index: 1; 
+            opacity: 0; animation: fadeIn 1.5s ease-out forwards; cursor: grab;
+        }
+        #model-3d-container:active { cursor: grabbing; }
+
+        /* Animated Rings Background */
+        .rings {
+            position: absolute; width: 550px; height: 550px; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.03); 
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.03) 0%, transparent 60%);
+            z-index: 0; animation: spin 40s linear infinite;
+        }
+        .rings::before {
+            content: ''; position: absolute; top: 50px; left: 50px; right: 50px; bottom: 50px;
+            border-radius: 50%; border: 1px dashed rgba(255,255,255,0.05);
+            animation: spinReverse 30s linear infinite;
+        }
+        
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        .scanner-line {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--color-blue), transparent);
+            box-shadow: 0 0 20px var(--color-blue);
+            animation: scan-down 4s ease-in-out infinite; z-index: 2; opacity: 0.5;
+        }
+        @keyframes scan-down { 0% { top: 10%; opacity: 0; } 50% { opacity: 0.8; } 100% { top: 90%; opacity: 0; } }
+
+        .floating-stat {
+            position: absolute; bottom: 40px; left: 20px;
+            background: rgba(20, 25, 35, 0.6); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 20px;
+            padding: 16px 20px; width: 220px; z-index: 10;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+        .live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* STATS GRID */
+        .stats-area { grid-column: 2; grid-row: 2 / -1; display: flex; flex-direction: column; z-index: 5; } /* Full height */
+        .section-header { font-size: 13px; font-weight: 700; color: var(--color-blue); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .blue-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
+
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; flex: 1; }
+        
+        .data-card {
+            background: var(--card-bg); 
+            backdrop-filter: blur(18px);
+            border-radius: 24px; padding: 24px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            border: 1px solid var(--card-border); position: relative; overflow: hidden; transition: 0.3s;
+        }
+        
+        .data-card:hover { border-color: rgba(255,255,255,0.15); background: rgba(30, 35, 45, 0.8); transform: translateY(-2px); }
+
+        /* SCANNING STATE CSS */
+        .scanning-text {
+            color: var(--color-blue);
+            font-size: 14px; font-weight: 600; letter-spacing: 1px;
+            animation: pulseText 1s infinite;
+        }
+        @keyframes pulseText { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
+
+        /* DYNAMIC CARD COLORS */
+        .data-card.state-blue .card-icon { color: var(--color-blue); }
+        .data-card.active-blue {
+            background: var(--card-active-bg); 
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            box-shadow: 0 20px 50px -20px rgba(30, 58, 138, 0.4);
+        }
+        .data-card.state-yellow {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(245, 158, 11, 0.4);
+        }
+        .data-card.state-yellow .card-icon { color: var(--color-yellow); }
+        
+        .data-card.state-red {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
+        }
+        .data-card.state-red .card-icon { color: var(--color-red); }
+
+        .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; z-index: 2; }
+        .card-icon { font-size: 20px; transition: color 0.3s; }
+        .card-title { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px; font-weight: 500; }
+        .card-val { font-size: 26px; font-weight: 700; color: white; letter-spacing: -0.5px; transition: 0.3s; }
+        
+        .bar-chart { display: flex; align-items: flex-end; gap: 6px; height: 45px; margin-top: auto; z-index: 2; }
+        .bar { flex: 1; background: rgba(255,255,255,0.1); border-radius: 4px; transition: height 0.5s ease-in-out, background 0.3s; }
+        .bar.act { background: currentColor; }
+        
+        .blue-square-val {
+            position: absolute; right: 24px; bottom: 24px; width: 50px; height: 50px;
+            background: var(--accent-blue); border-radius: 16px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: white; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4); z-index: 2;
+        }
+
+        /* RIGHT COLUMN (Organ Icons + Schedule) */
+        .right-column {
+            grid-column: 3; grid-row: 2 / -1;
+            display: flex; flex-direction: column; gap: 20px;
+            overflow-y: auto; padding-right: 5px;
+        }
+
+        /* ORGAN TRAY (Updated Layout - Wrapped Flex) */
+        .organ-tray {
+            display: flex;
+            flex-wrap: wrap; /* Allows wrapping to form rows */
+            gap: 12px;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+
+        .organ-item {
+            width: 60px; height: 60px; /* Compact size */
+            background: rgba(255,255,255,0.01); 
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(15px);
+            border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            flex-shrink: 0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+        }
+        .organ-item:hover { 
+            background: rgba(255,255,255,0.05); 
+            transform: translateY(-3px); 
+            border-color: rgba(255,255,255,0.2);
+        }
+        .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        
+        .organ-item.selected {
+            background: linear-gradient(145deg, rgba(10, 132, 255, 0.15), rgba(0,0,0,0));
+            border: 1px solid var(--color-blue);
+            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3), inset 0 0 20px rgba(10, 132, 255, 0.1);
+        }
+        .organ-item.selected i, .organ-item.selected svg {
+            color: white; stroke: white; filter: drop-shadow(0 0 8px rgba(10, 132, 255, 0.8)); transform: scale(1.1);
+        }
+        
+        .organ-name-mini { display: none; } /* Hide text for compact grid */
+
+        .organ-label {
+            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+            background: #ffffff; color: #000; font-size: 10px; font-weight: 800;
+            padding: 2px 8px; border-radius: 100px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none; white-space: nowrap; z-index: 20;
+        }
+
+        /* SCHEDULE AREA */
+        .schedule-area {
+            flex: 1; /* Fill remaining height */
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(24px);
+            border-radius: 28px; padding: 24px;
+            border: 1px solid var(--glass-border); display: flex; flex-direction: column; z-index: 5;
+        }
+        .ai-panel {
+            margin-top: 20px; padding: 16px; background: rgba(10, 132, 255, 0.08); 
+            border-radius: 16px; border: 1px solid rgba(10, 132, 255, 0.2); transition: 0.3s;
+        }
+        .ai-panel.warn { background: rgba(239, 68, 68, 0.1); border-color: var(--color-red); }
+        .ai-title { font-size: 11px; font-weight: 800; color: var(--color-blue); margin-bottom: 6px; display: block; letter-spacing: 1px; }
+        .ai-text { font-size: 12px; line-height: 1.5; color: #cbd5e1; }
+
+        .next-checkup {
+            background: rgba(255,255,255,0.03); border-radius: 16px; padding: 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; color: white; border: 1px solid rgba(255,255,255,0.03);
+        }
+        .date-nav {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;
+            background: rgba(0,0,0,0.2); padding: 6px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.03);
+        }
+        .nav-arrow { 
+            width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.05); 
+            display: flex; justify-content: center; align-items: center; font-size: 14px; color: #9ca3af; cursor: pointer; transition: 0.2s;
+        }
+        .doc-list { display: flex; flex-direction: column; gap: 10px; flex: 1; overflow-y: auto; }
+        .doc-row { 
+            display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 16px; 
+            transition: 0.2s; cursor: pointer; border: 1px solid transparent;
+        }
+        .doc-row:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.04); }
+        .doc-img { width: 40px; height: 40px; border-radius: 12px; object-fit: cover; }
+        .consult-btn {
+            margin-top: 24px; background: linear-gradient(135deg, #0A84FF, #006CFF); color: white; border: none; padding: 14px;
+            border-radius: 100px; font-weight: 700; font-size: 13px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 10px;
+            box-shadow: 0 10px 30px -5px rgba(10, 132, 255, 0.4); transition: 0.3s;
+        }
+
+        /* Sound Button */
+        .sound-btn {
+            position: absolute; top: 20px; left: 20px;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 100; color: white; transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .sound-btn:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+        
+        .sound-btn.active {
+            color: var(--color-blue);
+            background: rgba(10, 132, 255, 0.15);
+            border-color: var(--color-blue);
+            box-shadow: 0 0 15px rgba(10, 132, 255, 0.3);
+        }
+        .sound-btn.active i {
+            animation: pulseIcon 1.5s infinite;
+        }
+        @keyframes pulseIcon { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* --- RESPONSIVE OPTIMIZATION --- */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 400px auto auto auto;
+                padding: 20px;
+                overflow-y: scroll;
+            }
+            .heart-stage { grid-row: 2; height: 100%; width: 100%; }
+            .stats-area { grid-row: 3; grid-column: 1; }
+            .right-column { grid-row: 4; grid-column: 1; overflow: visible; }
+            .sidebar { display: none; }
+            .logo { display: none; }
+        }
+
+        @media (max-width: 768px) {
+            .browser-bar { padding: 0 16px; justify-content: space-between; }
+            .url-bar { display: none; }
+            .nav-icons { display: none; }
+            .main-content { padding: 16px; gap: 20px; display: flex; flex-direction: column; }
+            .page-title h1 { font-size: 36px; }
+            .heart-stage { height: 320px; flex-shrink: 0; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .organ-tray { justify-content: center; } /* Stack on mobile */
+            .organ-item { width: 50px; height: 50px; }
+            .organ-item i, .organ-item svg { font-size: 20px; }
+        }
+    </style>
 </head>
+<body>
 
-<body class="hf-body fade-in-page">
-
-  <!-- HEADER -->
-  <header class="hf-header">
-    <div class="header-inner">
-      <div class="hf-logo">
-        <span class="logo-dot"></span>
-        HealthFlo OS
-      </div>
-
-      <nav class="hf-nav" aria-label="Primary navigation">
-        <div class="nav-visible" id="navVisible">
-          <a class="nav-btn active" href="patient-dashboard.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5v8a1.5 1.5 0 0 1-1.5 1.5H4.5A1.5 1.5 0 0 1 3 19.5z" fill="currentColor"/></svg>
-            Dashboard
-          </a>
-          <a class="nav-btn" href="patient-health.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M5 12c0-3.866 3.582-7 8-7s8 3.134 8 7-3.582 7-8 7c-1.05 0-2.05-.16-2.97-.45L6 19l.88-3.5C5.72 14.32 5 13.22 5 12Z" fill="currentColor"/></svg>
-            Health
-          </a>
-          <a class="nav-btn" href="patient-organs.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M12 3c1.61 0 3 .98 3 2.5C15 7 12 11 12 11s-3-4-3-5.5C9 3.98 10.39 3 12 3Zm-6 7c0-1.66 1.57-3 3.5-3 .38 0 .74.06 1.08.16-.38 1.2-.58 2.35-.58 3.18 0 .66.12 1.36.34 2.06-.73.4-1.6.6-2.49.6C6.74 13 6 11.16 6 10Zm12 0c0 1.16-.74 3-1.85 3-.9 0-1.76-.2-2.5-.6.22-.7.35-1.4.35-2.06 0-.83-.2-1.98-.58-3.18.34-.17.7-.16 1.08-.16C16.43 7 18 8.34 18 10Z" fill="currentColor"/></svg>
-            Organs
-          </a>
-          <a class="nav-btn" href="patient-profile.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm-7 7.25C5 16.9 8.13 15 12 15s7 1.9 7 4.25V21H5Z" fill="currentColor"/></svg>
-            Profile
-          </a>
-          <a class="nav-btn" href="patient-hospitals.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M5 3h14v18H5Zm2 2v3h3V5Zm7 0v3h3V5Zm-7 5v3h3v-3Zm7 0v3h3v-3Zm-7 5v3h3v-3Zm7 0v3h3v-3Z" fill="currentColor"/></svg>
-            Hospitals
-          </a>
-          <a class="nav-btn" href="patient-pharmacy.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M5 5h14v3H5Zm2 5h10v9H7Zm2 2v5h2v-5Zm4 0v5h2v-5Z" fill="currentColor"/></svg>
-            Pharmacy
-          </a>
-          <a class="nav-btn" href="patient-labs.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M7 3h10v2h-2v5.59l4.7 7.86A1.5 1.5 0 0 1 18.42 21H5.58a1.5 1.5 0 0 1-1.28-2.55L9 10.59V5H7Z" fill="currentColor"/></svg>
-            Labs
-          </a>
-          <a class="nav-btn" href="patient-devices.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M7 4h10a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-2l-2 2-2-2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" fill="currentColor"/></svg>
-            Devices
-          </a>
-          <a class="nav-btn" href="patient-family.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M9 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3Zm7 1a2.5 2.5 0 1 1 2.5-2.5A2.5 2.5 0 0 1 16 9ZM4.5 18.75A3.75 3.75 0 0 1 8.25 15h1.5A3.75 3.75 0 0 1 13.5 18.75V20h-9Zm9.5 0A3.25 3.25 0 0 1 17.25 16H19a2 2 0 0 1 2 2v2h-7Z" fill="currentColor"/></svg>
-            Family
-          </a>
-          <a class="nav-btn" href="patient-insurance.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 4.28 2.5 7.92 8 9 5.5-1.08 8-4.728-9V6Zm0 3.2 4 .16V12c0 2.86-1.64 5.05-4 5.8-2.36-.75-4-2.94-4-5.8V6.36Z" fill="currentColor"/></svg>
-            Insurance
-          </a>
-          <a class="nav-btn" href="patient-settings.html">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M12 8.5A3.5 3.5 0 1 0 15.5 12 3.5 3.5 0 0 0 12 8.5Zm7.94 2.22-1.62-.25a6.3 6.3 0 0 0-.73-1.74l.96-1.35a.75.75 0 0 0-.09-.96l-1.1-1.1a.75.75 0 0 0-.96-.09l-1.35.96a6.3 6.3 0 0 0-1.74-.73l-.25-1.62A.75.75 0 0 0 12.5 3h-1.5a.75.75 0 0 0-.74.63l-.25 1.62a6.3 6.3 0 0 0-1.74.73l-1.35-.96a.75.75 0 0 0-.96.09l-1.1 1.1a.75.75 0 0 0-.09.96l.96 1.35a6.3 6.3 0 0 0-.73 1.74l-1.62.25A.75.75 0 0 0 3 11.5v1a.75.75 0 0 0 .63.74l1.62.25a6.3 6.3 0 0 0 .73 1.74l-.96 1.35a.75.75 0 0 0 .09.96l1.1 1.1a.75.75 0 0 0 .96.09l1.35-.96a6.3 6.3 0 0 0 1.74.73l.25 1.62a.75.75 0 0 0 .74.63h1a.75.75 0 0 0 .74-.63l.25-1.62a6.3 6.3 0 0 0 1.74-.73l1.35.96a.75.75 0 0 0 .96-.09l1.1-1.1a.75.75 0 0 0 .09-.96l-.96-1.35a6.3 6.3 0 0 0 .73-1.74l1.62-.25A.75.75 0 0 0 21 12.5v-1a.75.75 0 0 0-.63-.78Z" fill="currentColor"/></svg>
-            Settings
-          </a>
+    <div class="app-container">
+        <div class="browser-bar">
+            <div class="window-controls">
+                <div class="window-dot" style="background: #ef4444;"></div>
+                <div class="window-dot" style="background: #f59e0b;"></div>
+                <div class="window-dot" style="background: #10b981;"></div>
+            </div>
+            <div class="nav-icons"><i class="ph ph-caret-left"></i><i class="ph ph-caret-right"></i></div>
+            <div class="url-bar"><i class="ph-fill ph-lock-key"></i><span>Healthflo.com</span><i class="ph ph-arrow-clockwise" style="margin-left: auto;"></i></div>
+            <div class="branding-right">Health flo <span>OS NEO</span></div>
         </div>
-        <div class="nav-overflow">
-          <button class="nav-btn dropdown" id="navMoreBtn" type="button">
-            <svg aria-hidden="true" class="nav-icon" viewBox="0 0 24 24"><path d="M12 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm0 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm0 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4Z" fill="currentColor"/></svg>
-            More
-          </button>
-          <div class="nav-dropdown" id="navDropdown" role="menu"></div>
-        </div>
-      </nav>
 
-      <div class="hf-actions">
-        <button id="themeToggle" class="hf-icon" aria-label="Toggle theme">🌓</button>
-        <button class="hf-icon" aria-label="Notifications">🔔</button>
-        <button class="hf-icon" aria-label="Profile">👤</button>
-      </div>
+        <div class="dashboard-body">
+            <div class="sidebar">
+                <div class="logo">H<span>+</span></div>
+                <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
+                <div class="menu-item"><i class="ph ph-chat-circle-dots"></i></div>
+                <div class="menu-item"><i class="ph ph-file-text"></i></div>
+                <div class="menu-item"><i class="ph ph-user"></i></div>
+                <div class="menu-item"><i class="ph ph-squares-four"></i></div>
+                <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
+            </div>
+
+            <div class="main-content">
+                
+                <div class="header-section">
+                    <div class="header-left">
+                        <div class="top-toggles">
+                            <div class="toggle-pill">Diagnose</div>
+                            <div class="toggle-pill active" id="mode-pill"><div class="active-dot"></div> My Heart</div>
+                        </div>
+                        <div class="page-title">
+                            <h2>Hi Dhivakaran,</h2>
+                            <h1>Overview <span>Conditions</span></h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="heart-stage">
+                    <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
+                    <div class="rings"></div>
+                    <div class="scanner-line"></div>
+                    <div id="model-3d-container"></div>
+                    
+                    <div class="floating-stat" id="float-card">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+                        </div>
+                        <div style="font-size:24px; font-weight:800; color:white; margin-bottom:4px;" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
+                        <svg width="100%" height="30" viewBox="0 0 100 30" id="live-ecg-svg">
+                            <path id="live-ecg-path" d="M0,15 L10,15 L15,5 L20,25 L25,10 L30,20 L40,15 L50,15 L55,5 L60,25 L65,10 L70,20 L80,15 L100,15" fill="none" stroke="#0A84FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="stats-area">
+                    <div class="section-header"><div class="blue-dot"></div> <span id="section-title">My Heart Condition</span></div>
+                    <div class="cards-grid">
+                        <div class="data-card state-blue" id="card-1">
+                            <div class="card-head">
+                                <div><span class="card-title" id="c1-title">Blood Status</span><span class="card-val" id="c1-val">116/70</span></div>
+                                <i class="ph-fill ph-drop card-icon" id="c1-icon"></i>
+                            </div>
+                            <div class="bar-chart" id="blood-chart">
+                                <div class="bar" style="height:40%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:50%"></div><div class="bar act" style="height:90%"></div><div class="bar act" style="height:60%"></div><div class="bar" style="height:40%"></div>
+                            </div>
+                        </div>
+                        <div class="data-card active-blue" id="card-2">
+                            <div class="card-head">
+                                <div><span class="card-title" id="c2-title">Heart Rate</span><span class="card-val" id="c2-val">120 <span style="font-size:14px; font-weight:500;">bpm</span></span></div>
+                                <i class="ph ph-heartbeat card-icon" style="color:white;" id="c2-icon"></i>
+                            </div>
+                            <svg width="100%" height="50" style="margin-top:auto; opacity:0.8; overflow:visible;"><path id="card-wave-path" d="M0,25 Q10,25 15,10 T30,25 T45,40 T60,10 T75,25 T100,25" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/></svg>
+                            <div class="blue-square-val"><span style="font-size:16px; font-weight:800;" id="box-bpm">120</span></div>
+                        </div>
+                        <div class="data-card state-blue" id="card-3">
+                            <div class="card-head">
+                                <div><span class="card-title" id="c3-title">Blood Count</span><span class="card-val" id="c3-val">80-90</span></div>
+                                <i class="ph-fill ph-chart-bar card-icon" id="c3-icon"></i>
+                            </div>
+                            <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 Q25,5 50,20 T100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"/><circle cx="80" cy="20" r="4" fill="#3b82f6" /></svg>
+                        </div>
+                        <div class="data-card state-blue" id="card-4">
+                            <div class="card-head">
+                                <div><span class="card-title" id="c4-title">Glucose Level</span><span class="card-val" id="c4-val">230<small style="font-size:12px; color:#6b7280;">/ml</small></span></div>
+                                <i class="ph-fill ph-dna card-icon" id="c4-icon"></i>
+                            </div>
+                            <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 L10,25 L20,15 L30,25 L40,15 L50,25 L60,15 L100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-column">
+                    <div class="section-header"><div class="blue-dot"></div> Select Organ</div>
+                    <div class="organ-tray">
+                        </div>
+
+                    <div class="schedule-area">
+                        <div class="section-header" style="margin-bottom:10px;"><div class="blue-dot"></div> AI Analysis</div>
+                        
+                        <div class="ai-panel" id="ai-panel">
+                            <span class="ai-title" id="ai-title">AI ANALYSIS</span>
+                            <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
+                        </div>
+
+                        <div class="next-checkup" style="margin-top: 20px;">
+                            <div><div style="font-size:11px; color:#9ca3af; margin-bottom:4px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 15px;">Fri, 24 Mar</div></div>
+                            <i class="ph-fill ph-calendar-check" style="font-size:24px; color: var(--color-blue);"></i>
+                        </div>
+                        <div class="date-nav">
+                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:13px; color:white; font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
+                        </div>
+                        <div class="doc-list">
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
+                        </div>
+                        <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-  </header>
+    
+    <script>
+        // --- CONFIGURATION ---
+        // UPDATE: Switched to jsDelivr CDN. This is much more stable than raw.githubusercontent.com
+        // for loading 3D models in production apps.
+        const GITHUB_REPO_PATH = 'https://cdn.jsdelivr.net/gh/Nobledental/ULTRA-MOD@main/3d_models/'; 
+        
+        // --- CUSTOM SVG ICONS FOR ORGANS ---
+        const ORGAN_SVGS = {
+            liver: `<svg viewBox="0 0 24 24"><path d="M20.5 13.5c-.5-3.5-3.5-6.5-8.5-6.5s-8 3-8 6.5c0 3.5 3 6.5 6 6.5 1.5 0 3-.5 4.5-1.5 3.5-2.5 5.5-3.5 6-5z" /><path d="M8 8.5v3" /></svg>`,
+            lungs: `<svg viewBox="0 0 24 24"><path d="M12 2v20M6 5c-2.2 0-4 2.2-4 5.5S4 19 6.5 19 11 17 11 12 8.2 5 6 5zM18 5c2.2 0 4 2.2 4 5.5S20 19 17.5 19 13 17 13 12 15.8 5 18 5z" /></svg>`,
+            kidneys: `<svg viewBox="0 0 24 24"><path d="M7.5 6c-2.5 0-4.5 2-4.5 5.5s3 7.5 6 7.5c2 0 3-1.5 3-4-1 1-3 0-3-2s2-3.5 4.5-3.5c-1-2.5-3.5-3.5-6-3.5z" /><path d="M16.5 6c2.5 0 4.5 2 4.5 5.5s-3 7.5-6 7.5c-2 0-3-1.5-3-4 1 1 3 0 3-2s-2-3.5-4.5-3.5c1-2.5 3.5-3.5 6-3.5z" /></svg>`,
+            stomach: `<svg viewBox="0 0 24 24"><path d="M7 5c2-2 7-2 9 0 2 2 2 6 0 9-1 1.5-3 5-3 5-2 1-5 1-7-1s-3-5-2-8c1-3 3-5 3-5z" /><path d="M10 8h4" /></svg>`,
+            intestines: `<svg viewBox="0 0 24 24"><path d="M6 5c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v1c0 1.1-.9 2-2 2H8c-1.1 0-2 .9-2 2v1c0 1.1.9 2 2 2h8c1.1 0 2 .9 2 2v1c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2V5z" /></svg>`,
+            pancreas: `<svg viewBox="0 0 24 24"><path d="M21 9c-1-2-4-2-6 0l-9 9c-2 2-2 4 0 4s2 2 4 0l11-11c.5-.5 1-1.5 0-2z" /><path d="M12 12l2 2" /></svg>`,
+            gallbladder: `<svg viewBox="0 0 24 24"><path d="M12 3c-1.5 0-3 1.5-3 3v2c0 3.5 2 8 3 8s3-4.5 3-8V6c0-1.5-1.5-3-3-3z" /></svg>`,
+            urinary: `<svg viewBox="0 0 24 24"><path d="M12 4v4M8 10c0 4 1.5 8 4 8s4-4 4-8H8zM12 18v3" /></svg>`
+        };
 
-  <main class="hf-wrapper" id="dashboard">
+        // --- COMPREHENSIVE ORGAN DATA ---
+        const ORGAN_DATA = {
+            heart: {
+                title: "My Heart Condition",
+                mainStat: "BPM",
+                animKey: "bpm", 
+                simValue: 80,
+                icon: "ph-heart",
+                stats: [
+                    { id: "c1", title: "Blood Pressure", base: 116, unit: "/70", icon: "ph-drop", type: "bp" },
+                    { id: "c2", title: "Heart Rate", base: 80, unit: "bpm", icon: "ph-heartbeat", type: "bpm" },
+                    { id: "c3", title: "O2 Saturation", base: 98, unit: "%", icon: "ph-activity", type: "norm" },
+                    { id: "c4", title: "Cardiac Output", base: 5.2, unit: "L/min", icon: "ph-waves", type: "norm" }
+                ],
+                abnormal: { msg: "Arrhythmia Detected.", action: "Recommend immediate ECG." }
+            },
+            brain: {
+                title: "Brain & Nervous System",
+                mainStat: "Hz",
+                animKey: "hz",
+                simValue: 14,
+                icon: "ph-brain",
+                stats: [
+                    { id: "c1", title: "Brain Waves", base: 14, unit: "Hz", icon: "ph-wave-sine", type: "hz" },
+                    { id: "c2", title: "Cognitive Load", base: 45, unit: "%", icon: "ph-lightning", type: "perc" },
+                    { id: "c3", title: "Oxygenation", base: 99, unit: "%", icon: "ph-wind", type: "perc" },
+                    { id: "c4", title: "ICP", base: 11, unit: "mmHg", icon: "ph-gauge", type: "norm" }
+                ],
+                abnormal: { msg: "High Cortisol Levels.", action: "Stress reduction advised." }
+            },
+            liver: {
+                title: "Liver Function",
+                mainStat: "Tox",
+                animKey: "tox",
+                simValue: 5,
+                icon: "svg-liver",
+                stats: [
+                    { id: "c1", title: "ALT Enzymes", base: 29, unit: "U/L", icon: "ph-flask", type: "norm" },
+                    { id: "c2", title: "Toxicity Filter", base: 95, unit: "%", icon: "ph-shield-check", type: "perc" },
+                    { id: "c3", title: "Bilirubin", base: 0.8, unit: "mg", icon: "ph-test-tube", type: "norm" },
+                    { id: "c4", title: "Albumin", base: 4.2, unit: "g/dL", icon: "ph-egg", type: "norm" }
+                ],
+                abnormal: { msg: "Elevated Enzymes.", action: "Dietary review needed." }
+            },
+            lungs: {
+                title: "Respiratory System",
+                mainStat: "RPM",
+                animKey: "rpm",
+                simValue: 16,
+                icon: "svg-lungs",
+                stats: [
+                    { id: "c1", title: "Resp Rate", base: 16, unit: "rpm", icon: "ph-wind", type: "rpm" },
+                    { id: "c2", title: "SpO2 Level", base: 98, unit: "%", icon: "ph-drop", type: "perc" },
+                    { id: "c3", title: "Lung Capacity", base: 4.8, unit: "L", icon: "ph-chart-bar", type: "norm" },
+                    { id: "c4", title: "EtCO2", base: 38, unit: "mmHg", icon: "ph-cloud", type: "norm" }
+                ],
+                abnormal: { msg: "Reduced Capacity.", action: "Spirometry test advised." }
+            },
+            kidneys: {
+                title: "Renal Function",
+                mainStat: "GFR",
+                animKey: "gfr",
+                simValue: 90,
+                icon: "svg-kidneys",
+                stats: [
+                    { id: "c1", title: "GFR", base: 95, unit: "mL", icon: "ph-activity", type: "norm" },
+                    { id: "c2", title: "Creatinine", base: 0.9, unit: "mg", icon: "ph-flask", type: "norm" },
+                    { id: "c3", title: "Urea (BUN)", base: 14, unit: "mg", icon: "ph-test-tube", type: "norm" },
+                    { id: "c4", title: "Hydration", base: 92, unit: "%", icon: "ph-drop-half", type: "perc" }
+                ],
+                abnormal: { msg: "Low Filtration.", action: "Increase fluid intake." }
+            },
+            stomach: {
+                title: "Gastric Health",
+                mainStat: "pH",
+                animKey: "ph",
+                simValue: 2,
+                icon: "svg-stomach",
+                stats: [
+                    { id: "c1", title: "Acidity (pH)", base: 2.1, unit: "pH", icon: "ph-drop", type: "norm" },
+                    { id: "c2", title: "Motility", base: 3, unit: "cpm", icon: "ph-waves", type: "norm" },
+                    { id: "c3", title: "Digestion", base: 94, unit: "%", icon: "ph-percent", type: "perc" },
+                    { id: "c4", title: "Microbiome", base: 90, unit: "Sc", icon: "ph-plant", type: "norm" }
+                ],
+                abnormal: { msg: "High Acidity.", action: "Antacid recommended." }
+            },
+            intestines: {
+                title: "Intestinal Tract",
+                mainStat: "Absorp",
+                animKey: "mot",
+                simValue: 95,
+                icon: "svg-intestines", 
+                stats: [
+                    { id: "c1", title: "Peristalsis", base: 8, unit: "/min", icon: "ph-arrows-left-right", type: "norm" },
+                    { id: "c2", title: "Absorption", base: 95, unit: "%", icon: "ph-arrow-fat-lines-in", type: "perc" },
+                    { id: "c3", title: "Flora", base: 92, unit: "%", icon: "ph-plant", type: "norm" },
+                    { id: "c4", title: "Fiber Intake", base: 25, unit: "g", icon: "ph-carrot", type: "norm" }
+                ],
+                abnormal: { msg: "Slow Transit.", action: "Increase fiber intake." }
+            },
+            eyes: {
+                title: "Ocular Health",
+                mainStat: "Vision",
+                animKey: "vis",
+                simValue: 20,
+                icon: "ph-eye",
+                stats: [
+                    { id: "c1", title: "Acuity (R)", base: 20, unit: "/20", icon: "ph-eye", type: "norm" },
+                    { id: "c2", title: "Acuity (L)", base: 20, unit: "/20", icon: "ph-eye", type: "norm" },
+                    { id: "c3", title: "Pressure", base: 16, unit: "mmHg", icon: "ph-gauge", type: "norm" },
+                    { id: "c4", title: "Response", base: 150, unit: "ms", icon: "ph-timer", type: "norm" }
+                ],
+                abnormal: { msg: "Elevated IOP.", action: "Glaucoma screening." }
+            },
+            pancreas: {
+                title: "Pancreatic System",
+                mainStat: "Insulin",
+                animKey: "ins",
+                simValue: 12,
+                icon: "svg-pancreas",
+                stats: [
+                    { id: "c1", title: "Insulin", base: 12, unit: "uIU", icon: "ph-drop", type: "norm" },
+                    { id: "c2", title: "Glucose", base: 92, unit: "mg", icon: "ph-cube", type: "norm" },
+                    { id: "c3", title: "Lipase", base: 45, unit: "U/L", icon: "ph-flask", type: "norm" },
+                    { id: "c4", title: "Amylase", base: 55, unit: "U/L", icon: "ph-test-tube", type: "norm" }
+                ],
+                abnormal: { msg: "Sugar Spike.", action: "Monitor carbohydrate intake." }
+            },
+            gallbladder: {
+                title: "Gallbladder",
+                mainStat: "Bile",
+                animKey: "bile",
+                simValue: 100,
+                icon: "svg-gallbladder",
+                stats: [
+                    { id: "c1", title: "Bile Flow", base: 100, unit: "%", icon: "ph-waves", type: "norm" },
+                    { id: "c2", title: "Calculi", base: 0, unit: "cnt", icon: "ph-prohibit", type: "norm" },
+                    { id: "c3", title: "Wall Thick", base: 2, unit: "mm", icon: "ph-ruler", type: "norm" },
+                    { id: "c4", title: "Ejection", base: 65, unit: "%", icon: "ph-arrow-fat-up", type: "norm" }
+                ],
+                abnormal: { msg: "Flow Reduced.", action: "Ultrasound advised." }
+            },
+            urinary: {
+                title: "Urinary Tract",
+                mainStat: "Output",
+                animKey: "out",
+                simValue: 1500,
+                icon: "svg-urinary",
+                stats: [
+                    { id: "c1", title: "24h Output", base: 1.5, unit: "L", icon: "ph-drop", type: "norm" },
+                    { id: "c2", title: "pH Level", base: 6.0, unit: "pH", icon: "ph-test-tube", type: "norm" },
+                    { id: "c3", title: "Specific Grav", base: 1.01, unit: "sg", icon: "ph-flask", type: "norm" },
+                    { id: "c4", title: "Leukocytes", base: 0, unit: "neg", icon: "ph-shield", type: "norm" }
+                ],
+                abnormal: { msg: "Trace Protein.", action: "Retest in 24 hours." }
+            },
+            skeletal: {
+                title: "Skeletal System",
+                mainStat: "Density",
+                animKey: "den",
+                simValue: 0,
+                icon: "ph-bone",
+                stats: [
+                    { id: "c1", title: "Bone Density", base: 0.5, unit: "T", icon: "ph-chart-bar", type: "norm" },
+                    { id: "c2", title: "Calcium", base: 9.4, unit: "mg", icon: "ph-drop", type: "norm" },
+                    { id: "c3", title: "Vit D3", base: 45, unit: "ng", icon: "ph-sun", type: "norm" },
+                    { id: "c4", title: "Marrow Act", base: 98, unit: "%", icon: "ph-activity", type: "perc" }
+                ],
+                abnormal: { msg: "Mild Osteopenia.", action: "Increase Calcium/D3." }
+            },
+            cells: {
+                title: "Cellular Health",
+                mainStat: "Count",
+                animKey: "wbc",
+                simValue: 6.5,
+                icon: "ph-dna",
+                stats: [
+                    { id: "c1", title: "WBC Count", base: 6.5, unit: "k", icon: "ph-shield-check", type: "norm" },
+                    { id: "c2", title: "RBC Count", base: 5.1, unit: "M", icon: "ph-drop", type: "norm" },
+                    { id: "c3", title: "Platelets", base: 250, unit: "k", icon: "ph-bandaids", type: "norm" },
+                    { id: "c4", title: "Regen Rate", base: 95, unit: "%", icon: "ph-arrows-clockwise", type: "perc" }
+                ],
+                abnormal: { msg: "Low Platelets.", action: "Hematology consult." }
+            },
+            immune: {
+                title: "Immune System",
+                mainStat: "Resp",
+                animKey: "imm",
+                simValue: 98,
+                icon: "ph-shield-star",
+                stats: [
+                    { id: "c1", title: "Response", base: 98, unit: "%", icon: "ph-lightning", type: "perc" },
+                    { id: "c2", title: "Neutrophils", base: 60, unit: "%", icon: "ph-chart-pie", type: "norm" },
+                    { id: "c3", title: "Lymphocytes", base: 30, unit: "%", icon: "ph-users", type: "norm" },
+                    { id: "c4", title: "Inflammation", base: 0.3, unit: "CRP", icon: "ph-fire", type: "norm" }
+                ],
+                abnormal: { msg: "Elevated CRP.", action: "Check for infection." }
+            },
+            dental: {
+                title: "Dental Health",
+                mainStat: "Plaque",
+                animKey: "den",
+                simValue: 5,
+                icon: "ph-smiley",
+                stats: [
+                    { id: "c1", title: "Plaque Idx", base: 5, unit: "%", icon: "ph-sparkle", type: "norm" },
+                    { id: "c2", title: "Gum Health", base: 98, unit: "%", icon: "ph-heart", type: "perc" },
+                    { id: "c3", title: "Enamel", base: 95, unit: "%", icon: "ph-shield", type: "perc" },
+                    { id: "c4", title: "pH Balance", base: 7.0, unit: "pH", icon: "ph-drop", type: "norm" }
+                ],
+                abnormal: { msg: "Gingivitis Risk.", action: "Hygiene review." }
+            },
+            breast: {
+                title: "Breast Tissue",
+                mainStat: "Dense",
+                animKey: "br",
+                simValue: 2,
+                icon: "ph-gender-female",
+                stats: [
+                    { id: "c1", title: "Density", base: 2, unit: "Cat", icon: "ph-squares-four", type: "norm" },
+                    { id: "c2", title: "Vascularity", base: "Norm", unit: "", icon: "ph-waves", type: "norm" },
+                    { id: "c3", title: "Lymph Nodes", base: "Clrv", unit: "", icon: "ph-check-circle", type: "norm" },
+                    { id: "c4", title: "Asymmetry", base: 0, unit: "%", icon: "ph-scales", type: "norm" }
+                ],
+                abnormal: { msg: "Dense Tissue.", action: "Annual mammogram." }
+            },
+            ligaments: {
+                title: "Joints & Ligaments",
+                mainStat: "Flex",
+                animKey: "flx",
+                simValue: 85,
+                icon: "ph-person-simple-run",
+                stats: [
+                    { id: "c1", title: "Flexibility", base: 85, unit: "%", icon: "ph-arrows-out", type: "perc" },
+                    { id: "c2", title: "Synovial Fld", base: 100, unit: "%", icon: "ph-drop", type: "norm" },
+                    { id: "c3", title: "Inflammation", base: 2, unit: "%", icon: "ph-fire", type: "norm" },
+                    { id: "c4", title: "Cartilage", base: 90, unit: "%", icon: "ph-circle-notch", type: "norm" }
+                ],
+                abnormal: { msg: "Stiffness.", action: "Mobility exercises." }
+            }
+        };
 
-    <section class="live-ribbon" aria-label="Live health ticker">
-      <div class="ticker-pill">
-        <span class="pulse-dot"></span>
-        Live dashboard • Auto refresh
-      </div>
-      <div class="ticker-metric">
-        <strong id="ticker_hr">76 bpm</strong>
-        <span>Heart rhythm</span>
-      </div>
-      <div class="ticker-metric">
-        <strong id="ticker_bp">118/76</strong>
-        <span>BP sync</span>
-      </div>
-      <div class="ticker-metric">
-        <strong id="ticker_appt">Tue • 5:30 PM</strong>
-        <span>Next appointment</span>
-      </div>
-      <div class="ticker-metric">
-        <strong id="ticker_lab">CBC • Today</strong>
-        <span>Report status</span>
-      </div>
-      <div class="ticker-metric">
-        <strong id="ticker_travel">Cab ETA 9m</strong>
-        <span>Clinic travel</span>
-      </div>
-    </section>
+        const getColorClass = (val, type) => {
+            if (type === 'bpm') {
+                if (val < 60 || val > 120) return 'state-red';
+                if (val > 100) return 'state-yellow';
+                return 'state-blue';
+            }
+            if (type === 'perc') {
+                if (val < 80) return 'state-red';
+                if (val < 90) return 'state-yellow';
+                return 'state-blue';
+            }
+            const r = Math.random();
+            if (r > 0.95) return 'state-red';
+            if (r > 0.8) return 'state-yellow';
+            return 'state-blue';
+        };
 
-    <!-- HERO -->
-    <section class="dashboard-hero" id="health">
-      <div class="hero-left">
-        <p class="eyebrow">Neo Guardian • Live safety check</p>
-        <h1 class="hero-title">Hi, Dhivakaran 👋</h1>
-        <p class="hero-sub">
-          Your modular Patient OS keeps everything in one place: live vitals, lab meaning in simple words, quick bookings, insurance, finance, and SOS readiness.
-        </p>
+        let activeOrgan = 'heart';
+        let liveIntervals = [];
 
-        <div class="quick-actions" aria-label="Quick actions">
-          <a class="pill solid" href="patient-hospitals.html">Book appointment</a>
-          <a class="pill outline" href="patient-pharmacy.html">Order medicines</a>
-          <a class="pill outline" href="patient-labs.html">Upload report</a>
-          <button class="pill danger">Start SOS</button>
-          <button class="pill ghost" id="ask_ai">Ask AI</button>
-        </div>
+        // --- BIO-SYNC AUDIO ENGINE ---
+        // Generates pleasant procedural heart sounds based on BPM
+        const AudioEngine = {
+            ctx: null,
+            nextNoteTime: 0.0,
+            timerID: null,
+            bpm: 80,
+            isPlaying: false,
 
-        <div class="os-flags">
-          <span class="pill soft">Live vitals</span>
-          <span class="pill soft">Lab intelligence</span>
-          <span class="pill soft">QR check-in ready</span>
-          <span class="pill soft">Lotus Light theme</span>
-        </div>
+            init: function() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
 
-        <div class="vitals-grid" aria-label="Live vitals">
-          <div class="vital-card" data-v="hr">
-            <span class="vital-label">Heart Rate</span>
-            <strong id="v_hr" class="vital-value">76</strong>
-            <small>bpm</small>
-          </div>
-          <div class="vital-card" data-v="bp">
-            <span class="vital-label">Blood Pressure</span>
-            <strong id="v_bp" class="vital-value">118/76</strong>
-            <small>mmHg</small>
-          </div>
-          <div class="vital-card" data-v="spo2">
-            <span class="vital-label">SpO₂</span>
-            <strong id="v_spo2" class="vital-value">98%</strong>
-            <small>oxygen</small>
-          </div>
-          <div class="vital-card" data-v="temp">
-            <span class="vital-label">Body Temp</span>
-            <strong id="v_temp" class="vital-value">36.8°C</strong>
-            <small>core</small>
-          </div>
-        </div>
+            toggle: function() {
+                this.init();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
+                
+                this.isPlaying = !this.isPlaying;
+                
+                // Visual feedback for audio button
+                const btn = document.getElementById('sound-toggle');
+                if(this.isPlaying) btn.classList.add('active');
+                else btn.classList.remove('active');
+                
+                if (this.isPlaying) {
+                    this.nextNoteTime = this.ctx.currentTime + 0.1;
+                    this.scheduler();
+                } else {
+                    window.clearTimeout(this.timerID);
+                }
+                return this.isPlaying;
+            },
 
-        <div class="live-meta">
-          <div>
-            <p class="eyebrow">Today at a glance</p>
-            <h3 id="readiness_value">82%</h3>
-            <p id="readiness_hint">Energy is good. Drink water and take a 10 minute walk.</p>
-            <div class="progress-shell"><span id="readiness_progress"></span></div>
-          </div>
-          <div class="micro-chart">
-            <canvas id="vital_wave" aria-label="Vitals pulse"></canvas>
-            <p class="muted small">Auto-refreshing every few seconds.</p>
-          </div>
-          <div class="quick-links">
-            <a href="patient-health.html" class="link-chip">Open health board</a>
-            <a href="patient-organs.html" class="link-chip">View organs</a>
-            <a href="patient-dashboard.html#appointments" class="link-chip">Upcoming visits</a>
-          </div>
-        </div>
+            setBPM: function(newBpm) {
+                this.bpm = newBpm;
+            },
 
-        <div class="ai-summary">
-          <h3>Guardian in simple words</h3>
-          <p id="ai_summary">All looks steady. Drink water, take a 20-minute walk, and sleep on time.</p>
-        </div>
+            scheduleHeartbeat: function(time) {
+                // "LUB" Sound (Low, Thud)
+                const osc1 = this.ctx.createOscillator();
+                const gain1 = this.ctx.createGain();
+                const filter1 = this.ctx.createBiquadFilter();
 
-        <div class="health-clarity" aria-label="Instant clarity cards">
-          <div class="clarity-card">
-            <p class="muted">Stress & mood</p>
-            <strong id="clarity_stress">Cool & calm</strong>
-            <small>Breathe 4-7-8 if stress rises.</small>
-          </div>
-          <div class="clarity-card">
-            <p class="muted">Sugar guard</p>
-            <strong id="clarity_sugar">Smooth</strong>
-            <small>Last 24h in stable range.</small>
-          </div>
-          <div class="clarity-card">
-            <p class="muted">Hydration</p>
-            <strong id="clarity_hydration">1.2L done</strong>
-            <small>Keep a bottle near you.</small>
-          </div>
-        </div>
-      </div>
+                osc1.type = 'triangle';
+                osc1.frequency.setValueAtTime(60, time);
+                osc1.frequency.exponentialRampToValueAtTime(40, time + 0.1);
 
-      <div class="hero-right">
-        <div class="heart-3d-box">
-          <model-viewer
-            id="heart3d"
-            src="https://modelviewer.dev/shared-assets/models/Heart.glb"
-            auto-rotate
-            camera-controls
-            disable-zoom
-            exposure="1.1"
-            shadow-intensity="1.3"
-            class="heart-model"
-            aria-label="3D heart visual">
-          </model-viewer>
-          <div class="floating-hr-box">
-            <strong id="hr_float">76</strong>
-            <span>bpm</span>
-          </div>
-        </div>
-        <canvas id="ecg_mini" class="ecg-mini" aria-label="Heart rhythm preview"></canvas>
+                filter1.type = 'lowpass';
+                filter1.frequency.value = 180;
 
-        <div class="model-rack">
-          <div class="model-card">
-            <model-viewer src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" autoplay auto-rotate camera-controls disable-zoom aria-label="Full body model"></model-viewer>
-            <p class="muted">Full body scan (dummy)</p>
-          </div>
-          <div class="model-card">
-            <model-viewer src="https://modelviewer.dev/shared-assets/models/RobotExpressive.glb" autoplay auto-rotate camera-controls disable-zoom aria-label="Lung model"></model-viewer>
-            <p class="muted">Lungs + airways (demo)</p>
-          </div>
-          <div class="model-card">
-            <model-viewer src="https://modelviewer.dev/shared-assets/models/CartoonLowPoly.glb" autoplay auto-rotate camera-controls disable-zoom aria-label="Kidney model"></model-viewer>
-            <p class="muted">Kidneys + bladder (demo)</p>
-          </div>
-          <div class="model-card">
-            <model-viewer src="https://modelviewer.dev/shared-assets/models/Horse.glb" autoplay auto-rotate camera-controls disable-zoom aria-label="Spine model"></model-viewer>
-            <p class="muted">Spine posture (demo)</p>
-          </div>
-          <div class="model-card">
-            <model-viewer src="https://modelviewer.dev/shared-assets/models/PixelHelmet.glb" autoplay auto-rotate camera-controls disable-zoom aria-label="Brain model"></model-viewer>
-            <p class="muted">Brain focus (demo)</p>
-          </div>
-        </div>
-      </div>
-    </section>
+                // Envelope
+                gain1.gain.setValueAtTime(0, time);
+                gain1.gain.linearRampToValueAtTime(0.8, time + 0.02);
+                gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
 
-    <!-- LIVE HARMONY -->
-    <section class="live-harmony" id="harmony">
-      <div class="section-head compact">
-        <div>
-          <p class="eyebrow">Vitals • Labs • Organs</p>
-          <h2 class="section-title">Everything stays in sync</h2>
-          <p class="section-sub">Live vitals flow into organ health and labs. Date-wise trends make it easy for families and doctors to understand together.</p>
-        </div>
-        <div class="chip-row">
-          <span class="chip">Plain language</span>
-          <span class="chip">One-click share</span>
-          <span class="chip">Made for India</span>
-        </div>
-      </div>
+                osc1.connect(filter1);
+                filter1.connect(gain1);
+                gain1.connect(this.ctx.destination);
 
-      <div class="harmony-grid">
-        <div class="card block">
-          <div class="card-head">
-            <h3>Live vitals monitor</h3>
-            <span class="pill soft" id="vital_status_badge">Stable</span>
-          </div>
-          <div class="pulse-grid" id="vital_pulse">
-            <div class="pulse-bar" aria-label="Heart"></div>
-            <div class="pulse-bar" aria-label="BP"></div>
-            <div class="pulse-bar" aria-label="SpO2"></div>
-            <div class="pulse-bar" aria-label="Temp"></div>
-          </div>
-          <div class="sparkline-row">
-            <div>
-              <p class="muted">Heart</p>
-              <strong id="spark_hr">76 bpm</strong>
-            </div>
-            <div>
-              <p class="muted">BP</p>
-              <strong id="spark_bp">118/76</strong>
-            </div>
-            <div>
-              <p class="muted">SpO₂</p>
-              <strong id="spark_spo2">98%</strong>
-            </div>
-            <div>
-              <p class="muted">Temp</p>
-              <strong id="spark_temp">36.8°C</strong>
-            </div>
-          </div>
-          <p class="notice">Vitals are shared with <a href="patient-health.html">Health</a>, <a href="patient-organs.html">Organs</a>, and <a href="patient-labs.html">Labs</a> in real time.</p>
-        </div>
+                osc1.start(time);
+                osc1.stop(time + 0.2);
 
-        <div class="card block">
-          <div class="card-head">
-            <h3>Lab progress (date wise)</h3>
-            <span class="pill soft">Explained</span>
-          </div>
-          <ul class="timeline" id="lab_timeline">
-            <li>
-              <div class="dot good"></div>
-              <div>
-                <p class="muted">Today</p>
-                <strong>CBC balanced</strong>
-                <small>HB steady, no infection signals.</small>
-              </div>
-            </li>
-            <li>
-              <div class="dot info"></div>
-              <div>
-                <p class="muted">Yesterday</p>
-                <strong>LFT clear</strong>
-                <small>Liver numbers in safe range.</small>
-              </div>
-            </li>
-            <li>
-              <div class="dot warn"></div>
-              <div>
-                <p class="muted">Last week</p>
-                <strong>Hydration dip</strong>
-                <small>Added 1L reminder for the day.</small>
-              </div>
-            </li>
-          </ul>
-          <div class="inline-row">
-            <a class="pill solid" href="patient-labs.html">See all lab reports</a>
-            <button class="pill ghost" id="upload_cta">Upload new report</button>
-          </div>
-        </div>
+                // "DUB" Sound (Slightly higher, sharper)
+                const t2 = time + 0.25; // Delay for Dub
+                const osc2 = this.ctx.createOscillator();
+                const gain2 = this.ctx.createGain();
+                const filter2 = this.ctx.createBiquadFilter();
 
-        <div class="card block">
-          <div class="card-head">
-            <h3>Organs + labs together</h3>
-            <span class="pill soft" id="organ_sync_pill">Synced</span>
-          </div>
-          <div class="sync-grid">
-            <div class="sync-card">
-              <div class="icon-wrap">🫀</div>
-              <div>
-                <p class="muted">Heart</p>
-                <strong id="sync_heart_status">Calm rhythm</strong>
-                <small>ECG + BP mirror on organs page.</small>
-              </div>
-            </div>
-            <div class="sync-card">
-              <div class="icon-wrap">🫁</div>
-              <div>
-                <p class="muted">Lungs</p>
-                <strong id="sync_lung_status">Smooth breath</strong>
-                <small>SpO₂ matches device feed.</small>
-              </div>
-            </div>
-            <div class="sync-card">
-              <div class="icon-wrap">🧬</div>
-              <div>
-                <p class="muted">Liver & Kidney</p>
-                <strong id="sync_filter_status">Detox good</strong>
-                <small>Labs link to organ view.</small>
-              </div>
-            </div>
-          </div>
-          <p class="notice">Open <a href="patient-organs.html">Organs</a> to see the same alerts, 3D previews, and lab tags.</p>
-        </div>
-      </div>
-    </section>
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(80, t2);
+                osc2.frequency.exponentialRampToValueAtTime(50, t2 + 0.1);
 
-    <!-- QUICK ACCESS PANEL -->
-    <section class="quick-panel" id="nav-links">
-      <div class="section-head compact">
-        <div>
-          <p class="eyebrow">Everything linked</p>
-          <h2 class="section-title">All boards connect back here</h2>
-          <p class="section-sub">Jump between dashboards without getting lost. Each tile opens the detailed page and mirrors the live vitals shown here.</p>
-        </div>
-        <div class="pill soft">Synced with hospital QR</div>
-      </div>
-      <div class="quick-grid">
-        <a class="quick-card" href="patient-health.html">
-          <div class="icon-wrap">💓</div>
-          <div>
-            <p class="eyebrow">Health</p>
-            <h3>Live vitals + checks</h3>
-            <p class="muted">Simple Hinglish guidance and alerts.</p>
-          </div>
-        </a>
-        <a class="quick-card" href="patient-organs.html">
-          <div class="icon-wrap">🫀</div>
-          <div>
-            <p class="eyebrow">Organs</p>
-            <h3>Organ map</h3>
-            <p class="muted">Every organ mirrors the status seen here.</p>
-          </div>
-        </a>
-        <a class="quick-card" href="patient-labs.html">
-          <div class="icon-wrap">🧪</div>
-          <div>
-            <p class="eyebrow">Labs</p>
-            <h3>Date-wise reports</h3>
-            <p class="muted">Uploads turn into easy-to-read stories.</p>
-          </div>
-        </a>
-        <a class="quick-card" href="patient-hospitals.html">
-          <div class="icon-wrap">🏥</div>
-          <div>
-            <p class="eyebrow">Hospitals</p>
-            <h3>Bookings & travel</h3>
-            <p class="muted">Queue-less check-ins with QR + Ola/Auto info.</p>
-          </div>
-        </a>
-        <a class="quick-card" href="patient-pharmacy.html">
-          <div class="icon-wrap">💊</div>
-          <div>
-            <p class="eyebrow">Pharmacy</p>
-            <h3>Meds at home</h3>
-            <p class="muted">Refills, reminders, and safe interactions.</p>
-          </div>
-        </a>
-        <a class="quick-card" href="patient-devices.html">
-          <div class="icon-wrap">📡</div>
-          <div>
-            <p class="eyebrow">Devices</p>
-            <h3>Pair wearables</h3>
-            <p class="muted">Sync watches, BP cuffs, oximeters instantly.</p>
-          </div>
-        </a>
-      </div>
-    </section>
+                filter2.type = 'lowpass';
+                filter2.frequency.value = 250;
 
-    <!-- EXPERIENCE HUB -->
-    <section class="experience-hub" id="modules">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Health coach cockpit</p>
-          <h2 class="section-title">Personalized control center</h2>
-          <p class="section-sub">Clear priorities, guided routines, and transparency so you know what matters now.</p>
-        </div>
-        <div class="chip-row">
-          <span class="chip">Adaptive</span>
-          <span class="chip">Explained</span>
-          <span class="chip">Clinician-safe</span>
-        </div>
-      </div>
+                gain2.gain.setValueAtTime(0, t2);
+                gain2.gain.linearRampToValueAtTime(0.6, t2 + 0.02);
+                gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.15);
 
-      <div class="hub-grid">
-        <article class="hub-card prime">
-          <div class="card-head">
-            <div>
-              <p class="eyebrow">Today’s readiness</p>
-              <h3>Health momentum</h3>
-            </div>
-            <span class="pill soft">+9% vs yesterday</span>
-          </div>
-          <div class="progress-lanes">
-            <div>
-              <div class="lane-top">
-                <span>Recovery energy</span>
-                <strong>82%</strong>
-              </div>
-              <div class="lane">
-                <span style="width: 82%" aria-hidden="true"></span>
-              </div>
-            </div>
-            <div>
-              <div class="lane-top">
-                <span>Mind calm</span>
-                <strong>71%</strong>
-              </div>
-              <div class="lane neutral">
-                <span style="width: 71%" aria-hidden="true"></span>
-              </div>
-            </div>
-            <div>
-              <div class="lane-top">
-                <span>Metabolic flexibility</span>
-                <strong>65%</strong>
-              </div>
-              <div class="lane warm">
-                <span style="width: 65%" aria-hidden="true"></span>
-              </div>
-            </div>
-          </div>
-          <div class="micro-highlights">
-            <div>
-              <p>Sleep debt</p>
-              <strong>+32 mins</strong>
-              <small>Recover with a 20 min nap</small>
-            </div>
-            <div>
-              <p>Recovery breaths</p>
-              <strong>3/5 done</strong>
-              <small>Next in 2h • guided</small>
-            </div>
-            <div>
-              <p>Inflammation</p>
-              <strong>Low</strong>
-              <small>Stable for 4 days</small>
-            </div>
-          </div>
-        </article>
+                osc2.connect(filter2);
+                filter2.connect(gain2);
+                gain2.connect(this.ctx.destination);
 
-        <article class="hub-card">
-          <div class="card-head">
-            <h3>Next best steps</h3>
-            <span class="pill soft">Smart queue</span>
-          </div>
-          <ul class="priority-list">
-            <li>
-              <div>
-                <strong>Hydration re-up</strong>
-                <p>Finish 400 ml in the next 20 minutes to lock morning balance.</p>
-              </div>
-              <button class="pill solid">Done</button>
-            </li>
-            <li>
-              <div>
-                <strong>Movement snack</strong>
-                <p>8 minute walk + 6 squats to keep glucose smooth after breakfast.</p>
-              </div>
-              <button class="pill outline">Start</button>
-            </li>
-            <li>
-              <div>
-                <strong>Wind-down</strong>
-                <p>Schedule 15 minute calm session before 10:30 PM.</p>
-              </div>
-              <button class="pill ghost">Plan</button>
-            </li>
-          </ul>
-        </article>
+                osc2.start(t2);
+                osc2.stop(t2 + 0.2);
+            },
 
-        <article class="hub-card">
-          <div class="card-head">
-            <h3>Automations</h3>
-            <span class="pill soft">On / off</span>
-          </div>
-          <div class="automation-grid">
-            <div class="automation">
-              <div>
-                <strong>Night protection</strong>
-                <p>Low HRV alert + call caregiver + dim phone.</p>
-              </div>
-              <button class="toggle on" aria-pressed="true">On</button>
-            </div>
-            <div class="automation">
-              <div>
-                <strong>Clinic travel mode</strong>
-                <p>Share live location + appointment QR + cab ETA.</p>
-              </div>
-              <button class="toggle" aria-pressed="false">Off</button>
-            </div>
-            <div class="automation">
-              <div>
-                <strong>Lab day prep</strong>
-                <p>Fasting reminder, hydration cues, specimen checklist.</p>
-              </div>
-              <button class="toggle on" aria-pressed="true">On</button>
-            </div>
-          </div>
-        </article>
+            scheduler: function() {
+                while (this.nextNoteTime < this.ctx.currentTime + 0.1) {
+                    if(activeOrgan === 'heart') {
+                        this.scheduleHeartbeat(this.nextNoteTime);
+                    }
+                    // Add logic for other organ sounds if needed (breathing for lungs)
+                    
+                    const secondsPerBeat = 60.0 / this.bpm;
+                    this.nextNoteTime += secondsPerBeat;
+                }
+                this.timerID = window.setTimeout(this.scheduler.bind(this), 25);
+            }
+        };
 
-        <article class="hub-card">
-          <div class="card-head">
-            <h3>Signals & clarity</h3>
-            <span class="pill soft">Explained</span>
-          </div>
-          <div class="insight-feed">
-            <div class="insight">
-              <div class="dot good"></div>
-              <div>
-                <strong>Heart rhythm steady</strong>
-                <p>ECG micro-variability in green zone; keep caffeine under 2 cups.</p>
-              </div>
-              <span class="pill ghost">View ECG</span>
-            </div>
-            <div class="insight">
-              <div class="dot warn"></div>
-              <div>
-                <strong>Hydration dip</strong>
-                <p>Urine color input flagged amber; add 1L across the day.</p>
-              </div>
-              <span class="pill ghost">Track intake</span>
-            </div>
-            <div class="insight">
-              <div class="dot info"></div>
-              <div>
-                <strong>Recovery window</strong>
-                <p>Best workout slot 5–7 PM based on HRV + temperature.</p>
-              </div>
-              <span class="pill ghost">Book coach</span>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+        // --- DASHBOARD LOGIC ---
+        const generateOrganButtons = () => {
+            const tray = document.querySelector('.organ-tray'); // Updated target
+            tray.innerHTML = '';
+            
+            Object.keys(ORGAN_DATA).forEach(key => {
+                const data = ORGAN_DATA[key];
+                const btn = document.createElement('div');
+                btn.className = `organ-item ${key === 'heart' ? 'selected' : ''}`;
+                btn.dataset.organ = key;
+                
+                // Logic to use custom SVG if available, else fallback to Phosphor icon class
+                let iconHtml = '';
+                if (data.icon.startsWith('svg-')) {
+                    const svgKey = data.icon.split('-')[1];
+                    iconHtml = ORGAN_SVGS[svgKey] || '<i class="ph ph-warning"></i>'; // Fallback
+                } else {
+                    iconHtml = `<i class="ph ${data.icon}"></i>`;
+                }
 
-    <!-- LIVE STACK -->
-    <section class="live-stack" id="labs">
-      <div class="stack-grid">
-        <div class="card block">
-          <div class="card-head">
-            <h2>Blood status</h2>
-            <span class="pill soft" id="blood_signal">Balanced</span>
-          </div>
-          <div class="stat-grid">
-            <div>
-              <p>Hemoglobin</p>
-              <strong id="hb_value">13.6 g/dL</strong>
-              <small id="hb_msg">Within healthy range</small>
-            </div>
-            <div>
-              <p>Hydration</p>
-              <strong id="water_value">Good</strong>
-              <small id="water_msg">Drink 2.5L today</small>
-            </div>
-            <div>
-              <p>Infection watch</p>
-              <strong id="infection_value">Low</strong>
-              <small id="infection_msg">No signs seen</small>
-            </div>
-            <div>
-              <p>Anemia watch</p>
-              <strong id="anemia_value">Clear</strong>
-              <small id="anemia_msg">Iron looks ok</small>
-            </div>
-          </div>
-        </div>
+                btn.innerHTML = `
+                    ${iconHtml}
+                    <span class="organ-name-mini">${key.toUpperCase()}</span>
+                    ${key === 'heart' ? '<div class="organ-label">My Heart</div>' : ''}
+                `;
+                tray.appendChild(btn);
+            });
+        };
 
-        <div class="card block">
-          <div class="card-head">
-            <h2>Organ watch</h2>
-            <span class="pill soft" id="organ_alert">All clear</span>
-          </div>
-          <div class="organ-grid compact">
-            <div class="organ-card" data-organ="heart">
-              <div class="organ-icon">❤️</div>
-              <h3>Heart</h3>
-              <p class="organ-status" id="heart_status">Good</p>
-              <small>Cardiac markers steady</small>
-            </div>
-            <div class="organ-card" data-organ="lungs">
-              <div class="organ-icon">🫁</div>
-              <h3>Lungs</h3>
-              <p class="organ-status" id="lung_status">Free</p>
-              <small>Spirometry and SpO₂ smooth</small>
-            </div>
-            <div class="organ-card" data-organ="liver">
-              <div class="organ-icon">🧬</div>
-              <h3>Liver</h3>
-              <p class="organ-status" id="liver_status">Healthy</p>
-              <small>LFT normal</small>
-            </div>
-            <div class="organ-card" data-organ="kidney">
-              <div class="organ-icon">🩺</div>
-              <h3>Kidneys</h3>
-              <p class="organ-status" id="kidney_status">Hydrated</p>
-              <small>KFT + CUE normal</small>
-            </div>
-            <div class="organ-card" data-organ="dental">
-              <div class="organ-icon">🦷</div>
-              <h3>Dental</h3>
-              <p class="organ-status" id="dental_status">Bright</p>
-              <small>3D CBCT clear</small>
-            </div>
-            <div class="organ-card" data-organ="brain">
-              <div class="organ-icon">🧠</div>
-              <h3>Brain</h3>
-              <p class="organ-status">Calm</p>
-              <small>No stress signals</small>
-            </div>
-          </div>
-        </div>
+        const updateUI = (organType) => {
+            activeOrgan = organType;
+            const data = ORGAN_DATA[organType];
+            
+            // Audio Sync
+            AudioEngine.setBPM(data.simValue);
 
-        <div class="card block alert-block" id="organAlerts">
-          <div class="card-head">
-            <h2>Organ notifications</h2>
-            <span class="pill soft" id="organ_alert_badge">0 alerts</span>
-          </div>
-          <p class="muted">Any abnormality will surface here and mirror in the organ page for quick consult.</p>
-          <div class="alert-list" id="alert_list">
-            <div class="alert-item success">All systems green. You will be notified if vitals cross thresholds.</div>
-          </div>
-        </div>
-      </div>
-    </section>
+            // Text Updates
+            document.getElementById('section-title').innerHTML = `<div class="blue-dot"></div> ${data.title}`;
+            document.getElementById('mode-pill').innerHTML = `<div class="active-dot"></div> My ${organType.charAt(0).toUpperCase() + organType.slice(1)}`;
+            
+            // AI Panel Reset
+            const aiPanel = document.getElementById('ai-panel');
+            aiPanel.className = 'ai-panel';
+            document.getElementById('ai-title').innerText = "AI ANALYSIS";
+            document.getElementById('ai-text').innerText = "Analyzing recent biometrics. Systems operating within normal parameters.";
 
-    <!-- LAB INTELLIGENCE -->
-    <section class="lab-suite" id="health-tests">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Lab & imaging</p>
-          <h2 class="section-title">Lab intelligence in plain language</h2>
-          <p class="section-sub">CBC, LFT, KFT, CUE, cardiac markers, lung tests, dental scans, and radiology stitched together.</p>
-        </div>
-        <div class="pill-switch">
-          <span>Mode</span>
-          <button class="pill solid" data-theme="matte">Matte</button>
-          <button class="pill ghost" data-theme="vision">Lotus Light</button>
-        </div>
-      </div>
+            // Show Scanning State briefly
+            data.stats.forEach((s, i) => {
+                const idx = i + 1;
+                document.getElementById(`c${idx}-title`).innerText = s.title;
+                document.getElementById(`c${idx}-icon`).className = `ph-fill ${s.icon} card-icon`;
+                
+                // Reset to scanning
+                document.getElementById(`c${idx}-val`).innerHTML = `<span class="scanning-text">Scanning...</span>`;
+                const card = document.getElementById(`card-${idx}`);
+                card.className = `data-card state-blue`; // Reset color
+            });
 
-      <div class="lab-suite-grid">
-        <div class="lab-card">
-          <div class="lab-card-head">
-            <h3>CBC & Blood</h3>
-            <span class="pill soft" id="cbc_signal">Normal</span>
-          </div>
-          <p class="lab-ai" id="lab_cbc_ai">Blood looks balanced. No infection seen.</p>
-          <div class="lab-row"><span>RBC</span><strong id="lab_rbc">4.7</strong></div>
-          <div class="lab-row"><span>WBC</span><strong id="lab_wbc">6.2</strong></div>
-          <div class="lab-row"><span>Platelets</span><strong id="lab_platelets">2.3</strong></div>
-        </div>
+            // Simulate Scan Delay then reveal
+            setTimeout(() => {
+                data.stats.forEach((s, i) => {
+                    const idx = i + 1;
+                    updateCardValue(idx, s.base, s.unit, s.type);
+                });
+                startLiveSimulation(organType);
+            }, 800);
+        };
 
-        <div class="lab-card">
-          <div class="lab-card-head">
-            <h3>LFT — Liver</h3>
-            <span class="pill soft" id="lft_signal">Good</span>
-          </div>
-          <p class="lab-ai" id="lab_lft_ai">Liver values stay inside normal range.</p>
-          <div class="lab-row"><span>SGOT</span><strong id="lab_sgot">26</strong></div>
-          <div class="lab-row"><span>SGPT</span><strong id="lab_sgpt">24</strong></div>
-          <div class="lab-row"><span>Bilirubin</span><strong id="lab_bilirubin">0.8</strong></div>
-        </div>
+        const updateCardValue = (idx, val, unit, type) => {
+            const card = document.getElementById(`card-${idx}`);
+            const state = getColorClass(val, type);
+            
+            if(idx !== 2) {
+                card.className = `data-card ${state}`;
+            } else {
+                if(state === 'state-red') card.className = `data-card state-red`;
+                else card.className = `data-card active-blue`;
+            }
+            
+            const el = document.getElementById(`c${idx}-val`);
+            el.innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
+            
+            if (idx === 2) {
+                document.getElementById('main-stat').innerHTML = `${val} <span style="font-size:12px;font-weight:500;">${unit}</span>`;
+                const boxBpm = document.getElementById('box-bpm');
+                if(boxBpm) boxBpm.innerText = val;
 
-        <div class="lab-card">
-          <div class="lab-card-head">
-            <h3>KFT + CUE — Kidneys</h3>
-            <span class="pill soft" id="kft_signal">Hydrated</span>
-          </div>
-          <p class="lab-ai" id="lab_kft_ai">Kidney filters are working well. Keep water handy.</p>
-          <div class="lab-row"><span>Creatinine</span><strong id="lab_creatinine">0.9</strong></div>
-          <div class="lab-row"><span>Urea</span><strong id="lab_urea">22</strong></div>
-          <div class="lab-row"><span>Sodium</span><strong id="lab_sodium">140</strong></div>
-        </div>
+                if(ORGAN_DATA[activeOrgan].animKey === type) {
+                    ORGAN_DATA[activeOrgan].simValue = val;
+                    if(activeOrgan === 'heart') AudioEngine.setBPM(val);
+                }
+            }
+        };
 
-        <div class="lab-card">
-          <div class="lab-card-head">
-            <h3>Cardiac markers</h3>
-            <span class="pill soft" id="cardiac_signal">Calm</span>
-          </div>
-          <p class="lab-ai" id="lab_cardiac_ai">Heart stress markers are low and steady.</p>
-          <div class="lab-row"><span>Troponin</span><strong id="lab_troponin">Normal</strong></div>
-          <div class="lab-row"><span>CRP</span><strong id="lab_crp">Low</strong></div>
-          <div class="lab-row"><span>BNP</span><strong id="lab_bnp">Normal</strong></div>
-        </div>
+        const startLiveSimulation = (organ) => {
+            liveIntervals.forEach(clearInterval);
+            liveIntervals = [];
+            const data = ORGAN_DATA[organ];
 
-        <div class="lab-card">
-          <div class="lab-card-head">
-            <h3>Lung health</h3>
-            <span class="pill soft" id="lung_signal">Free</span>
-          </div>
-          <p class="lab-ai" id="lab_lung_ai">Breathing looks smooth. SpO₂ steady.</p>
-          <div class="lab-row"><span>Spirometry</span><strong id="lab_spirometry">Normal</strong></div>
-          <div class="lab-row"><span>SpO₂ Trend</span><strong id="lab_spo2">98%</strong></div>
-          <div class="lab-row"><span>Resp Rate</span><strong id="lab_resp">16</strong></div>
-        </div>
+            const mainInt = setInterval(() => {
+                let hasAlert = false;
+                data.stats.forEach((s, i) => {
+                    if (typeof s.base === 'string') return; // Skip text based stats
 
-        <div class="lab-card">
-          <div class="lab-card-head">
-            <h3>Dental</h3>
-            <span class="pill soft" id="dental_signal">Bright</span>
-          </div>
-          <p class="lab-ai" id="lab_dental_ai">3D CBCT shows gums and teeth are clear.</p>
-          <div class="lab-row"><span>CBCT</span><strong id="lab_cbct">Clean</strong></div>
-          <div class="lab-row"><span>Cavities</span><strong id="lab_cavity">None</strong></div>
-          <div class="lab-row"><span>Gums</span><strong id="lab_gums">Healthy</strong></div>
-        </div>
+                    let val = parseFloat(s.base);
+                    let flux = (Math.random() - 0.5) * (val * 0.15); 
+                    if(Math.random() > 0.85) flux *= 2.5; 
 
-        <div class="lab-card wide">
-          <div class="lab-card-head">
-            <h3>Radiology board</h3>
-            <span class="pill soft" id="radio_signal">Ready</span>
-          </div>
-          <p class="lab-ai">USG abdomen, pelvis, mammogram, soft tissue, MRI/CT head, neck, spine all tracked in one place.</p>
-          <div class="radiology-grid">
-            <span>USG Abdomen</span>
-            <span>USG Pelvis</span>
-            <span>Mammogram</span>
-            <span>MRI Brain</span>
-            <span>CT Head</span>
-            <span>Spine MRI/CT</span>
-            <span>3D CBCT</span>
-            <span>Soft tissue scan</span>
-          </div>
-          <button class="pill solid small">Upload latest scan</button>
-        </div>
-      </div>
-    </section>
+                    let newVal = Math.floor(val + flux);
+                    if(s.unit === 'M' || s.unit === 'L' || s.unit.includes('g')) newVal = (val + flux/10).toFixed(1);
 
-    <!-- SERVICES -->
-    <section class="services" id="services">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Care modules</p>
-          <h2 class="section-title">Bookings and services</h2>
-          <p class="section-sub">Hospitals, clinics, labs, pharmacy, insurance, and finance from one screen.</p>
-        </div>
-        <div class="chip-row">
-          <span class="chip">Hospital check-in</span>
-          <span class="chip">Clinic visit</span>
-          <span class="chip">Lab slot</span>
-          <span class="chip">Pharmacy</span>
-          <span class="chip">Insurance</span>
-        </div>
-      </div>
+                    const state = getColorClass(newVal, s.type);
+                    if(state === 'state-red') hasAlert = true;
 
-      <div class="service-grid">
-        <div class="service-card">
-          <div>
-            <p class="eyebrow">Hospitals & clinics</p>
-            <h3>Book & track visits</h3>
-            <p class="muted">Select hospital, clinic, or lab. Use your QR or ID for instant registration.</p>
-            <div class="inline-row">
-              <button class="pill solid">Find Slot</button>
-              <button class="pill ghost">Show QR</button>
-            </div>
-          </div>
-          <div class="badge">Live tracking</div>
-        </div>
+                    updateCardValue(i+1, newVal, s.unit, s.type);
+                });
 
-        <div class="service-card">
-          <div>
-            <p class="eyebrow">Pharmacy</p>
-            <h3>Order medicines</h3>
-            <p class="muted">Refill reminders, interaction safety, and doorstep delivery.</p>
-            <div class="inline-row">
-              <button class="pill solid">Order Now</button>
-              <button class="pill ghost">See Prescriptions</button>
-            </div>
-          </div>
-          <div class="badge">Safe dose</div>
-        </div>
+                const aiPanel = document.getElementById('ai-panel');
+                if(hasAlert) {
+                    aiPanel.className = 'ai-panel warn';
+                    document.getElementById('ai-title').innerText = "ATTENTION REQUIRED";
+                    document.getElementById('ai-text').innerText = data.abnormal.msg + " " + data.abnormal.action;
+                } else {
+                    aiPanel.className = 'ai-panel';
+                    document.getElementById('ai-title').innerText = "AI ANALYSIS";
+                    document.getElementById('ai-text').innerText = "Vital signs are stable. No immediate irregularities detected.";
+                }
 
-        <div class="service-card">
-          <div>
-            <p class="eyebrow">Lab & imaging</p>
-            <h3>Book investigations</h3>
-            <p class="muted">CBC, LFT, KFT, radiology scans with home pickup and live report sync.</p>
-            <div class="inline-row">
-              <button class="pill solid">Book Test</button>
-              <button class="pill ghost">Track Samples</button>
-            </div>
-          </div>
-          <div class="badge">Home pickup</div>
-        </div>
+            }, 2000);
+            liveIntervals.push(mainInt);
+        };
 
-        <div class="service-card" id="insurance">
-          <div>
-            <p class="eyebrow">Insurance & claims</p>
-            <h3>See policy & claims</h3>
-            <p class="muted">Cashless status, TPA details, room rent guard, and pending approvals.</p>
-            <div class="inline-row">
-              <button class="pill solid">View Policy</button>
-              <button class="pill ghost">Check Claim</button>
-            </div>
-          </div>
-          <div class="badge">Cashless ready</div>
-        </div>
+        // --- THREE.JS ENGINE ---
+        let scene, camera, renderer, group, particles;
+        let isDragging = false;
+        let previousMousePosition = { x: 0, y: 0 };
+        let mouseX = 0, mouseY = 0;
+        let spotLight;
 
-        <div class="service-card">
-          <div>
-            <p class="eyebrow">Finance</p>
-            <h3>Health loans</h3>
-            <p class="muted">Instant or easy EMI from HealthFlo partners with clear terms.</p>
-            <div class="inline-row">
-              <button class="pill solid">Check offers</button>
-              <button class="pill ghost">CIBIL view</button>
-            </div>
-          </div>
-          <div class="badge">Pre-approved</div>
-        </div>
-        <div class="service-card">
-          <div>
-            <p class="eyebrow">Insurance & TPA</p>
-            <h3>All Indian insurers</h3>
-            <p class="muted">Select insurer, add TPA, see cashless readiness, and claim status at a glance.</p>
-            <div class="inline-row">
-              <button class="pill solid">Add insurer</button>
-              <button class="pill ghost">View claims</button>
-            </div>
-          </div>
-          <div class="badge">Cashless ready</div>
-        </div>
-      </div>
-    </section>
+        const initThree = () => {
+            const container = document.getElementById('model-3d-container');
+            if(!container) return;
 
-    <!-- HEALTH COACH -->
-    <section class="engagement-loop" id="engagement">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Guardian health coach</p>
-          <h2 class="section-title">Actionable guidance that feels simple</h2>
-          <p class="section-sub">Clear daily goals, instant check-ins, and recovery tips so you know exactly what to do next.</p>
-        </div>
-        <div class="chip-row">
-          <span class="chip">Guided actions</span>
-          <span class="chip">Recovery</span>
-          <span class="chip">Clarity first</span>
-        </div>
-      </div>
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 1, 18);
 
-      <div class="loop-grid">
-        <div class="loop-card streak">
-          <div class="card-head">
-            <h3>Daily readiness</h3>
-            <span class="pill soft" id="readiness_badge">Synced just now</span>
-          </div>
-          <p class="muted">Check-in once to update hydration, movement, and sleep balance in one view.</p>
-          <div class="progress-wrap">
-            <div class="progress-bar">
-              <div id="readiness_progress" class="progress-fill" style="width: 72%"></div>
-            </div>
-            <div class="progress-meta">
-              <strong id="readiness_value">72%</strong>
-              <small id="readiness_hint">Add water + a short walk</small>
-            </div>
-          </div>
-          <div class="inline-row">
-            <button class="pill solid" id="checkin_btn">Log morning check-in</button>
-            <button class="pill ghost" id="share_readiness">Share with family</button>
-          </div>
-          <p class="muted small" id="checkin_msg">We’ll remind you only if balance drops.</p>
-        </div>
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.2;
+            
+            container.appendChild(renderer.domElement);
 
-        <div class="loop-card">
-          <div class="card-head">
-            <h3>Today’s actions</h3>
-            <span class="pill soft">AI ordered</span>
-          </div>
-          <ul class="ritual-list" id="mission_list">
-            <li data-mission="water"><span>Finish 600ml water</span><div class="mini-progress"><span style="width: 60%"></span></div></li>
-            <li data-mission="walk"><span>12-min brisk walk</span><div class="mini-progress"><span style="width: 35%"></span></div></li>
-            <li data-mission="breath"><span>3 deep-breath sets</span><div class="mini-progress"><span style="width: 45%"></span></div></li>
-            <li data-mission="sleep"><span>Plan sleep by 10:30pm</span><div class="mini-progress"><span style="width: 25%"></span></div></li>
-          </ul>
-          <div class="inline-row">
-            <button class="pill solid small" id="mission_shuffle">Reshuffle priority</button>
-            <button class="pill ghost small">Save as plan</button>
-          </div>
-        </div>
+            // Particles
+            const particlesGeo = new THREE.BufferGeometry();
+            const pCount = 200;
+            const pArray = new Float32Array(pCount * 3);
+            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 20;
 
-        <div class="loop-card">
-          <div class="card-head">
-            <h3>Recovery + sleep</h3>
-            <span class="pill soft">Live recovery</span>
-          </div>
-          <div class="recovery-grid">
-            <div><p>Sleep debt</p><strong id="sleep_debt">-38 min</strong><small>Catch up early tonight</small></div>
-            <div><p>HRV signal</p><strong id="hrv_signal">Stable</strong><small>Stay hydrated</small></div>
-            <div><p>Rest timer</p><strong id="rest_timer">18 min</strong><small>Short stretch break</small></div>
-          </div>
-          <button class="pill solid small" id="recovery_btn">Start wind-down</button>
-        </div>
+            particlesGeo.setAttribute("position", new THREE.BufferAttribute(pArray, 3));
+            const particlesMat = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x3b82f6,
+                transparent: true,
+                opacity: 0.6
+            });
 
-        <div class="loop-card energy">
-          <div class="card-head">
-            <h3>Coach feed</h3>
-            <span class="pill soft">New prompts</span>
-          </div>
-          <div class="feed" id="coach_feed">
-            <div class="feed-item">Hydration up 12% after your last sip.</div>
-            <div class="feed-item">SpO₂ steady. Consider a stretch.</div>
-            <div class="feed-item">Sleep window looks good. Keep it.</div>
-          </div>
-          <div class="energy-meter">
-            <strong id="energy_value">82%</strong>
-            <small id="energy_hint">Best time to move</small>
-          </div>
-      <div class="mood-row">
-        <div>
-          <p>Current state</p>
-          <strong id="mood_value">Flow</strong>
-        </div>
-            <div>
-              <p>Breathing</p>
-              <strong>Steady</strong>
-            </div>
-            <div>
-              <p>Sleep prep</p>
-              <strong>On track</strong>
-            </div>
-        </div>
-        <button class="pill solid" id="boost_button">Guide me now</button>
-      </div>
-    </div>
-  </section>
+            particles = new THREE.Points(particlesGeo, particlesMat);
+            scene.add(particles);
 
-    <!-- APPOINTMENTS -->
-    <section class="appointments" id="appointments">
-      <div class="section-head compact">
-        <div>
-          <p class="eyebrow">Bookings + travel</p>
-          <h2 class="section-title">Upcoming appointments</h2>
-          <p class="section-sub">All visits, tests, and video calls synced with hospitals, labs, pharmacy refills, and your family.</p>
-        </div>
-        <div class="inline-row">
-          <a class="pill solid" href="patient-hospitals.html">Open hospital board</a>
-          <a class="pill outline" href="patient-pharmacy.html">Sync medicines</a>
-        </div>
-      </div>
+            // Lighting
+            const ambient = new THREE.AmbientLight(0xffffff, 0.2); 
+            scene.add(ambient);
+            
+            spotLight = new THREE.SpotLight(0xffffff, 2); 
+            spotLight.position.set(15, 20, 20); spotLight.angle = 0.6; spotLight.penumbra = 1; 
+            scene.add(spotLight);
+            
+            const rimLight = new THREE.PointLight(0xff0055, 3, 50); rimLight.position.set(-10, 5, -5); scene.add(rimLight);
+            const fillLight = new THREE.PointLight(0x3b82f6, 1, 50); fillLight.position.set(10, -10, 10); scene.add(fillLight);
 
-      <div class="appointment-grid">
-        <div class="appointment-card">
-          <div class="appointment-head">
-            <div>
-              <p class="eyebrow">Tomorrow • 10:00 AM</p>
-              <h3>Cardiology follow-up</h3>
-              <p class="muted">Dr. Mehta • Rainbow Hospitals</p>
-            </div>
-            <span class="pill soft">In-clinic</span>
-          </div>
-          <div class="appointment-body">
-            <p class="muted">Carry BP readings and last CBC. Auto-share vitals from the dashboard to the doctor.</p>
-            <div class="inline-row">
-              <button class="pill solid">Show QR</button>
-              <button class="pill ghost">Book cab/auto</button>
-            </div>
-          </div>
-        </div>
+            loadOrganModel('heart');
+            
+            // --- ANIMATION LOOP ---
+            const clock = new THREE.Clock();
+            const animate = () => {
+                requestAnimationFrame(animate);
+                const t = clock.getElapsedTime();
+                const simVal = ORGAN_DATA[activeOrgan].simValue || 1;
 
-        <div class="appointment-card">
-          <div class="appointment-head">
-            <div>
-              <p class="eyebrow">Fri • 7:30 PM</p>
-              <h3>Video consult</h3>
-              <p class="muted">Family doctor • Hindi/English</p>
-            </div>
-            <span class="pill soft">Online</span>
-          </div>
-          <div class="appointment-body">
-            <p class="muted">We share vitals, labs, and organ notes on one link for the doctor.</p>
-            <div class="inline-row">
-              <button class="pill solid">Join call</button>
-              <a class="pill outline" href="patient-labs.html">Attach lab files</a>
-            </div>
-          </div>
-        </div>
+                if (group && !isDragging) {
+                    const type = group.userData.type;
+                    
+                    if (type === 'heart') {
+                        // Heart Animation (Scaling for heartbeat effect)
+                        const speed = simVal / 60; 
+                        const beat = Math.sin(t * speed * Math.PI * 2);
+                        const scale = beat > 0.8 ? 1 + (beat-0.8)*0.4 : 1;
+                        
+                        group.scale.set(scale, scale, scale);
+                        group.rotation.y = Math.sin(t * 0.5) * 0.1 + (mouseX * 0.5);
+                        group.rotation.x = Math.cos(t * 0.3) * 0.05 + (mouseY * 0.2);
+                        
+                        spotLight.intensity = 2 + (scale - 1) * 8; 
+                    } else {
+                        // All Other Imported Models (Generic Rotation/Pulse)
+                        group.rotation.y += 0.005;
+                        const pulse = 1 + Math.sin(t * 2) * 0.01;
+                        group.scale.set(pulse * 2, pulse * 2, pulse * 2); 
+                    }
+                }
+                
+                if(particles) particles.rotation.y += 0.0005;
+                renderer.render(scene, camera);
+            };
+            animate();
 
-        <div class="appointment-card">
-          <div class="appointment-head">
-            <div>
-              <p class="eyebrow">Next week</p>
-              <h3>Lab sample pick-up</h3>
-              <p class="muted">Home collection • CBC + LFT</p>
-            </div>
-            <span class="pill soft">Home</span>
-          </div>
-          <div class="appointment-body">
-            <p class="muted">Reminder SMS for fasting, water intake, and ID proof will be sent to family too.</p>
-            <div class="inline-row">
-              <button class="pill solid">Reschedule</button>
-              <button class="pill ghost">Share with family</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- BODY MAP -->
-    <section class="bodymap-section" id="bodymap">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">3D Body</p>
-          <h2 class="section-title">Human body — quick view</h2>
-          <p class="section-sub">Tap any area to explore organ systems and alerts.</p>
-        </div>
-      </div>
-      <div class="bodymap-container">
-        <model-viewer
-          id="bodyModel"
-          src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-          camera-controls
-          auto-rotate
-          shadow-intensity="1.4"
-          exposure="1.2">
-        </model-viewer>
-      </div>
-    </section>
+            // INPUT HANDLERS
+            container.addEventListener('mousemove', (e) => {
+                const rect = container.getBoundingClientRect();
+                mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                mouseY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+                
+                if (isDragging && group) {
+                    const deltaMove = { x: e.offsetX - previousMousePosition.x, y: e.offsetY - previousMousePosition.y };
+                    group.rotation.y += deltaMove.x * 0.01;
+                    group.rotation.x += deltaMove.y * 0.01;
+                }
+                previousMousePosition = { x: e.offsetX, y: e.offsetY };
+            });
+            
+            container.addEventListener('mousedown', () => isDragging = true);
+            document.addEventListener('mouseup', () => isDragging = false);
 
-    <!-- REPORT VAULT -->
-    <section class="report-vault" id="reports">
-      <h2 class="section-title">Report vault</h2>
-      <p class="section-sub">All your documents in one safe space with quick view.</p>
-      <div class="report-grid">
-        <div class="report-card" data-report="cbc_report">
-          <div class="report-icon">📄</div>
-          <h3>CBC Report</h3>
-          <p class="muted">Uploaded: Feb 4</p>
-          <button class="pill ghost report-open-btn" data-target="cbc_report_modal">View</button>
-        </div>
-        <div class="report-card" data-report="lft_report">
-          <div class="report-icon">📄</div>
-          <h3>LFT Report</h3>
-          <p class="muted">Uploaded: Feb 4</p>
-          <button class="pill ghost report-open-btn" data-target="lft_report_modal">View</button>
-        </div>
-        <div class="report-card" data-report="kft_report">
-          <div class="report-icon">📄</div>
-          <h3>KFT Report</h3>
-          <p class="muted">Uploaded: Feb 4</p>
-          <button class="pill ghost report-open-btn" data-target="kft_report_modal">View</button>
-        </div>
-        <div class="report-card" data-report="lipid_profile">
-          <div class="report-icon">📄</div>
-          <h3>Lipid Profile</h3>
-          <p class="muted">Uploaded: Feb 6</p>
-          <button class="pill ghost report-open-btn" data-target="lipid_report_modal">View</button>
-        </div>
-      </div>
-    </section>
+            window.addEventListener('resize', () => {
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+        };
 
-    <!-- MODALS -->
-    <div id="reportModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
-      <div class="modal-box">
-        <button class="modal-close">×</button>
-        <h2 id="modalTitle">Report</h2>
-        <p id="modalDate">Date: --</p>
-        <div class="modal-content">
-          <img id="modalImage" src="" alt="Report Preview">
-        </div>
-        <button class="pill solid" id="downloadReport">Download</button>
-      </div>
-    </div>
+        const loadOrganModel = (type) => {
+            if (group) scene.remove(group);
+            group = new THREE.Group();
+            group.userData.type = type;
+            scene.add(group);
 
-    <div id="organModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
-      <div class="modal-box organ-modal-box">
-        <button class="modal-close">×</button>
-        <h2 id="organTitle">Organ details</h2>
-        <div class="organ-modal-layout">
-          <div class="organ-3d-wrap">
-            <model-viewer
-              id="organModel3D"
-              src="https://modelviewer.dev/shared-assets/models/Heart.glb"
-              auto-rotate
-              camera-controls
-              disable-zoom>
-            </model-viewer>
-          </div>
-          <div class="organ-stats">
-            <div class="stat-row">
-              <span>Status</span>
-              <strong id="organStatus">--</strong>
-            </div>
-            <div class="stat-row">
-              <span>AI note</span>
-              <strong id="organAI">--</strong>
-            </div>
-            <div class="stat-row">
-              <span>Risk</span>
-              <strong id="organRisk">--</strong>
-            </div>
-            <h3 class="chart-title">Vital trend</h3>
-            <canvas id="organTrendChart"></canvas>
-          </div>
-        </div>
-      </div>
-    </div>
+            // UNIFIED LOADER: Now loads external GLB for ALL types (including heart and cells)
+            const loader = new THREE.GLTFLoader();
+            const url = `${GITHUB_REPO_PATH}${type}.glb`;
+            
+            loader.load(url, (gltf) => {
+                const model = gltf.scene;
+                const box = new THREE.Box3().setFromObject(model);
+                const size = box.getSize(new THREE.Vector3()).length();
+                const center = box.getCenter(new THREE.Vector3());
+                
+                // Normalize Size
+                const scaleFactor = 6 / size;
+                model.scale.setScalar(scaleFactor);
+                
+                // Center it
+                model.position.x += (model.position.x - center.x) * scaleFactor;
+                model.position.y += (model.position.y - center.y) * scaleFactor;
+                model.position.z += (model.position.z - center.z) * scaleFactor;
+                
+                group.add(model);
+            }, undefined, (error) => {
+                // FALLBACK: If model fails to load, show a placeholder wireframe shape
+                console.warn(`Failed to load ${type}.glb from ${url}. Using fallback.`, error);
+                
+                const geo = new THREE.IcosahedronGeometry(2.5, 1);
+                const mat = new THREE.MeshStandardMaterial({ 
+                    color: 0x0A84FF, 
+                    wireframe: true, 
+                    transparent: true, 
+                    opacity: 0.5 
+                });
+                const fallbackMesh = new THREE.Mesh(geo, mat);
+                group.add(fallbackMesh);
+            });
+        };
 
-    <!-- NEO DOCK -->
-    <nav class="neo-dock">
-      <a class="dock-btn active" href="patient-dashboard.html" aria-label="Dashboard">🏠</a>
-      <a class="dock-btn" href="patient-health.html" aria-label="Health">💓</a>
-      <a class="dock-btn" href="patient-organs.html" aria-label="Organs">🫀</a>
-      <a class="dock-btn" href="patient-profile.html" aria-label="Profile">👤</a>
-      <a class="dock-btn" href="patient-labs.html" aria-label="Labs">🧪</a>
-      <a class="dock-btn" href="patient-hospitals.html" aria-label="Hospitals">🏥</a>
-      <a class="dock-btn" href="patient-pharmacy.html" aria-label="Pharmacy">💊</a>
-      <a class="dock-btn" href="patient-devices.html" aria-label="Devices">📡</a>
-      <a class="dock-btn" href="patient-family.html" aria-label="Family">👪</a>
-      <a class="dock-btn" href="patient-insurance.html" aria-label="Insurance">💳</a>
-      <a class="dock-btn" href="patient-settings.html" aria-label="Settings">⚙️</a>
-    </nav>
+        document.addEventListener('DOMContentLoaded', () => {
+            generateOrganButtons();
+            initThree();
+            updateUI('heart');
 
-    <footer class="hf-footer">
-      <p>© 2025 HealthFlo — Neo Guardian OS</p>
-      <p class="muted small">AI-first health operating system for patients & families</p>
-    </footer>
+            // Sound Toggle
+            const soundBtn = document.getElementById('sound-toggle');
+            soundBtn.addEventListener('click', () => {
+                const isActive = AudioEngine.toggle();
+                soundBtn.style.color = isActive ? '#0A84FF' : 'white';
+                soundBtn.style.background = isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
+            });
 
-  </main>
-
-  <script src="js/patient-os.js"></script>
-</body>
+            // Delegate events for dynamically created buttons
+            const tray = document.querySelector('.organ-tray');
+            tray.addEventListener('click', (e) => {
+                const btn = e.target.closest('.organ-item');
+                if(!btn) return;
+                
+                document.querySelectorAll('.organ-item').forEach(b => b.classList.remove('selected'));
+                document.querySelectorAll('.organ-label').forEach(el => el.remove());
+                
+                btn.classList.add('selected');
+                
+                const label = document.createElement('div'); label.className = 'organ-label'; 
+                label.innerText = 'My ' + btn.dataset.organ.charAt(0).toUpperCase() + btn.dataset.organ.slice(1);
+                btn.appendChild(label);
+                
+                const organ = btn.dataset.organ;
+                loadOrganModel(organ);
+                updateUI(organ);
+            });
+        });
+    </script>
+</body> 
 </html>
