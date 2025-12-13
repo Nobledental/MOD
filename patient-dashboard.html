@@ -110,7 +110,7 @@
 
         /* BROWSER BAR */
         .browser-bar {
-            height: 60px; display: flex; align-items: center; padding: 0 32px; gap: 24px;
+            height: 50px; display: flex; align-items: center; padding: 0 24px; gap: 20px;
             border-bottom: 1px solid var(--glass-border); 
             background: rgba(0,0,0,0.2); 
             backdrop-filter: blur(10px);
@@ -119,7 +119,7 @@
         }
         .window-controls { display: flex; gap: 8px; margin-right: 12px; }
         .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
-        .branding-right { margin-left: auto; font-weight: 700; color: var(--text-white); letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
+        .branding-right { margin-left: auto; font-weight: 700; color: var(--text-white); letter-spacing: 1px; font-size: 13px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
         .branding-right span { color: var(--color-blue); text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
 
         /* DASHBOARD BODY */
@@ -127,7 +127,7 @@
 
         /* SIDEBAR */
         .sidebar {
-            width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px;
+            width: 80px; display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 30px;
             border-right: 1px solid var(--glass-border);
             z-index: 10;
             background: var(--sidebar-bg);
@@ -168,8 +168,8 @@
         .logo { font-weight: 800; color: var(--text-white); font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
         .logo span { color: var(--color-blue); }
         .menu-item {
-            width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center;
-            color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+            width: 44px; height: 44px; border-radius: 14px; display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted); font-size: 20px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
         }
         .menu-item:hover { color: var(--text-white); background: rgba(125, 125, 125, 0.1); }
         .menu-item.active { 
@@ -179,85 +179,69 @@
             border: 1px solid rgba(59, 130, 246, 0.2);
         }
         
-        /* MAIN GRID */
+        /* MAIN GRID - COMPACT */
         .main-content {
-            flex: 1; padding: 30px 40px;
+            flex: 1; padding: 20px 30px;
             display: grid;
             grid-template-columns: 1.4fr 1fr;
             grid-template-rows: auto 1fr;
-            gap: 30px; overflow-y: auto; position: relative;
+            gap: 20px; overflow-y: auto; position: relative;
         }
 
         /* HEADER */
         .header-section {
             grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 10px; z-index: 5;
+            margin-bottom: 5px; z-index: 5;
         }
-        .header-left { display: flex; flex-direction: column; gap: 15px; }
+        .header-left { display: flex; flex-direction: column; gap: 8px; }
         .top-toggles { display: flex; gap: 10px; }
         .toggle-pill {
-            padding: 8px 24px; border-radius: 100px; font-size: 13px; font-weight: 500;
+            padding: 6px 20px; border-radius: 100px; font-size: 12px; font-weight: 500;
             color: var(--text-muted); background: rgba(125, 125, 125, 0.1); border: 1px solid var(--glass-border);
             cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
         }
         .page-nav {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 6px;
+            display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
         }
         .page-nav a {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 12px;
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.04);
-            color: var(--text-white);
-            font-size: 12px;
-            text-decoration: none;
-            transition: 0.2s;
-            backdrop-filter: blur(10px);
+            display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px;
+            border-radius: 10px; border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04); color: var(--text-white);
+            font-size: 11px; text-decoration: none; transition: 0.2s; backdrop-filter: blur(10px);
         }
-        .page-nav a:hover {
-            border-color: rgba(59, 130, 246, 0.4);
-            color: var(--color-blue);
-        }
-        .page-nav a .ph {
-            font-size: 16px;
-        }
+        .page-nav a:hover { border-color: rgba(59, 130, 246, 0.4); color: var(--color-blue); }
+        .page-nav a .ph { font-size: 14px; }
         .toggle-pill.active {
             background: rgba(59, 130, 246, 0.2); color: var(--pill-active-text); border-color: rgba(59, 130, 246, 0.5);
             display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
         }
         .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
 
-        .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
-        .page-title h1 { font-size: 56px; font-weight: 700; color: var(--text-white); line-height: 1; letter-spacing: -2px; }
+        .page-title h2 { font-size: 16px; color: var(--color-blue); margin-bottom: 2px; font-weight: 600; letter-spacing: 0.5px; }
+        .page-title h1 { font-size: 42px; font-weight: 700; color: var(--text-white); line-height: 1; letter-spacing: -1.5px; }
         .page-title h1 span { font-weight: 300; opacity: 0.8; }
 
         .theme-toggle {
-            padding: 8px 14px; border-radius: 12px; border: 1px solid var(--glass-border);
-            background: rgba(125, 125, 125, 0.1); color: var(--text-white); cursor: pointer; font-weight: 700; font-size: 12px;
+            padding: 6px 12px; border-radius: 10px; border: 1px solid var(--glass-border);
+            background: rgba(125, 125, 125, 0.1); color: var(--text-white); cursor: pointer; font-weight: 700; font-size: 11px;
         }
 
         /* LEFT PANEL (3D + ORGANS) */
         .left-panel-container {
             grid-column: 1; grid-row: 2;
-            display: flex; flex-direction: column; gap: 20px;
+            display: flex; flex-direction: column; gap: 15px;
             position: relative;
         }
 
         /* 3D STAGE */
         .heart-stage {
-            flex: 1; min-height: 400px;
+            flex: 1; min-height: 380px;
             position: relative;
             display: flex; justify-content: center; align-items: center;
-            border-radius: 28px;
+            border-radius: 24px;
             border: 1px solid var(--glass-border);
             background: rgba(0,0,0,0.1);
-            overflow: hidden; /* Fix overflow */
+            overflow: hidden; 
         }
         #model-3d-container {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
@@ -266,13 +250,13 @@
 
         /* Animated Rings Background */
         .rings {
-            position: absolute; width: 600px; height: 600px; border-radius: 50%;
+            position: absolute; width: 500px; height: 500px; border-radius: 50%;
             border: 1px solid var(--glass-border); 
             background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
             z-index: 0; animation: spin 60s linear infinite;
         }
         .rings::before {
-            content: ''; position: absolute; top: 50px; left: 50px; right: 50px; bottom: 50px;
+            content: ''; position: absolute; top: 40px; left: 40px; right: 40px; bottom: 40px;
             border-radius: 50%; border: 1px dashed var(--glass-border);
             animation: spinReverse 40s linear infinite;
         }
@@ -295,45 +279,45 @@
             background: var(--card-bg);
             backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 15px;
-            margin-top: -60px; /* Overlap nicely */
+            border-radius: 18px;
+            padding: 12px;
+            margin-top: -50px; /* Overlap nicely */
             z-index: 10;
             width: 100%;
         }
-        .section-header.mini { font-size: 11px; margin-bottom: 10px; opacity: 0.7; }
+        .section-header.mini { font-size: 10px; margin-bottom: 8px; opacity: 0.7; }
 
         .organ-tray {
             display: flex;
             flex-wrap: wrap; 
-            gap: 12px;
+            gap: 10px;
             justify-content: center;
         }
 
         .organ-item {
-            width: 50px; height: 50px;
+            width: 44px; height: 44px;
             background: rgba(125,125,125,0.05);
             border: 1px solid var(--glass-border);
             backdrop-filter: blur(15px);
-            border-radius: 14px; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center;
             position: relative; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             flex-shrink: 0;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
         }
         .premium-icon {
-            position: absolute; top: 4px; right: 4px;
-            width: 12px; height: 12px; border-radius: 6px;
+            position: absolute; top: 3px; right: 3px;
+            width: 10px; height: 10px; border-radius: 6px;
             background: linear-gradient(135deg, #ffd166, #f97316);
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
         }
-        .premium-icon i { font-size: 8px; color: #1f2937; }
+        .premium-icon i { font-size: 6px; color: #1f2937; }
         .organ-item:hover {
             background: rgba(125,125,125,0.1);
-            transform: translateY(-3px);
+            transform: translateY(-2px);
             border-color: rgba(59, 130, 246, 0.3);
         }
-        .organ-item i, .organ-item svg { font-size: 22px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        .organ-item i, .organ-item svg { font-size: 20px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
         
         .organ-item.selected {
             background: linear-gradient(145deg, rgba(59, 130, 246, 0.15), rgba(0,0,0,0));
@@ -347,9 +331,9 @@
         .organ-name-mini { display: none; } 
 
         .organ-label {
-            position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
-            background: #ffffff; color: #000; font-size: 10px; font-weight: 800;
-            padding: 2px 8px; border-radius: 100px;
+            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
+            background: #ffffff; color: #000; font-size: 9px; font-weight: 800;
+            padding: 2px 6px; border-radius: 100px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             pointer-events: none; white-space: nowrap; z-index: 20;
         }
@@ -357,19 +341,19 @@
         /* RIGHT PANEL (VITALS + SCHEDULE) */
         .right-panel-container {
             grid-column: 2; grid-row: 2;
-            display: flex; flex-direction: column; gap: 20px;
+            display: flex; flex-direction: column; gap: 15px;
             height: 100%;
         }
 
         .floating-stat {
             background: var(--card-bg); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 18px;
-            padding: 14px 16px; width: 100%; z-index: 10;
+            border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 12px 14px; width: 100%; z-index: 10;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; gap: 8px;
+            display: flex; flex-direction: column; gap: 6px;
         }
-        .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
-        .live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
+        .live-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 4px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
+        .live-dot { width: 5px; height: 5px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* READINESS CARD (New Feature) */
@@ -377,35 +361,35 @@
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0,0,0,0));
             border-color: rgba(16, 185, 129, 0.3);
         }
-        .progress-bar-bg { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .progress-bar-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 4px; }
         .progress-bar-fill { height: 100%; background: #10b981; width: 85%; border-radius: 10px; box-shadow: 0 0 10px #10b981; transition: width 1s; }
 
         /* STATS GRID */
-        .section-header { font-size: 13px; font-weight: 700; color: var(--color-blue); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .blue-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
+        .section-header { font-size: 12px; font-weight: 700; color: var(--color-blue); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .blue-dot { width: 5px; height: 5px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
 
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; }
         
         .data-card {
             background: var(--card-bg); 
             backdrop-filter: blur(18px);
-            border-radius: 18px; padding: 16px;
+            border-radius: 16px; padding: 14px;
             display: flex; flex-direction: column; justify-content: space-between;
             border: 1px solid var(--card-border); position: relative; overflow: hidden; transition: 0.3s;
-            min-height: 110px;
+            min-height: 100px;
         }
         
         .data-card:hover { 
             border-color: rgba(59, 130, 246, 0.4); 
             background: var(--card-hover-bg); 
-            transform: translateY(-4px);
+            transform: translateY(-2px);
             box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); 
         }
 
         /* SCANNING STATE CSS */
         .scanning-text {
             color: var(--color-blue);
-            font-size: 14px; font-weight: 600; letter-spacing: 1px;
+            font-size: 12px; font-weight: 600; letter-spacing: 1px;
             animation: pulseText 1s infinite;
         }
         @keyframes pulseText { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
@@ -430,18 +414,18 @@
         }
         .data-card.state-red .card-icon { color: var(--color-red); }
 
-        .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; z-index: 2; }
-        .card-icon { font-size: 18px; transition: color 0.3s; }
-        .card-title { font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 2px; font-weight: 600; }
-        .card-val { font-size: 20px; font-weight: 700; color: var(--text-white); letter-spacing: -0.5px; transition: 0.3s; }
+        .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; z-index: 2; }
+        .card-icon { font-size: 16px; transition: color 0.3s; }
+        .card-title { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 1px; font-weight: 600; }
+        .card-val { font-size: 18px; font-weight: 700; color: var(--text-white); letter-spacing: -0.5px; transition: 0.3s; }
         
-        .bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 35px; margin-top: auto; z-index: 2; }
-        .bar { flex: 1; background: rgba(125,125,125,0.15); border-radius: 3px; transition: height 0.5s ease-in-out, background 0.3s; }
+        .bar-chart { display: flex; align-items: flex-end; gap: 3px; height: 30px; margin-top: auto; z-index: 2; }
+        .bar { flex: 1; background: rgba(125,125,125,0.15); border-radius: 2px; transition: height 0.5s ease-in-out, background 0.3s; }
         .bar.act { background: currentColor; }
         
         .blue-square-val {
-            position: absolute; right: 16px; bottom: 16px; width: 40px; height: 40px;
-            background: var(--accent-blue); border-radius: 12px;
+            position: absolute; right: 14px; bottom: 14px; width: 36px; height: 36px;
+            background: var(--accent-blue); border-radius: 10px;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4); z-index: 2;
         }
@@ -451,50 +435,50 @@
             flex: 1; /* Fill remaining height */
             background: var(--card-bg);
             backdrop-filter: blur(24px);
-            border-radius: 20px; padding: 20px;
+            border-radius: 18px; padding: 16px;
             border: 1px solid var(--glass-border); display: flex; flex-direction: column;
         }
         .ai-panel {
-            margin-top: 0; padding: 16px; background: rgba(59, 130, 246, 0.08);
-            border-radius: 16px; border: 1px solid rgba(59, 130, 246, 0.2); transition: 0.3s;
-            margin-bottom: 12px;
+            margin-top: auto; padding: 14px; background: rgba(59, 130, 246, 0.08);
+            border-radius: 14px; border: 1px solid rgba(59, 130, 246, 0.2); transition: 0.3s;
+            margin-bottom: 0;
         }
-        .ai-panel .typing { font-style: italic; color: var(--text-muted); font-size: 12px; margin-top: 6px; display: none; }
+        .ai-panel .typing { font-style: italic; color: var(--text-muted); font-size: 11px; margin-top: 4px; display: none; }
         .ai-panel.warn { background: rgba(239, 68, 68, 0.1); border-color: var(--color-red); }
-        .ai-title { font-size: 11px; font-weight: 800; color: var(--color-blue); margin-bottom: 6px; display: block; letter-spacing: 1px; }
-        .ai-text { font-size: 12px; line-height: 1.5; color: var(--text-muted); }
+        .ai-title { font-size: 10px; font-weight: 800; color: var(--color-blue); margin-bottom: 4px; display: block; letter-spacing: 1px; }
+        .ai-text { font-size: 11px; line-height: 1.4; color: var(--text-muted); }
 
         .next-checkup {
-            background: rgba(125,125,125,0.05); border-radius: 16px; padding: 12px;
+            background: rgba(125,125,125,0.05); border-radius: 14px; padding: 10px;
             display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 16px; color: var(--text-white); border: 1px solid var(--glass-border);
+            margin-bottom: 12px; color: var(--text-white); border: 1px solid var(--glass-border);
         }
         .date-nav {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
             background: rgba(0,0,0,0.05); padding: 4px; border-radius: 100px; border: 1px solid var(--glass-border);
         }
         .nav-arrow { 
-            width: 24px; height: 24px; border-radius: 50%; background: rgba(125,125,125,0.1); 
-            display: flex; justify-content: center; align-items: center; font-size: 12px; color: #9ca3af; cursor: pointer; transition: 0.2s;
+            width: 22px; height: 22px; border-radius: 50%; background: rgba(125,125,125,0.1); 
+            display: flex; justify-content: center; align-items: center; font-size: 11px; color: #9ca3af; cursor: pointer; transition: 0.2s;
         }
-        .doc-list { display: flex; flex-direction: column; gap: 8px; flex: 1; overflow-y: auto; max-height: 150px; }
+        .doc-list { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; max-height: 120px; margin-bottom: 10px; }
         .doc-row { 
-            display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; 
+            display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; 
             transition: 0.2s; cursor: pointer; border: 1px solid transparent;
         }
         .doc-row:hover { background: rgba(125,125,125,0.08); border-color: var(--glass-border); }
-        .doc-img { width: 36px; height: 36px; border-radius: 10px; object-fit: cover; }
+        .doc-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
         .consult-btn {
-            margin-top: 16px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 12px;
-            border-radius: 100px; font-weight: 700; font-size: 13px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 10px;
+            margin-top: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 10px;
+            border-radius: 100px; font-weight: 700; font-size: 12px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 8px;
             box-shadow: 0 10px 30px -5px rgba(59, 130, 246, 0.4); transition: 0.3s;
         }
 
         /* Sound Button */
         .sound-btn {
-            position: absolute; top: 20px; left: 20px;
-            width: 44px; height: 44px; border-radius: 50%;
+            position: absolute; top: 16px; left: 16px;
+            width: 36px; height: 36px; border-radius: 50%;
             background: rgba(125,125,125,0.1); border: 1px solid var(--glass-border);
             display: flex; justify-content: center; align-items: center;
             cursor: pointer; z-index: 100; color: var(--text-white); transition: 0.3s;
@@ -659,38 +643,15 @@
 
                 <div class="right-panel-container">
                     
-                    <div class="floating-stat readiness-card" id="readiness-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <span style="font-size:11px; color:#10b981; font-weight:700; text-transform:uppercase;">Bio-Readiness</span>
-                                <div style="font-size:20px; font-weight:800; color: var(--text-white);">85% <span style="font-size:12px; font-weight:500; opacity:0.7">Optimal</span></div>
-                            </div>
-                            <i class="ph-fill ph-lightning" style="font-size:24px; color:#10b981;"></i>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" id="readiness-bar"></div>
-                        </div>
-                    </div>
-
                     <div class="floating-stat" id="float-card">
                         <div style="display:flex; align-items:center; gap:8px;">
                             <div class="live-badge"><div class="live-dot"></div> LIVE</div>
-                            <span style="font-size:12px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
+                            <span style="font-size:11px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
                         </div>
-                        <div style="font-size:26px; font-weight:800; margin-bottom:4px; color: var(--text-white);" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
+                        <div style="font-size:24px; font-weight:800; margin-bottom:4px; color: var(--text-white);" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
                         <svg width="100%" height="30" viewBox="0 0 200 30" id="live-ecg-svg" preserveAspectRatio="none">
                             <path id="live-ecg-path" d="" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                    </div>
-
-                    <div class="ai-panel" id="ai-panel">
-                        <span class="ai-title" id="ai-title">AI ANALYSIS</span>
-                        <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
-                        <div class="typing" id="ai-typing">AI is typing...</div>
-                    </div>
-                    
-                    <div class="ai-panel" id="diagnosis-panel" style="display: none;"> <span class="ai-title">DIAGNOSIS PANEL</span>
-                        <p class="ai-text" id="diagnosis-text">No critical keywords detected. Keep monitoring.</p>
                     </div>
 
                     <div class="section-header"><div class="blue-dot"></div> <span id="section-title">My Heart Condition</span></div>
@@ -730,20 +691,44 @@
                     </div>
 
                     <div class="schedule-area" style="margin-top: 10px;">
-                        <div class="section-header" style="margin-bottom:10px;"><div class="blue-dot"></div> Care Schedule</div>
+                        <div class="section-header" style="margin-bottom:8px;"><div class="blue-dot"></div> Care Schedule</div>
                         <div class="next-checkup">
-                            <div><div style="font-size:11px; color:#9ca3af; margin-bottom:4px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 15px;">Fri, 24 Mar</div></div>
-                            <i class="ph-fill ph-calendar-check" style="font-size:24px; color: var(--color-blue);"></i>
+                            <div><div style="font-size:10px; color:#9ca3af; margin-bottom:2px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 13px;">Fri, 24 Mar</div></div>
+                            <i class="ph-fill ph-calendar-check" style="font-size:20px; color: var(--color-blue);"></i>
                         </div>
                         <div class="date-nav">
-                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:13px; color:var(--text-white); font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
+                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:12px; color:var(--text-white); font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
                         </div>
                         <div class="doc-list">
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:var(--text-white);">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:12px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div><div style="font-size:10px; color:#9ca3af;">Cardiologist</div></div></div>
+                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:12px; font-weight:700; color:var(--text-white);">Dr. Sarah Lee</div><div style="font-size:10px; color:#9ca3af;">Neurologist</div></div></div>
                         </div>
                         <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
                     </div>
+
+                    <div class="floating-stat readiness-card" id="readiness-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <span style="font-size:10px; color:#10b981; font-weight:700; text-transform:uppercase;">Bio-Readiness</span>
+                                <div style="font-size:18px; font-weight:800; color: var(--text-white);">85% <span style="font-size:11px; font-weight:500; opacity:0.7">Optimal</span></div>
+                            </div>
+                            <i class="ph-fill ph-lightning" style="font-size:20px; color:#10b981;"></i>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" id="readiness-bar"></div>
+                        </div>
+                    </div>
+
+                    <div class="ai-panel" id="ai-panel">
+                        <span class="ai-title" id="ai-title">AI ANALYSIS</span>
+                        <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
+                        <div class="typing" id="ai-typing">AI is typing...</div>
+                    </div>
+                    
+                    <div class="ai-panel" id="diagnosis-panel" style="display: none;"> <span class="ai-title">DIAGNOSIS PANEL</span>
+                        <p class="ai-text" id="diagnosis-text">No critical keywords detected. Keep monitoring.</p>
+                    </div>
+
                 </div>
 
             </div>
@@ -1505,6 +1490,26 @@
             return colors[type] || 0x3b82f6;
         };
 
+        // --- 3D MODEL MAPPING ---
+        // Mapped to your specific GitHub repository: Nobledental/MOD
+        const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/Nobledental/MOD/main/3d_models/';
+
+        const ORGAN_MODEL_MAP = {
+            heart: GITHUB_BASE_URL + 'heart.glb',
+            brain: GITHUB_BASE_URL + 'brain.glb',
+            liver: GITHUB_BASE_URL + 'liver.glb',
+            lungs: GITHUB_BASE_URL + 'lungs.glb',
+            kidneys: GITHUB_BASE_URL + 'kidneys.glb',
+            eyes: GITHUB_BASE_URL + 'eyes.glb',
+            cirrhotic_liver: GITHUB_BASE_URL + 'cirrhotic_liver.glb'
+            
+            // FUTURE UPLOADS:
+            // When you upload 'stomach.glb' or 'pancreas.glb' to that folder,
+            // just uncomment or add them below:
+            // stomach: GITHUB_BASE_URL + 'stomach.glb',
+            // pancreas: GITHUB_BASE_URL + 'pancreas.glb',
+        };
+
         // FIXED: Compact 3D Model Loading Logic
         const loadOrganModel = (type) => {
             // 1. Strict Cleanup to prevent fusing
@@ -1529,17 +1534,65 @@
 
             const color = getOrganColor(type);
             
-            // 2. Compact Procedural Geometries
+            // 2. Try loading from GitHub first
+            const modelSrc = ORGAN_MODEL_MAP[type];
+            let modelLoaded = false;
+
+            if (modelSrc) {
+                gltfLoader.load(modelSrc, (gltf) => {
+                    const model = gltf.scene || gltf.scenes?.[0];
+                    if (model) {
+                        modelLoaded = true;
+                        model.traverse((node) => {
+                            if (node.isMesh) {
+                                node.material = new THREE.MeshPhongMaterial({
+                                    color: color, emissive: color, emissiveIntensity: 0.2,
+                                    transparent: true, opacity: 0.9, flatShading: false, shininess: 80
+                                });
+                            }
+                        });
+                        
+                        const box = new THREE.Box3().setFromObject(model);
+                        const size = new THREE.Vector3();
+                        box.getSize(size);
+                        const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+                        const scale = 4.5 / maxAxis; // Fit inside the ring
+                        model.scale.setScalar(scale);
+                        box.getCenter(model.position).multiplyScalar(-1);
+                        model.position.y -= 0.5;
+                        
+                        group.add(model);
+                    }
+                }, undefined, (error) => {
+                    console.log('Model load failed, using procedural fallback for:', type);
+                    createProceduralFallback(type, color);
+                });
+            } 
+            
+            // Immediate fallback if no URL mapped or while loading (async handling is tricky here, so we default to procedural if load fails)
+            if (!modelSrc) {
+                createProceduralFallback(type, color);
+            }
+
+            // Always add the Sci-Fi Ring
+            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); 
+            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            group.add(ring);
+            group.userData.ring = ring; 
+        };
+
+        const createProceduralFallback = (type, color) => {
             let geometry;
             switch (type) {
-                case 'heart': geometry = new THREE.IcosahedronGeometry(2.2, 1); break; // Reduced size
+                case 'heart': geometry = new THREE.IcosahedronGeometry(2.2, 1); break;
                 case 'brain': geometry = new THREE.DodecahedronGeometry(2.2, 0); break;
                 case 'lungs': geometry = new THREE.CapsuleGeometry(1.5, 3, 4, 16); break;
                 case 'liver': geometry = new THREE.TetrahedronGeometry(2.5, 2); break;
                 default: geometry = new THREE.OctahedronGeometry(2.0, 0);
             }
 
-            // Inner Core (Holographic Glow)
             const coreMat = new THREE.MeshPhongMaterial({
                 color: color, emissive: color, emissiveIntensity: 0.6,
                 transparent: true, opacity: 0.9, flatShading: true, shininess: 100
@@ -1547,20 +1600,11 @@
             const coreMesh = new THREE.Mesh(geometry, coreMat);
             group.add(coreMesh);
 
-            // Outer Wireframe (Scanner Effect)
             const wireGeo = new THREE.WireframeGeometry(geometry);
             const wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
             const wireMesh = new THREE.LineSegments(wireGeo, wireMat);
             wireMesh.scale.setScalar(1.1);
             group.add(wireMesh);
-
-            // Sci-Fi Ring
-            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); // Tighter ring
-            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
-            ring.rotation.x = Math.PI / 2;
-            group.add(ring);
-            group.userData.ring = ring; 
         };
 
         document.addEventListener('DOMContentLoaded', () => {
