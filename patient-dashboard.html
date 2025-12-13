@@ -72,6 +72,20 @@
         .branding-right { margin-left: auto; font-weight: 700; color: white; letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
         .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
 
+        /* Header Search / Quick Links */
+        .search-suite { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 520px; margin-left: auto; position: relative; }
+        .search-bar { flex: 1; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); position: relative; }
+        .search-bar i { color: var(--text-muted); font-size: 18px; }
+        .search-input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 13px; }
+        .search-input::placeholder { color: var(--text-muted); }
+        .search-results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: rgba(12,16,24,0.95); border: 1px solid var(--glass-border); border-radius: 14px; padding: 8px; box-shadow: 0 15px 40px rgba(0,0,0,0.35); display: none; flex-direction: column; gap: 6px; z-index: 50; max-height: 320px; overflow-y: auto; }
+        .search-results.show { display: flex; }
+        .search-result { width: 100%; text-align: left; background: rgba(255,255,255,0.03); border: 1px solid transparent; border-radius: 12px; color: white; padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
+        .search-result small { color: var(--text-muted); font-weight: 600; font-size: 11px; margin-left: auto; }
+        .search-result:hover { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); }
+        .model-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: rgba(10, 132, 255, 0.12); color: white; font-weight: 700; text-decoration: none; border: 1px solid rgba(10,132,255,0.4); white-space: nowrap; }
+        .model-link i { color: var(--color-blue); }
+
         /* DASHBOARD BODY */
         .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
 
@@ -740,7 +754,8 @@
 
         @media (max-width: 768px) {
             .browser-bar { padding: 0 16px; justify-content: space-between; }
-            .url-bar { display: none; }
+            .search-suite { max-width: 100%; }
+            .model-link { display: none; }
             .nav-icons { display: none; }
             .main-content { padding: 16px; gap: 20px; display: flex; flex-direction: column; }
             .page-title h1 { font-size: 36px; }
@@ -762,10 +777,20 @@
                 <div class="window-dot" style="background: #10b981;"></div>
             </div>
             <div class="nav-icons"><i class="ph ph-caret-left"></i><i class="ph ph-caret-right"></i></div>
-            <div class="url-bar"><i class="ph-fill ph-lock-key"></i><span>Healthflo.com</span><i class="ph ph-arrow-clockwise" style="margin-left: auto;"></i></div>
+            <div class="search-suite">
+                <div class="search-bar">
+                    <i class="ph-bold ph-magnifying-glass"></i>
+                    <input class="search-input" id="page-search" type="text" placeholder="Search pages or 3D models..." autocomplete="off" />
+                    <div class="search-results" id="search-results"></div>
+                </div>
+                <a class="model-link" href="patient-organs.html" title="Open 3D models">
+                    <i class="ph ph-cube-focus"></i>
+                    <span>3D models</span>
+                </a>
+            </div>
             <div class="branding-right">Health flo <span>OS NEO</span></div>
         </div>
-
+        
         <div class="dashboard-body">
             <div class="sidebar">
                 <div class="logo">H<span>+</span></div>
@@ -940,7 +965,23 @@
             cirrhotic_liver: 'cirrhotic_liver.glb',
             kidneys: 'kidneys.glb',
             eyes: 'eyes.glb'
-        }; 
+        };
+
+        // Quick navigation targets surfaced in the header search
+        const PAGE_LINKS = [
+            { label: 'Dashboard', url: 'patient-dashboard.html', detail: 'Live vitals overview', tags: ['home', 'overview', 'heart'] },
+            { label: 'Health Plan', url: 'patient-health.html', detail: 'Care tasks & routines', tags: ['plan', 'tasks', 'care'] },
+            { label: 'Labs', url: 'patient-labs.html', detail: 'Results & markers', tags: ['labs', 'reports'] },
+            { label: 'Organs / 3D models', url: 'patient-organs.html', detail: 'Atlas + 3D viewer', tags: ['organs', '3d', 'models', 'atlas'] },
+            { label: 'Pharmacy', url: 'patient-pharmacy.html', detail: 'Meds & refills', tags: ['meds', 'pharmacy', 'prescriptions'] },
+            { label: 'Hospitals', url: 'patient-hospitals.html', detail: 'Care network', tags: ['hospitals', 'providers'] },
+            { label: 'Devices', url: 'patient-devices.html', detail: 'Linked wearables', tags: ['devices', 'wearables'] },
+            { label: 'Family', url: 'patient-family.html', detail: 'Care circle', tags: ['family', 'contacts'] },
+            { label: 'Profile', url: 'patient-profile.html', detail: 'Patient identity', tags: ['profile', 'user'] },
+            { label: 'Insurance', url: 'patient-insurance.html', detail: 'Coverage & claims', tags: ['insurance', 'claims'] },
+            { label: 'Settings', url: 'patient-settings.html', detail: 'System preferences', tags: ['settings', 'theme'] },
+            { label: '3D Model Shelf', url: 'patient-organs.html#models', detail: 'Jump to model gallery', tags: ['models', 'gallery', 'viewer'] }
+        ];
         
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
@@ -1250,6 +1291,57 @@
             organs: { id: 'link-organs', copy: 'link-organs-copy', href: 'patient-organs.html' },
             labs: { id: 'link-labs', copy: 'link-labs-copy', href: 'patient-labs.html' },
             pharmacy: { id: 'link-pharmacy', copy: 'link-pharmacy-copy', href: 'patient-pharmacy.html' }
+        };
+
+        const renderSearchResults = (query = '') => {
+            const input = document.getElementById('page-search');
+            const results = document.getElementById('search-results');
+            if (!input || !results) return;
+
+            const normalized = query.trim().toLowerCase();
+            const matches = PAGE_LINKS.filter(link =>
+                !normalized ||
+                link.label.toLowerCase().includes(normalized) ||
+                link.tags.some(tag => tag.includes(normalized))
+            ).slice(0, 7);
+
+            results.innerHTML = matches.map(link => `
+                <button class="search-result" data-url="${link.url}" type="button">
+                    <span>${link.label}</span>
+                    <small>${link.detail}</small>
+                </button>
+            `).join('');
+
+            if (matches.length && (normalized || document.activeElement === input)) results.classList.add('show');
+            else results.classList.remove('show');
+        };
+
+        const initSearchBar = () => {
+            const input = document.getElementById('page-search');
+            const results = document.getElementById('search-results');
+            if (!input || !results) return;
+
+            renderSearchResults('');
+
+            input.addEventListener('input', () => renderSearchResults(input.value));
+            input.addEventListener('focus', () => renderSearchResults(input.value));
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    const first = results.querySelector('.search-result');
+                    if (first) window.location.href = first.dataset.url;
+                }
+            });
+
+            results.addEventListener('mousedown', (e) => {
+                const btn = e.target.closest('.search-result');
+                if (btn) window.location.href = btn.dataset.url;
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!results.contains(e.target) && e.target !== input) {
+                    results.classList.remove('show');
+                }
+            });
         };
 
         const getColorClass = (val, type) => {
@@ -1688,6 +1780,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             generateOrganButtons();
+            initSearchBar();
             initThree();
             updateUI('heart');
 
