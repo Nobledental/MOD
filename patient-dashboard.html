@@ -14,49 +14,34 @@
     
     <style>
         :root {
-            /* Theme Variables */
+            /* Theme Variables - Dark (Default) */
             --bg-radial: radial-gradient(circle at 20% 30%, #506176 0%, #1a1f2b 55%, #0E121B 100%);
-            
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --glass-blur: blur(24px);
-            
             --text-white: #ffffff;
             --text-muted: #94a3b8;
-
-            /* Component Specifics */
-            --sidebar-bg: rgba(255, 255, 255, 0.02);
-            --card-hover-bg: rgba(30, 35, 45, 0.9);
-            --pill-active-text: #ffffff;
-
-            /* Status Colors */
-            --color-blue: #3b82f6;
+            --card-bg: rgba(22, 28, 38, 0.6);
+            --card-border: rgba(255, 255, 255, 0.05);
+            --card-active-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            
+            /* Colors */
+            --color-blue: #0A84FF;
             --color-cyan: #06b6d4;
             --color-yellow: #f59e0b;
             --color-red: #ef4444;
             --color-green: #10b981;
-            
-            --accent-blue: #3b82f6;
-            --card-bg: rgba(22, 28, 38, 0.6);
-            --card-border: rgba(255, 255, 255, 0.05);
-            --card-active-bg: linear-gradient(135deg, rgba(30, 58, 138, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
+            --accent-blue: #2563eb;
         }
 
         body.theme-white {
-            /* High Contrast Light Theme */
+            /* Theme Variables - Light */
             --bg-radial: radial-gradient(circle at 20% 30%, #f0f4f8 0%, #e2e8f0 55%, #cbd5e1 100%);
-            
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(51, 65, 85, 0.15);
             --glass-blur: blur(24px);
-            
             --text-white: #0f172a;
             --text-muted: #475569;
-
-            --sidebar-bg: rgba(255, 255, 255, 0.5);
-            --card-hover-bg: #ffffff;
-            --pill-active-text: #1e3a8a;
-
             --card-bg: rgba(255, 255, 255, 0.85);
             --card-border: rgba(51, 65, 85, 0.1);
             --card-active-bg: linear-gradient(135deg, #dbeafe 0%, #ffffff 100%);
@@ -65,12 +50,10 @@
         /* RESET */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Plus Jakarta Sans', sans-serif; -webkit-font-smoothing: antialiased; }
         
-        /* CUSTOM SCROLLBARS */
+        /* SCROLLBARS */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--color-blue); }
-        
         body.theme-white ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
 
         body {
@@ -88,494 +71,139 @@
             color: var(--color-blue); font-family: 'Courier New', monospace;
             transition: opacity 0.8s ease-out;
         }
-        .boot-loader {
-            width: 200px; height: 2px; background: rgba(59, 130, 246, 0.3); margin-top: 20px;
-            position: relative; overflow: hidden;
-        }
-        .boot-bar {
-            position: absolute; left: 0; top: 0; height: 100%; width: 0%;
-            background: var(--color-blue); box-shadow: 0 0 10px var(--color-blue);
-            animation: loadBar 2.5s ease-in-out forwards;
-        }
+        .boot-loader { width: 200px; height: 2px; background: rgba(10, 132, 255, 0.3); margin-top: 20px; position: relative; overflow: hidden; }
+        .boot-bar { position: absolute; left: 0; top: 0; height: 100%; width: 0%; background: var(--color-blue); animation: loadBar 2.5s ease-in-out forwards; }
         .boot-text { font-size: 12px; margin-top: 10px; letter-spacing: 2px; opacity: 0.8; }
-        @keyframes loadBar { 0% { width: 0%; } 40% { width: 30%; } 80% { width: 90%; } 100% { width: 100%; } }
+        @keyframes loadBar { 0% { width: 0%; } 100% { width: 100%; } }
 
-        /* LAYOUT CONTAINER */
-        .app-container {
-            width: 100vw; height: 100vh;
-            background: transparent;
-            display: flex; flex-direction: column; overflow: hidden; position: relative;
-            opacity: 0; transition: opacity 1s;
-        }
+        /* LAYOUT */
+        .app-container { width: 100vw; height: 100vh; display: flex; flex-direction: column; opacity: 0; transition: opacity 1s; }
 
         /* BROWSER BAR */
-        .browser-bar {
-            height: 50px; display: flex; align-items: center; padding: 0 24px; gap: 20px;
-            border-bottom: 1px solid var(--glass-border); 
-            background: rgba(0,0,0,0.2); 
-            backdrop-filter: blur(10px);
-            z-index: 20;
-            flex-shrink: 0;
-        }
+        .browser-bar { height: 50px; display: flex; align-items: center; padding: 0 24px; gap: 20px; border-bottom: 1px solid var(--glass-border); background: rgba(0,0,0,0.2); backdrop-filter: blur(10px); z-index: 20; flex-shrink: 0; }
         .window-controls { display: flex; gap: 8px; margin-right: 12px; }
         .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
-        .branding-right { margin-left: auto; font-weight: 700; color: var(--text-white); letter-spacing: 1px; font-size: 13px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
-        .branding-right span { color: var(--color-blue); text-shadow: 0 0 15px rgba(59, 130, 246, 0.6); }
+        .branding-right { margin-left: auto; font-weight: 700; color: var(--text-white); font-size: 13px; opacity: 0.8; }
+        .branding-right span { color: var(--color-blue); }
 
-        /* DASHBOARD BODY */
+        /* MAIN CONTENT */
         .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
-
-        /* SIDEBAR */
-        .sidebar {
-            width: 80px; display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 30px;
-            border-right: 1px solid var(--glass-border);
-            z-index: 10;
-            background: var(--sidebar-bg);
-            backdrop-filter: var(--glass-blur);
-            flex-shrink: 0;
-        }
-        .bottom-nav {
-            display: none;
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid var(--glass-border);
-            padding: 10px 18px;
-            z-index: 50;
-        }
-        .bottom-nav .nav-items { display: flex; justify-content: space-between; align-items: center; }
-        .bottom-nav button {
-            background: transparent; border: none; color: var(--text-white); font-size: 22px; width: 20%; padding: 10px 0;
-        }
-        .mobile-link-strip {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-top: 8px;
-            margin-top: 8px;
-            border-top: 1px solid var(--glass-border);
-        }
-        .mobile-link-strip a {
-            white-space: nowrap;
-            padding: 8px 10px;
-            border-radius: 12px;
-            border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.05);
-            color: var(--text-white);
-            font-size: 12px;
-            text-decoration: none;
-        }
-        .logo { font-weight: 800; color: var(--text-white); font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
-        .logo span { color: var(--color-blue); }
-        .menu-item {
-            width: 44px; height: 44px; border-radius: 14px; display: flex; justify-content: center; align-items: center;
-            color: var(--text-muted); font-size: 20px; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
-        }
-        .menu-item:hover { color: var(--text-white); background: rgba(125, 125, 125, 0.1); }
-        .menu-item.active { 
-            background: rgba(59, 130, 246, 0.1); 
-            color: var(--color-blue); 
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); 
-            border: 1px solid rgba(59, 130, 246, 0.2);
-        }
         
-        /* MAIN GRID - COMPACT */
-        .main-content {
-            flex: 1; padding: 20px 30px;
-            display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            grid-template-rows: auto 1fr;
-            gap: 20px; overflow-y: auto; position: relative;
-        }
+        .sidebar { width: 80px; display: flex; flex-direction: column; align-items: center; padding: 30px 0; gap: 30px; border-right: 1px solid var(--glass-border); background: var(--sidebar-bg); backdrop-filter: var(--glass-blur); flex-shrink: 0; }
+        .logo { font-weight: 800; color: var(--text-white); font-size: 24px; margin-bottom: 12px; }
+        .logo span { color: var(--color-blue); }
+        .menu-item { width: 44px; height: 44px; border-radius: 14px; display: flex; justify-content: center; align-items: center; color: var(--text-muted); font-size: 20px; cursor: pointer; transition: 0.3s; }
+        .menu-item:hover { color: var(--text-white); background: rgba(125, 125, 125, 0.1); }
+        .menu-item.active { background: rgba(10, 132, 255, 0.1); color: var(--color-blue); box-shadow: 0 0 15px rgba(10, 132, 255, 0.2); border: 1px solid rgba(10, 132, 255, 0.2); }
+
+        .main-content { flex: 1; padding: 20px 30px; display: grid; grid-template-columns: 1.2fr 1fr 340px; grid-template-rows: auto 1fr; gap: 20px; overflow-y: auto; }
 
         /* HEADER */
-        .header-section {
-            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 5px; z-index: 5;
-        }
+        .header-section { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 5px; z-index: 5; }
         .header-left { display: flex; flex-direction: column; gap: 8px; }
         .top-toggles { display: flex; gap: 10px; }
-        .toggle-pill {
-            padding: 6px 20px; border-radius: 100px; font-size: 12px; font-weight: 500;
-            color: var(--text-muted); background: rgba(125, 125, 125, 0.1); border: 1px solid var(--glass-border);
-            cursor: pointer; transition: 0.3s; backdrop-filter: blur(10px);
-        }
-        .page-nav {
-            display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;
-        }
-        .page-nav a {
-            display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px;
-            border-radius: 10px; border: 1px solid var(--glass-border);
-            background: rgba(255,255,255,0.04); color: var(--text-white);
-            font-size: 11px; text-decoration: none; transition: 0.2s; backdrop-filter: blur(10px);
-        }
-        .page-nav a:hover { border-color: rgba(59, 130, 246, 0.4); color: var(--color-blue); }
-        .page-nav a .ph { font-size: 14px; }
-        .toggle-pill.active {
-            background: rgba(59, 130, 246, 0.2); color: var(--pill-active-text); border-color: rgba(59, 130, 246, 0.5);
-            display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
-        }
-        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 10px var(--color-blue); }
-
-        .page-title h2 { font-size: 16px; color: var(--color-blue); margin-bottom: 2px; font-weight: 600; letter-spacing: 0.5px; }
+        .toggle-pill { padding: 6px 20px; border-radius: 100px; font-size: 12px; font-weight: 500; color: var(--text-muted); background: rgba(125, 125, 125, 0.1); border: 1px solid var(--glass-border); cursor: pointer; transition: 0.3s; }
+        .toggle-pill.active { background: rgba(10, 132, 255, 0.2); color: var(--text-white); border-color: rgba(10, 132, 255, 0.5); }
+        .active-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; display: inline-block; margin-right: 6px; }
         .page-title h1 { font-size: 42px; font-weight: 700; color: var(--text-white); line-height: 1; letter-spacing: -1.5px; }
         .page-title h1 span { font-weight: 300; opacity: 0.8; }
-
-        .theme-toggle {
-            padding: 6px 12px; border-radius: 10px; border: 1px solid var(--glass-border);
-            background: rgba(125, 125, 125, 0.1); color: var(--text-white); cursor: pointer; font-weight: 700; font-size: 11px;
-        }
-
-        /* LEFT PANEL (3D + ORGANS) */
-        .left-panel-container {
-            grid-column: 1; grid-row: 2;
-            display: flex; flex-direction: column; gap: 15px;
-            position: relative;
-        }
-
-        /* 3D STAGE */
-        .heart-stage {
-            flex: 1; min-height: 380px;
-            position: relative;
-            display: flex; justify-content: center; align-items: center;
-            border-radius: 24px;
-            border: 1px solid var(--glass-border);
-            background: rgba(0,0,0,0.1);
-            overflow: hidden; 
-        }
-        #model-3d-container {
-            width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
-            opacity: 0; animation: fadeIn 1.5s ease-out forwards;
-        }
-
-        /* Animated Rings Background */
-        .rings {
-            position: absolute; width: 500px; height: 500px; border-radius: 50%;
-            border: 1px solid var(--glass-border); 
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.05) 0%, transparent 70%);
-            z-index: 0; animation: spin 60s linear infinite;
-        }
-        .rings::before {
-            content: ''; position: absolute; top: 40px; left: 40px; right: 40px; bottom: 40px;
-            border-radius: 50%; border: 1px dashed var(--glass-border);
-            animation: spinReverse 40s linear infinite;
-        }
         
+        .theme-toggle { padding: 6px 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(125, 125, 125, 0.1); color: var(--text-white); cursor: pointer; font-weight: 700; font-size: 11px; }
+
+        /* 3D STAGE (Column 1) */
+        .heart-stage { grid-column: 1; grid-row: 2 / -1; position: relative; display: flex; justify-content: center; align-items: center; }
+        #model-3d-container { width: 140%; height: 140%; position: absolute; top: -20%; left: -20%; z-index: 1; opacity: 0; animation: fadeIn 1.5s ease-out forwards; }
+        
+        .rings { position: absolute; width: 550px; height: 550px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.03); background: radial-gradient(circle, rgba(10, 132, 255, 0.03) 0%, transparent 60%); z-index: 0; animation: spin 60s linear infinite; }
+        .rings::before { content: ''; position: absolute; top: 50px; left: 50px; right: 50px; bottom: 50px; border-radius: 50%; border: 1px dashed rgba(255,255,255,0.05); animation: spinReverse 40s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
         @keyframes fadeIn { to { opacity: 1; } }
 
-        .scanner-line {
-            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--color-cyan), transparent);
-            box-shadow: 0 0 20px var(--color-cyan);
-            animation: scan-down 3s ease-in-out infinite; z-index: 2; opacity: 0.3;
-            pointer-events: none;
-        }
-        @keyframes scan-down { 0% { top: 5%; opacity: 0; } 50% { opacity: 0.6; } 100% { top: 95%; opacity: 0; } }
+        .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--color-blue), transparent); box-shadow: 0 0 20px var(--color-blue); animation: scan-down 4s ease-in-out infinite; z-index: 2; opacity: 0.5; pointer-events: none; }
+        @keyframes scan-down { 0% { top: 10%; opacity: 0; } 50% { opacity: 0.8; } 100% { top: 90%; opacity: 0; } }
 
-        /* ORGAN TRAY */
-        .organ-tray-wrapper {
-            background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border);
-            border-radius: 18px;
-            padding: 12px;
-            margin-top: -50px; /* Overlap nicely */
-            z-index: 10;
-            width: 100%;
-        }
-        .section-header.mini { font-size: 10px; margin-bottom: 8px; opacity: 0.7; }
-
-        .organ-tray {
-            display: flex;
-            flex-wrap: wrap; 
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .organ-item {
-            width: 44px; height: 44px;
-            background: rgba(125,125,125,0.05);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(15px);
-            border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            position: relative; cursor: pointer; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            flex-shrink: 0;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
-        }
-        .premium-icon {
-            position: absolute; top: 3px; right: 3px;
-            width: 10px; height: 10px; border-radius: 6px;
-            background: linear-gradient(135deg, #ffd166, #f97316);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35);
-        }
-        .premium-icon i { font-size: 6px; color: #1f2937; }
-        .organ-item:hover {
-            background: rgba(125,125,125,0.1);
-            transform: translateY(-2px);
-            border-color: rgba(59, 130, 246, 0.3);
-        }
-        .organ-item i, .organ-item svg { font-size: 20px; color: var(--text-muted); transition: 0.3s; margin-bottom: 0; fill: none; stroke: currentColor; stroke-width: 1.5; }
-        
-        .organ-item.selected {
-            background: linear-gradient(145deg, rgba(59, 130, 246, 0.15), rgba(0,0,0,0));
-            border: 1px solid var(--color-blue);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3), inset 0 0 20px rgba(59, 130, 246, 0.1);
-        }
-        .organ-item.selected i, .organ-item.selected svg {
-            color: var(--text-white); stroke: var(--text-white); filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.8)); transform: scale(1.1);
-        }
-        
-        .organ-name-mini { display: none; } 
-
-        .organ-label {
-            position: absolute; top: -25px; left: 50%; transform: translateX(-50%);
-            background: #ffffff; color: #000; font-size: 9px; font-weight: 800;
-            padding: 2px 6px; border-radius: 100px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            pointer-events: none; white-space: nowrap; z-index: 20;
-        }
-
-        /* RIGHT PANEL (VITALS + SCHEDULE) */
-        .right-panel-container {
-            grid-column: 2; grid-row: 2;
-            display: flex; flex-direction: column; gap: 15px;
-            height: 100%;
-        }
-
-        .floating-stat {
-            background: var(--card-bg); backdrop-filter: blur(20px);
-            border: 1px solid var(--glass-border); border-radius: 16px;
-            padding: 12px 14px; width: 100%; z-index: 10;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; gap: 6px;
-        }
-        .live-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 4px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; }
-        .live-dot { width: 5px; height: 5px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
+        .floating-stat { position: absolute; bottom: 40px; left: 20px; background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; padding: 16px 20px; width: 220px; z-index: 10; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 6px; font-size: 10px; font-weight: 700; }
+        .live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* READINESS CARD (New Feature) */
-        .readiness-card {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0,0,0,0));
-            border-color: rgba(16, 185, 129, 0.3);
-        }
-        .progress-bar-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 4px; }
-        .progress-bar-fill { height: 100%; background: #10b981; width: 85%; border-radius: 10px; box-shadow: 0 0 10px #10b981; transition: width 1s; }
-
-        /* STATS GRID */
-        .section-header { font-size: 12px; font-weight: 700; color: var(--color-blue); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .blue-dot { width: 5px; height: 5px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
-
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; }
+        /* STATS GRID (Column 2) */
+        .stats-area { grid-column: 2; grid-row: 2 / -1; display: flex; flex-direction: column; z-index: 5; }
+        .section-header { font-size: 13px; font-weight: 700; color: var(--color-blue); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        .blue-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
         
-        .data-card {
-            background: var(--card-bg); 
-            backdrop-filter: blur(18px);
-            border-radius: 16px; padding: 14px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            border: 1px solid var(--card-border); position: relative; overflow: hidden; transition: 0.3s;
-            min-height: 100px;
-        }
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 15px; flex: 1; }
+        .data-card { background: var(--card-bg); backdrop-filter: blur(18px); border-radius: 20px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--card-border); transition: 0.3s; }
+        .data-card:hover { border-color: rgba(255,255,255,0.15); background: var(--card-hover-bg); transform: translateY(-2px); }
         
-        .data-card:hover { 
-            border-color: rgba(59, 130, 246, 0.4); 
-            background: var(--card-hover-bg); 
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.15); 
-        }
-
-        /* SCANNING STATE CSS */
-        .scanning-text {
-            color: var(--color-blue);
-            font-size: 12px; font-weight: 600; letter-spacing: 1px;
-            animation: pulseText 1s infinite;
-        }
-        @keyframes pulseText { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
-
-        /* DYNAMIC CARD COLORS */
         .data-card.state-blue .card-icon { color: var(--color-blue); }
-        .data-card.active-blue {
-            background: var(--card-active-bg); 
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            box-shadow: 0 20px 50px -20px rgba(30, 58, 138, 0.15);
-        }
-        .data-card.state-yellow {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(125, 125, 125, 0.05) 100%);
-            border: 1px solid rgba(245, 158, 11, 0.4);
-        }
-        .data-card.state-yellow .card-icon { color: var(--color-yellow); }
+        .data-card.state-yellow { border-color: var(--color-yellow); } .data-card.state-yellow .card-icon { color: var(--color-yellow); }
+        .data-card.state-red { border-color: var(--color-red); } .data-card.state-red .card-icon { color: var(--color-red); }
         
-        .data-card.state-red {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.15) 0%, rgba(125, 125, 125, 0.05) 100%);
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            box-shadow: 0 0 30px rgba(239, 68, 68, 0.1);
-        }
-        .data-card.state-red .card-icon { color: var(--color-red); }
-
-        .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; z-index: 2; }
-        .card-icon { font-size: 16px; transition: color 0.3s; }
-        .card-title { font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 1px; font-weight: 600; }
-        .card-val { font-size: 18px; font-weight: 700; color: var(--text-white); letter-spacing: -0.5px; transition: 0.3s; }
-        
-        .bar-chart { display: flex; align-items: flex-end; gap: 3px; height: 30px; margin-top: auto; z-index: 2; }
-        .bar { flex: 1; background: rgba(125,125,125,0.15); border-radius: 2px; transition: height 0.5s ease-in-out, background 0.3s; }
+        .card-title { font-size: 12px; color: var(--text-muted); font-weight: 600; display: block; margin-bottom: 4px; }
+        .card-val { font-size: 22px; font-weight: 700; color: var(--text-white); }
+        .card-icon { font-size: 20px; }
+        .bar-chart { display: flex; align-items: flex-end; gap: 4px; height: 40px; margin-top: auto; }
+        .bar { flex: 1; background: rgba(125,125,125,0.2); border-radius: 4px; transition: height 0.5s; }
         .bar.act { background: currentColor; }
+
+        /* RIGHT COLUMN (Column 3) */
+        .right-column { grid-column: 3; grid-row: 2 / -1; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; padding-right: 5px; }
         
-        .blue-square-val {
-            position: absolute; right: 14px; bottom: 14px; width: 36px; height: 36px;
-            background: var(--accent-blue); border-radius: 10px;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: white; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4); z-index: 2;
-        }
+        /* Organ Tray */
+        .organ-tray { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 10px; }
+        .organ-item { width: 50px; height: 50px; background: rgba(125,125,125,0.05); border: 1px solid var(--glass-border); border-radius: 14px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; position: relative; }
+        .organ-item:hover { background: rgba(125,125,125,0.1); transform: translateY(-2px); }
+        .organ-item.selected { background: rgba(10, 132, 255, 0.1); border-color: var(--color-blue); box-shadow: 0 0 10px rgba(10, 132, 255, 0.2); }
+        .organ-item i, .organ-item svg { font-size: 24px; color: var(--text-muted); stroke: currentColor; fill: none; stroke-width: 1.5; }
+        .organ-item.selected i, .organ-item.selected svg { color: var(--text-white); stroke: var(--text-white); }
+        .organ-name-mini { display: none; }
         
-        /* SCHEDULE AREA */
-        .schedule-area {
-            flex: 1; /* Fill remaining height */
-            background: var(--card-bg);
-            backdrop-filter: blur(24px);
-            border-radius: 18px; padding: 16px;
-            border: 1px solid var(--glass-border); display: flex; flex-direction: column;
-        }
-        .ai-panel {
-            margin-top: auto; padding: 14px; background: rgba(59, 130, 246, 0.08);
-            border-radius: 14px; border: 1px solid rgba(59, 130, 246, 0.2); transition: 0.3s;
-            margin-bottom: 0;
-        }
-        .ai-panel .typing { font-style: italic; color: var(--text-muted); font-size: 11px; margin-top: 4px; display: none; }
+        .organ-label { position: absolute; top: -25px; left: 50%; transform: translateX(-50%); background: #fff; color: #000; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 10px; animation: popIn 0.3s; z-index: 10; pointer-events: none; white-space: nowrap; }
+        @keyframes popIn { 0% { opacity: 0; transform: translateX(-50%) scale(0.5); } 100% { opacity: 1; transform: translateX(-50%) scale(1); } }
+
+        /* Info Modules */
+        .readiness-card { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0,0,0,0)); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 16px; padding: 12px; }
+        .progress-bar-bg { width: 100%; height: 4px; background: rgba(125,125,125,0.1); border-radius: 10px; margin-top: 6px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: #10b981; width: 85%; transition: width 1s; }
+
+        .ai-panel { background: rgba(10, 132, 255, 0.08); border: 1px solid rgba(10, 132, 255, 0.2); border-radius: 16px; padding: 14px; }
         .ai-panel.warn { background: rgba(239, 68, 68, 0.1); border-color: var(--color-red); }
         .ai-title { font-size: 10px; font-weight: 800; color: var(--color-blue); margin-bottom: 4px; display: block; letter-spacing: 1px; }
         .ai-text { font-size: 11px; line-height: 1.4; color: var(--text-muted); }
 
-        .next-checkup {
-            background: rgba(125,125,125,0.05); border-radius: 14px; padding: 10px;
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 12px; color: var(--text-white); border: 1px solid var(--glass-border);
-        }
-        .date-nav {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
-            background: rgba(0,0,0,0.05); padding: 4px; border-radius: 100px; border: 1px solid var(--glass-border);
-        }
-        .nav-arrow { 
-            width: 22px; height: 22px; border-radius: 50%; background: rgba(125,125,125,0.1); 
-            display: flex; justify-content: center; align-items: center; font-size: 11px; color: #9ca3af; cursor: pointer; transition: 0.2s;
-        }
-        .doc-list { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow-y: auto; max-height: 120px; margin-bottom: 10px; }
-        .doc-row { 
-            display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 10px; 
-            transition: 0.2s; cursor: pointer; border: 1px solid transparent;
-        }
-        .doc-row:hover { background: rgba(125,125,125,0.08); border-color: var(--glass-border); }
-        .doc-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
-        .consult-btn {
-            margin-top: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; border: none; padding: 10px;
-            border-radius: 100px; font-weight: 700; font-size: 12px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center; gap: 8px;
-            box-shadow: 0 10px 30px -5px rgba(59, 130, 246, 0.4); transition: 0.3s;
-        }
+        .schedule-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 14px; backdrop-filter: blur(10px); }
+        .schedule-item { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid rgba(125,125,125,0.1); }
+        .schedule-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .sch-time { font-size: 10px; color: var(--color-blue); font-weight: 700; white-space: nowrap; }
+        .sch-desc { font-size: 11px; color: var(--text-white); }
+        
+        .quick-actions { display: flex; gap: 8px; }
+        .action-pill { flex: 1; text-align: center; padding: 8px; border-radius: 12px; background: rgba(125,125,125,0.05); border: 1px solid var(--glass-border); font-size: 10px; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .action-pill:hover { background: rgba(125,125,125,0.1); color: var(--text-white); }
 
         /* Sound Button */
-        .sound-btn {
-            position: absolute; top: 16px; left: 16px;
-            width: 36px; height: 36px; border-radius: 50%;
-            background: rgba(125,125,125,0.1); border: 1px solid var(--glass-border);
-            display: flex; justify-content: center; align-items: center;
-            cursor: pointer; z-index: 100; color: var(--text-white); transition: 0.3s;
-            backdrop-filter: blur(5px);
-        }
-        .sound-btn:hover { background: rgba(125,125,125,0.2); transform: scale(1.05); }
-        
-        .sound-btn.active {
-            color: var(--color-blue);
-            background: rgba(59, 130, 246, 0.15);
-            border-color: var(--color-blue);
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
-        }
-        .sound-btn.active i {
-            animation: pulseIcon 1.5s infinite;
-        }
-        @keyframes pulseIcon { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        .sound-btn { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; border-radius: 50%; background: rgba(125,125,125,0.1); border: 1px solid var(--glass-border); display: flex; justify-content: center; align-items: center; cursor: pointer; z-index: 100; color: var(--text-white); backdrop-filter: blur(5px); }
+        .sound-btn.active { color: var(--color-blue); background: rgba(10, 132, 255, 0.15); box-shadow: 0 0 15px rgba(10, 132, 255, 0.3); }
 
-        .chat-drawer {
-            position: fixed; right: 24px; bottom: 80px; width: 320px; max-width: 90vw;
-            background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 12px;
-            backdrop-filter: blur(18px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); z-index: 40;
-        }
-        .chat-drawer h4 { margin-bottom: 8px; color: var(--text-white); display: flex; align-items: center; gap: 6px; font-size: 13px; }
-        .chat-messages { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .chat-bubble { padding: 10px 12px; border-radius: 14px; font-size: 12px; line-height: 1.4; color: var(--text-white); }
-        .chat-bubble.user { background: rgba(125,125,125,0.1); align-self: flex-end; }
-        .chat-bubble.bot { background: rgba(37, 99, 235, 0.15); border: 1px solid rgba(37,99,235,0.3); }
-        .chat-input-row { display: flex; gap: 8px; margin-top: 8px; }
-        .chat-input-row input { flex: 1; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(125,125,125,0.05); color: var(--text-white); }
-        .chat-input-row button { padding: 10px 12px; border-radius: 12px; border: none; background: var(--accent-blue); color: white; font-weight: 700; cursor: pointer; }
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 999; }
+        .modal-box { width: 400px; background: var(--card-bg); border-radius: 24px; border: 1px solid var(--card-border); padding: 24px; color: var(--text-white); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .primary-btn { background: var(--accent-blue); color: white; border: none; padding: 10px 16px; border-radius: 12px; cursor: pointer; font-weight: 600; width: 100%; }
+        .ghost-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--glass-border); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 11px; }
 
-        .utility-launchers { position: fixed; left: 24px; bottom: 80px; display: flex; gap: 10px; z-index: 40; }
-        .utility-launchers button { padding: 10px 12px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(125,125,125,0.1); color: var(--text-white); cursor: pointer; font-size: 12px; }
+        /* SOS */
+        .sos-btn { position: fixed; right: 24px; bottom: 24px; width: 120px; height: 44px; border-radius: 12px; border: 1px solid rgba(239,68,68,0.3); background: rgba(239,68,68,0.15); color: white; font-weight: 700; cursor: pointer; backdrop-filter: blur(10px); transition: 0.3s; z-index: 50; }
+        .sos-btn.holding { background: rgba(239,68,68,0.4); transform: scale(0.95); }
 
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); display: none;
-            align-items: center; justify-content: center; z-index: 60;
-        }
-        .modal-box {
-            width: min(520px, 90vw); background: var(--card-bg); border-radius: 20px; border: 1px solid var(--card-border);
-            padding: 20px; color: var(--text-white); box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-        }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .modal-header h3 { font-size: 16px; }
-        .modal-body { font-size: 13px; color: var(--text-muted); display: flex; flex-direction: column; gap: 10px; }
-        .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
-        .ghost-btn { background: transparent; color: var(--text-white); border: 1px solid var(--glass-border); padding: 10px 12px; border-radius: 12px; cursor: pointer; }
-        .primary-btn { background: var(--accent-blue); color: white; border: none; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
-
-        .sos-btn { position: fixed; right: 24px; bottom: 24px; width: 140px; height: 50px; border-radius: 16px; border: 1px solid rgba(239,68,68,0.3); background: rgba(239,68,68,0.12); color: var(--text-white); font-weight: 800; cursor: pointer; box-shadow: 0 10px 30px rgba(239,68,68,0.3); }
-        .sos-btn.holding { background: rgba(239,68,68,0.25); }
-
-        .file-list { display: flex; flex-direction: column; gap: 8px; }
-        .file-item { padding: 10px 12px; border: 1px solid var(--glass-border); border-radius: 10px; display: flex; justify-content: space-between; align-items: center; background: rgba(125,125,125,0.05); }
-
-        .toast { position: fixed; top: 80px; right: 24px; background: rgba(16,185,129,0.2); color: var(--text-white); padding: 10px 14px; border-radius: 12px; border: 1px solid rgba(16,185,129,0.4); display: none; z-index: 80; }
-
-        .faceid-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px); z-index: 70; }
-        .faceid-box { width: 320px; height: 380px; border: 2px solid #0A84FF; border-radius: 24px; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
-        .faceid-scan { position: absolute; left: 20px; right: 20px; height: 3px; background: linear-gradient(90deg, transparent, #0A84FF, transparent); animation: scan-down 2.4s linear infinite; }
-        .faceid-cam { position: absolute; inset: 16px; border: 1px dashed rgba(255,255,255,0.2); border-radius: 18px; }
-        .faceid-text { position: absolute; bottom: 18px; width: 100%; text-align: center; color: white; font-weight: 700; letter-spacing: 1px; }
-
-        /* --- RESPONSIVE OPTIMIZATION --- */
         @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 450px auto auto;
-                padding: 20px;
-                overflow-y: scroll;
-            }
-            .left-panel-container { grid-row: 2; }
-            .right-panel-container { grid-row: 3; }
+            .main-content { grid-template-columns: 1fr; grid-template-rows: auto 400px auto auto; padding: 20px; }
+            .heart-stage { grid-row: 2; height: 100%; }
+            .stats-area { grid-row: 3; grid-column: 1; }
+            .right-column { grid-row: 4; grid-column: 1; overflow: visible; }
             .sidebar { display: none; }
-            .logo { display: none; }
-        }
-
-        @media (max-width: 768px) {
-            .browser-bar { padding: 0 16px; justify-content: space-between; }
-            .url-bar { display: none; }
-            .nav-icons { display: none; }
-            .main-content { padding: 16px; gap: 20px; display: flex; flex-direction: column; }
-            .page-title h1 { font-size: 36px; }
-            .heart-stage { height: 320px; flex-shrink: 0; }
-            .cards-grid { grid-template-columns: 1fr; }
-            .organ-tray { justify-content: center; } /* Stack on mobile */
-            .organ-item { width: 50px; height: 50px; }
-            .organ-item i, .organ-item svg { font-size: 20px; }
-        }
-
-        @media (max-width: 1080px) {
-            .sidebar { display: none; }
-            .main-content { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding-bottom: 120px; }
-            .left-panel-container { grid-column: 1; grid-row: 2; }
-            .right-panel-container { grid-column: 1; grid-row: 3; }
-            .bottom-nav { display: block; }
         }
     </style>
 </head>
@@ -622,40 +250,30 @@
                             <h2>Hi Dhivakaran,</h2>
                             <h1>Overview <span>Conditions</span></h1>
                         </div>
-                        <div class="page-nav" id="page-nav"></div>
                     </div>
                     <button class="theme-toggle" id="theme-toggle">White Theme</button>
                 </div>
 
-                <div class="left-panel-container">
-                    <div class="heart-stage">
-                        <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
-                        <div class="rings"></div>
-                        <div class="scanner-line"></div>
-                        <div id="model-3d-container"></div>
-                    </div>
+                <div class="heart-stage">
+                    <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
+                    <div class="rings"></div>
+                    <div class="scanner-line"></div>
+                    <div id="model-3d-container"></div>
                     
-                    <div class="organ-tray-wrapper">
-                        <div class="section-header mini">Select Organ System</div>
-                        <div class="organ-tray"></div>
+                    <div class="floating-stat" id="float-card">
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+                            <span style="font-size:11px; color:#9ca3af; font-weight:700;">Real-time</span>
+                        </div>
+                        <div style="font-size:24px; font-weight:800; color:var(--text-white); margin-bottom:4px;" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
+                        <svg width="100%" height="30" viewBox="0 0 100 30" id="live-ecg-svg">
+                            <path id="live-ecg-path" d="M0,15 L10,15 L15,5 L20,25 L25,10 L30,20 L40,15 L50,15 L55,5 L60,25 L65,10 L70,20 L80,15 L100,15" fill="none" stroke="#0A84FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
                     </div>
                 </div>
 
-                <div class="right-panel-container">
-                    
-                    <div class="floating-stat" id="float-card">
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
-                            <span style="font-size:11px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
-                        </div>
-                        <div style="font-size:24px; font-weight:800; margin-bottom:4px; color: var(--text-white);" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
-                        <svg width="100%" height="30" viewBox="0 0 200 30" id="live-ecg-svg" preserveAspectRatio="none">
-                            <path id="live-ecg-path" d="" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </div>
-
+                <div class="stats-area">
                     <div class="section-header"><div class="blue-dot"></div> <span id="section-title">My Heart Condition</span></div>
-                    
                     <div class="cards-grid">
                         <div class="data-card state-blue" id="card-1">
                             <div class="card-head">
@@ -689,24 +307,13 @@
                             <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 L10,25 L20,15 L30,25 L40,15 L50,25 L60,15 L100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
                         </div>
                     </div>
+                </div>
 
-                    <div class="schedule-area" style="margin-top: 10px;">
-                        <div class="section-header" style="margin-bottom:8px;"><div class="blue-dot"></div> Care Schedule</div>
-                        <div class="next-checkup">
-                            <div><div style="font-size:10px; color:#9ca3af; margin-bottom:2px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 13px;">Fri, 24 Mar</div></div>
-                            <i class="ph-fill ph-calendar-check" style="font-size:20px; color: var(--color-blue);"></i>
-                        </div>
-                        <div class="date-nav">
-                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:12px; color:var(--text-white); font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
-                        </div>
-                        <div class="doc-list">
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:12px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div><div style="font-size:10px; color:#9ca3af;">Cardiologist</div></div></div>
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:12px; font-weight:700; color:var(--text-white);">Dr. Sarah Lee</div><div style="font-size:10px; color:#9ca3af;">Neurologist</div></div></div>
-                        </div>
-                        <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
-                    </div>
+                <div class="right-column">
+                    <div class="section-header"><div class="blue-dot"></div> Select Organ</div>
+                    <div class="organ-tray"></div>
 
-                    <div class="floating-stat readiness-card" id="readiness-card">
+                    <div class="readiness-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <div>
                                 <span style="font-size:10px; color:#10b981; font-weight:700; text-transform:uppercase;">Bio-Readiness</span>
@@ -721,120 +328,82 @@
 
                     <div class="ai-panel" id="ai-panel">
                         <span class="ai-title" id="ai-title">AI ANALYSIS</span>
-                        <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
-                        <div class="typing" id="ai-typing">AI is typing...</div>
+                        <p class="ai-text" id="ai-text">All organ functions within normal range. Monitoring active.</p>
                     </div>
-                    
-                    <div class="ai-panel" id="diagnosis-panel" style="display: none;"> <span class="ai-title">DIAGNOSIS PANEL</span>
-                        <p class="ai-text" id="diagnosis-text">No critical keywords detected. Keep monitoring.</p>
+
+                    <div class="schedule-card">
+                        <div class="section-header mini" style="margin-bottom:10px; opacity:0.7; font-size:10px;">MEDICATIONS</div>
+                        <div class="schedule-item">
+                            <span class="sch-time">08:00</span>
+                            <div class="sch-desc">Atenolol (25mg) • Taken</div>
+                        </div>
+                        <div class="schedule-item">
+                            <span class="sch-time">20:00</span>
+                            <div class="sch-desc">Metformin • Upcoming</div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-card">
+                        <div class="section-header mini" style="margin-bottom:10px; opacity:0.7; font-size:10px;">NEXT APPOINTMENT</div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" style="width:36px; height:36px; border-radius:10px;">
+                            <div>
+                                <div style="font-size:12px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div>
+                                <div style="font-size:10px; color:var(--text-muted);">Cardiology • Fri, 24 Mar</div>
+                            </div>
+                        </div>
+                        <button class="primary-btn" style="margin-top:10px; padding:8px; font-size:11px;">Join Video Call</button>
+                    </div>
+
+                    <div class="quick-actions">
+                        <div class="action-pill" id="launch-family"><i class="ph ph-users-three"></i> Family</div>
+                        <div class="action-pill" id="launch-lab"><i class="ph ph-flask"></i> Labs</div>
+                        <div class="action-pill" id="launch-insurance"><i class="ph ph-shield-check"></i> Claim</div>
                     </div>
 
                 </div>
 
             </div>
         </div>
-
-        <div class="bottom-nav">
-            <div class="nav-items">
-                <button><i class="ph-fill ph-heartbeat"></i></button>
-                <button><i class="ph ph-brain"></i></button>
-                <button id="open-video"><i class="ph ph-video-camera"></i></button>
-                <button id="open-pharmacy"><i class="ph ph-pill"></i></button>
-                <button id="open-files"><i class="ph ph-folder"></i></button>
-            </div>
-        <div class="mobile-link-strip" id="mobile-nav-links"></div>
-        </div>
-
-        <div class="utility-launchers">
-            <button id="launch-video">Video Call</button>
-            <button id="launch-pharmacy">Refill Rx</button>
-            <button id="launch-files">Files</button>
-            <button id="launch-insurance">Insurance</button>
-            <button id="launch-faceid">Secure</button>
-        </div>
-
-        <div class="chat-drawer" id="chat-drawer">
-            <h4><i class="ph ph-robot"></i> AI Assistant</h4>
-            <div class="chat-messages" id="chat-messages"></div>
-            <div class="chat-input-row">
-                <input type="text" id="chat-input" placeholder="Describe symptoms e.g. pain, bleeding" />
-                <button id="chat-send"><i class="ph ph-paper-plane-tilt"></i></button>
-            </div>
-        </div>
-
+        
         <button class="sos-btn" id="sos-btn">Hold for SOS</button>
-
-        <div class="modal-overlay" id="video-modal">
-            <div class="modal-box">
-                <div class="modal-header"><h3>Telemedicine Call</h3><button class="ghost-btn" data-close="video-modal">Close</button></div>
-                <div class="modal-body">
-                    <p>Connecting to Dr. Lee... camera <strong id="cam-state">ON</strong></p>
-                    <div style="display:flex; gap:10px;">
-                        <button class="ghost-btn" id="toggle-cam">Toggle Camera</button>
-                        <button class="primary-btn" id="end-call">End Call</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal-overlay" id="pharmacy-modal">
-            <div class="modal-box">
-                <div class="modal-header"><h3>Pharmacy Refill</h3><button class="ghost-btn" data-close="pharmacy-modal">Close</button></div>
-                <div class="modal-body">
-                    <p>Select prescription to refill:</p>
-                    <select id="rx-select" style="padding:10px; border-radius:10px; border:1px solid var(--glass-border); background: rgba(255,255,255,0.05); color:var(--text-white);">
-                        <option>Atenolol 25mg</option>
-                        <option>Losartan 50mg</option>
-                        <option>Metformin 500mg</option>
-                    </select>
-                    <div class="modal-actions"><button class="primary-btn" id="submit-rx">Submit Refill</button></div>
-                </div>
-            </div>
-        </div>
 
         <div class="modal-overlay" id="insurance-modal">
             <div class="modal-box">
                 <div class="modal-header"><h3>AI Insurance Desk</h3><button class="ghost-btn" data-close="insurance-modal">Close</button></div>
                 <div class="modal-body">
                     <p>File a reimbursement claim instantly.</p>
-                    <input type="text" placeholder="Hospital Name" style="padding:10px; border-radius:10px; border:1px solid var(--glass-border); background: rgba(255,255,255,0.05); color:white;">
+                    <input type="text" placeholder="Hospital Name" style="padding:10px; border-radius:10px; border:1px solid var(--glass-border); background: rgba(255,255,255,0.05); color:white; width:100%;">
                     <div style="display:flex; justify-content:space-between; background:rgba(16,185,129,0.1); padding:10px; border-radius:10px;">
                         <span>Approval Probability</span>
                         <strong style="color:#10b981;">94%</strong>
                     </div>
-                    <div class="file-item">Upload Bill <button class="ghost-btn" style="font-size:10px;">Select</button></div>
-                    <div class="modal-actions"><button class="primary-btn" id="submit-claim">File Claim</button></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="modal-overlay" id="files-modal">
-            <div class="modal-box">
-                <div class="modal-header"><h3>Medical Files</h3><button class="ghost-btn" data-close="files-modal">Close</button></div>
-                <div class="modal-body">
-                    <div class="file-list">
-                        <div class="file-item">MRI_Report.pdf <button class="primary-btn" data-file="MRI_Report.pdf">Download</button></div>
-                        <div class="file-item">Bloodwork_Results.png <button class="primary-btn" data-file="Bloodwork_Results.png">Download</button></div>
-                        <div class="file-item">Prescription_List.pdf <button class="primary-btn" data-file="Prescription_List.pdf">Download</button></div>
+                    <div class="file-item" style="padding:10px; border:1px solid var(--glass-border); border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                        Upload Bill <button class="ghost-btn">Select</button>
                     </div>
+                    <button class="primary-btn" id="submit-claim">File Claim</button>
                 </div>
             </div>
         </div>
-
-        <div class="faceid-overlay" id="faceid-overlay">
-            <div class="faceid-box">
-                <div class="faceid-cam"></div>
-                <div class="faceid-scan"></div>
-                <div class="faceid-text" id="faceid-text">Scanning Face ID...</div>
-            </div>
-        </div>
-
-        <div class="toast" id="toast">Download started</div>
 
     </div>
     
     <script>
-        // --- CUSTOM SVG ICONS FOR ORGANS ---
+        // --- 3D MODEL MAPPING ---
+        // Mapped to your specific GitHub repository: Nobledental/MOD
+        const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/Nobledental/MOD/main/3d_models/';
+
+        const ORGAN_MODEL_MAP = {
+            heart: GITHUB_BASE_URL + 'heart.glb',
+            brain: GITHUB_BASE_URL + 'brain.glb',
+            liver: GITHUB_BASE_URL + 'liver.glb',
+            lungs: GITHUB_BASE_URL + 'lungs.glb',
+            kidneys: GITHUB_BASE_URL + 'kidneys.glb',
+            eyes: GITHUB_BASE_URL + 'eyes.glb',
+            cirrhotic_liver: GITHUB_BASE_URL + 'cirrhotic_liver.glb'
+        };
+
+        // --- ORGAN SVGS (Fallback Icons) ---
         const ORGAN_SVGS = {
             liver: `<svg viewBox="0 0 24 24"><path d="M20.5 13.5c-.5-3.5-3.5-6.5-8.5-6.5s-8 3-8 6.5c0 3.5 3 6.5 6 6.5 1.5 0 3-.5 4.5-1.5 3.5-2.5 5.5-3.5 6-5z" /><path d="M8 8.5v3" /></svg>`,
             lungs: `<svg viewBox="0 0 24 24"><path d="M12 2v20M6 5c-2.2 0-4 2.2-4 5.5S4 19 6.5 19 11 17 11 12 8.2 5 6 5zM18 5c2.2 0 4 2.2 4 5.5S20 19 17.5 19 13 17 13 12 15.8 5 18 5z" /></svg>`,
@@ -846,115 +415,33 @@
             urinary: `<svg viewBox="0 0 24 24"><path d="M12 4v4M8 10c0 4 1.5 8 4 8s4-4 4-8H8zM12 18v3" /></svg>`
         };
 
-        // --- COMPREHENSIVE ORGAN DATA ---
+        // --- ORGAN DATA ---
         const ORGAN_DATA = {
-            heart: {
-                title: "My Heart Condition",
-                mainStat: "BPM",
-                animKey: "bpm", 
-                simValue: 80,
-                icon: "ph-heart",
-                stats: [
-                    { id: "c1", title: "Blood Pressure", base: 116, unit: "/70", icon: "ph-drop", type: "bp" },
-                    { id: "c2", title: "Heart Rate", base: 80, unit: "bpm", icon: "ph-heartbeat", type: "bpm" },
-                    { id: "c3", title: "O2 Saturation", base: 98, unit: "%", icon: "ph-activity", type: "norm" },
-                    { id: "c4", title: "Cardiac Output", base: 5.2, unit: "L/min", icon: "ph-waves", type: "norm" }
-                ],
-                abnormal: { msg: "Arrhythmia Detected.", action: "Recommend immediate ECG." }
-            },
-            brain: {
-                title: "Brain & Nervous System",
-                mainStat: "Hz",
-                animKey: "hz",
-                simValue: 14,
-                icon: "ph-brain",
-                stats: [
-                    { id: "c1", title: "Brain Waves", base: 14, unit: "Hz", icon: "ph-wave-sine", type: "hz" },
-                    { id: "c2", title: "Cognitive Load", base: 45, unit: "%", icon: "ph-lightning", type: "perc" },
-                    { id: "c3", title: "Oxygenation", base: 99, unit: "%", icon: "ph-wind", type: "perc" },
-                    { id: "c4", title: "ICP", base: 11, unit: "mmHg", icon: "ph-gauge", type: "norm" }
-                ],
-                abnormal: { msg: "High Cortisol Levels.", action: "Stress reduction advised." }
-            },
-            liver: {
-                title: "Liver Function",
-                mainStat: "Tox",
-                animKey: "tox",
-                simValue: 5,
-                icon: "svg-liver",
-                stats: [
-                    { id: "c1", title: "ALT Enzymes", base: 29, unit: "U/L", icon: "ph-flask", type: "norm" },
-                    { id: "c2", title: "Toxicity Filter", base: 95, unit: "%", icon: "ph-shield-check", type: "perc" },
-                    { id: "c3", title: "Bilirubin", base: 0.8, unit: "mg", icon: "ph-test-tube", type: "norm" },
-                    { id: "c4", title: "Albumin", base: 4.2, unit: "g/dL", icon: "ph-egg", type: "norm" }
-                ],
-                abnormal: { msg: "Elevated Enzymes.", action: "Dietary review needed." }
-            },
-            lungs: {
-                title: "Respiratory System",
-                mainStat: "RPM",
-                animKey: "rpm",
-                simValue: 16,
-                icon: "svg-lungs",
-                stats: [
-                    { id: "c1", title: "Resp Rate", base: 16, unit: "rpm", icon: "ph-wind", type: "rpm" },
-                    { id: "c2", title: "SpO2 Level", base: 98, unit: "%", icon: "ph-drop", type: "perc" },
-                    { id: "c3", title: "Lung Capacity", base: 4.8, unit: "L", icon: "ph-chart-bar", type: "norm" },
-                    { id: "c4", title: "EtCO2", base: 38, unit: "mmHg", icon: "ph-cloud", type: "norm" }
-                ],
-                abnormal: { msg: "Reduced Capacity.", action: "Spirometry test advised." }
-            },
-            kidneys: {
-                title: "Renal Function",
-                mainStat: "GFR",
-                animKey: "gfr",
-                simValue: 90,
-                icon: "svg-kidneys",
-                stats: [
-                    { id: "c1", title: "GFR", base: 95, unit: "mL", icon: "ph-activity", type: "norm" },
-                    { id: "c2", title: "Creatinine", base: 0.9, unit: "mg", icon: "ph-flask", type: "norm" },
-                    { id: "c3", title: "Urea (BUN)", base: 14, unit: "mg", icon: "ph-test-tube", type: "norm" },
-                    { id: "c4", title: "Hydration", base: 92, unit: "%", icon: "ph-drop-half", type: "perc" }
-                ],
-                abnormal: { msg: "Low Filtration.", action: "Increase fluid intake." }
-            }
+            heart: { title: "My Heart Condition", mainStat: "BPM", animKey: "bpm", simValue: 80, icon: "ph-heart", stats: [ { id: "c1", title: "Blood Pressure", base: 116, unit: "/70", icon: "ph-drop", type: "bp" }, { id: "c2", title: "Heart Rate", base: 80, unit: "bpm", icon: "ph-heartbeat", type: "bpm" }, { id: "c3", title: "O2 Saturation", base: 98, unit: "%", icon: "ph-activity", type: "norm" }, { id: "c4", title: "Cardiac Output", base: 5.2, unit: "L/min", icon: "ph-waves", type: "norm" } ], abnormal: { msg: "Arrhythmia Detected.", action: "Recommend immediate ECG." } },
+            brain: { title: "Brain & Nervous System", mainStat: "Hz", animKey: "hz", simValue: 14, icon: "ph-brain", stats: [ { id: "c1", title: "Brain Waves", base: 14, unit: "Hz", icon: "ph-wave-sine", type: "hz" }, { id: "c2", title: "Cognitive Load", base: 45, unit: "%", icon: "ph-lightning", type: "perc" }, { id: "c3", title: "Oxygenation", base: 99, unit: "%", icon: "ph-wind", type: "perc" }, { id: "c4", title: "ICP", base: 11, unit: "mmHg", icon: "ph-gauge", type: "norm" } ], abnormal: { msg: "High Cortisol Levels.", action: "Stress reduction advised." } },
+            liver: { title: "Liver Function", mainStat: "Tox", animKey: "tox", simValue: 5, icon: "svg-liver", stats: [ { id: "c1", title: "ALT Enzymes", base: 29, unit: "U/L", icon: "ph-flask", type: "norm" }, { id: "c2", title: "Toxicity Filter", base: 95, unit: "%", icon: "ph-shield-check", type: "perc" }, { id: "c3", title: "Bilirubin", base: 0.8, unit: "mg", icon: "ph-test-tube", type: "norm" }, { id: "c4", title: "Albumin", base: 4.2, unit: "g/dL", icon: "ph-egg", type: "norm" } ], abnormal: { msg: "Elevated Enzymes.", action: "Dietary review needed." } },
+            lungs: { title: "Respiratory System", mainStat: "RPM", animKey: "rpm", simValue: 16, icon: "svg-lungs", stats: [ { id: "c1", title: "Resp Rate", base: 16, unit: "rpm", icon: "ph-wind", type: "rpm" }, { id: "c2", title: "SpO2 Level", base: 98, unit: "%", icon: "ph-drop", type: "perc" }, { id: "c3", title: "Lung Capacity", base: 4.8, unit: "L", icon: "ph-chart-bar", type: "norm" }, { id: "c4", title: "EtCO2", base: 38, unit: "mmHg", icon: "ph-cloud", type: "norm" } ], abnormal: { msg: "Reduced Capacity.", action: "Spirometry test advised." } },
+            kidneys: { title: "Renal Function", mainStat: "GFR", animKey: "gfr", simValue: 90, icon: "svg-kidneys", stats: [ { id: "c1", title: "GFR", base: 95, unit: "mL", icon: "ph-activity", type: "norm" }, { id: "c2", title: "Creatinine", base: 0.9, unit: "mg", icon: "ph-flask", type: "norm" }, { id: "c3", title: "Urea (BUN)", base: 14, unit: "mg", icon: "ph-test-tube", type: "norm" }, { id: "c4", title: "Hydration", base: 92, unit: "%", icon: "ph-drop-half", type: "perc" } ], abnormal: { msg: "Low Filtration.", action: "Increase fluid intake." } },
+            stomach: { title: "Gastric Health", mainStat: "pH", animKey: "ph", simValue: 2, icon: "svg-stomach", stats: [ { id: "c1", title: "Acidity (pH)", base: 2.1, unit: "pH", icon: "ph-drop", type: "norm" }, { id: "c2", title: "Motility", base: 3, unit: "cpm", icon: "ph-waves", type: "norm" }, { id: "c3", title: "Digestion", base: 94, unit: "%", icon: "ph-percent", type: "perc" }, { id: "c4", title: "Microbiome", base: 90, unit: "Sc", icon: "ph-plant", type: "norm" } ], abnormal: { msg: "High Acidity.", action: "Antacid recommended." } },
+            intestines: { title: "Intestinal Tract", mainStat: "Absorp", animKey: "mot", simValue: 95, icon: "svg-intestines", stats: [ { id: "c1", title: "Peristalsis", base: 8, unit: "/min", icon: "ph-arrows-left-right", type: "norm" }, { id: "c2", title: "Absorption", base: 95, unit: "%", icon: "ph-arrow-fat-lines-in", type: "perc" }, { id: "c3", title: "Flora", base: 92, unit: "%", icon: "ph-plant", type: "norm" }, { id: "c4", title: "Fiber Intake", base: 25, unit: "g", icon: "ph-carrot", type: "norm" } ], abnormal: { msg: "Slow Transit.", action: "Increase fiber intake." } },
+            eyes: { title: "Ocular Health", mainStat: "Vision", animKey: "vis", simValue: 20, icon: "ph-eye", stats: [ { id: "c1", title: "Acuity (R)", base: 20, unit: "/20", icon: "ph-eye", type: "norm" }, { id: "c2", title: "Acuity (L)", base: 20, unit: "/20", icon: "ph-eye", type: "norm" }, { id: "c3", title: "Pressure", base: 16, unit: "mmHg", icon: "ph-gauge", type: "norm" }, { id: "c4", title: "Response", base: 150, unit: "ms", icon: "ph-timer", type: "norm" } ], abnormal: { msg: "Elevated IOP.", action: "Glaucoma screening." } },
+            pancreas: { title: "Pancreatic System", mainStat: "Insulin", animKey: "ins", simValue: 12, icon: "svg-pancreas", stats: [ { id: "c1", title: "Insulin", base: 12, unit: "uIU", icon: "ph-drop", type: "norm" }, { id: "c2", title: "Glucose", base: 92, unit: "mg", icon: "ph-cube", type: "norm" }, { id: "c3", title: "Lipase", base: 45, unit: "U/L", icon: "ph-flask", type: "norm" }, { id: "c4", title: "Amylase", base: 55, unit: "U/L", icon: "ph-test-tube", type: "norm" } ], abnormal: { msg: "Sugar Spike.", action: "Monitor carbohydrate intake." } },
+            gallbladder: { title: "Gallbladder", mainStat: "Bile", animKey: "bile", simValue: 100, icon: "svg-gallbladder", stats: [ { id: "c1", title: "Bile Flow", base: 100, unit: "%", icon: "ph-waves", type: "norm" }, { id: "c2", title: "Calculi", base: 0, unit: "cnt", icon: "ph-prohibit", type: "norm" }, { id: "c3", title: "Wall Thick", base: 2, unit: "mm", icon: "ph-ruler", type: "norm" }, { id: "c4", title: "Ejection", base: 65, unit: "%", icon: "ph-arrow-fat-up", type: "norm" } ], abnormal: { msg: "Flow Reduced.", action: "Ultrasound advised." } },
+            urinary: { title: "Urinary Tract", mainStat: "Output", animKey: "out", simValue: 1500, icon: "svg-urinary", stats: [ { id: "c1", title: "24h Output", base: 1.5, unit: "L", icon: "ph-drop", type: "norm" }, { id: "c2", title: "pH Level", base: 6.0, unit: "pH", icon: "ph-test-tube", type: "norm" }, { id: "c3", title: "Specific Grav", base: 1.01, unit: "sg", icon: "ph-flask", type: "norm" }, { id: "c4", title: "Leukocytes", base: 0, unit: "neg", icon: "ph-shield", type: "norm" } ], abnormal: { msg: "Trace Protein.", action: "Retest in 24 hours." } },
+            skeletal: { title: "Skeletal System", mainStat: "Density", animKey: "den", simValue: 0, icon: "ph-bone", stats: [ { id: "c1", title: "Bone Density", base: 0.5, unit: "T", icon: "ph-chart-bar", type: "norm" }, { id: "c2", title: "Calcium", base: 9.4, unit: "mg", icon: "ph-drop", type: "norm" }, { id: "c3", title: "Vit D3", base: 45, unit: "ng", icon: "ph-sun", type: "norm" }, { id: "c4", title: "Marrow Act", base: 98, unit: "%", icon: "ph-activity", type: "perc" } ], abnormal: { msg: "Mild Osteopenia.", action: "Increase Calcium/D3." } },
+            cells: { title: "Cellular Health", mainStat: "Count", animKey: "wbc", simValue: 6.5, icon: "ph-dna", stats: [ { id: "c1", title: "WBC Count", base: 6.5, unit: "k", icon: "ph-shield-check", type: "norm" }, { id: "c2", title: "RBC Count", base: 5.1, unit: "M", icon: "ph-drop", type: "norm" }, { id: "c3", title: "Platelets", base: 250, unit: "k", icon: "ph-bandaids", type: "norm" }, { id: "c4", title: "Regen Rate", base: 95, unit: "%", icon: "ph-arrows-clockwise", type: "perc" } ], abnormal: { msg: "Low Platelets.", action: "Hematology consult." } },
+            immune: { title: "Immune System", mainStat: "Resp", animKey: "imm", simValue: 98, icon: "ph-shield-star", stats: [ { id: "c1", title: "Response", base: 98, unit: "%", icon: "ph-lightning", type: "perc" }, { id: "c2", title: "Neutrophils", base: 60, unit: "%", icon: "ph-chart-pie", type: "norm" }, { id: "c3", title: "Lymphocytes", base: 30, unit: "%", icon: "ph-users", type: "norm" }, { id: "c4", title: "Inflammation", base: 0.3, unit: "CRP", icon: "ph-fire", type: "norm" } ], abnormal: { msg: "Elevated CRP.", action: "Check for infection." } },
+            dental: { title: "Dental Health", mainStat: "Plaque", animKey: "den", simValue: 5, icon: "ph-smiley", stats: [ { id: "c1", title: "Plaque Idx", base: 5, unit: "%", icon: "ph-sparkle", type: "norm" }, { id: "c2", title: "Gum Health", base: 98, unit: "%", icon: "ph-heart", type: "perc" }, { id: "c3", title: "Enamel", base: 95, unit: "%", icon: "ph-shield", type: "perc" }, { id: "c4", title: "pH Balance", base: 7.0, unit: "pH", icon: "ph-drop", type: "norm" } ], abnormal: { msg: "Gingivitis Risk.", action: "Hygiene review." } },
+            breast: { title: "Breast Tissue", mainStat: "Dense", animKey: "br", simValue: 2, icon: "ph-gender-female", stats: [ { id: "c1", title: "Density", base: 2, unit: "Cat", icon: "ph-squares-four", type: "norm" }, { id: "c2", title: "Vascularity", base: "Norm", unit: "", icon: "ph-waves", type: "norm" }, { id: "c3", title: "Lymph Nodes", base: "Clrv", unit: "", icon: "ph-check-circle", type: "norm" }, { id: "c4", title: "Asymmetry", base: 0, unit: "%", icon: "ph-scales", type: "norm" } ], abnormal: { msg: "Dense Tissue.", action: "Annual mammogram." } },
+            ligaments: { title: "Joints & Ligaments", mainStat: "Flex", animKey: "flx", simValue: 85, icon: "ph-person-simple-run", stats: [ { id: "c1", title: "Flexibility", base: 85, unit: "%", icon: "ph-arrows-out", type: "perc" }, { id: "c2", title: "Synovial Fld", base: 100, unit: "%", icon: "ph-drop", type: "norm" }, { id: "c3", title: "Inflammation", base: 2, unit: "%", icon: "ph-fire", type: "norm" }, { id: "c4", title: "Cartilage", base: 90, unit: "%", icon: "ph-circle-notch", type: "norm" } ], abnormal: { msg: "Stiffness.", action: "Mobility exercises." } }
         };
 
-        const KEYWORD_RISK = {
-            bleeding: 'Critical',
-            pain: 'Severe',
-            dizzy: 'Severe',
-            nausea: 'Mild',
-            faint: 'Critical',
-            fever: 'Mild'
-        };
-
-        const simulateGPS = () => {
-            const baseLat = 37.7749, baseLng = -122.4194;
-            return {
-                lat: (baseLat + (Math.random() - 0.5) * 0.02).toFixed(5),
-                lng: (baseLng + (Math.random() - 0.5) * 0.02).toFixed(5)
-            };
-        };
-
-        let lastSnapshotTime = Date.now();
-        let watchdogTimer = null;
-
+        // --- HELPER FUNCTIONS ---
         const getColorClass = (val, type) => {
-            if (type === 'bpm') {
-                if (val < 60 || val > 120) return 'state-red';
-                if (val > 100) return 'state-yellow';
-                return 'state-blue';
-            }
-            if (type === 'perc') {
-                if (val < 80) return 'state-red';
-                if (val < 90) return 'state-yellow';
-                return 'state-blue';
-            }
+            if (type === 'bpm') { if (val < 60 || val > 120) return 'state-red'; if (val > 100) return 'state-yellow'; return 'state-blue'; }
+            if (type === 'perc') { if (val < 80) return 'state-red'; if (val < 90) return 'state-yellow'; return 'state-blue'; }
             const r = Math.random();
-            if (r > 0.95) return 'state-red';
-            if (r > 0.8) return 'state-yellow';
-            return 'state-blue';
+            if (r > 0.95) return 'state-red'; if (r > 0.8) return 'state-yellow'; return 'state-blue';
         };
 
         let activeOrgan = 'heart';
@@ -968,220 +455,59 @@
             aiPanel.classList.add('warn');
             document.getElementById('ai-title').innerText = 'EMERGENCY DISPATCHED';
             document.getElementById('ai-text').innerText = reason;
-            updateDiagnosisPanel('sos', 'Critical');
-            showToast('Emergency alert sent to guardian network');
+            alert('Emergency alert sent to guardian network');
         };
 
-        // --- BIO-SYNC AUDIO ENGINE ---
+        // --- AUDIO ENGINE ---
         const AudioEngine = {
-            ctx: null,
-            nextNoteTime: 0.0,
-            timerID: null,
-            bpm: 80,
-            isPlaying: false,
-
-            init: function() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AudioContext();
-                }
-            },
-
+            ctx: null, nextNoteTime: 0.0, timerID: null, bpm: 80, isPlaying: false,
+            init: function() { if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)(); },
             toggle: function() {
                 this.init();
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-                
+                if (this.ctx.state === 'suspended') this.ctx.resume();
                 this.isPlaying = !this.isPlaying;
-                
                 const btn = document.getElementById('sound-toggle');
-                if(this.isPlaying) btn.classList.add('active');
-                else btn.classList.remove('active');
-                
-                if (this.isPlaying) {
-                    this.nextNoteTime = this.ctx.currentTime + 0.1;
-                    this.scheduler();
-                } else {
-                    window.clearTimeout(this.timerID);
-                }
+                if(this.isPlaying) btn.classList.add('active'); else btn.classList.remove('active');
+                if (this.isPlaying) { this.nextNoteTime = this.ctx.currentTime + 0.1; this.scheduler(); } else { window.clearTimeout(this.timerID); }
                 return this.isPlaying;
             },
-
-            setBPM: function(newBpm) {
-                this.bpm = newBpm;
-            },
-
+            setBPM: function(newBpm) { this.bpm = newBpm; },
             scheduleHeartbeat: function(time) {
-                const osc1 = this.ctx.createOscillator();
-                const gain1 = this.ctx.createGain();
-                const filter1 = this.ctx.createBiquadFilter();
-
-                osc1.type = 'triangle';
-                osc1.frequency.setValueAtTime(60, time);
-                osc1.frequency.exponentialRampToValueAtTime(40, time + 0.1);
-
-                filter1.type = 'lowpass';
-                filter1.frequency.value = 180;
-
-                gain1.gain.setValueAtTime(0, time);
-                gain1.gain.linearRampToValueAtTime(0.8, time + 0.02);
-                gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
-
-                osc1.connect(filter1);
-                filter1.connect(gain1);
-                gain1.connect(this.ctx.destination);
-
-                osc1.start(time);
-                osc1.stop(time + 0.2);
-
-                const t2 = time + 0.25; 
-                const osc2 = this.ctx.createOscillator();
-                const gain2 = this.ctx.createGain();
-                const filter2 = this.ctx.createBiquadFilter();
-
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(80, t2);
-                osc2.frequency.exponentialRampToValueAtTime(50, t2 + 0.1);
-
-                filter2.type = 'lowpass';
-                filter2.frequency.value = 250;
-
-                gain2.gain.setValueAtTime(0, t2);
-                gain2.gain.linearRampToValueAtTime(0.6, t2 + 0.02);
-                gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.15);
-
-                osc2.connect(filter2);
-                filter2.connect(gain2);
-                gain2.connect(this.ctx.destination);
-
-                osc2.start(t2);
-                osc2.stop(t2 + 0.2);
+                const osc1 = this.ctx.createOscillator(); const gain1 = this.ctx.createGain(); const filter1 = this.ctx.createBiquadFilter();
+                osc1.type = 'triangle'; osc1.frequency.setValueAtTime(60, time); osc1.frequency.exponentialRampToValueAtTime(40, time + 0.1);
+                filter1.type = 'lowpass'; filter1.frequency.value = 180;
+                gain1.gain.setValueAtTime(0, time); gain1.gain.linearRampToValueAtTime(0.8, time + 0.02); gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+                osc1.connect(filter1); filter1.connect(gain1); gain1.connect(this.ctx.destination); osc1.start(time); osc1.stop(time + 0.2);
+                
+                const t2 = time + 0.25; const osc2 = this.ctx.createOscillator(); const gain2 = this.ctx.createGain(); const filter2 = this.ctx.createBiquadFilter();
+                osc2.type = 'sine'; osc2.frequency.setValueAtTime(80, t2); osc2.frequency.exponentialRampToValueAtTime(50, t2 + 0.1);
+                filter2.type = 'lowpass'; filter2.frequency.value = 250;
+                gain2.gain.setValueAtTime(0, t2); gain2.gain.linearRampToValueAtTime(0.6, t2 + 0.02); gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.15);
+                osc2.connect(filter2); filter2.connect(gain2); gain2.connect(this.ctx.destination); osc2.start(t2); osc2.stop(t2 + 0.2);
             },
-
             scheduler: function() {
                 while (this.nextNoteTime < this.ctx.currentTime + 0.1) {
-                    if(activeOrgan === 'heart') {
-                        this.scheduleHeartbeat(this.nextNoteTime);
-                    }
-                    const secondsPerBeat = 60.0 / this.bpm;
-                    this.nextNoteTime += secondsPerBeat;
+                    if(activeOrgan === 'heart') this.scheduleHeartbeat(this.nextNoteTime);
+                    this.nextNoteTime += 60.0 / this.bpm;
                 }
                 this.timerID = window.setTimeout(this.scheduler.bind(this), 25);
             }
         };
 
         // --- DASHBOARD LOGIC ---
-        const chatMessages = [];
-
-        const pushChatMessage = (role, text) => {
-            chatMessages.push({ role, text });
-            const container = document.getElementById('chat-messages');
-            const bubble = document.createElement('div');
-            bubble.className = `chat-bubble ${role}`;
-            bubble.innerText = text;
-            container.appendChild(bubble);
-            container.scrollTop = container.scrollHeight;
-        };
-
-        const updateDiagnosisPanel = (keyword, risk) => {
-            const diag = document.getElementById('diagnosis-panel');
-            const text = document.getElementById('diagnosis-text');
-            if(diag.style.display === 'none') diag.style.display = 'block'; 
-            
-            diag.className = 'ai-panel' + (risk === 'Critical' || risk === 'Severe' ? ' warn' : '');
-            text.innerText = risk ? `${risk} risk symptom detected (${keyword}). Notify clinician.` : 'No critical keywords detected. Keep monitoring.';
-
-            const aiPanel = document.getElementById('ai-panel');
-            if (risk === 'Critical' || risk === 'Severe') {
-                aiPanel.classList.add('warn');
-                document.getElementById('ai-title').innerText = 'SYMPTOM ALERT';
-                document.getElementById('ai-text').innerText = `Keyword "${keyword}" maps to ${risk} risk. Escalate if persists.`;
-            }
-        };
-
-        const analyzeKeywords = (input) => {
-            const lower = input.toLowerCase();
-            let detected = null;
-            let level = null;
-            Object.keys(KEYWORD_RISK).forEach(k => {
-                if (lower.includes(k)) {
-                    detected = k;
-                    level = KEYWORD_RISK[k];
-                }
-            });
-            return { detected, level };
-        };
-
-        const persistVitalsSnapshot = () => {
-            const snapshot = {
-                ts: Date.now(),
-                organ: activeOrgan,
-                stats: Array.from({ length: 4 }).map((_, idx) => {
-                    const val = document.getElementById(`c${idx + 1}-val`).innerText;
-                    return { id: idx + 1, val };
-                }),
-                location: simulateGPS()
-            };
-            lastSnapshotTime = snapshot.ts;
-            localStorage.setItem('dashboardVitals', JSON.stringify(snapshot));
-        };
-
-        const appendMedicalLog = () => {
-            const snapshot = JSON.parse(localStorage.getItem('dashboardVitals') || '{}');
-            if(!snapshot.ts) return;
-            const existing = JSON.parse(localStorage.getItem('medicalLog') || '[]');
-            existing.push({
-                ts: snapshot.ts,
-                organ: snapshot.organ,
-                stats: snapshot.stats,
-                location: snapshot.location,
-                category: 'Vitals'
-            });
-            localStorage.setItem('medicalLog', JSON.stringify(existing.slice(-200)));
-        };
-
-        const showToast = (msg) => {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2500);
-        }
-
-        const startWatchdog = () => {
-            if (watchdogTimer) clearInterval(watchdogTimer);
-            watchdogTimer = setInterval(() => {
-                const now = Date.now();
-                if(now - lastSnapshotTime > 20 * 60 * 1000) {
-                    triggerSOS('Data feed lost for over 20 minutes. Alerting guardian network.');
-                }
-            }, 60000);
-        };
-
         const generateOrganButtons = () => {
-            const tray = document.querySelector('.organ-tray'); 
-            tray.innerHTML = '';
-            
+            const tray = document.querySelector('.organ-tray'); tray.innerHTML = '';
             Object.keys(ORGAN_DATA).forEach(key => {
                 const data = ORGAN_DATA[key];
                 const btn = document.createElement('div');
                 btn.className = `organ-item ${key === 'heart' ? 'selected' : ''}`;
                 btn.dataset.organ = key;
-                
                 let iconHtml = '';
                 if (data.icon.startsWith('svg-')) {
                     const svgKey = data.icon.split('-')[1];
-                    iconHtml = ORGAN_SVGS[svgKey] || '<i class="ph ph-warning"></i>'; 
-                } else {
-                    iconHtml = `<i class="ph ${data.icon}"></i>`;
-                }
-
-                btn.innerHTML = `
-                    <div class="premium-icon"><i class="ph-fill ph-seal-check"></i></div>
-                    ${iconHtml}
-                    <span class="organ-name-mini">${key.toUpperCase()}</span>
-                    ${key === 'heart' ? '<div class="organ-label">My Heart</div>' : ''}
-                `;
+                    iconHtml = ORGAN_SVGS[svgKey] || '<i class="ph ph-warning"></i>';
+                } else { iconHtml = `<i class="ph ${data.icon}"></i>`; }
+                btn.innerHTML = `<div class="premium-icon"><i class="ph-fill ph-seal-check"></i></div>${iconHtml}<span class="organ-name-mini">${key.toUpperCase()}</span>`;
                 tray.appendChild(btn);
             });
         };
@@ -1189,33 +515,18 @@
         const updateUI = (organType) => {
             activeOrgan = organType;
             const data = ORGAN_DATA[organType];
-            
-            // Audio Sync
             AudioEngine.setBPM(data.simValue);
-
-            // Text Updates
-            document.getElementById('section-title').innerHTML = `<div class="blue-dot"></div> ${data.title}`;
+            document.getElementById('section-title').innerText = data.title;
             document.getElementById('mode-pill').innerHTML = `<div class="active-dot"></div> My ${organType.charAt(0).toUpperCase() + organType.slice(1)}`;
+            document.getElementById('ai-text').innerText = "Analyzing biometrics. Systems normal.";
             
-            // AI Panel Reset
-            const aiPanel = document.getElementById('ai-panel');
-            aiPanel.className = 'ai-panel';
-            document.getElementById('ai-title').innerText = "AI ANALYSIS";
-            document.getElementById('ai-text').innerText = "Analyzing recent biometrics. Systems operating within normal parameters.";
-
-            // Show Scanning State briefly
             data.stats.forEach((s, i) => {
                 const idx = i + 1;
                 document.getElementById(`c${idx}-title`).innerText = s.title;
                 document.getElementById(`c${idx}-icon`).className = `ph-fill ${s.icon} card-icon`;
-                
-                // Reset to scanning
                 document.getElementById(`c${idx}-val`).innerHTML = `<span class="scanning-text">Scanning...</span>`;
-                const card = document.getElementById(`card-${idx}`);
-                card.className = `data-card state-blue`; // Reset color
             });
 
-            // Simulate Scan Delay then reveal
             setTimeout(() => {
                 data.stats.forEach((s, i) => {
                     const idx = i + 1;
@@ -1228,99 +539,46 @@
         const updateCardValue = (idx, val, unit, type) => {
             const card = document.getElementById(`card-${idx}`);
             const state = getColorClass(val, type);
+            if(idx !== 2) { card.className = `data-card ${state}`; } 
+            else { if(state === 'state-red') card.className = `data-card state-red`; else card.className = `data-card active-blue`; }
             
-            if(idx !== 2) {
-                card.className = `data-card ${state}`;
-            } else {
-                if(state === 'state-red') card.className = `data-card state-red`;
-                else card.className = `data-card active-blue`;
-            }
+            document.getElementById(`c${idx}-val`).innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
             
-            const el = document.getElementById(`c${idx}-val`);
-            el.innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
-
-            const activeData = ORGAN_DATA[activeOrgan];
-            const shouldDrivePulse = type === activeData.animKey;
-
-            if (idx === 2 || shouldDrivePulse) {
+            if (idx === 2) {
                 document.getElementById('main-stat').innerHTML = `${val} <span style="font-size:12px;font-weight:500;">${unit}</span>`;
-                const boxBpm = document.getElementById('box-bpm');
-                if(boxBpm) boxBpm.innerText = val;
-
-                if(shouldDrivePulse) {
-                    const bpmNumber = parseFloat(val) || activeData.simValue;
-                    activeData.simValue = bpmNumber;
-                    AudioEngine.setBPM(bpmNumber);
+                if(ORGAN_DATA[activeOrgan].animKey === type) {
+                    ORGAN_DATA[activeOrgan].simValue = val;
+                    if(activeOrgan === 'heart') AudioEngine.setBPM(val);
                 }
             }
-            persistVitalsSnapshot();
-        };
-
-        // --- ANIMATED ECG LOGIC ---
-        let ecgPoints = [];
-        const ecgMaxPoints = 100;
-        let ecgPhase = 0;
-
-        const updateECGGraph = () => {
-            ecgPhase += 0.15;
-            let y = 15 + (Math.random() - 0.5) * 2; 
-            const beat = ecgPhase % (Math.PI * 2);
-            if (beat > 0 && beat < 0.2) y -= 5;
-            if (beat > 0.3 && beat < 0.4) y += 5;
-            if (beat > 0.4 && beat < 0.6) y -= 25;
-            if (beat > 0.6 && beat < 0.7) y += 8;
-            if (beat > 0.9 && beat < 1.2) y -= 4;
-            y = Math.max(2, Math.min(28, y));
-
-            ecgPoints.push(y);
-            if (ecgPoints.length > ecgMaxPoints) ecgPoints.shift();
-
-            const width = 200;
-            const step = width / ecgMaxPoints;
-            let d = `M 0 ${ecgPoints[0] || 15}`;
-            for (let i = 1; i < ecgPoints.length; i++) {
-                d += ` L ${i * step} ${ecgPoints[i]}`;
-            }
-            document.getElementById('live-ecg-path').setAttribute('d', d);
         };
 
         const startLiveSimulation = (organ) => {
             liveIntervals.forEach(clearInterval);
             liveIntervals = [];
             const data = ORGAN_DATA[organ];
-
-            // Update Readiness Score Bar
+            
             const updateReadiness = () => {
                 const bar = document.getElementById('readiness-bar');
-                if(bar) {
-                    const w = 70 + Math.random() * 25;
-                    bar.style.width = `${w}%`;
-                }
+                if(bar) bar.style.width = `${70 + Math.random() * 25}%`;
             };
 
             const mainInt = setInterval(() => {
                 let hasAlert = false;
                 data.stats.forEach((s, i) => {
                     if (typeof s.base === 'string') return;
-
                     let val = parseFloat(s.base);
-                    let flux = (Math.random() - 0.5) * (val * 0.15); 
-                    if(Math.random() > 0.85) flux *= 2.5; 
-
+                    let flux = (Math.random() - 0.5) * (val * 0.15);
+                    if(Math.random() > 0.85) flux *= 2.5;
                     let newVal = Math.floor(val + flux);
                     if(s.unit === 'M' || s.unit === 'L' || s.unit.includes('g')) newVal = (val + flux/10).toFixed(1);
-
                     const state = getColorClass(newVal, s.type);
                     if(state === 'state-red') hasAlert = true;
-
                     updateCardValue(i+1, newVal, s.unit, s.type);
                 });
                 
                 const bars = document.querySelectorAll('#blood-chart .bar');
-                bars.forEach(bar => {
-                      const h = 30 + Math.random() * 60;
-                      bar.style.height = `${h}%`;
-                });
+                bars.forEach(bar => { bar.style.height = `${30 + Math.random() * 60}%`; });
 
                 const aiPanel = document.getElementById('ai-panel');
                 if(hasAlert) {
@@ -1330,55 +588,17 @@
                 } else {
                     aiPanel.className = 'ai-panel';
                     document.getElementById('ai-title').innerText = "AI ANALYSIS";
-                    document.getElementById('ai-text').innerText = "Vital signs are stable. No immediate irregularities detected.";
+                    document.getElementById('ai-text').innerText = "Vital signs are stable.";
                 }
-                
                 updateReadiness();
-
             }, 2000);
             liveIntervals.push(mainInt);
-
-            const ecgInt = setInterval(updateECGGraph, 33);
-            liveIntervals.push(ecgInt);
         };
 
-        // --- THREE.JS ENGINE (FIXED & COMPACT) ---
-        let scene, camera, renderer, group, particles;
-        let controls; 
-        let spotLight;
-        let brainEffectGroup = null;
-        let liverLight = null;
+        // --- THREE.JS ENGINE ---
+        let scene, camera, renderer, group, particles, spotLight;
+        let controls;
         const gltfLoader = new THREE.GLTFLoader();
-
-        const clearOrganEffects = () => {
-            if (brainEffectGroup) {
-                scene.remove(brainEffectGroup);
-                brainEffectGroup.children.forEach(child => { child.geometry?.dispose(); child.material?.dispose(); });
-                brainEffectGroup = null;
-            }
-            if (liverLight) { scene.remove(liverLight); liverLight = null; }
-        };
-
-        const applyOrganEffects = (type) => {
-            clearOrganEffects();
-            if (!scene) return;
-            if (type === 'brain') {
-                brainEffectGroup = new THREE.Group();
-                for (let i = 0; i < 20; i++) {
-                    const start = new THREE.Vector3((Math.random()-0.5)*3, (Math.random()-0.5)*3, (Math.random()-0.5)*3);
-                    const end = start.clone().add(new THREE.Vector3((Math.random()-0.5)*2, (Math.random()-0.5)*2, (Math.random()-0.5)*2));
-                    const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
-                    const mat = new THREE.LineBasicMaterial({ color: 0x0ae0ff, transparent: true, opacity: 0.4 });
-                    brainEffectGroup.add(new THREE.Line(geo, mat));
-                }
-                scene.add(brainEffectGroup);
-            }
-            if (type === 'liver') {
-                liverLight = new THREE.PointLight(0xd97757, 2.0, 50);
-                liverLight.position.set(2, 2, 5);
-                scene.add(liverLight);
-            }
-        };
 
         const initThree = () => {
             const container = document.getElementById('model-3d-container');
@@ -1386,47 +606,29 @@
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 0, 10); // Closer camera for compact look
+            camera.position.set(0, 0, 12);
 
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.3;
-            
             container.appendChild(renderer.domElement);
 
             controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.enableZoom = false; 
-            controls.autoRotate = true;
-            controls.autoRotateSpeed = 2.0;
+            controls.enableDamping = true; controls.dampingFactor = 0.05; controls.enableZoom = false; controls.autoRotate = true; controls.autoRotateSpeed = 2.0;
 
             const particlesGeo = new THREE.BufferGeometry();
-            const pCount = 300; 
-            const pArray = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 15; // Compact particles
-
+            const pCount = 300; const pArray = new Float32Array(pCount * 3);
+            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 15;
             particlesGeo.setAttribute("position", new THREE.BufferAttribute(pArray, 3));
-            const particlesMat = new THREE.PointsMaterial({
-                size: 0.04, color: 0x3b82f6, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending
-            });
-
+            const particlesMat = new THREE.PointsMaterial({ size: 0.04, color: 0x0A84FF, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
             particles = new THREE.Points(particlesGeo, particlesMat);
             scene.add(particles);
 
-            const ambient = new THREE.AmbientLight(0xffffff, 0.1); 
-            scene.add(ambient);
-            
-            spotLight = new THREE.SpotLight(0xffffff, 3); 
-            spotLight.position.set(10, 10, 10); 
-            spotLight.angle = 0.5; 
-            scene.add(spotLight);
-            
-            const rimLight = new THREE.PointLight(0x3b82f6, 4, 50); 
-            rimLight.position.set(-10, 5, -5); 
-            scene.add(rimLight);
+            const ambient = new THREE.AmbientLight(0xffffff, 0.1); scene.add(ambient);
+            spotLight = new THREE.SpotLight(0xffffff, 3); spotLight.position.set(10, 10, 10); scene.add(spotLight);
+            const rimLight = new THREE.PointLight(0x0A84FF, 4, 50); rimLight.position.set(-10, 5, -5); scene.add(rimLight);
 
             loadOrganModel('heart');
             
@@ -1435,13 +637,11 @@
                 requestAnimationFrame(animate);
                 const t = clock.getElapsedTime();
                 const simVal = ORGAN_DATA[activeOrgan].simValue || 1;
-
                 controls.update();
 
                 if (group) {
                     const type = group.userData.type;
                     const baseScale = group.userData.baseScale || 1;
-
                     if (type === 'heart') {
                         const speed = simVal / 60;
                         const beat = Math.sin(t * speed * Math.PI * 2);
@@ -1452,22 +652,8 @@
                         const pulse = baseScale * (1 + Math.sin(t * 2) * 0.01);
                         group.scale.set(pulse, pulse, pulse);
                     }
-                    if(group.userData.ring) {
-                        group.userData.ring.rotation.z += 0.005;
-                    }
+                    if(group.userData.ring) group.userData.ring.rotation.z += 0.005;
                 }
-
-                if (brainEffectGroup) {
-                    brainEffectGroup.rotation.y -= 0.005;
-                    brainEffectGroup.children.forEach((line, idx) => {
-                        line.material.opacity = 0.1 + Math.abs(Math.sin(t * 3 + idx)) * 0.3;
-                    });
-                }
-
-                if (liverLight) {
-                    liverLight.intensity = 2.0 + Math.sin(t * 2) * 0.5;
-                }
-
                 if(particles) particles.rotation.y += 0.001;
                 renderer.render(scene, camera);
             };
@@ -1481,46 +667,13 @@
         };
 
         const getOrganColor = (type) => {
-            const colors = {
-                heart: 0xff3b3b, brain: 0x0ae0ff, liver: 0xd97757, lungs: 0xffa8d9,
-                kidneys: 0xc27e5c, stomach: 0xff9e9e, intestines: 0xffc4a3, pancreas: 0xffd670,
-                gallbladder: 0x60d394, urinary: 0xffea00, skeletal: 0xffffff, cells: 0xcd93ff,
-                immune: 0x50c878, dental: 0xfdfdfd, breast: 0xffb7b2, ligaments: 0xeeeeee
-            };
-            return colors[type] || 0x3b82f6;
+            const colors = { heart: 0xff3b3b, brain: 0x0ae0ff, liver: 0xd97757, lungs: 0xffa8d9, kidneys: 0xc27e5c };
+            return colors[type] || 0x0A84FF;
         };
 
-        // --- 3D MODEL MAPPING ---
-        // Mapped to your specific GitHub repository: Nobledental/MOD
-        const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/Nobledental/MOD/main/3d_models/';
-
-        const ORGAN_MODEL_MAP = {
-            heart: GITHUB_BASE_URL + 'heart.glb',
-            brain: GITHUB_BASE_URL + 'brain.glb',
-            liver: GITHUB_BASE_URL + 'liver.glb',
-            lungs: GITHUB_BASE_URL + 'lungs.glb',
-            kidneys: GITHUB_BASE_URL + 'kidneys.glb',
-            eyes: GITHUB_BASE_URL + 'eyes.glb',
-            cirrhotic_liver: GITHUB_BASE_URL + 'cirrhotic_liver.glb'
-            
-            // FUTURE UPLOADS:
-            // When you upload 'stomach.glb' or 'pancreas.glb' to that folder,
-            // just uncomment or add them below:
-            // stomach: GITHUB_BASE_URL + 'stomach.glb',
-            // pancreas: GITHUB_BASE_URL + 'pancreas.glb',
-        };
-
-        // FIXED: Compact 3D Model Loading Logic
         const loadOrganModel = (type) => {
-            // 1. Strict Cleanup to prevent fusing
             if (group) {
-                group.traverse((obj) => {
-                    if (obj.geometry) obj.geometry.dispose();
-                    if (obj.material) {
-                        if(Array.isArray(obj.material)) obj.material.forEach(m=>m.dispose());
-                        else obj.material.dispose();
-                    }
-                });
+                group.traverse((obj) => { if (obj.geometry) obj.geometry.dispose(); if (obj.material) { if(Array.isArray(obj.material)) obj.material.forEach(m=>m.dispose()); else obj.material.dispose(); } });
                 scene.remove(group);
                 group = null;
             }
@@ -1530,19 +683,21 @@
             group.userData.baseScale = 1;
             scene.add(group);
 
-            applyOrganEffects(type);
-
+            // Sci-Fi Ring
             const color = getOrganColor(type);
-            
-            // 2. Try loading from GitHub first
-            const modelSrc = ORGAN_MODEL_MAP[type];
-            let modelLoaded = false;
+            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); 
+            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.rotation.x = Math.PI / 2;
+            group.add(ring);
+            group.userData.ring = ring; 
 
+            // Try loading from GitHub
+            const modelSrc = ORGAN_MODEL_MAP[type];
             if (modelSrc) {
                 gltfLoader.load(modelSrc, (gltf) => {
                     const model = gltf.scene || gltf.scenes?.[0];
                     if (model) {
-                        modelLoaded = true;
                         model.traverse((node) => {
                             if (node.isMesh) {
                                 node.material = new THREE.MeshPhongMaterial({
@@ -1551,36 +706,22 @@
                                 });
                             }
                         });
-                        
                         const box = new THREE.Box3().setFromObject(model);
-                        const size = new THREE.Vector3();
-                        box.getSize(size);
+                        const size = new THREE.Vector3(); box.getSize(size);
                         const maxAxis = Math.max(size.x, size.y, size.z) || 1;
-                        const scale = 4.5 / maxAxis; // Fit inside the ring
+                        const scale = 4.5 / maxAxis; 
                         model.scale.setScalar(scale);
                         box.getCenter(model.position).multiplyScalar(-1);
                         model.position.y -= 0.5;
-                        
                         group.add(model);
                     }
                 }, undefined, (error) => {
                     console.log('Model load failed, using procedural fallback for:', type);
                     createProceduralFallback(type, color);
                 });
-            } 
-            
-            // Immediate fallback if no URL mapped or while loading (async handling is tricky here, so we default to procedural if load fails)
-            if (!modelSrc) {
+            } else {
                 createProceduralFallback(type, color);
             }
-
-            // Always add the Sci-Fi Ring
-            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); 
-            const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
-            const ring = new THREE.Mesh(ringGeo, ringMat);
-            ring.rotation.x = Math.PI / 2;
-            group.add(ring);
-            group.userData.ring = ring; 
         };
 
         const createProceduralFallback = (type, color) => {
@@ -1588,18 +729,12 @@
             switch (type) {
                 case 'heart': geometry = new THREE.IcosahedronGeometry(2.2, 1); break;
                 case 'brain': geometry = new THREE.DodecahedronGeometry(2.2, 0); break;
-                case 'lungs': geometry = new THREE.CapsuleGeometry(1.5, 3, 4, 16); break;
-                case 'liver': geometry = new THREE.TetrahedronGeometry(2.5, 2); break;
                 default: geometry = new THREE.OctahedronGeometry(2.0, 0);
             }
-
-            const coreMat = new THREE.MeshPhongMaterial({
-                color: color, emissive: color, emissiveIntensity: 0.6,
-                transparent: true, opacity: 0.9, flatShading: true, shininess: 100
-            });
+            const coreMat = new THREE.MeshPhongMaterial({ color: color, emissive: color, emissiveIntensity: 0.6, transparent: true, opacity: 0.9, flatShading: true, shininess: 100 });
             const coreMesh = new THREE.Mesh(geometry, coreMat);
             group.add(coreMesh);
-
+            
             const wireGeo = new THREE.WireframeGeometry(geometry);
             const wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
             const wireMesh = new THREE.LineSegments(wireGeo, wireMat);
@@ -1607,144 +742,34 @@
             group.add(wireMesh);
         };
 
+        // --- DOM INIT ---
         document.addEventListener('DOMContentLoaded', () => {
-            const PAGES = [
-                { label: 'Dashboard', href: '#', icon: 'ph-fill ph-heartbeat' },
-                { label: 'Organs', href: '#', icon: 'ph ph-brain' },
-                { label: 'Health', href: '#', icon: 'ph ph-activity' },
-                { label: 'Labs', href: '#', icon: 'ph ph-flask' },
-                { label: 'Hospitals', href: '#', icon: 'ph ph-hospital' },
-                { label: 'Pharmacy', href: '#', icon: 'ph ph-pill' },
-                { label: 'Devices', href: '#', icon: 'ph ph-device-mobile' },
-                { label: 'Insurance', href: '#', icon: 'ph ph-shield-check' },
-                { label: 'Family', href: '#', icon: 'ph ph-users-three' },
-                { label: 'Profile', href: '#', icon: 'ph ph-user' },
-                { label: 'Settings', href: '#', icon: 'ph ph-gear-six' },
-                { label: 'Medical Log', href: '#', icon: 'ph ph-clipboard-text' }
-            ];
-
-            const pageNav = document.getElementById('page-nav');
-            const mobileNavLinks = document.getElementById('mobile-nav-links');
-
-            if(pageNav) {
-                PAGES.forEach(p => {
-                    const link = document.createElement('a');
-                    link.href = p.href;
-                    link.innerHTML = `<i class="${p.icon}"></i>${p.label}`;
-                    pageNav.appendChild(link);
-                });
-            }
-
-            if(mobileNavLinks) {
-                PAGES.forEach(p => {
-                    const link = document.createElement('a');
-                    link.href = p.href;
-                    link.innerText = p.label;
-                    mobileNavLinks.appendChild(link);
-                });
-            }
-            
             setTimeout(() => {
                 document.getElementById('boot-screen').style.opacity = '0';
                 document.getElementById('app-container').style.opacity = '1';
-                setTimeout(() => {
-                    document.getElementById('boot-screen').style.display = 'none';
-                }, 800);
-            }, 2000); 
+                setTimeout(() => { document.getElementById('boot-screen').style.display = 'none'; }, 800);
+            }, 1500);
 
             generateOrganButtons();
             initThree();
             updateUI('heart');
-            startWatchdog();
 
-            const openModal = (id) => document.getElementById(id).style.display = 'flex';
-            const closeModal = (id) => document.getElementById(id).style.display = 'none';
-
-            document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
-
+            // Theme Toggle
             const themeBtn = document.getElementById('theme-toggle');
             themeBtn.addEventListener('click', () => {
                 document.body.classList.toggle('theme-white');
-                themeBtn.innerText = document.body.classList.contains('theme-white') ? 'Default Theme' : 'White Theme';
+                themeBtn.innerText = document.body.classList.contains('theme-white') ? 'Dark Theme' : 'White Theme';
             });
 
-            const soundBtn = document.getElementById('sound-toggle');
-            soundBtn.addEventListener('click', () => {
-                const isActive = AudioEngine.toggle();
-                soundBtn.style.color = isActive ? '#0A84FF' : 'white';
-                soundBtn.style.background = isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
-            });
+            // Modal Logic
+            const openModal = (id) => document.getElementById(id).style.display = 'flex';
+            const closeModal = (id) => document.getElementById(id).style.display = 'none';
+            document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
+            
+            document.getElementById('launch-insurance').addEventListener('click', () => openModal('insurance-modal'));
+            document.getElementById('submit-claim').addEventListener('click', () => { alert('Claim submitted for AI Review'); closeModal('insurance-modal'); });
 
-            const chatInput = document.getElementById('chat-input');
-            const chatSend = document.getElementById('chat-send');
-            const typingEl = document.getElementById('ai-typing');
-            const handleSend = () => {
-                const text = chatInput.value.trim();
-                if(!text) return;
-                pushChatMessage('user', text);
-                chatInput.value = '';
-                const { detected, level } = analyzeKeywords(text);
-                typingEl.style.display = 'block';
-                setTimeout(() => {
-                    typingEl.style.display = 'none';
-                    const response = detected ? `I detected ${detected}. Assessing as ${level} risk.` : 'Noted. Continuing to monitor.';
-                    pushChatMessage('bot', response);
-                    updateDiagnosisPanel(detected || 'none', level);
-                }, 1200);
-            };
-            chatSend.addEventListener('click', handleSend);
-            chatInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleSend(); });
-
-            const openVideo = () => openModal('video-modal');
-            document.getElementById('launch-video').addEventListener('click', openVideo);
-            document.getElementById('open-video').addEventListener('click', openVideo);
-            document.getElementById('toggle-cam').addEventListener('click', () => {
-                const camState = document.getElementById('cam-state');
-                camState.innerText = camState.innerText === 'ON' ? 'OFF' : 'ON';
-            });
-            document.getElementById('end-call').addEventListener('click', () => {
-                showToast('Call ended');
-                closeModal('video-modal');
-            });
-
-            const openPharmacy = () => openModal('pharmacy-modal');
-            document.getElementById('launch-pharmacy').addEventListener('click', openPharmacy);
-            document.getElementById('open-pharmacy').addEventListener('click', openPharmacy);
-            document.getElementById('submit-rx').addEventListener('click', () => {
-                const rx = document.getElementById('rx-select').value;
-                showToast(`${rx} refill request sent.`);
-                closeModal('pharmacy-modal');
-            });
-
-            // NEW: Insurance Logic
-            const openInsurance = () => openModal('insurance-modal');
-            document.getElementById('launch-insurance').addEventListener('click', openInsurance);
-            document.getElementById('submit-claim').addEventListener('click', () => {
-                showToast('Claim submitted to AI desk.');
-                closeModal('insurance-modal');
-            });
-
-            const runFaceID = (onPass) => {
-                const overlay = document.getElementById('faceid-overlay');
-                const text = document.getElementById('faceid-text');
-                overlay.style.display = 'flex';
-                text.innerText = 'Scanning Face ID...';
-                setTimeout(() => {
-                    text.innerText = 'Verified';
-                    setTimeout(() => {
-                        overlay.style.display = 'none';
-                        onPass();
-                    }, 500);
-                }, 1400);
-            };
-
-            const openFiles = () => runFaceID(() => openModal('files-modal'));
-            document.getElementById('launch-files').addEventListener('click', openFiles);
-            document.getElementById('open-files').addEventListener('click', openFiles);
-            document.querySelectorAll('[data-file]').forEach(btn => btn.addEventListener('click', () => {
-                showToast(`${btn.dataset.file} downloading...`);
-            }));
-
+            // SOS Logic
             const sosBtn = document.getElementById('sos-btn');
             let sosTimer = null;
             sosBtn.addEventListener('mousedown', () => {
@@ -1757,26 +782,19 @@
                 sosBtn.innerText = 'Hold for SOS';
             }));
 
-            setTimeout(appendMedicalLog, 2000);
-            setInterval(() => { appendMedicalLog(); }, 600000);
-
+            // Organ Selection
             const tray = document.querySelector('.organ-tray');
             tray.addEventListener('click', (e) => {
                 const btn = e.target.closest('.organ-item');
                 if(!btn) return;
-                
                 document.querySelectorAll('.organ-item').forEach(b => b.classList.remove('selected'));
                 document.querySelectorAll('.organ-label').forEach(el => el.remove());
-                
                 btn.classList.add('selected');
-                
                 const label = document.createElement('div'); label.className = 'organ-label'; 
                 label.innerText = 'My ' + btn.dataset.organ.charAt(0).toUpperCase() + btn.dataset.organ.slice(1);
                 btn.appendChild(label);
-                
-                const organ = btn.dataset.organ;
-                loadOrganModel(organ);
-                updateUI(organ);
+                loadOrganModel(btn.dataset.organ);
+                updateUI(btn.dataset.organ);
             });
         });
     </script>
