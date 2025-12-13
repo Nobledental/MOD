@@ -1513,7 +1513,8 @@
             brain: '3d_models/brain.glb',
             liver: '3d_models/liver.glb',
             lungs: '3d_models/lungs.glb',
-            kidneys: '3d_models/kidneys.glb'
+            kidneys: '3d_models/kidneys.glb',
+            eyes: '3d_models/eyes.glb'
         };
 
         const clearOrganEffects = () => {
@@ -1744,8 +1745,10 @@
                 group.add(coreMesh);
             };
 
-            const modelSrc = ORGAN_MODEL_MAP[type] || ORGAN_MODEL_MAP.heart;
+            const modelSrc = ORGAN_MODEL_MAP[type];
             addProceduralShell();
+            if (!modelSrc) return;
+
             gltfLoader.load(modelSrc, (gltf) => {
                 const model = gltf.scene || gltf.scenes?.[0];
                 if (!model) return;
