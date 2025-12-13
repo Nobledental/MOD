@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Log & Activity Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: radial-gradient(circle at 20% 30%, #1f2937 0%, #0f172a 55%, #0b1221 100%);
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.12);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --blue: #0A84FF;
+    }
+    body { margin:0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); min-height:100vh; }
+    header { padding: 20px 30px; display:flex; justify-content:space-between; align-items:center; }
+    h1 { margin:0; font-size:24px; letter-spacing:-0.5px; }
+    .badge { padding:6px 10px; background: rgba(10,132,255,0.15); border:1px solid rgba(10,132,255,0.4); border-radius:12px; font-weight:700; }
+    .card { margin: 0 30px 20px; padding: 18px; border:1px solid var(--border); border-radius: 18px; background: var(--card); backdrop-filter: blur(8px); }
+    table { width:100%; border-collapse: collapse; color: var(--text); }
+    th, td { padding: 10px; border-bottom: 1px solid var(--border); text-align:left; font-size:14px; }
+    th { font-size:12px; letter-spacing:1px; text-transform: uppercase; color: var(--muted); }
+    .sos { color: #ef4444; font-weight:800; }
+    .gps { color: var(--muted); font-size:12px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="badge">Medical Activity Tracker</div>
+      <h1>Real-time Log</h1>
+    </div>
+    <div id="status">Live GPS simulation active</div>
+  </header>
+
+  <div class="card">
+    <table id="log-table">
+      <thead>
+        <tr><th>Date/Time</th><th>Category</th><th>Value</th><th>Location</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <script>
+    const simulateGPS = () => {
+      const baseLat = 37.7749, baseLng = -122.4194;
+      return {
+        lat: (baseLat + (Math.random() - 0.5) * 0.02).toFixed(5),
+        lng: (baseLng + (Math.random() - 0.5) * 0.02).toFixed(5)
+      };
+    };
+
+    const formatTime = (ts) => new Date(ts).toLocaleString();
+
+    const renderLog = () => {
+      const tbody = document.querySelector('#log-table tbody');
+      tbody.innerHTML = '';
+      const entries = JSON.parse(localStorage.getItem('medicalLog') || '[]').slice(-50).reverse();
+      entries.forEach(entry => {
+        const tr = document.createElement('tr');
+        const gps = entry.location || simulateGPS();
+        tr.innerHTML = `<td>${formatTime(entry.ts)}</td><td>${entry.category}</td><td>${entry.organ || ''} ${entry.stats?.map(s=>s.val).join(' | ')}</td><td class="gps">${gps.lat}, ${gps.lng}</td>`;
+        tbody.appendChild(tr);
+      });
+    };
+
+    const appendLog = () => {
+      const snapshot = JSON.parse(localStorage.getItem('dashboardVitals') || '{}');
+      const gps = simulateGPS();
+      const entries = JSON.parse(localStorage.getItem('medicalLog') || '[]');
+      entries.push({ ts: Date.now(), category: 'Vitals', organ: snapshot.organ || 'heart', stats: snapshot.stats || [], location: gps });
+      localStorage.setItem('medicalLog', JSON.stringify(entries.slice(-200)));
+      localStorage.setItem('lastLogTs', Date.now());
+      renderLog();
+    };
+
+    const watchdog = () => {
+      const last = parseInt(localStorage.getItem('lastLogTs') || '0', 10);
+      const status = document.getElementById('status');
+      if (Date.now() - last > 20 * 60 * 1000) {
+        status.innerText = 'SOS TRIGGERED: data feed lost > 20 minutes';
+        status.classList.add('sos');
+        localStorage.setItem('sosTriggered', '1');
+      }
+    };
+
+    renderLog();
+    appendLog();
+    setInterval(appendLog, 600000);
+    setInterval(watchdog, 60000);
+  </script>
+</body>
+</html>
