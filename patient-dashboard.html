@@ -91,6 +91,21 @@
             animation: loadBar 2.5s ease-in-out forwards;
         }
         .boot-text { font-size: 12px; margin-top: 10px; letter-spacing: 2px; opacity: 0.8; }
+        .boot-cta {
+            margin-top: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #e5e7eb;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .boot-cta i { font-size: 14px; }
+        .boot-screen.hide-fast { opacity: 0; pointer-events: none; }
         @keyframes loadBar { 0% { width: 0%; } 40% { width: 30%; } 80% { width: 90%; } 100% { width: 100%; } }
 
         /* LAYOUT CONTAINER */
@@ -640,6 +655,7 @@
         <div class="logo" style="font-size:32px;">H<span>+</span> OS</div>
         <div class="boot-loader"><div class="boot-bar"></div></div>
         <div class="boot-text">INITIALIZING BIO-SYNC PROTOCOLS...</div>
+        <button class="boot-cta" id="skip-boot"><i class="ph ph-fast-forward"></i> Skip intro</button>
     </div>
 
     <div class="app-container" id="app-container">
@@ -1056,7 +1072,7 @@
                 abnormal: { msg: "Light sensitivity flagged.", action: "Route to ophthalmic screening." }
             }
         };
-
+        
         const KEYWORD_RISK = {
             bleeding: 'Critical', pain: 'Severe', dizzy: 'Severe',
             nausea: 'Mild', faint: 'Critical', fever: 'Mild'
@@ -1602,13 +1618,22 @@
                     navigatorRow.appendChild(a);
                 });
             }
-            
-            // Boot Sequence
-            setTimeout(() => {
-                document.getElementById('boot-screen').style.opacity = '0';
-                document.getElementById('app-container').style.opacity = '1';
-                setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 800);
-            }, 2000); 
+
+            const hideBootScreen = () => {
+                const boot = document.getElementById('boot-screen');
+                const app = document.getElementById('app-container');
+                if(!boot || !app || boot.classList.contains('hide-fast')) return;
+                boot.classList.add('hide-fast');
+                app.style.opacity = '1';
+                setTimeout(() => { boot.style.display = 'none'; }, 600);
+            };
+
+            // Boot Sequence with user bypass and failsafe
+            setTimeout(hideBootScreen, 1200);
+            setTimeout(hideBootScreen, 4500);
+
+            const skipBtn = document.getElementById('skip-boot');
+            if(skipBtn) skipBtn.addEventListener('click', hideBootScreen); 
 
             generateOrganButtons();
             initThree();
