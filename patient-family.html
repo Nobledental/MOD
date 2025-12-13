@@ -70,6 +70,36 @@
       </header>
       <div class="section-grid">
         <div class="family-card">
+          <h3>Add family profile</h3>
+          <form id="familyForm" class="section-sub">
+            <div class="row">
+              <input type="text" id="familyName" placeholder="Name" required class="pill">
+              <input type="text" id="familyRole" placeholder="Role (Viewer/Guardian/Admin)" required class="pill">
+            </div>
+            <div class="row">
+              <input type="tel" id="familyPhone" placeholder="Phone" class="pill">
+              <label class="pill"><input type="checkbox" id="familyShare" checked> Share dashboard</label>
+            </div>
+            <button class="badge primary" type="submit">Save & mirror</button>
+          </form>
+        </div>
+        <div class="family-card">
+          <h3>Shared dashboards</h3>
+          <div id="familyList" class="device-meta"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Trusted circle</p>
+          <h2 class="section-title">Roles & permissions</h2>
+          <p class="section-sub">Granular controls for who sees vitals, prescriptions, insurance, or can act during emergencies.</p>
+        </div>
+      </header>
+      <div class="section-grid">
+        <div class="family-card">
           <h3>Share packages</h3>
           <p class="section-sub">Pick what to share: vitals, organ alerts, labs, insurance or invoices.</p>
           <div class="device-meta">
