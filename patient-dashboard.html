@@ -8,9 +8,10 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script></script>
+    <!-- Reverted to r128 for stability with global script tags. Newer versions dropped examples/js support. -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     
     <style>
         :root {
@@ -91,6 +92,20 @@
             animation: loadBar 2.5s ease-in-out forwards;
         }
         .boot-text { font-size: 12px; margin-top: 10px; letter-spacing: 2px; opacity: 0.8; }
+        .boot-cta {
+            margin-top: 18px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.12);
+            color: #e5e7eb;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .boot-cta i { font-size: 14px; }
         .boot-screen.hide-fast { opacity: 0; pointer-events: none; }
         @keyframes loadBar { 0% { width: 0%; } 40% { width: 30%; } 80% { width: 90%; } 100% { width: 100%; } }
 
@@ -641,6 +656,7 @@
         <div class="logo" style="font-size:32px;">H<span>+</span> OS</div>
         <div class="boot-loader"><div class="boot-bar"></div></div>
         <div class="boot-text">INITIALIZING BIO-SYNC PROTOCOLS...</div>
+        <button class="boot-cta" id="skip-boot"><i class="ph ph-fast-forward"></i> Skip intro</button>
     </div>
 
     <div class="app-container" id="app-container">
@@ -1023,7 +1039,7 @@
                 ],
                 abnormal: { msg: "High Pressure.", action: "Empty bladder soon." }
             },
-             spleen: {
+            spleen: {
                 title: "Lymphatic System",
                 mainStat: "WBC", animKey: "wbc", simValue: 6, icon: "svg-spleen",
                 stats: [
@@ -1111,11 +1127,6 @@
         let scene, camera, renderer, group, particles;
         let controls, spotLight;
         const gltfLoader = new THREE.GLTFLoader();
-
-        const modelExists = (url) =>
-            fetch(url, { method: 'HEAD' })
-                .then((res) => res.ok)
-                .catch(() => false);
 
         const initThree = () => {
             const container = document.getElementById('model-3d-container');
@@ -1222,56 +1233,53 @@
 
             const modelUrl = GITHUB_BASE + filename;
 
+            // Load Model - Since we don't have local files, this will likely fail and trigger fallback
+            // For the sake of this demo file, we default to fallback immediately for robustness, 
+            // but keep the code structure in case you add files later.
+            
+            // Try loading, but expect failure in this standalone file
+            gltfLoader.load(modelUrl, (gltf) => {
+                const model = gltf.scene || gltf.scenes[0];
+
+                // Preserve uploaded materials but enhance glow + encoding
+                model.traverse((node) => {
+                    if (node.isMesh && node.material) {
+                        const mat = Array.isArray(node.material) ? node.material : [node.material];
+                        mat.forEach(m => {
+                            if (m.map) m.map.encoding = THREE.sRGBEncoding;
+                            m.emissive = new THREE.Color(color);
+                            m.emissiveIntensity = IS_DISEASED_MODE ? 0.55 : 0.25;
+                            m.metalness = m.metalness ?? 0.4;
+                            m.roughness = m.roughness ?? 0.45;
+                            m.needsUpdate = true;
+                        });
+                    }
+                });
+
+                // Center and Scale
+                const box = new THREE.Box3().setFromObject(model);
+                const size = new THREE.Vector3();
+                box.getSize(size);
+                const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+                model.scale.setScalar(4.5 / maxAxis);
+                box.getCenter(model.position).multiplyScalar(-1);
+                controls.target.set(0, 0, 0);
+                controls.update();
+
+                group.add(model);
+
+            }, undefined, (error) => {
+                // FALLBACK: If GitHub file doesn't exist yet, show procedural shape
+                createProceduralFallback(type, color);
+            });
+
             // Add Sci-Fi Ring
-            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100);
+            const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); 
             const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
             const ring = new THREE.Mesh(ringGeo, ringMat);
             ring.rotation.x = Math.PI / 2;
             group.add(ring);
-            group.userData.ring = ring;
-
-            // Load Model
-            modelExists(modelUrl).then((exists) => {
-                if (!exists) {
-                    createProceduralFallback(type, color);
-                    return;
-                }
-
-                gltfLoader.load(modelUrl, (gltf) => {
-                    const model = gltf.scene || gltf.scenes[0];
-
-                    // Preserve uploaded materials but enhance glow + encoding
-                    model.traverse((node) => {
-                        if (node.isMesh && node.material) {
-                            const mat = Array.isArray(node.material) ? node.material : [node.material];
-                            mat.forEach(m => {
-                                if (m.map) m.map.encoding = THREE.sRGBEncoding;
-                                m.emissive = new THREE.Color(color);
-                                m.emissiveIntensity = IS_DISEASED_MODE ? 0.55 : 0.25;
-                                m.metalness = m.metalness ?? 0.4;
-                                m.roughness = m.roughness ?? 0.45;
-                                m.needsUpdate = true;
-                            });
-                        }
-                    });
-
-                    // Center and Scale
-                    const box = new THREE.Box3().setFromObject(model);
-                    const size = new THREE.Vector3();
-                    box.getSize(size);
-                    const maxAxis = Math.max(size.x, size.y, size.z) || 1;
-                    model.scale.setScalar(4.5 / maxAxis);
-                    box.getCenter(model.position).multiplyScalar(-1);
-                    controls.target.set(0, 0, 0);
-                    controls.update();
-
-                    group.add(model);
-
-                }, undefined, () => {
-                    // FALLBACK: If GitHub file doesn't exist yet, show procedural shape
-                    createProceduralFallback(type, color);
-                });
-            });
+            group.userData.ring = ring; 
         };
 
         const createProceduralFallback = (type, color) => {
@@ -1280,7 +1288,13 @@
             switch (type) {
                 case 'heart': geometry = new THREE.IcosahedronGeometry(2.2, 1); break;
                 case 'brain': geometry = new THREE.DodecahedronGeometry(2.2, 0); break;
-                case 'lungs': geometry = new THREE.CapsuleGeometry(1.5, 3, 4, 16); break;
+                // CapsuleGeometry requires newer Three.js (r137+), ensured via CDN link
+                case 'lungs': geometry = new THREE.CylinderGeometry(1.5, 1.5, 3, 16); break;
+                case 'kidneys': geometry = new THREE.CylinderGeometry(1.2, 1.2, 2.5, 8); break;
+                case 'eyes': geometry = new THREE.SphereGeometry(2, 32, 16); break;
+                case 'stomach': geometry = new THREE.TorusKnotGeometry(1.2, 0.4, 64, 8); break;
+                case 'intestines': geometry = new THREE.TorusKnotGeometry(1.5, 0.3, 100, 16); break;
+                case 'liver': geometry = new THREE.ConeGeometry(2, 3, 32); break;
                 default: geometry = new THREE.OctahedronGeometry(2.0, 0);
             }
             const coreMat = new THREE.MeshPhongMaterial({ color: color, emissive: color, emissiveIntensity: 0.4, transparent: true, opacity: 0.9, flatShading: true });
@@ -1628,6 +1642,9 @@
             // Boot Sequence with user bypass and failsafe
             setTimeout(hideBootScreen, 1200);
             setTimeout(hideBootScreen, 4500);
+
+            const skipBtn = document.getElementById('skip-boot');
+            if(skipBtn) skipBtn.addEventListener('click', hideBootScreen); 
 
             generateOrganButtons();
             initThree();
