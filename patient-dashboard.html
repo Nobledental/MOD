@@ -12,6 +12,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Three.js OrbitControls -->
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
     
     <style>
         :root {
@@ -1506,6 +1507,14 @@
         let spotLight;
         let brainEffectGroup = null;
         let liverLight = null;
+        const gltfLoader = new THREE.GLTFLoader();
+        const ORGAN_MODEL_MAP = {
+            heart: '3d_models/heart.glb',
+            brain: '3d_models/brain.glb',
+            liver: '3d_models/liver.glb',
+            lungs: '3d_models/lungs.glb',
+            kidneys: '3d_models/kidneys.glb'
+        };
 
         const clearOrganEffects = () => {
             if (brainEffectGroup) {
@@ -1707,34 +1716,66 @@
 
             applyOrganEffects(type);
 
-            // PROCEDURAL HOLOGRAPHIC GENERATION
             const color = getOrganColor(type);
             const geometry = getOrganGeometry(type);
-            
-            // 1. Holographic Shell (Wireframe)
-            const wireMat = new THREE.MeshBasicMaterial({
-                color: color,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.15,
-                blending: THREE.AdditiveBlending
-            });
-            const wireMesh = new THREE.Mesh(geometry, wireMat);
-            group.add(wireMesh);
 
-            // 2. Inner Glow Core
-            const coreMat = new THREE.MeshPhongMaterial({
-                color: color,
-                transparent: true,
-                opacity: 0.8,
-                shininess: 80,
-                emissive: color,
-                emissiveIntensity: 0.2,
-                flatShading: true 
+            const addProceduralShell = () => {
+                const wireMat = new THREE.MeshBasicMaterial({
+                    color: color,
+                    wireframe: true,
+                    transparent: true,
+                    opacity: 0.15,
+                    blending: THREE.AdditiveBlending
+                });
+                const wireMesh = new THREE.Mesh(geometry, wireMat);
+                group.add(wireMesh);
+
+                const coreMat = new THREE.MeshPhongMaterial({
+                    color: color,
+                    transparent: true,
+                    opacity: 0.8,
+                    shininess: 80,
+                    emissive: color,
+                    emissiveIntensity: 0.2,
+                    flatShading: true
+                });
+                const coreMesh = new THREE.Mesh(geometry.clone(), coreMat);
+                coreMesh.scale.setScalar(0.85);
+                group.add(coreMesh);
+            };
+
+            const modelSrc = ORGAN_MODEL_MAP[type] || ORGAN_MODEL_MAP.heart;
+            addProceduralShell();
+            gltfLoader.load(modelSrc, (gltf) => {
+                const model = gltf.scene || gltf.scenes?.[0];
+                if (!model) return;
+
+                model.traverse((node) => {
+                    if (node.isMesh) {
+                        node.material = node.material.clone();
+                        node.material.color = new THREE.Color(color);
+                        node.material.emissive = new THREE.Color(color);
+                        node.material.emissiveIntensity = 0.25;
+                        node.material.transparent = true;
+                        node.material.opacity = 0.9;
+                        node.castShadow = true;
+                        node.receiveShadow = true;
+                    }
+                });
+
+                const box = new THREE.Box3().setFromObject(model);
+                const size = new THREE.Vector3();
+                box.getSize(size);
+                const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+                const scale = 6 / maxAxis;
+                model.scale.setScalar(scale);
+                box.getCenter(model.position).multiplyScalar(-1);
+                model.position.y -= 0.3;
+                model.rotation.y = Math.PI * 0.25;
+
+                group.add(model);
+                group.userData.baseScale = 1;
             });
-            const coreMesh = new THREE.Mesh(geometry.clone(), coreMat);
-            coreMesh.scale.setScalar(0.85); // Slightly smaller
-            group.add(coreMesh);
         };
 
         document.addEventListener('DOMContentLoaded', () => {
