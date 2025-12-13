@@ -204,6 +204,33 @@
         }
         .page-nav a:hover { border-color: rgba(59, 130, 246, 0.4); color: var(--color-blue); }
         .page-nav a .ph { font-size: 14px; }
+
+        .link-row {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .nav-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            background: rgba(255,255,255,0.04);
+            color: var(--text-white);
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .nav-chip i { font-size: 16px; }
+        .nav-chip:hover {
+            color: var(--color-blue);
+            border-color: rgba(59,130,246,0.4);
+            box-shadow: 0 10px 30px -12px rgba(59,130,246,0.35);
+        }
         .toggle-pill.active {
             background: rgba(59, 130, 246, 0.2); color: var(--pill-active-text); border-color: rgba(59, 130, 246, 0.5);
             display: flex; align-items: center; gap: 8px; box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
@@ -651,6 +678,7 @@
                             <h1 id="main-diagnosis">Overview <span>Conditions</span></h1>
                         </div>
                         <div class="page-nav" id="page-nav"></div>
+                        <div class="link-row" id="navigator-links"></div>
                     </div>
                     <button class="theme-toggle" id="theme-toggle">White Theme</button>
                 </div>
@@ -666,6 +694,7 @@
                     <div class="organ-tray-wrapper">
                         <div class="section-header mini">Select Organ System</div>
                         <div class="organ-tray"></div>
+                        <div class="link-row" id="organ-shortcuts"></div>
                     </div>
                 </div>
 
@@ -889,6 +918,7 @@
             bladder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4c-4 0-7 3-7 7v4c0 4 3 7 7 7s7-3 7-7v-4c0-4-3-7-7-7z"/><path d="M12 18v4"/></svg>`,
             spleen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="6" ry="9" /><path d="M12 3v18"/></svg>`,
             thyroid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 6c0-2.2 2.2-4 5-4s5 1.8 5 4c0 1.5-1 2.8-2.5 3.5L12 14l-2.5-4.5C8 8.8 7 7.5 7 6z"/><path d="M12 14v6"/></svg>`
+            eyes: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></svg>`
         };
 
         // --- 2. COMPREHENSIVE ORGAN DATA & VITALS ---
@@ -1013,6 +1043,17 @@
                     { id: "c4", title: "Metabolism", base: 100, unit: "%", icon: "ph-fire", type: "perc" }
                 ],
                 abnormal: { msg: "Hormone Imbalance.", action: "Endo consult." }
+            },
+            eyes: {
+                title: "Ophthalmic System",
+                mainStat: "IOP", animKey: "iop", simValue: 14, icon: "ph-eye",
+                stats: [
+                    { id: "c1", title: "Intraocular Pressure", base: 14, unit: "mmHg", icon: "ph-eye", type: "norm" },
+                    { id: "c2", title: "Retina Perfusion", base: 98, unit: "%", icon: "ph-sun-dim", type: "perc" },
+                    { id: "c3", title: "Pupil Response", base: 0.24, unit: "s", icon: "ph-activity", type: "norm" },
+                    { id: "c4", title: "Dryness Index", base: 12, unit: "%", icon: "ph-drop-half", type: "perc" }
+                ],
+                abnormal: { msg: "Light sensitivity flagged.", action: "Route to ophthalmic screening." }
             }
         };
 
@@ -1033,7 +1074,8 @@
 
         // --- 3. MAPPING LOGIC FOR GITHUB 3D MODELS ---
         const GITHUB_BASE = './3d_models/';
-        
+        const DISEASED_MODEL_MAP = { liver: 'cirrhotic_liver.glb' };
+
         const ORGAN_MODEL_MAP = {
             heart: 'heart.glb',
             brain: 'brain.glb',
@@ -1045,7 +1087,23 @@
             intestines: 'intestines.glb',
             bladder: 'bladder.glb',
             spleen: 'spleen.glb',
-            thyroid: 'thyroid.glb'
+            thyroid: 'thyroid.glb',
+            eyes: 'eyes.glb'
+        };
+
+        const ORGAN_PAGE_LINKS = {
+            heart: 'patient-organs.html#heart',
+            brain: 'patient-organs.html#brain',
+            lungs: 'patient-organs.html#lungs',
+            liver: 'patient-organs.html#liver',
+            kidneys: 'patient-organs.html#kidneys',
+            stomach: 'patient-organs.html#stomach',
+            pancreas: 'patient-organs.html#pancreas',
+            intestines: 'patient-organs.html#intestines',
+            bladder: 'patient-organs.html#bladder',
+            spleen: 'patient-organs.html#spleen',
+            thyroid: 'patient-organs.html#thyroid',
+            eyes: 'patient-organs.html#eyes'
         };
 
         // --- THREE.JS SETUP ---
@@ -1062,6 +1120,8 @@
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.outputEncoding = THREE.sRGBEncoding;
+            renderer.physicallyCorrectLights = true;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.3;
             container.appendChild(renderer.domElement);
@@ -1122,7 +1182,7 @@
             const colors = {
                 heart: 0xff3b3b, brain: 0x0ae0ff, liver: 0xd97757, lungs: 0xffa8d9,
                 kidneys: 0xc27e5c, stomach: 0xff9e9e, intestines: 0xffc4a3, pancreas: 0xffd670,
-                bladder: 0xffea00, spleen: 0x9370db, thyroid: 0xffb7b2
+                bladder: 0xffea00, spleen: 0x9370db, thyroid: 0xffb7b2, eyes: 0x7dd3fc
             };
             return colors[type] || 0x3b82f6;
         };
@@ -1148,30 +1208,29 @@
 
             // Construct Filename
             let filename = ORGAN_MODEL_MAP[type];
-            if (IS_DISEASED_MODE && (type === 'spleen' || type === 'liver')) {
-                // Try to load diseased version if mapped, otherwise rely on Color shift
-                const parts = filename.split('.');
-                // This is where you would map 'liver_cirrhosis.glb' etc.
-                // filename = `${parts[0]}_diseased.${parts[1]}`; 
+            if (!filename) {
+                createProceduralFallback(type, color);
+                return;
             }
+            if (IS_DISEASED_MODE && DISEASED_MODEL_MAP[type]) filename = DISEASED_MODEL_MAP[type];
 
             const modelUrl = GITHUB_BASE + filename;
 
             // Load Model
             gltfLoader.load(modelUrl, (gltf) => {
                 const model = gltf.scene || gltf.scenes[0];
-                
-                // MATERIAL FIX: Make it Solid but Techy
+
+                // Preserve uploaded materials but enhance glow + encoding
                 model.traverse((node) => {
-                    if (node.isMesh) {
-                        node.material = new THREE.MeshStandardMaterial({
-                            color: color, 
-                            emissive: IS_DISEASED_MODE ? 0x550000 : 0x000000,
-                            emissiveIntensity: 0.4,
-                            roughness: 0.4,
-                            metalness: 0.6,
-                            transparent: false, // Ensure it's not a ghost
-                            opacity: 1.0
+                    if (node.isMesh && node.material) {
+                        const mat = Array.isArray(node.material) ? node.material : [node.material];
+                        mat.forEach(m => {
+                            if (m.map) m.map.encoding = THREE.sRGBEncoding;
+                            m.emissive = new THREE.Color(color);
+                            m.emissiveIntensity = IS_DISEASED_MODE ? 0.55 : 0.25;
+                            m.metalness = m.metalness ?? 0.4;
+                            m.roughness = m.roughness ?? 0.45;
+                            m.needsUpdate = true;
                         });
                     }
                 });
@@ -1183,7 +1242,9 @@
                 const maxAxis = Math.max(size.x, size.y, size.z) || 1;
                 model.scale.setScalar(4.5 / maxAxis);
                 box.getCenter(model.position).multiplyScalar(-1);
-                
+                controls.target.set(0, 0, 0);
+                controls.update();
+
                 group.add(model);
 
             }, undefined, (error) => {
@@ -1403,8 +1464,9 @@
                 updateCardValue(idx, s.base, s.unit, s.type, s.title);
             });
             startLiveSimulation(organType);
+            updateOrganShortcuts(organType);
         };
-
+        
         const startLiveSimulation = (organ) => {
             liveIntervals.forEach(clearInterval);
             liveIntervals = [];
@@ -1433,7 +1495,7 @@
         };
 
         const generateOrganButtons = () => {
-            const tray = document.querySelector('.organ-tray'); 
+            const tray = document.querySelector('.organ-tray');
             tray.innerHTML = '';
             Object.keys(ORGAN_DATA).forEach(key => {
                 const data = ORGAN_DATA[key];
@@ -1449,6 +1511,25 @@
                 }
                 btn.innerHTML = `<div class="premium-icon"><i class="ph-fill ph-seal-check"></i></div>${iconHtml}`;
                 tray.appendChild(btn);
+            });
+        };
+
+        const updateOrganShortcuts = (organType) => {
+            const wrap = document.getElementById('organ-shortcuts');
+            if(!wrap) return;
+            const organName = organType.charAt(0).toUpperCase() + organType.slice(1);
+            const shortcuts = [
+                { label: `${organName} in atlas`, href: ORGAN_PAGE_LINKS[organType] || 'patient-organs.html', icon: 'ph-map-trifold' },
+                { label: 'Related labs', href: 'patient-labs.html', icon: 'ph-flask' },
+                { label: 'Device stream', href: 'patient-devices.html', icon: 'ph-wifi-high' }
+            ];
+            wrap.innerHTML = '';
+            shortcuts.forEach(link => {
+                const a = document.createElement('a');
+                a.className = 'nav-chip';
+                a.href = link.href;
+                a.innerHTML = `<i class="ph ${link.icon}"></i>${link.label}`;
+                wrap.appendChild(a);
             });
         };
 
@@ -1488,11 +1569,11 @@
         // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             const PAGES = [
-                { label: 'Dashboard', href: '#', icon: 'ph-fill ph-heartbeat' },
-                { label: 'Organs', href: '#', icon: 'ph ph-brain' },
-                { label: 'Health', href: '#', icon: 'ph ph-activity' },
-                { label: 'Labs', href: '#', icon: 'ph ph-flask' },
-                { label: 'Profile', href: '#', icon: 'ph ph-user' }
+                { label: 'Dashboard', href: 'patient-dashboard.html', icon: 'ph-fill ph-heartbeat' },
+                { label: 'Organs', href: 'patient-organs.html', icon: 'ph ph-brain' },
+                { label: 'Health', href: 'patient-health.html', icon: 'ph ph-activity' },
+                { label: 'Labs', href: 'patient-labs.html', icon: 'ph ph-flask' },
+                { label: 'Profile', href: 'patient-profile.html', icon: 'ph ph-user' }
             ];
             const pageNav = document.getElementById('page-nav');
             if(pageNav) {
@@ -1504,6 +1585,24 @@
                 });
             }
 
+            const NAVIGATOR_LINKS = [
+                { label: 'Hospitals', href: 'patient-hospitals.html', icon: 'ph-buildings' },
+                { label: 'Devices', href: 'patient-devices.html', icon: 'ph-devices' },
+                { label: 'Pharmacy', href: 'patient-pharmacy.html', icon: 'ph-capsules' },
+                { label: 'Family', href: 'patient-family.html', icon: 'ph-users' },
+                { label: 'Insurance', href: 'patient-insurance.html', icon: 'ph-shield-check' }
+            ];
+            const navigatorRow = document.getElementById('navigator-links');
+            if(navigatorRow) {
+                NAVIGATOR_LINKS.forEach(linkInfo => {
+                    const a = document.createElement('a');
+                    a.className = 'nav-chip';
+                    a.href = linkInfo.href;
+                    a.innerHTML = `<i class="ph ${linkInfo.icon}"></i>${linkInfo.label}`;
+                    navigatorRow.appendChild(a);
+                });
+            }
+            
             // Boot Sequence
             setTimeout(() => {
                 document.getElementById('boot-screen').style.opacity = '0';
