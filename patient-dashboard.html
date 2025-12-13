@@ -1198,9 +1198,12 @@
 
         // --- THREE.JS SETUP ---
         let scene, camera, renderer, group, particles;
-        let controls, spotLight;
+        let controls, spotLight, hemisphereLight;
+        let currentModel = null;
+        let activeAnimation = null;
         const gltfLoader = new THREE.GLTFLoader();
         const STANDARD_MODEL_SIZE = 5.5;
+        const MODEL_OFFSETS = { lungs: new THREE.Vector3(0, -0.4, 0) };
 
         const initThree = () => {
             const container = document.getElementById('model-3d-container');
@@ -1214,7 +1217,7 @@
             renderer.outputEncoding = THREE.sRGBEncoding;
             renderer.physicallyCorrectLights = true;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.3;
+            renderer.toneMappingExposure = 1.45;
             container.appendChild(renderer.domElement);
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
@@ -1224,7 +1227,7 @@
             controls.enablePan = false;
             controls.minDistance = camera.position.length();
             controls.maxDistance = camera.position.length();
-
+            
             // Particles
             const particlesGeo = new THREE.BufferGeometry();
             const pCount = 300;
@@ -1236,12 +1239,14 @@
             scene.add(particles);
 
             // Lighting
-            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
-            spotLight = new THREE.SpotLight(0xffffff, 3); 
-            spotLight.position.set(10, 10, 10); 
+            scene.add(new THREE.AmbientLight(0xffffff, 0.25));
+            hemisphereLight = new THREE.HemisphereLight(0xfff8e1, 0x0f172a, 0.9);
+            scene.add(hemisphereLight);
+            spotLight = new THREE.SpotLight(0xffffff, 3.6);
+            spotLight.position.set(10, 10, 10);
             scene.add(spotLight);
-            const rimLight = new THREE.PointLight(0x3b82f6, 4, 50); 
-            rimLight.position.set(-10, 5, -5); 
+            const rimLight = new THREE.PointLight(0x3b82f6, 4, 50);
+            rimLight.position.set(-10, 5, -5);
             scene.add(rimLight);
 
             // Start Animation Loop
@@ -1251,9 +1256,9 @@
                 const t = clock.getElapsedTime();
                 controls.update();
                 if (group) {
-                   const scale = 1 + Math.sin(t * 1.5) * 0.02;
-                   group.scale.set(scale, scale, scale);
+                    group.position.y = Math.sin(t * 0.8) * 0.06;
                 }
+                if (activeAnimation) activeAnimation(t);
                 if(particles) particles.rotation.y += 0.001;
                 renderer.render(scene, camera);
             };
@@ -1301,6 +1306,9 @@
             scene.add(group);
             const color = getOrganColor(type);
 
+            currentModel = null;
+            activeAnimation = null;
+
             // Construct Filename
             let filename = ORGAN_MODEL_MAP[type];
             if (!filename) {
@@ -1320,13 +1328,22 @@
                 const model = gltf.scene || gltf.scenes[0];
 
                 model.traverse((node) => {
-                    if (node.isMesh && node.material && node.material.map) {
-                        node.material.map.encoding = THREE.sRGBEncoding;
+                    if (node.isMesh && node.material) {
+                        if (node.material.map) {
+                            node.material.map.encoding = THREE.sRGBEncoding;
+                            node.material.map.anisotropy = 8;
+                        }
+                        node.material.emissiveIntensity = Math.max(0.1, node.material.emissiveIntensity || 0);
+                        if (typeof node.material.roughness === 'number') node.material.roughness = Math.max(0.12, node.material.roughness * 0.75);
+                        if (typeof node.material.metalness === 'number') node.material.metalness = Math.min(0.45, (node.material.metalness || 0.2) + 0.05);
+                        node.material.needsUpdate = true;
                     }
                 });
 
-                centerAndScaleModel(model);
+                centerAndScaleModel(model, type);
                 group.add(model);
+                currentModel = model;
+                activeAnimation = buildOrganAnimation(type, model);
 
             }, undefined, (error) => {
                 // FALLBACK: If GitHub file doesn't exist yet, show procedural shape
@@ -1334,7 +1351,7 @@
             });
         };
 
-        const centerAndScaleModel = (model) => {
+        const centerAndScaleModel = (model, type) => {
             const box = new THREE.Box3().setFromObject(model);
             const size = box.getSize(new THREE.Vector3());
             const center = box.getCenter(new THREE.Vector3());
@@ -1342,6 +1359,10 @@
             const scale = STANDARD_MODEL_SIZE / maxAxis;
             model.scale.setScalar(scale);
             model.position.sub(center);
+            if (MODEL_OFFSETS[type]) model.position.add(MODEL_OFFSETS[type]);
+            model.updateMatrixWorld();
+            model.userData.baseScale = scale;
+            model.userData.basePosition = model.position.clone();
             controls.target.set(0, 0, 0);
             controls.update();
             camera.lookAt(0, 0, 0);
@@ -1372,8 +1393,43 @@
                 opacity: 0.94,
             });
             const coreMesh = new THREE.Mesh(geometry, coreMat);
-            centerAndScaleModel(coreMesh);
+            centerAndScaleModel(coreMesh, type);
             group.add(coreMesh);
+            currentModel = coreMesh;
+            activeAnimation = buildOrganAnimation(type, coreMesh);
+        };
+
+        const buildOrganAnimation = (type, model) => {
+            const baseScale = model.userData.baseScale || 1;
+            const basePos = model.userData.basePosition ? model.userData.basePosition.clone() : model.position.clone();
+            const irisParts = [];
+            if (type === 'eyes') {
+                model.traverse((node) => {
+                    if (node.name && /iris/i.test(node.name)) irisParts.push(node);
+                });
+            }
+
+            return (t) => {
+                if (type === 'heart') {
+                    const beat = 1 + Math.sin(t * 2.6) * 0.12;
+                    model.scale.setScalar(baseScale * beat);
+                    model.position.set(basePos.x, basePos.y + Math.sin(t * 2.6) * 0.08, basePos.z);
+                } else if (type === 'lungs') {
+                    const breath = 1 + Math.sin(t * 1.4) * 0.08;
+                    model.scale.set(baseScale * breath, baseScale * (breath + 0.05), baseScale * breath);
+                    model.position.set(basePos.x, basePos.y + Math.cos(t * 1.4) * 0.04, basePos.z);
+                } else if (type === 'eyes') {
+                    const dilate = 1 + Math.sin(t * 1.2) * 0.18;
+                    if (irisParts.length) {
+                        irisParts.forEach((n) => n.scale.setScalar(dilate));
+                    } else {
+                        model.scale.setScalar(baseScale * (0.96 + 0.06 * dilate));
+                    }
+                } else {
+                    const subtle = 1 + Math.sin(t * 1.5) * 0.02;
+                    model.scale.setScalar(baseScale * subtle);
+                }
+            };
         };
 
         const getLocationSnapshot = () => new Promise(resolve => {
