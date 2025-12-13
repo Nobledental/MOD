@@ -66,6 +66,78 @@
     <section class="section">
       <header>
         <div>
+          <p class="chip">3D atlas</p>
+          <h2 class="section-title">Organ meshes mapped to every page</h2>
+          <p class="section-sub">Preview the newest meshes and jump straight into dashboard, health plan, labs, or pharmacy for the same organ.</p>
+        </div>
+      </header>
+      <div class="atlas-grid">
+        <div class="card atlas-card" data-organ="heart">
+          <div class="card-head"><h3>Heart</h3><span class="pill success">Synced</span></div>
+          <p class="section-sub">Live myocardium mesh and ECG trends.</p>
+          <model-viewer src="3d_models/heart.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=heart">Dashboard</a>
+            <a href="patient-health.html?organ=heart">Health</a>
+            <a href="patient-labs.html?organ=heart">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="liver">
+          <div class="card-head"><h3>Liver</h3><span class="pill">Normal</span></div>
+          <p class="section-sub">Functional model with toxin filter score.</p>
+          <model-viewer src="3d_models/liver.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=liver">Dashboard</a>
+            <a href="patient-health.html?organ=liver">Health</a>
+            <a href="patient-labs.html?organ=liver">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="cirrhotic_liver">
+          <div class="card-head"><h3>Cirrhotic liver</h3><span class="pill warn">Monitored</span></div>
+          <p class="section-sub">High-res mesh to mirror fibrosis dashboards.</p>
+          <model-viewer src="3d_models/cirrhotic_liver.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=cirrhotic_liver">Dashboard</a>
+            <a href="patient-health.html?organ=cirrhotic_liver">Health</a>
+            <a href="patient-labs.html?organ=cirrhotic_liver">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="lungs">
+          <div class="card-head"><h3>Lungs</h3><span class="pill">Calm</span></div>
+          <p class="section-sub">Respiratory mesh for spirometry + SpO₂.</p>
+          <model-viewer src="3d_models/lungs.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=lungs">Dashboard</a>
+            <a href="patient-health.html?organ=lungs">Health</a>
+            <a href="patient-labs.html?organ=lungs">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="kidneys">
+          <div class="card-head"><h3>Kidneys</h3><span class="pill">Hydrated</span></div>
+          <p class="section-sub">Renal mesh with hydration and filtration cues.</p>
+          <model-viewer src="3d_models/kidneys.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=kidneys">Dashboard</a>
+            <a href="patient-health.html?organ=kidneys">Health</a>
+            <a href="patient-labs.html?organ=kidneys">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="eyes">
+          <div class="card-head"><h3>Eyes</h3><span class="pill">Focus</span></div>
+          <p class="section-sub">Vision mesh connected to dryness + acuity signals.</p>
+          <model-viewer src="3d_models/eyes.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=eyes">Dashboard</a>
+            <a href="patient-health.html?organ=eyes">Health</a>
+            <a href="patient-labs.html?organ=eyes">Labs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
           <p class="chip">Organ grid + immersive studio</p>
           <h2 class="section-title">Immersive organ watch</h2>
           <p class="section-sub">Status per organ with a 3D anatomy studio and live sync to dashboard, health, labs, vitals, pharmacy, and hospitals.</p>
