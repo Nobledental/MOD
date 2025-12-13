@@ -73,7 +73,7 @@
         .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px rgba(10, 132, 255, 0.5); }
 
         /* Header Search / Quick Links */
-        .search-suite { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 520px; margin-left: auto; position: relative; }
+        .search-suite { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 620px; margin-left: auto; position: relative; }
         .search-bar { flex: 1; display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); box-shadow: inset 0 1px 0 rgba(255,255,255,0.05); position: relative; }
         .search-bar i { color: var(--text-muted); font-size: 18px; }
         .search-input { flex: 1; background: transparent; border: none; outline: none; color: white; font-size: 13px; }
@@ -83,8 +83,20 @@
         .search-result { width: 100%; text-align: left; background: rgba(255,255,255,0.03); border: 1px solid transparent; border-radius: 12px; color: white; padding: 10px 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: 0.2s; }
         .search-result small { color: var(--text-muted); font-weight: 600; font-size: 11px; margin-left: auto; }
         .search-result:hover { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.06); }
-        .model-link { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 12px; background: rgba(10, 132, 255, 0.12); color: white; font-weight: 700; text-decoration: none; border: 1px solid rgba(10,132,255,0.4); white-space: nowrap; }
-        .model-link i { color: var(--color-blue); }
+        .header-nav { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); padding: 8px 10px; border-radius: 14px; }
+        .nav-link-pill {
+            padding: 8px 14px;
+            border-radius: 12px;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 12px;
+            text-decoration: none;
+            border: 1px solid transparent;
+            transition: 0.2s;
+        }
+        .nav-link-pill:hover { color: white; border-color: rgba(255,255,255,0.12); background: rgba(255,255,255,0.05); }
+        .nav-link-pill.active { color: white; background: rgba(10,132,255,0.16); border-color: rgba(10,132,255,0.35); box-shadow: 0 0 10px rgba(10,132,255,0.3); }
 
         /* DASHBOARD BODY */
         .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
@@ -117,8 +129,8 @@
         .main-content {
             flex: 1; padding: 30px 40px;
             display: grid;
-            grid-template-columns: 1.2fr 1fr 340px;
-            grid-template-rows: auto 1fr; /* Optimized rows */
+            grid-template-columns: 1.1fr 1fr 360px;
+            grid-template-rows: auto 1fr auto;
             gap: 30px; overflow-y: auto; position: relative;
         }
 
@@ -189,8 +201,8 @@
 
         /* HEADER */
         .header-section {
-            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 10px; z-index: 5;
+            grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 6px; z-index: 5;
         }
         .header-left { display: flex; flex-direction: column; gap: 15px; }
         .top-toggles { display: flex; gap: 10px; }
@@ -211,7 +223,7 @@
 
         /* 3D STAGE */
         .heart-stage {
-            grid-column: 1; grid-row: 2 / -1; /* Full height */
+            grid-column: 1; grid-row: 2 / span 1;
             position: relative;
             display: flex; justify-content: center; align-items: center;
             min-height: 520px;
@@ -261,7 +273,7 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* STATS GRID */
-        .stats-area { grid-column: 2; grid-row: 2 / -1; display: flex; flex-direction: column; z-index: 5; } /* Full height */
+        .stats-area { grid-column: 2; grid-row: 2; display: flex; flex-direction: column; z-index: 5; }
         .section-header { font-size: 13px; font-weight: 700; color: var(--color-blue); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
         .blue-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
 
@@ -323,7 +335,7 @@
 
         /* RIGHT COLUMN (Organ Icons + Schedule) */
         .right-column {
-            grid-column: 3; grid-row: 2 / -1;
+            grid-column: 3; grid-row: 2;
             display: flex; flex-direction: column; gap: 20px;
             overflow-y: auto; padding-right: 5px;
         }
@@ -715,6 +727,15 @@
             box-shadow: 0 10px 30px -5px rgba(10, 132, 255, 0.4); transition: 0.3s;
         }
 
+        .insight-row {
+            grid-column: 2 / span 2;
+            grid-row: 3;
+            display: grid;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 20px;
+            align-items: stretch;
+        }
+
         /* Sound Button */
         .sound-btn {
             position: absolute; top: 20px; left: 20px;
@@ -783,10 +804,13 @@
                     <input class="search-input" id="page-search" type="text" placeholder="Search pages or 3D models..." autocomplete="off" />
                     <div class="search-results" id="search-results"></div>
                 </div>
-                <a class="model-link" href="patient-organs.html" title="Open 3D models">
-                    <i class="ph ph-cube-focus"></i>
-                    <span>3D models</span>
-                </a>
+                <div class="header-nav" aria-label="Primary navigation">
+                    <a class="nav-link-pill active" href="patient-dashboard.html">Dashboard</a>
+                    <a class="nav-link-pill" href="patient-health.html">Care Plan</a>
+                    <a class="nav-link-pill" href="patient-labs.html">Labs</a>
+                    <a class="nav-link-pill" href="patient-devices.html">Devices</a>
+                    <a class="nav-link-pill" href="patient-organs.html">Organs</a>
+                </div>
             </div>
             <div class="branding-right">Health flo <span>OS NEO</span></div>
         </div>
@@ -869,7 +893,15 @@
                             <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 L10,25 L20,15 L30,25 L40,15 L50,25 L60,15 L100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
                         </div>
                     </div>
+                </div>
 
+                <div class="right-column">
+                    <div class="section-header"><div class="blue-dot"></div> Select Organ</div>
+                    <div class="organ-tray">
+                        </div>
+                </div>
+
+                <div class="insight-row">
                     <div class="insights-panel">
                         <div style="display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
                             <div class="section-header" style="margin-bottom:0;"><div class="blue-dot"></div> Guided Health Tracks</div>
@@ -908,16 +940,10 @@
                             <a class="resource-chip" href="patient-pharmacy.html"><i class="ph ph-pill"></i> Med reminders <small>everyday language</small></a>
                         </div>
                     </div>
-                </div>
-
-                <div class="right-column">
-                    <div class="section-header"><div class="blue-dot"></div> Select Organ</div>
-                    <div class="organ-tray">
-                        </div>
 
                     <div class="schedule-area">
                         <div class="section-header" style="margin-bottom:10px;"><div class="blue-dot"></div> AI Analysis</div>
-                        
+
                         <div class="ai-panel" id="ai-panel">
                             <span class="ai-title" id="ai-title">AI ANALYSIS</span>
                             <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
@@ -934,7 +960,7 @@
                             <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Hanzer Jon</div><div style="font-size:11px; color:#9ca3af;">Cardiologist</div></div></div>
                             <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:13px; font-weight:700; color:white;">Dr. Sarah Lee</div><div style="font-size:11px; color:#9ca3af;">Neurologist</div></div></div>
                         </div>
-
+                        
                         <div class="link-suite">
                             <div class="section-header" style="margin-bottom:0;"><div class="blue-dot"></div> Connected Pages</div>
                             <p style="color:var(--text-muted); font-size:12px; margin:0;">Deep-link this organ to other Health Flo OS experiences.</p>
