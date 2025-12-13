@@ -214,6 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'blood',
       pdf: 'assets/reports/lab-report.pdf',
       ai: 'Hydration low — repeat CBC in 72h and drink 2.5L water.',
+      parameters: ['HB 12.8 g/dL', 'WBC 7.9k', 'Platelets 2.5 L']
     },
     {
       name: 'LFT + KFT follow-up',
@@ -224,9 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'blood',
       pdf: 'assets/reports/lab-report.pdf',
       ai: 'Values steady. Avoid fried food and hydrate.',
+      parameters: ['SGOT 32 U/L', 'Creatinine 1.0 mg/dL', 'Sodium 139 mmol/L']
     },
     {
-      name: 'Ultrasound Abdomen',
+      name: 'Ultrasound Abdomen (USG)',
       date: '2024-06-20 09:00',
       lab: 'Max Lab',
       doctor: 'Radiology desk',
@@ -234,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'imaging',
       pdf: 'assets/reports/imaging-report.pdf',
       ai: 'No acute findings. Liver and kidneys normal.',
+      parameters: ['Liver 14cm', 'GB normal', 'No free fluid']
     },
     {
       name: 'Cardiac markers + CRP',
@@ -244,6 +247,73 @@ document.addEventListener('DOMContentLoaded', () => {
       type: 'blood',
       pdf: 'assets/reports/lab-report.pdf',
       ai: 'Inflammation low. Keep walks + sleep hygiene.',
+      parameters: ['Troponin Normal', 'CRP Low', 'BNP Normal']
+    },
+    {
+      name: 'Chest X-Ray PA',
+      date: '2024-07-10 10:00',
+      lab: 'Apollo Diagnostics',
+      doctor: 'Radiology desk',
+      status: 'Ready',
+      type: 'imaging',
+      pdf: 'assets/reports/imaging-report.pdf',
+      ai: 'No effusion. Mild bronchial markings.',
+      parameters: ['No consolidation', 'Cardiac silhouette normal']
+    },
+    {
+      name: 'CT Brain (Plain)',
+      date: '2024-07-02 15:00',
+      lab: 'Fortis Lab',
+      doctor: 'Dr. Niyati Rao',
+      status: 'Ready',
+      type: 'imaging',
+      pdf: 'assets/reports/imaging-report.pdf',
+      ai: 'No bleed or infarct. Sinuses clear.',
+      parameters: ['Midline intact', 'No acute bleed']
+    },
+    {
+      name: 'MRI Knee',
+      date: '2024-06-30 12:00',
+      lab: 'Max Lab',
+      doctor: 'Radiology desk',
+      status: 'Ready',
+      type: 'imaging',
+      pdf: 'assets/reports/imaging-report.pdf',
+      ai: 'Mild meniscal signal, no tear.',
+      parameters: ['ACL intact', 'No effusion']
+    },
+    {
+      name: '3D CBCT Maxilla',
+      date: '2024-06-28 16:00',
+      lab: 'Dental Imaging Lab',
+      doctor: 'Dental board',
+      status: 'Ready',
+      type: 'imaging',
+      pdf: 'assets/reports/imaging-report.pdf',
+      ai: 'Sinus floor intact. Implant plan synced.',
+      parameters: ['Bone height 13mm', 'No cysts']
+    },
+    {
+      name: 'PET-CT Whole body',
+      date: '2024-06-18 08:30',
+      lab: 'OncoQuest',
+      doctor: 'Oncology desk',
+      status: 'Ready',
+      type: 'imaging',
+      pdf: 'assets/reports/imaging-report.pdf',
+      ai: 'No hypermetabolic lesions noted.',
+      parameters: ['SUV max physiologic', 'No FDG avid nodes']
+    },
+    {
+      name: 'Malaria antigen card',
+      date: '2024-07-08 07:30',
+      lab: 'Apollo Diagnostics',
+      doctor: 'Dr. Vasudha Nene',
+      status: 'Positive',
+      type: 'blood',
+      pdf: 'assets/reports/lab-report.pdf',
+      ai: 'Falciparum band seen — start fever watch and hydration.',
+      parameters: ['pLDH positive', 'Parasite index low']
     },
   ];
 
@@ -299,14 +369,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const history = payload.history || existing.history || seedHistory;
     const latestPanels = payload.latestPanels || existing.latestPanels || {};
     const reports = payload.reports || existing.reports || seedReports;
+    const sortedReports = [...reports].sort((a, b) => new Date(b.date) - new Date(a.date));
     const body = {
       lab: payload.lab || existing.lab || 'Concierge lab',
       updated: payload.updated || Date.now(),
       history,
       latestPanels,
-      reports,
-      bloodReports: reports.filter(r => r.type !== 'imaging'),
-      imagingReports: reports.filter(r => r.type === 'imaging'),
+      reports: sortedReports,
+      bloodReports: sortedReports.filter(r => r.type !== 'imaging'),
+      imagingReports: sortedReports.filter(r => r.type === 'imaging'),
     };
     localStorage.setItem(syncKey, JSON.stringify(body));
   };
@@ -321,6 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
     creatinine: randomBetween(0.8, 1.2),
     urea: randomBetween(18, 32),
     sodium: randomBetween(136, 144),
+    temperature: randomBetween(97.8, 99.6),
     troponin: 'Normal',
     crp: Math.random() > 0.7 ? 'Mildly High' : 'Low',
     bnp: 'Normal',
@@ -570,8 +642,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!reportShelf) return;
     const snap = pullHistory();
     const reports = snap.reports && snap.reports.length ? snap.reports : seedReports;
+    const sorted = [...reports].sort((a, b) => new Date(b.date) - new Date(a.date));
     reportShelf.innerHTML = '';
-    reports.slice(0, 6).forEach(rep => {
+    sorted.slice(0, 6).forEach((rep, idx) => {
       const card = document.createElement('article');
       card.className = 'report-card';
       const title = document.createElement('h4');
@@ -581,7 +654,9 @@ document.addEventListener('DOMContentLoaded', () => {
       meta.innerHTML = `<span>${rep.lab}</span> • <span>${rep.doctor || 'Doctor lens'}</span> • <span>${rep.status || 'Ready'}</span> • <span>${new Date(rep.date).toLocaleString()}</span>`;
       const tags = document.createElement('div');
       tags.className = 'report-tags';
-      ['PDF ready', rep.type === 'imaging' ? 'Imaging' : 'Blood', 'Mirrors to Health', 'Doctor narration'].forEach(t => {
+      ['PDF ready', rep.type === 'imaging' ? 'Imaging' : 'Blood', 'Mirrors to Health', 'Doctor narration']
+        .concat(idx === 0 ? ['Latest'] : [])
+        .forEach(t => {
         const chip = document.createElement('span');
         chip.className = 'pill';
         chip.textContent = t;
@@ -605,7 +680,20 @@ document.addEventListener('DOMContentLoaded', () => {
       shareBtn.rel = 'noopener';
       shareBtn.textContent = 'Share on WhatsApp';
       actions.append(pdfBtn, shareBtn);
-      card.append(title, meta, tags, ai, actions);
+      const nodes = [title, meta, tags];
+      if (rep.parameters && rep.parameters.length) {
+        const paramRow = document.createElement('div');
+        paramRow.className = 'report-tags';
+        rep.parameters.slice(0, 4).forEach(p => {
+          const chip = document.createElement('span');
+          chip.className = 'pill';
+          chip.textContent = p;
+          paramRow.appendChild(chip);
+        });
+        nodes.push(paramRow);
+      }
+      nodes.push(ai, actions);
+      card.append(...nodes);
       reportShelf.appendChild(card);
     });
   }
