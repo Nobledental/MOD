@@ -45,18 +45,13 @@
         body.theme-white {
             /* High Contrast Light Theme */
             --bg-radial: radial-gradient(circle at 20% 30%, #f0f4f8 0%, #e2e8f0 55%, #cbd5e1 100%);
-            
             --glass-bg: rgba(255, 255, 255, 0.75);
             --glass-border: rgba(51, 65, 85, 0.15);
-            --glass-blur: blur(24px);
-            
             --text-white: #0f172a;
             --text-muted: #475569;
-
             --sidebar-bg: rgba(255, 255, 255, 0.5);
             --card-hover-bg: #ffffff;
             --pill-active-text: #1e3a8a;
-
             --card-bg: rgba(255, 255, 255, 0.85);
             --card-border: rgba(51, 65, 85, 0.1);
             --card-active-bg: linear-gradient(135deg, #dbeafe 0%, #ffffff 100%);
@@ -71,8 +66,6 @@
         ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--color-blue); }
         
-        body.theme-white ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); }
-
         body {
             height: 100vh; width: 100vw;
             background: var(--bg-radial);
@@ -356,7 +349,7 @@
         .live-dot { width: 5px; height: 5px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        /* READINESS CARD (New Feature) */
+        /* READINESS CARD */
         .readiness-card {
             background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(0,0,0,0));
             border-color: rgba(16, 185, 129, 0.3);
@@ -448,6 +441,20 @@
         .ai-title { font-size: 10px; font-weight: 800; color: var(--color-blue); margin-bottom: 4px; display: block; letter-spacing: 1px; }
         .ai-text { font-size: 11px; line-height: 1.4; color: var(--text-muted); }
 
+        /* DISEASE GUIDANCE PANEL */
+        .guidance-panel {
+            margin-top: 10px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 14px;
+            padding: 12px;
+            display: none;
+        }
+        .guidance-title { color: #ef4444; font-size: 11px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+        .guidance-list { font-size: 10px; color: var(--text-white); list-style: none; display: flex; flex-direction: column; gap: 4px; }
+        .guidance-list li { display: flex; gap: 6px; align-items: flex-start; }
+        .guidance-list li::before { content: "•"; color: #ef4444; font-weight: bold; }
+
         .next-checkup {
             background: rgba(125,125,125,0.05); border-radius: 14px; padding: 10px;
             display: flex; align-items: center; justify-content: space-between;
@@ -528,6 +535,7 @@
         .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px; }
         .ghost-btn { background: transparent; color: var(--text-white); border: 1px solid var(--glass-border); padding: 10px 12px; border-radius: 12px; cursor: pointer; }
         .primary-btn { background: var(--accent-blue); color: white; border: none; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
+        .danger-btn { background: #ef4444; color: white; border: none; padding: 10px 12px; border-radius: 12px; cursor: pointer; }
 
         .sos-btn { position: fixed; right: 24px; bottom: 24px; width: 140px; height: 50px; border-radius: 16px; border: 1px solid rgba(239,68,68,0.3); background: rgba(239,68,68,0.12); color: var(--text-white); font-weight: 800; cursor: pointer; box-shadow: 0 10px 30px rgba(239,68,68,0.3); }
         .sos-btn.holding { background: rgba(239,68,68,0.25); }
@@ -620,7 +628,7 @@
                         </div>
                         <div class="page-title">
                             <h2>Hi Dhivakaran,</h2>
-                            <h1>Overview <span>Conditions</span></h1>
+                            <h1 id="main-diagnosis">Overview <span>Conditions</span></h1>
                         </div>
                         <div class="page-nav" id="page-nav"></div>
                     </div>
@@ -691,42 +699,30 @@
                     </div>
 
                     <div class="schedule-area" style="margin-top: 10px;">
-                        <div class="section-header" style="margin-bottom:8px;"><div class="blue-dot"></div> Care Schedule</div>
+                        
+                        <div class="ai-panel" id="ai-panel">
+                            <span class="ai-title" id="ai-title">AI ANALYSIS</span>
+                            <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
+                            <div class="typing" id="ai-typing">AI is typing...</div>
+                        </div>
+                        
+                        <!-- DISEASE GUIDANCE (HIDDEN BY DEFAULT) -->
+                        <div class="guidance-panel" id="guidance-panel">
+                            <div class="guidance-title">Action Plan: Dengue Management</div>
+                            <ul class="guidance-list">
+                                <li>Monitor Platelets (Admit if < 20k)</li>
+                                <li>Immediate Hydration Required</li>
+                                <li>Check for bleeding spots</li>
+                                <li>Watch for window period (Day 3-7)</li>
+                            </ul>
+                        </div>
+
+                        <div class="section-header" style="margin-bottom:8px; margin-top:10px;"><div class="blue-dot"></div> Care Schedule</div>
                         <div class="next-checkup">
                             <div><div style="font-size:10px; color:#9ca3af; margin-bottom:2px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 13px;">Fri, 24 Mar</div></div>
                             <i class="ph-fill ph-calendar-check" style="font-size:20px; color: var(--color-blue);"></i>
                         </div>
-                        <div class="date-nav">
-                            <div class="nav-arrow"><i class="ph-bold ph-caret-left"></i></div><span style="font-size:12px; color:var(--text-white); font-weight:600;">20 March 2023</span><div class="nav-arrow"><i class="ph-bold ph-caret-right"></i></div>
-                        </div>
-                        <div class="doc-list">
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/men/32.jpg" class="doc-img" alt=""><div><div style="font-size:12px; font-weight:700; color:var(--text-white);">Dr. Hanzer Jon</div><div style="font-size:10px; color:#9ca3af;">Cardiologist</div></div></div>
-                            <div class="doc-row"><img src="https://randomuser.me/api/portraits/women/45.jpg" class="doc-img" alt=""><div><div style="font-size:12px; font-weight:700; color:var(--text-white);">Dr. Sarah Lee</div><div style="font-size:10px; color:#9ca3af;">Neurologist</div></div></div>
-                        </div>
-                        <button class="consult-btn">Consult Now <i class="ph-bold ph-arrow-right"></i></button>
-                    </div>
-
-                    <div class="floating-stat readiness-card" id="readiness-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <span style="font-size:10px; color:#10b981; font-weight:700; text-transform:uppercase;">Bio-Readiness</span>
-                                <div style="font-size:18px; font-weight:800; color: var(--text-white);">85% <span style="font-size:11px; font-weight:500; opacity:0.7">Optimal</span></div>
-                            </div>
-                            <i class="ph-fill ph-lightning" style="font-size:20px; color:#10b981;"></i>
-                        </div>
-                        <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" id="readiness-bar"></div>
-                        </div>
-                    </div>
-
-                    <div class="ai-panel" id="ai-panel">
-                        <span class="ai-title" id="ai-title">AI ANALYSIS</span>
-                        <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
-                        <div class="typing" id="ai-typing">AI is typing...</div>
-                    </div>
-                    
-                    <div class="ai-panel" id="diagnosis-panel" style="display: none;"> <span class="ai-title">DIAGNOSIS PANEL</span>
-                        <p class="ai-text" id="diagnosis-text">No critical keywords detected. Keep monitoring.</p>
+                        
                     </div>
 
                 </div>
@@ -810,12 +806,16 @@
 
         <div class="modal-overlay" id="files-modal">
             <div class="modal-box">
-                <div class="modal-header"><h3>Medical Files</h3><button class="ghost-btn" data-close="files-modal">Close</button></div>
+                <div class="modal-header"><h3>Medical Files & Labs</h3><button class="ghost-btn" data-close="files-modal">Close</button></div>
                 <div class="modal-body">
+                    <p style="font-size:11px; color:#9ca3af;">Upload lab reports for automatic diagnosis mapping.</p>
                     <div class="file-list">
+                        <div class="file-item">
+                            Dengue_Report_Lab_A.pdf 
+                            <button class="danger-btn" id="simulate-dengue" style="font-size:10px;">Simulate Positive</button>
+                        </div>
                         <div class="file-item">MRI_Report.pdf <button class="primary-btn" data-file="MRI_Report.pdf">Download</button></div>
                         <div class="file-item">Bloodwork_Results.png <button class="primary-btn" data-file="Bloodwork_Results.png">Download</button></div>
-                        <div class="file-item">Prescription_List.pdf <button class="primary-btn" data-file="Prescription_List.pdf">Download</button></div>
                     </div>
                 </div>
             </div>
@@ -834,26 +834,24 @@
     </div>
     
     <script>
-        // --- CUSTOM SVG ICONS FOR ORGANS ---
+        // --- 1. EXPANDED SVG ICONS FOR ALL ORGANS ---
         const ORGAN_SVGS = {
             liver: `<svg viewBox="0 0 24 24"><path d="M20.5 13.5c-.5-3.5-3.5-6.5-8.5-6.5s-8 3-8 6.5c0 3.5 3 6.5 6 6.5 1.5 0 3-.5 4.5-1.5 3.5-2.5 5.5-3.5 6-5z" /><path d="M8 8.5v3" /></svg>`,
             lungs: `<svg viewBox="0 0 24 24"><path d="M12 2v20M6 5c-2.2 0-4 2.2-4 5.5S4 19 6.5 19 11 17 11 12 8.2 5 6 5zM18 5c2.2 0 4 2.2 4 5.5S20 19 17.5 19 13 17 13 12 15.8 5 18 5z" /></svg>`,
             kidneys: `<svg viewBox="0 0 24 24"><path d="M7.5 6c-2.5 0-4.5 2-4.5 5.5s3 7.5 6 7.5c2 0 3-1.5 3-4-1 1-3 0-3-2s2-3.5 4.5-3.5c-1-2.5-3.5-3.5-6-3.5z" /><path d="M16.5 6c2.5 0 4.5 2 4.5 5.5s-3 7.5-6 7.5c-2 0-3-1.5-3-4 1 1 3 0 3-2s-2-3.5-4.5-3.5c1-2.5 3.5-3.5 6-3.5z" /></svg>`,
-            stomach: `<svg viewBox="0 0 24 24"><path d="M7 5c2-2 7-2 9 0 2 2 2 6 0 9-1 1.5-3 5-3 5-2 1-5 1-7-1s-3-5-2-8c1-3 3-5 3-5z" /><path d="M10 8h4" /></svg>`,
-            intestines: `<svg viewBox="0 0 24 24"><path d="M6 5c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v1c0 1.1-.9 2-2 2H8c-1.1 0-2 .9-2 2v1c0 1.1.9 2 2 2h8c1.1 0 2 .9 2 2v1c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2V5z" /></svg>`,
-            pancreas: `<svg viewBox="0 0 24 24"><path d="M21 9c-1-2-4-2-6 0l-9 9c-2 2-2 4 0 4s2 2 4 0l11-11c.5-.5 1-1.5 0-2z" /><path d="M12 12l2 2" /></svg>`,
-            gallbladder: `<svg viewBox="0 0 24 24"><path d="M12 3c-1.5 0-3 1.5-3 3v2c0 3.5 2 8 3 8s3-4.5 3-8V6c0-1.5-1.5-3-3-3z" /></svg>`,
-            urinary: `<svg viewBox="0 0 24 24"><path d="M12 4v4M8 10c0 4 1.5 8 4 8s4-4 4-8H8zM12 18v3" /></svg>`
+            stomach: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 5c2-2 7-2 9 0 2 2 2 6 0 9-1 1.5-3 5-3 5-2 1-5 1-7-1s-3-5-2-8c1-3 3-5 3-5z"/><path d="M9 8h4"/></svg>`,
+            intestines: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2V4zm0 10c0-1.1.9-2 2-2h8c1.1 0 2 .9 2 2v2c0 1.1-.9 2-2 2H8c-1.1 0-2-.9-2-2v-2z" /></svg>`,
+            pancreas: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7h-3c-1 0-2 .5-2.5 1.5l-2 4-2-4C10 7.5 9 7 8 7H4c-1.1 0-2 .9-2 2v6c0 1.1.9 2 2 2h4c1 0 2-.5 2.5-1.5l2-4 2 4c.5 1 1.5 1.5 2.5 1.5h3c1.1 0 2-.9 2-2V9c0-1.1-.9-2-2-2z"/></svg>`,
+            bladder: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4c-4 0-7 3-7 7v4c0 4 3 7 7 7s7-3 7-7v-4c0-4-3-7-7-7z"/><path d="M12 18v4"/></svg>`,
+            spleen: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="12" rx="6" ry="9" /><path d="M12 3v18"/></svg>`,
+            thyroid: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 6c0-2.2 2.2-4 5-4s5 1.8 5 4c0 1.5-1 2.8-2.5 3.5L12 14l-2.5-4.5C8 8.8 7 7.5 7 6z"/><path d="M12 14v6"/></svg>`
         };
 
-        // --- COMPREHENSIVE ORGAN DATA ---
+        // --- 2. COMPREHENSIVE ORGAN DATA & VITALS ---
         const ORGAN_DATA = {
             heart: {
-                title: "My Heart Condition",
-                mainStat: "BPM",
-                animKey: "bpm", 
-                simValue: 80,
-                icon: "ph-heart",
+                title: "Cardiovascular System",
+                mainStat: "BPM", animKey: "bpm", simValue: 80, icon: "ph-heart",
                 stats: [
                     { id: "c1", title: "Blood Pressure", base: 116, unit: "/70", icon: "ph-drop", type: "bp" },
                     { id: "c2", title: "Heart Rate", base: 80, unit: "bpm", icon: "ph-heartbeat", type: "bpm" },
@@ -863,615 +861,204 @@
                 abnormal: { msg: "Arrhythmia Detected.", action: "Recommend immediate ECG." }
             },
             brain: {
-                title: "Brain & Nervous System",
-                mainStat: "Hz",
-                animKey: "hz",
-                simValue: 14,
-                icon: "ph-brain",
+                title: "Nervous System",
+                mainStat: "Hz", animKey: "hz", simValue: 14, icon: "ph-brain",
                 stats: [
                     { id: "c1", title: "Brain Waves", base: 14, unit: "Hz", icon: "ph-wave-sine", type: "hz" },
                     { id: "c2", title: "Cognitive Load", base: 45, unit: "%", icon: "ph-lightning", type: "perc" },
-                    { id: "c3", title: "Oxygenation", base: 99, unit: "%", icon: "ph-wind", type: "perc" },
-                    { id: "c4", title: "ICP", base: 11, unit: "mmHg", icon: "ph-gauge", type: "norm" }
+                    { id: "c3", title: "ICP", base: 11, unit: "mmHg", icon: "ph-gauge", type: "norm" },
+                    { id: "c4", title: "Oxygenation", base: 99, unit: "%", icon: "ph-wind", type: "perc" }
                 ],
                 abnormal: { msg: "High Cortisol Levels.", action: "Stress reduction advised." }
             },
-            liver: {
-                title: "Liver Function",
-                mainStat: "Tox",
-                animKey: "tox",
-                simValue: 5,
-                icon: "svg-liver",
-                stats: [
-                    { id: "c1", title: "ALT Enzymes", base: 29, unit: "U/L", icon: "ph-flask", type: "norm" },
-                    { id: "c2", title: "Toxicity Filter", base: 95, unit: "%", icon: "ph-shield-check", type: "perc" },
-                    { id: "c3", title: "Bilirubin", base: 0.8, unit: "mg", icon: "ph-test-tube", type: "norm" },
-                    { id: "c4", title: "Albumin", base: 4.2, unit: "g/dL", icon: "ph-egg", type: "norm" }
-                ],
-                abnormal: { msg: "Elevated Enzymes.", action: "Dietary review needed." }
-            },
             lungs: {
                 title: "Respiratory System",
-                mainStat: "RPM",
-                animKey: "rpm",
-                simValue: 16,
-                icon: "svg-lungs",
+                mainStat: "RPM", animKey: "rpm", simValue: 16, icon: "svg-lungs",
                 stats: [
                     { id: "c1", title: "Resp Rate", base: 16, unit: "rpm", icon: "ph-wind", type: "rpm" },
                     { id: "c2", title: "SpO2 Level", base: 98, unit: "%", icon: "ph-drop", type: "perc" },
                     { id: "c3", title: "Lung Capacity", base: 4.8, unit: "L", icon: "ph-chart-bar", type: "norm" },
                     { id: "c4", title: "EtCO2", base: 38, unit: "mmHg", icon: "ph-cloud", type: "norm" }
                 ],
-                abnormal: { msg: "Reduced Capacity.", action: "Spirometry test advised." }
+                abnormal: { msg: "Reduced Airflow.", action: "Bronchodilator Check." }
+            },
+            liver: {
+                title: "Hepatic System",
+                mainStat: "Tox", animKey: "tox", simValue: 5, icon: "svg-liver",
+                stats: [
+                    { id: "c1", title: "ALT Enzymes", base: 29, unit: "U/L", icon: "ph-flask", type: "norm" },
+                    { id: "c2", title: "Filter Eff.", base: 95, unit: "%", icon: "ph-shield-check", type: "perc" },
+                    { id: "c3", title: "Bilirubin", base: 0.8, unit: "mg", icon: "ph-test-tube", type: "norm" },
+                    { id: "c4", title: "Albumin", base: 4.2, unit: "g/dL", icon: "ph-egg", type: "norm" }
+                ],
+                abnormal: { msg: "Enzyme Spike.", action: "Liver panel required." }
             },
             kidneys: {
-                title: "Renal Function",
-                mainStat: "GFR",
-                animKey: "gfr",
-                simValue: 90,
-                icon: "svg-kidneys",
+                title: "Renal System",
+                mainStat: "GFR", animKey: "gfr", simValue: 90, icon: "svg-kidneys",
                 stats: [
                     { id: "c1", title: "GFR", base: 95, unit: "mL", icon: "ph-activity", type: "norm" },
                     { id: "c2", title: "Creatinine", base: 0.9, unit: "mg", icon: "ph-flask", type: "norm" },
                     { id: "c3", title: "Urea (BUN)", base: 14, unit: "mg", icon: "ph-test-tube", type: "norm" },
                     { id: "c4", title: "Hydration", base: 92, unit: "%", icon: "ph-drop-half", type: "perc" }
                 ],
-                abnormal: { msg: "Low Filtration.", action: "Increase fluid intake." }
+                abnormal: { msg: "Filtration Low.", action: "Increase water intake." }
+            },
+            stomach: {
+                title: "Gastric System",
+                mainStat: "pH", animKey: "ph", simValue: 2, icon: "svg-stomach",
+                stats: [
+                    { id: "c1", title: "Acidity (pH)", base: 2.0, unit: "pH", icon: "ph-eyedropper", type: "norm" },
+                    { id: "c2", title: "Motility", base: 3, unit: "cpm", icon: "ph-waves", type: "norm" },
+                    { id: "c3", title: "Enzymes", base: 88, unit: "%", icon: "ph-flask", type: "perc" },
+                    { id: "c4", title: "Lining Health", base: 95, unit: "%", icon: "ph-shield", type: "perc" }
+                ],
+                abnormal: { msg: "High Acidity.", action: "Neutralizer suggested." }
+            },
+            pancreas: {
+                title: "Endocrine System",
+                mainStat: "Glu", animKey: "glu", simValue: 100, icon: "svg-pancreas",
+                stats: [
+                    { id: "c1", title: "Insulin", base: 12, unit: "µU", icon: "ph-syringe", type: "norm" },
+                    { id: "c2", title: "Glucose", base: 98, unit: "mg", icon: "ph-cube", type: "norm" },
+                    { id: "c3", title: "Amylase", base: 50, unit: "U/L", icon: "ph-flask", type: "norm" },
+                    { id: "c4", title: "Lipase", base: 45, unit: "U/L", icon: "ph-drop", type: "norm" }
+                ],
+                abnormal: { msg: "Insulin Resistance.", action: "Dietary adjustment." }
+            },
+            intestines: {
+                title: "Digestive Tract",
+                mainStat: "Abs", animKey: "abs", simValue: 85, icon: "svg-intestines",
+                stats: [
+                    { id: "c1", title: "Absorption", base: 92, unit: "%", icon: "ph-arrows-in", type: "perc" },
+                    { id: "c2", title: "Microbiome", base: 85, unit: "Var", icon: "ph-bug", type: "perc" },
+                    { id: "c3", title: "Motility", base: 8, unit: "/min", icon: "ph-wave-sine", type: "norm" },
+                    { id: "c4", title: "Hydration", base: 70, unit: "%", icon: "ph-drop", type: "perc" }
+                ],
+                abnormal: { msg: "Inflammation.", action: "Probiotics recommended." }
+            },
+            bladder: {
+                title: "Urinary System",
+                mainStat: "Vol", animKey: "vol", simValue: 40, icon: "svg-bladder",
+                stats: [
+                    { id: "c1", title: "Volume", base: 350, unit: "ml", icon: "ph-cylinder", type: "norm" },
+                    { id: "c2", title: "Pressure", base: 15, unit: "cm", icon: "ph-gauge", type: "norm" },
+                    { id: "c3", title: "Flow Rate", base: 12, unit: "ml/s", icon: "ph-waves", type: "norm" },
+                    { id: "c4", title: "Bacteria", base: 0, unit: "Neg", icon: "ph-prohibit", type: "norm" }
+                ],
+                abnormal: { msg: "High Pressure.", action: "Empty bladder soon." }
+            },
+             spleen: {
+                title: "Lymphatic System",
+                mainStat: "WBC", animKey: "wbc", simValue: 6, icon: "svg-spleen",
+                stats: [
+                    { id: "c1", title: "WBC Count", base: 6.5, unit: "k", icon: "ph-shield-plus", type: "norm" },
+                    { id: "c2", title: "Platelets", base: 250, unit: "k", icon: "ph-bandaids", type: "norm" },
+                    { id: "c3", title: "Filtration", base: 98, unit: "%", icon: "ph-funnel", type: "perc" },
+                    { id: "c4", title: "Iron Store", base: 85, unit: "%", icon: "ph-magnet", type: "perc" }
+                ],
+                abnormal: { msg: "Enlargement.", action: "Scan required." }
+            },
+            thyroid: {
+                title: "Thyroid Gland",
+                mainStat: "TSH", animKey: "tsh", simValue: 2, icon: "svg-thyroid",
+                stats: [
+                    { id: "c1", title: "TSH", base: 2.1, unit: "mU", icon: "ph-chart-line-up", type: "norm" },
+                    { id: "c2", title: "T4 Free", base: 1.2, unit: "ng", icon: "ph-flask", type: "norm" },
+                    { id: "c3", title: "T3 Total", base: 120, unit: "ng", icon: "ph-test-tube", type: "norm" },
+                    { id: "c4", title: "Metabolism", base: 100, unit: "%", icon: "ph-fire", type: "perc" }
+                ],
+                abnormal: { msg: "Hormone Imbalance.", action: "Endo consult." }
             }
         };
 
         const KEYWORD_RISK = {
-            bleeding: 'Critical',
-            pain: 'Severe',
-            dizzy: 'Severe',
-            nausea: 'Mild',
-            faint: 'Critical',
-            fever: 'Mild'
+            bleeding: 'Critical', pain: 'Severe', dizzy: 'Severe',
+            nausea: 'Mild', faint: 'Critical', fever: 'Mild'
         };
 
-        const simulateGPS = () => {
-            const baseLat = 37.7749, baseLng = -122.4194;
-            return {
-                lat: (baseLat + (Math.random() - 0.5) * 0.02).toFixed(5),
-                lng: (baseLng + (Math.random() - 0.5) * 0.02).toFixed(5)
-            };
-        };
-
-        let lastSnapshotTime = Date.now();
-        let watchdogTimer = null;
-
-        const getColorClass = (val, type) => {
-            if (type === 'bpm') {
-                if (val < 60 || val > 120) return 'state-red';
-                if (val > 100) return 'state-yellow';
-                return 'state-blue';
-            }
-            if (type === 'perc') {
-                if (val < 80) return 'state-red';
-                if (val < 90) return 'state-yellow';
-                return 'state-blue';
-            }
-            const r = Math.random();
-            if (r > 0.95) return 'state-red';
-            if (r > 0.8) return 'state-yellow';
-            return 'state-blue';
-        };
-
+        // GLOBAL STATES
         let activeOrgan = 'heart';
         let liveIntervals = [];
+        let IS_DISEASED_MODE = false;
+        let CURRENT_DISEASE = null;
 
-        const triggerSOS = (reason = 'Manual SOS triggered.') => {
-            const sosBtn = document.getElementById('sos-btn');
-            sosBtn.innerText = 'SOS SENT';
-            sosBtn.classList.add('holding');
-            const aiPanel = document.getElementById('ai-panel');
-            aiPanel.classList.add('warn');
-            document.getElementById('ai-title').innerText = 'EMERGENCY DISPATCHED';
-            document.getElementById('ai-text').innerText = reason;
-            updateDiagnosisPanel('sos', 'Critical');
-            showToast('Emergency alert sent to guardian network');
+        // --- 3. MAPPING LOGIC FOR GITHUB 3D MODELS ---
+        const GITHUB_BASE = 'https://raw.githubusercontent.com/Nobledental/MOD/main/3d_models/';
+        
+        const ORGAN_MODEL_MAP = {
+            heart: 'heart.glb',
+            brain: 'brain.glb',
+            liver: 'liver.glb',
+            lungs: 'lungs.glb',
+            kidneys: 'kidneys.glb',
+            stomach: 'stomach.glb',
+            pancreas: 'pancreas.glb',
+            intestines: 'intestines.glb',
+            bladder: 'bladder.glb',
+            spleen: 'spleen.glb',
+            thyroid: 'thyroid.glb'
         };
 
-        // --- BIO-SYNC AUDIO ENGINE ---
-        const AudioEngine = {
-            ctx: null,
-            nextNoteTime: 0.0,
-            timerID: null,
-            bpm: 80,
-            isPlaying: false,
-
-            init: function() {
-                if (!this.ctx) {
-                    const AudioContext = window.AudioContext || window.webkitAudioContext;
-                    this.ctx = new AudioContext();
-                }
-            },
-
-            toggle: function() {
-                this.init();
-                if (this.ctx.state === 'suspended') {
-                    this.ctx.resume();
-                }
-                
-                this.isPlaying = !this.isPlaying;
-                
-                const btn = document.getElementById('sound-toggle');
-                if(this.isPlaying) btn.classList.add('active');
-                else btn.classList.remove('active');
-                
-                if (this.isPlaying) {
-                    this.nextNoteTime = this.ctx.currentTime + 0.1;
-                    this.scheduler();
-                } else {
-                    window.clearTimeout(this.timerID);
-                }
-                return this.isPlaying;
-            },
-
-            setBPM: function(newBpm) {
-                this.bpm = newBpm;
-            },
-
-            scheduleHeartbeat: function(time) {
-                const osc1 = this.ctx.createOscillator();
-                const gain1 = this.ctx.createGain();
-                const filter1 = this.ctx.createBiquadFilter();
-
-                osc1.type = 'triangle';
-                osc1.frequency.setValueAtTime(60, time);
-                osc1.frequency.exponentialRampToValueAtTime(40, time + 0.1);
-
-                filter1.type = 'lowpass';
-                filter1.frequency.value = 180;
-
-                gain1.gain.setValueAtTime(0, time);
-                gain1.gain.linearRampToValueAtTime(0.8, time + 0.02);
-                gain1.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
-
-                osc1.connect(filter1);
-                filter1.connect(gain1);
-                gain1.connect(this.ctx.destination);
-
-                osc1.start(time);
-                osc1.stop(time + 0.2);
-
-                const t2 = time + 0.25; 
-                const osc2 = this.ctx.createOscillator();
-                const gain2 = this.ctx.createGain();
-                const filter2 = this.ctx.createBiquadFilter();
-
-                osc2.type = 'sine';
-                osc2.frequency.setValueAtTime(80, t2);
-                osc2.frequency.exponentialRampToValueAtTime(50, t2 + 0.1);
-
-                filter2.type = 'lowpass';
-                filter2.frequency.value = 250;
-
-                gain2.gain.setValueAtTime(0, t2);
-                gain2.gain.linearRampToValueAtTime(0.6, t2 + 0.02);
-                gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.15);
-
-                osc2.connect(filter2);
-                filter2.connect(gain2);
-                gain2.connect(this.ctx.destination);
-
-                osc2.start(t2);
-                osc2.stop(t2 + 0.2);
-            },
-
-            scheduler: function() {
-                while (this.nextNoteTime < this.ctx.currentTime + 0.1) {
-                    if(activeOrgan === 'heart') {
-                        this.scheduleHeartbeat(this.nextNoteTime);
-                    }
-                    const secondsPerBeat = 60.0 / this.bpm;
-                    this.nextNoteTime += secondsPerBeat;
-                }
-                this.timerID = window.setTimeout(this.scheduler.bind(this), 25);
-            }
-        };
-
-        // --- DASHBOARD LOGIC ---
-        const chatMessages = [];
-
-        const pushChatMessage = (role, text) => {
-            chatMessages.push({ role, text });
-            const container = document.getElementById('chat-messages');
-            const bubble = document.createElement('div');
-            bubble.className = `chat-bubble ${role}`;
-            bubble.innerText = text;
-            container.appendChild(bubble);
-            container.scrollTop = container.scrollHeight;
-        };
-
-        const updateDiagnosisPanel = (keyword, risk) => {
-            const diag = document.getElementById('diagnosis-panel');
-            const text = document.getElementById('diagnosis-text');
-            if(diag.style.display === 'none') diag.style.display = 'block'; 
-            
-            diag.className = 'ai-panel' + (risk === 'Critical' || risk === 'Severe' ? ' warn' : '');
-            text.innerText = risk ? `${risk} risk symptom detected (${keyword}). Notify clinician.` : 'No critical keywords detected. Keep monitoring.';
-
-            const aiPanel = document.getElementById('ai-panel');
-            if (risk === 'Critical' || risk === 'Severe') {
-                aiPanel.classList.add('warn');
-                document.getElementById('ai-title').innerText = 'SYMPTOM ALERT';
-                document.getElementById('ai-text').innerText = `Keyword "${keyword}" maps to ${risk} risk. Escalate if persists.`;
-            }
-        };
-
-        const analyzeKeywords = (input) => {
-            const lower = input.toLowerCase();
-            let detected = null;
-            let level = null;
-            Object.keys(KEYWORD_RISK).forEach(k => {
-                if (lower.includes(k)) {
-                    detected = k;
-                    level = KEYWORD_RISK[k];
-                }
-            });
-            return { detected, level };
-        };
-
-        const persistVitalsSnapshot = () => {
-            const snapshot = {
-                ts: Date.now(),
-                organ: activeOrgan,
-                stats: Array.from({ length: 4 }).map((_, idx) => {
-                    const val = document.getElementById(`c${idx + 1}-val`).innerText;
-                    return { id: idx + 1, val };
-                }),
-                location: simulateGPS()
-            };
-            lastSnapshotTime = snapshot.ts;
-            localStorage.setItem('dashboardVitals', JSON.stringify(snapshot));
-        };
-
-        const appendMedicalLog = () => {
-            const snapshot = JSON.parse(localStorage.getItem('dashboardVitals') || '{}');
-            if(!snapshot.ts) return;
-            const existing = JSON.parse(localStorage.getItem('medicalLog') || '[]');
-            existing.push({
-                ts: snapshot.ts,
-                organ: snapshot.organ,
-                stats: snapshot.stats,
-                location: snapshot.location,
-                category: 'Vitals'
-            });
-            localStorage.setItem('medicalLog', JSON.stringify(existing.slice(-200)));
-        };
-
-        const showToast = (msg) => {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2500);
-        }
-
-        const startWatchdog = () => {
-            if (watchdogTimer) clearInterval(watchdogTimer);
-            watchdogTimer = setInterval(() => {
-                const now = Date.now();
-                if(now - lastSnapshotTime > 20 * 60 * 1000) {
-                    triggerSOS('Data feed lost for over 20 minutes. Alerting guardian network.');
-                }
-            }, 60000);
-        };
-
-        const generateOrganButtons = () => {
-            const tray = document.querySelector('.organ-tray'); 
-            tray.innerHTML = '';
-            
-            Object.keys(ORGAN_DATA).forEach(key => {
-                const data = ORGAN_DATA[key];
-                const btn = document.createElement('div');
-                btn.className = `organ-item ${key === 'heart' ? 'selected' : ''}`;
-                btn.dataset.organ = key;
-                
-                let iconHtml = '';
-                if (data.icon.startsWith('svg-')) {
-                    const svgKey = data.icon.split('-')[1];
-                    iconHtml = ORGAN_SVGS[svgKey] || '<i class="ph ph-warning"></i>'; 
-                } else {
-                    iconHtml = `<i class="ph ${data.icon}"></i>`;
-                }
-
-                btn.innerHTML = `
-                    <div class="premium-icon"><i class="ph-fill ph-seal-check"></i></div>
-                    ${iconHtml}
-                    <span class="organ-name-mini">${key.toUpperCase()}</span>
-                    ${key === 'heart' ? '<div class="organ-label">My Heart</div>' : ''}
-                `;
-                tray.appendChild(btn);
-            });
-        };
-
-        const updateUI = (organType) => {
-            activeOrgan = organType;
-            const data = ORGAN_DATA[organType];
-            
-            // Audio Sync
-            AudioEngine.setBPM(data.simValue);
-
-            // Text Updates
-            document.getElementById('section-title').innerHTML = `<div class="blue-dot"></div> ${data.title}`;
-            document.getElementById('mode-pill').innerHTML = `<div class="active-dot"></div> My ${organType.charAt(0).toUpperCase() + organType.slice(1)}`;
-            
-            // AI Panel Reset
-            const aiPanel = document.getElementById('ai-panel');
-            aiPanel.className = 'ai-panel';
-            document.getElementById('ai-title').innerText = "AI ANALYSIS";
-            document.getElementById('ai-text').innerText = "Analyzing recent biometrics. Systems operating within normal parameters.";
-
-            // Show Scanning State briefly
-            data.stats.forEach((s, i) => {
-                const idx = i + 1;
-                document.getElementById(`c${idx}-title`).innerText = s.title;
-                document.getElementById(`c${idx}-icon`).className = `ph-fill ${s.icon} card-icon`;
-                
-                // Reset to scanning
-                document.getElementById(`c${idx}-val`).innerHTML = `<span class="scanning-text">Scanning...</span>`;
-                const card = document.getElementById(`card-${idx}`);
-                card.className = `data-card state-blue`; // Reset color
-            });
-
-            // Simulate Scan Delay then reveal
-            setTimeout(() => {
-                data.stats.forEach((s, i) => {
-                    const idx = i + 1;
-                    updateCardValue(idx, s.base, s.unit, s.type);
-                });
-                startLiveSimulation(organType);
-            }, 800);
-        };
-
-        const updateCardValue = (idx, val, unit, type) => {
-            const card = document.getElementById(`card-${idx}`);
-            const state = getColorClass(val, type);
-            
-            if(idx !== 2) {
-                card.className = `data-card ${state}`;
-            } else {
-                if(state === 'state-red') card.className = `data-card state-red`;
-                else card.className = `data-card active-blue`;
-            }
-            
-            const el = document.getElementById(`c${idx}-val`);
-            el.innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
-
-            const activeData = ORGAN_DATA[activeOrgan];
-            const shouldDrivePulse = type === activeData.animKey;
-
-            if (idx === 2 || shouldDrivePulse) {
-                document.getElementById('main-stat').innerHTML = `${val} <span style="font-size:12px;font-weight:500;">${unit}</span>`;
-                const boxBpm = document.getElementById('box-bpm');
-                if(boxBpm) boxBpm.innerText = val;
-
-                if(shouldDrivePulse) {
-                    const bpmNumber = parseFloat(val) || activeData.simValue;
-                    activeData.simValue = bpmNumber;
-                    AudioEngine.setBPM(bpmNumber);
-                }
-            }
-            persistVitalsSnapshot();
-        };
-
-        // --- ANIMATED ECG LOGIC ---
-        let ecgPoints = [];
-        const ecgMaxPoints = 100;
-        let ecgPhase = 0;
-
-        const updateECGGraph = () => {
-            ecgPhase += 0.15;
-            let y = 15 + (Math.random() - 0.5) * 2; 
-            const beat = ecgPhase % (Math.PI * 2);
-            if (beat > 0 && beat < 0.2) y -= 5;
-            if (beat > 0.3 && beat < 0.4) y += 5;
-            if (beat > 0.4 && beat < 0.6) y -= 25;
-            if (beat > 0.6 && beat < 0.7) y += 8;
-            if (beat > 0.9 && beat < 1.2) y -= 4;
-            y = Math.max(2, Math.min(28, y));
-
-            ecgPoints.push(y);
-            if (ecgPoints.length > ecgMaxPoints) ecgPoints.shift();
-
-            const width = 200;
-            const step = width / ecgMaxPoints;
-            let d = `M 0 ${ecgPoints[0] || 15}`;
-            for (let i = 1; i < ecgPoints.length; i++) {
-                d += ` L ${i * step} ${ecgPoints[i]}`;
-            }
-            document.getElementById('live-ecg-path').setAttribute('d', d);
-        };
-
-        const startLiveSimulation = (organ) => {
-            liveIntervals.forEach(clearInterval);
-            liveIntervals = [];
-            const data = ORGAN_DATA[organ];
-
-            // Update Readiness Score Bar
-            const updateReadiness = () => {
-                const bar = document.getElementById('readiness-bar');
-                if(bar) {
-                    const w = 70 + Math.random() * 25;
-                    bar.style.width = `${w}%`;
-                }
-            };
-
-            const mainInt = setInterval(() => {
-                let hasAlert = false;
-                data.stats.forEach((s, i) => {
-                    if (typeof s.base === 'string') return;
-
-                    let val = parseFloat(s.base);
-                    let flux = (Math.random() - 0.5) * (val * 0.15); 
-                    if(Math.random() > 0.85) flux *= 2.5; 
-
-                    let newVal = Math.floor(val + flux);
-                    if(s.unit === 'M' || s.unit === 'L' || s.unit.includes('g')) newVal = (val + flux/10).toFixed(1);
-
-                    const state = getColorClass(newVal, s.type);
-                    if(state === 'state-red') hasAlert = true;
-
-                    updateCardValue(i+1, newVal, s.unit, s.type);
-                });
-                
-                const bars = document.querySelectorAll('#blood-chart .bar');
-                bars.forEach(bar => {
-                      const h = 30 + Math.random() * 60;
-                      bar.style.height = `${h}%`;
-                });
-
-                const aiPanel = document.getElementById('ai-panel');
-                if(hasAlert) {
-                    aiPanel.className = 'ai-panel warn';
-                    document.getElementById('ai-title').innerText = "ATTENTION REQUIRED";
-                    document.getElementById('ai-text').innerText = data.abnormal.msg + " " + data.abnormal.action;
-                } else {
-                    aiPanel.className = 'ai-panel';
-                    document.getElementById('ai-title').innerText = "AI ANALYSIS";
-                    document.getElementById('ai-text').innerText = "Vital signs are stable. No immediate irregularities detected.";
-                }
-                
-                updateReadiness();
-
-            }, 2000);
-            liveIntervals.push(mainInt);
-
-            const ecgInt = setInterval(updateECGGraph, 33);
-            liveIntervals.push(ecgInt);
-        };
-
-        // --- THREE.JS ENGINE (FIXED & COMPACT) ---
+        // --- THREE.JS SETUP ---
         let scene, camera, renderer, group, particles;
-        let controls; 
-        let spotLight;
-        let brainEffectGroup = null;
-        let liverLight = null;
+        let controls, spotLight;
         const gltfLoader = new THREE.GLTFLoader();
-
-        const clearOrganEffects = () => {
-            if (brainEffectGroup) {
-                scene.remove(brainEffectGroup);
-                brainEffectGroup.children.forEach(child => { child.geometry?.dispose(); child.material?.dispose(); });
-                brainEffectGroup = null;
-            }
-            if (liverLight) { scene.remove(liverLight); liverLight = null; }
-        };
-
-        const applyOrganEffects = (type) => {
-            clearOrganEffects();
-            if (!scene) return;
-            if (type === 'brain') {
-                brainEffectGroup = new THREE.Group();
-                for (let i = 0; i < 20; i++) {
-                    const start = new THREE.Vector3((Math.random()-0.5)*3, (Math.random()-0.5)*3, (Math.random()-0.5)*3);
-                    const end = start.clone().add(new THREE.Vector3((Math.random()-0.5)*2, (Math.random()-0.5)*2, (Math.random()-0.5)*2));
-                    const geo = new THREE.BufferGeometry().setFromPoints([start, end]);
-                    const mat = new THREE.LineBasicMaterial({ color: 0x0ae0ff, transparent: true, opacity: 0.4 });
-                    brainEffectGroup.add(new THREE.Line(geo, mat));
-                }
-                scene.add(brainEffectGroup);
-            }
-            if (type === 'liver') {
-                liverLight = new THREE.PointLight(0xd97757, 2.0, 50);
-                liverLight.position.set(2, 2, 5);
-                scene.add(liverLight);
-            }
-        };
 
         const initThree = () => {
             const container = document.getElementById('model-3d-container');
             if(!container) return;
-
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 0, 10); // Closer camera for compact look
-
+            camera.position.set(0, 0, 10);
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.toneMappingExposure = 1.3;
-            
             container.appendChild(renderer.domElement);
-
             controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
-            controls.dampingFactor = 0.05;
-            controls.enableZoom = false; 
             controls.autoRotate = true;
             controls.autoRotateSpeed = 2.0;
 
+            // Particles
             const particlesGeo = new THREE.BufferGeometry();
             const pCount = 300; 
             const pArray = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 15; // Compact particles
-
+            for (let i = 0; i < pCount * 3; i++) pArray[i] = (Math.random() - 0.5) * 15;
             particlesGeo.setAttribute("position", new THREE.BufferAttribute(pArray, 3));
-            const particlesMat = new THREE.PointsMaterial({
-                size: 0.04, color: 0x3b82f6, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending
-            });
-
+            const particlesMat = new THREE.PointsMaterial({ size: 0.04, color: 0x3b82f6, transparent: true, opacity: 0.4, blending: THREE.AdditiveBlending });
             particles = new THREE.Points(particlesGeo, particlesMat);
             scene.add(particles);
 
-            const ambient = new THREE.AmbientLight(0xffffff, 0.1); 
-            scene.add(ambient);
-            
+            // Lighting
+            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
             spotLight = new THREE.SpotLight(0xffffff, 3); 
             spotLight.position.set(10, 10, 10); 
-            spotLight.angle = 0.5; 
             scene.add(spotLight);
-            
             const rimLight = new THREE.PointLight(0x3b82f6, 4, 50); 
             rimLight.position.set(-10, 5, -5); 
             scene.add(rimLight);
 
-            loadOrganModel('heart');
-            
+            // Start Animation Loop
             const clock = new THREE.Clock();
             const animate = () => {
                 requestAnimationFrame(animate);
                 const t = clock.getElapsedTime();
-                const simVal = ORGAN_DATA[activeOrgan].simValue || 1;
-
                 controls.update();
-
                 if (group) {
-                    const type = group.userData.type;
-                    const baseScale = group.userData.baseScale || 1;
-
-                    if (type === 'heart') {
-                        const speed = simVal / 60;
-                        const beat = Math.sin(t * speed * Math.PI * 2);
-                        const scale = baseScale * (beat > 0.8 ? 1 + (beat-0.8)*0.2 : 1);
-                        group.scale.set(scale, scale, scale);
-                        spotLight.intensity = 2.5 + (scale - baseScale) * 10;
-                    } else {
-                        const pulse = baseScale * (1 + Math.sin(t * 2) * 0.01);
-                        group.scale.set(pulse, pulse, pulse);
-                    }
-                    if(group.userData.ring) {
-                        group.userData.ring.rotation.z += 0.005;
-                    }
+                   const scale = 1 + Math.sin(t * 1.5) * 0.02;
+                   group.scale.set(scale, scale, scale);
+                   if(group.userData.ring) group.userData.ring.rotation.z += 0.005;
                 }
-
-                if (brainEffectGroup) {
-                    brainEffectGroup.rotation.y -= 0.005;
-                    brainEffectGroup.children.forEach((line, idx) => {
-                        line.material.opacity = 0.1 + Math.abs(Math.sin(t * 3 + idx)) * 0.3;
-                    });
-                }
-
-                if (liverLight) {
-                    liverLight.intensity = 2.0 + Math.sin(t * 2) * 0.5;
-                }
-
                 if(particles) particles.rotation.y += 0.001;
                 renderer.render(scene, camera);
             };
             animate();
+
+            // Initial Load
+            loadOrganModel('heart');
 
             window.addEventListener('resize', () => {
                 camera.aspect = container.clientWidth / container.clientHeight;
@@ -1481,39 +1068,22 @@
         };
 
         const getOrganColor = (type) => {
+            // Color mapping based on state
+            if (IS_DISEASED_MODE && (type === 'spleen' || type === 'liver' || type === 'heart')) return 0xff4d4d; // Disease Red
+
             const colors = {
                 heart: 0xff3b3b, brain: 0x0ae0ff, liver: 0xd97757, lungs: 0xffa8d9,
                 kidneys: 0xc27e5c, stomach: 0xff9e9e, intestines: 0xffc4a3, pancreas: 0xffd670,
-                gallbladder: 0x60d394, urinary: 0xffea00, skeletal: 0xffffff, cells: 0xcd93ff,
-                immune: 0x50c878, dental: 0xfdfdfd, breast: 0xffb7b2, ligaments: 0xeeeeee
+                bladder: 0xffea00, spleen: 0x9370db, thyroid: 0xffb7b2
             };
             return colors[type] || 0x3b82f6;
         };
 
-        // --- 3D MODEL MAPPING ---
-        // Mapped to your specific GitHub repository: Nobledental/MOD
-        const GITHUB_BASE_URL = 'https://raw.githubusercontent.com/Nobledental/MOD/main/3d_models/';
-
-        const ORGAN_MODEL_MAP = {
-            heart: GITHUB_BASE_URL + 'heart.glb',
-            brain: GITHUB_BASE_URL + 'brain.glb',
-            liver: GITHUB_BASE_URL + 'liver.glb',
-            lungs: GITHUB_BASE_URL + 'lungs.glb',
-            kidneys: GITHUB_BASE_URL + 'kidneys.glb',
-            eyes: GITHUB_BASE_URL + 'eyes.glb',
-            cirrhotic_liver: GITHUB_BASE_URL + 'cirrhotic_liver.glb'
-            
-            // FUTURE UPLOADS:
-            // When you upload 'stomach.glb' or 'pancreas.glb' to that folder,
-            // just uncomment or add them below:
-            // stomach: GITHUB_BASE_URL + 'stomach.glb',
-            // pancreas: GITHUB_BASE_URL + 'pancreas.glb',
-        };
-
-        // FIXED: Compact 3D Model Loading Logic
+        // --- 4. MODEL LOADING LOGIC (HEALTHY VS DISEASED) ---
         const loadOrganModel = (type) => {
-            // 1. Strict Cleanup to prevent fusing
+            // Cleanup previous model
             if (group) {
+                scene.remove(group);
                 group.traverse((obj) => {
                     if (obj.geometry) obj.geometry.dispose();
                     if (obj.material) {
@@ -1521,60 +1091,59 @@
                         else obj.material.dispose();
                     }
                 });
-                scene.remove(group);
                 group = null;
             }
 
             group = new THREE.Group();
-            group.userData.type = type;
-            group.userData.baseScale = 1;
             scene.add(group);
-
-            applyOrganEffects(type);
-
             const color = getOrganColor(type);
-            
-            // 2. Try loading from GitHub first
-            const modelSrc = ORGAN_MODEL_MAP[type];
-            let modelLoaded = false;
 
-            if (modelSrc) {
-                gltfLoader.load(modelSrc, (gltf) => {
-                    const model = gltf.scene || gltf.scenes?.[0];
-                    if (model) {
-                        modelLoaded = true;
-                        model.traverse((node) => {
-                            if (node.isMesh) {
-                                node.material = new THREE.MeshPhongMaterial({
-                                    color: color, emissive: color, emissiveIntensity: 0.2,
-                                    transparent: true, opacity: 0.9, flatShading: false, shininess: 80
-                                });
-                            }
-                        });
-                        
-                        const box = new THREE.Box3().setFromObject(model);
-                        const size = new THREE.Vector3();
-                        box.getSize(size);
-                        const maxAxis = Math.max(size.x, size.y, size.z) || 1;
-                        const scale = 4.5 / maxAxis; // Fit inside the ring
-                        model.scale.setScalar(scale);
-                        box.getCenter(model.position).multiplyScalar(-1);
-                        model.position.y -= 0.5;
-                        
-                        group.add(model);
-                    }
-                }, undefined, (error) => {
-                    console.log('Model load failed, using procedural fallback for:', type);
-                    createProceduralFallback(type, color);
-                });
-            } 
-            
-            // Immediate fallback if no URL mapped or while loading (async handling is tricky here, so we default to procedural if load fails)
-            if (!modelSrc) {
-                createProceduralFallback(type, color);
+            // Construct Filename
+            let filename = ORGAN_MODEL_MAP[type];
+            if (IS_DISEASED_MODE && (type === 'spleen' || type === 'liver')) {
+                // Try to load diseased version if mapped, otherwise rely on Color shift
+                const parts = filename.split('.');
+                // This is where you would map 'liver_cirrhosis.glb' etc.
+                // filename = `${parts[0]}_diseased.${parts[1]}`; 
             }
 
-            // Always add the Sci-Fi Ring
+            const modelUrl = GITHUB_BASE + filename;
+
+            // Load Model
+            gltfLoader.load(modelUrl, (gltf) => {
+                const model = gltf.scene || gltf.scenes[0];
+                
+                // MATERIAL FIX: Make it Solid but Techy
+                model.traverse((node) => {
+                    if (node.isMesh) {
+                        node.material = new THREE.MeshStandardMaterial({
+                            color: color, 
+                            emissive: IS_DISEASED_MODE ? 0x550000 : 0x000000,
+                            emissiveIntensity: 0.4,
+                            roughness: 0.4,
+                            metalness: 0.6,
+                            transparent: false, // Ensure it's not a ghost
+                            opacity: 1.0
+                        });
+                    }
+                });
+
+                // Center and Scale
+                const box = new THREE.Box3().setFromObject(model);
+                const size = new THREE.Vector3();
+                box.getSize(size);
+                const maxAxis = Math.max(size.x, size.y, size.z) || 1;
+                model.scale.setScalar(4.5 / maxAxis);
+                box.getCenter(model.position).multiplyScalar(-1);
+                
+                group.add(model);
+
+            }, undefined, (error) => {
+                // FALLBACK: If GitHub file doesn't exist yet, show procedural shape
+                createProceduralFallback(type, color);
+            });
+
+            // Add Sci-Fi Ring
             const ringGeo = new THREE.TorusGeometry(3.5, 0.02, 16, 100); 
             const ringMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.4 });
             const ring = new THREE.Mesh(ringGeo, ringMat);
@@ -1585,21 +1154,16 @@
 
         const createProceduralFallback = (type, color) => {
             let geometry;
+            // Simple shapes to represent organs if GLB is missing
             switch (type) {
                 case 'heart': geometry = new THREE.IcosahedronGeometry(2.2, 1); break;
                 case 'brain': geometry = new THREE.DodecahedronGeometry(2.2, 0); break;
                 case 'lungs': geometry = new THREE.CapsuleGeometry(1.5, 3, 4, 16); break;
-                case 'liver': geometry = new THREE.TetrahedronGeometry(2.5, 2); break;
                 default: geometry = new THREE.OctahedronGeometry(2.0, 0);
             }
-
-            const coreMat = new THREE.MeshPhongMaterial({
-                color: color, emissive: color, emissiveIntensity: 0.6,
-                transparent: true, opacity: 0.9, flatShading: true, shininess: 100
-            });
+            const coreMat = new THREE.MeshPhongMaterial({ color: color, emissive: color, emissiveIntensity: 0.4, transparent: true, opacity: 0.9, flatShading: true });
             const coreMesh = new THREE.Mesh(geometry, coreMat);
             group.add(coreMesh);
-
             const wireGeo = new THREE.WireframeGeometry(geometry);
             const wireMat = new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.15 });
             const wireMesh = new THREE.LineSegments(wireGeo, wireMat);
@@ -1607,25 +1171,154 @@
             group.add(wireMesh);
         };
 
+        // --- DASHBOARD UI UPDATES ---
+        const getColorClass = (val, type) => {
+            // Logic for critical values
+            if (IS_DISEASED_MODE) {
+                if (type === 'perc' && val < 20) return 'state-red'; // Platelets
+            }
+
+            if (type === 'bpm' && (val < 60 || val > 100)) return 'state-yellow';
+            if (type === 'perc' && val < 90) return 'state-yellow';
+            return Math.random() > 0.95 ? 'state-red' : 'state-blue';
+        };
+
+        const updateCardValue = (idx, val, unit, type) => {
+            const card = document.getElementById(`card-${idx}`);
+            const state = getColorClass(val, type);
+            
+            // Override colors based on Disease state
+            let finalState = state;
+            if (IS_DISEASED_MODE && val < 50 && unit === 'k') finalState = 'state-red';
+
+            if(idx !== 2) card.className = `data-card ${finalState}`;
+            else card.className = finalState === 'state-red' ? `data-card state-red` : `data-card active-blue`;
+            
+            document.getElementById(`c${idx}-val`).innerHTML = `${val} <span style="font-size:12px;opacity:0.6;">${unit}</span>`;
+            
+            // Sync Main Stats if card 2
+            if (idx === 2) {
+                document.getElementById('main-stat').innerHTML = `${val} <span style="font-size:12px;font-weight:500;">${unit}</span>`;
+                const boxBpm = document.getElementById('box-bpm');
+                if(boxBpm) boxBpm.innerText = val;
+            }
+        };
+
+        const updateUI = (organType) => {
+            activeOrgan = organType;
+            const data = ORGAN_DATA[organType];
+            
+            // Text Updates
+            document.getElementById('section-title').innerHTML = `<div class="blue-dot"></div> ${data.title}`;
+            document.getElementById('mode-pill').innerHTML = `<div class="active-dot"></div> My ${organType.charAt(0).toUpperCase() + organType.slice(1)}`;
+            
+            // Reveal Data after delay
+            data.stats.forEach((s, i) => {
+                const idx = i + 1;
+                document.getElementById(`c${idx}-title`).innerText = s.title;
+                document.getElementById(`c${idx}-icon`).className = `ph-fill ${s.icon} card-icon`;
+                
+                // If Disease Mode & Spleen, override stats
+                if (IS_DISEASED_MODE && organType === 'spleen') {
+                    if (s.title === "Platelets") s.base = 25; // Critical Low
+                    if (s.title === "WBC Count") s.base = 2.1; // Low
+                }
+
+                updateCardValue(idx, s.base, s.unit, s.type);
+            });
+            startLiveSimulation(organType);
+        };
+
+        const startLiveSimulation = (organ) => {
+            liveIntervals.forEach(clearInterval);
+            liveIntervals = [];
+            const data = ORGAN_DATA[organ];
+
+            const mainInt = setInterval(() => {
+                data.stats.forEach((s, i) => {
+                    let val = parseFloat(s.base);
+                    
+                    // Disease Logic Simulation
+                    if (IS_DISEASED_MODE && organ === 'spleen' && s.title === 'Platelets') {
+                        // Slowly drop platelets
+                        val = Math.max(10, val - 0.5); 
+                        s.base = val; 
+                    }
+
+                    let flux = (Math.random() - 0.5) * (val * 0.1); 
+                    let newVal = Math.floor(val + flux);
+                    if(s.unit === 'pH' || s.unit.includes('L') || (s.unit === 'k' && newVal < 10)) newVal = (val + flux/10).toFixed(1);
+                    
+                    updateCardValue(i+1, newVal, s.unit, s.type);
+                });
+                document.querySelectorAll('.bar').forEach(b => b.style.height = `${30 + Math.random() * 70}%`);
+            }, 2000);
+            liveIntervals.push(mainInt);
+        };
+
+        const generateOrganButtons = () => {
+            const tray = document.querySelector('.organ-tray'); 
+            tray.innerHTML = '';
+            Object.keys(ORGAN_DATA).forEach(key => {
+                const data = ORGAN_DATA[key];
+                const btn = document.createElement('div');
+                btn.className = `organ-item ${key === 'heart' ? 'selected' : ''}`;
+                btn.dataset.organ = key;
+                let iconHtml = '';
+                if (data.icon.startsWith('svg-')) {
+                    const svgKey = data.icon.split('-')[1];
+                    iconHtml = ORGAN_SVGS[svgKey] || '<i class="ph ph-warning"></i>'; 
+                } else {
+                    iconHtml = `<i class="ph ${data.icon}"></i>`;
+                }
+                btn.innerHTML = `<div class="premium-icon"><i class="ph-fill ph-seal-check"></i></div>${iconHtml}`;
+                tray.appendChild(btn);
+            });
+        };
+
+        // --- DISEASE SIMULATION LOGIC ---
+        const activateDiseaseMode = (disease) => {
+            IS_DISEASED_MODE = true;
+            CURRENT_DISEASE = disease;
+            
+            // 1. Update UI Headers
+            document.getElementById('main-diagnosis').innerHTML = `Overview <span>${disease}</span>`;
+            document.getElementById('main-diagnosis').style.color = '#ef4444';
+            
+            // 2. AI Panel Alert
+            const aiPanel = document.getElementById('ai-panel');
+            aiPanel.className = 'ai-panel warn';
+            document.getElementById('ai-title').innerText = "CRITICAL DIAGNOSIS DETECTED";
+            document.getElementById('ai-text').innerText = `Lab reports confirm ${disease}. Systemic inflammation detected. Switching to monitoring mode.`;
+            
+            // 3. Show Guidance
+            document.getElementById('guidance-panel').style.display = 'block';
+
+            // 4. Force Switch to Relevant Organ (Spleen for Dengue)
+            if (disease === 'Dengue Positive') {
+                activeOrgan = 'spleen';
+                // Trigger manual update
+                const btn = document.querySelector('[data-organ="spleen"]');
+                if(btn) btn.click();
+            }
+
+            // 5. Toast
+            const toast = document.getElementById('toast');
+            toast.innerText = "Diagnosis Updated: Dengue Fever";
+            toast.style.display = "block";
+            setTimeout(() => toast.style.display = "none", 3000);
+        };
+
+        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             const PAGES = [
                 { label: 'Dashboard', href: '#', icon: 'ph-fill ph-heartbeat' },
                 { label: 'Organs', href: '#', icon: 'ph ph-brain' },
                 { label: 'Health', href: '#', icon: 'ph ph-activity' },
                 { label: 'Labs', href: '#', icon: 'ph ph-flask' },
-                { label: 'Hospitals', href: '#', icon: 'ph ph-hospital' },
-                { label: 'Pharmacy', href: '#', icon: 'ph ph-pill' },
-                { label: 'Devices', href: '#', icon: 'ph ph-device-mobile' },
-                { label: 'Insurance', href: '#', icon: 'ph ph-shield-check' },
-                { label: 'Family', href: '#', icon: 'ph ph-users-three' },
-                { label: 'Profile', href: '#', icon: 'ph ph-user' },
-                { label: 'Settings', href: '#', icon: 'ph ph-gear-six' },
-                { label: 'Medical Log', href: '#', icon: 'ph ph-clipboard-text' }
+                { label: 'Profile', href: '#', icon: 'ph ph-user' }
             ];
-
             const pageNav = document.getElementById('page-nav');
-            const mobileNavLinks = document.getElementById('mobile-nav-links');
-
             if(pageNav) {
                 PAGES.forEach(p => {
                     const link = document.createElement('a');
@@ -1635,148 +1328,48 @@
                 });
             }
 
-            if(mobileNavLinks) {
-                PAGES.forEach(p => {
-                    const link = document.createElement('a');
-                    link.href = p.href;
-                    link.innerText = p.label;
-                    mobileNavLinks.appendChild(link);
-                });
-            }
-            
+            // Boot Sequence
             setTimeout(() => {
                 document.getElementById('boot-screen').style.opacity = '0';
                 document.getElementById('app-container').style.opacity = '1';
-                setTimeout(() => {
-                    document.getElementById('boot-screen').style.display = 'none';
-                }, 800);
+                setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 800);
             }, 2000); 
 
             generateOrganButtons();
             initThree();
             updateUI('heart');
-            startWatchdog();
 
-            const openModal = (id) => document.getElementById(id).style.display = 'flex';
-            const closeModal = (id) => document.getElementById(id).style.display = 'none';
-
-            document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => closeModal(btn.dataset.close)));
-
-            const themeBtn = document.getElementById('theme-toggle');
-            themeBtn.addEventListener('click', () => {
-                document.body.classList.toggle('theme-white');
-                themeBtn.innerText = document.body.classList.contains('theme-white') ? 'Default Theme' : 'White Theme';
-            });
-
-            const soundBtn = document.getElementById('sound-toggle');
-            soundBtn.addEventListener('click', () => {
-                const isActive = AudioEngine.toggle();
-                soundBtn.style.color = isActive ? '#0A84FF' : 'white';
-                soundBtn.style.background = isActive ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)';
-            });
-
-            const chatInput = document.getElementById('chat-input');
-            const chatSend = document.getElementById('chat-send');
-            const typingEl = document.getElementById('ai-typing');
-            const handleSend = () => {
-                const text = chatInput.value.trim();
-                if(!text) return;
-                pushChatMessage('user', text);
-                chatInput.value = '';
-                const { detected, level } = analyzeKeywords(text);
-                typingEl.style.display = 'block';
-                setTimeout(() => {
-                    typingEl.style.display = 'none';
-                    const response = detected ? `I detected ${detected}. Assessing as ${level} risk.` : 'Noted. Continuing to monitor.';
-                    pushChatMessage('bot', response);
-                    updateDiagnosisPanel(detected || 'none', level);
-                }, 1200);
-            };
-            chatSend.addEventListener('click', handleSend);
-            chatInput.addEventListener('keydown', (e) => { if(e.key === 'Enter') handleSend(); });
-
-            const openVideo = () => openModal('video-modal');
-            document.getElementById('launch-video').addEventListener('click', openVideo);
-            document.getElementById('open-video').addEventListener('click', openVideo);
-            document.getElementById('toggle-cam').addEventListener('click', () => {
-                const camState = document.getElementById('cam-state');
-                camState.innerText = camState.innerText === 'ON' ? 'OFF' : 'ON';
-            });
-            document.getElementById('end-call').addEventListener('click', () => {
-                showToast('Call ended');
-                closeModal('video-modal');
-            });
-
-            const openPharmacy = () => openModal('pharmacy-modal');
-            document.getElementById('launch-pharmacy').addEventListener('click', openPharmacy);
-            document.getElementById('open-pharmacy').addEventListener('click', openPharmacy);
-            document.getElementById('submit-rx').addEventListener('click', () => {
-                const rx = document.getElementById('rx-select').value;
-                showToast(`${rx} refill request sent.`);
-                closeModal('pharmacy-modal');
-            });
-
-            // NEW: Insurance Logic
-            const openInsurance = () => openModal('insurance-modal');
-            document.getElementById('launch-insurance').addEventListener('click', openInsurance);
-            document.getElementById('submit-claim').addEventListener('click', () => {
-                showToast('Claim submitted to AI desk.');
-                closeModal('insurance-modal');
-            });
-
-            const runFaceID = (onPass) => {
-                const overlay = document.getElementById('faceid-overlay');
-                const text = document.getElementById('faceid-text');
-                overlay.style.display = 'flex';
-                text.innerText = 'Scanning Face ID...';
-                setTimeout(() => {
-                    text.innerText = 'Verified';
-                    setTimeout(() => {
-                        overlay.style.display = 'none';
-                        onPass();
-                    }, 500);
-                }, 1400);
-            };
-
-            const openFiles = () => runFaceID(() => openModal('files-modal'));
-            document.getElementById('launch-files').addEventListener('click', openFiles);
-            document.getElementById('open-files').addEventListener('click', openFiles);
-            document.querySelectorAll('[data-file]').forEach(btn => btn.addEventListener('click', () => {
-                showToast(`${btn.dataset.file} downloading...`);
-            }));
-
-            const sosBtn = document.getElementById('sos-btn');
-            let sosTimer = null;
-            sosBtn.addEventListener('mousedown', () => {
-                sosTimer = setTimeout(() => triggerSOS('Hold-to-trigger SOS activated.'), 1500);
-                sosBtn.classList.add('holding');
-            });
-            ['mouseup','mouseleave','touchend'].forEach(evt => sosBtn.addEventListener(evt, () => {
-                clearTimeout(sosTimer);
-                sosBtn.classList.remove('holding');
-                sosBtn.innerText = 'Hold for SOS';
-            }));
-
-            setTimeout(appendMedicalLog, 2000);
-            setInterval(() => { appendMedicalLog(); }, 600000);
-
+            // Event Listeners
             const tray = document.querySelector('.organ-tray');
             tray.addEventListener('click', (e) => {
                 const btn = e.target.closest('.organ-item');
                 if(!btn) return;
-                
                 document.querySelectorAll('.organ-item').forEach(b => b.classList.remove('selected'));
                 document.querySelectorAll('.organ-label').forEach(el => el.remove());
-                
                 btn.classList.add('selected');
-                
-                const label = document.createElement('div'); label.className = 'organ-label'; 
-                label.innerText = 'My ' + btn.dataset.organ.charAt(0).toUpperCase() + btn.dataset.organ.slice(1);
-                btn.appendChild(label);
                 
                 const organ = btn.dataset.organ;
                 loadOrganModel(organ);
                 updateUI(organ);
+            });
+            
+            // Modal Logic
+            document.querySelectorAll('.ghost-btn').forEach(btn => btn.addEventListener('click', (e) => {
+                const target = e.target.dataset.close;
+                if(target) document.getElementById(target).style.display = 'none';
+            }));
+
+            // Launchers
+            document.getElementById('launch-files').addEventListener('click', () => document.getElementById('files-modal').style.display = 'flex');
+
+            // SIMULATE DENGUE BUTTON
+            document.getElementById('simulate-dengue').addEventListener('click', () => {
+                document.getElementById('files-modal').style.display = 'none';
+                activateDiseaseMode('Dengue Positive');
+            });
+            
+            document.getElementById('theme-toggle').addEventListener('click', () => {
+                document.body.classList.toggle('theme-white');
             });
         });
     </script>
