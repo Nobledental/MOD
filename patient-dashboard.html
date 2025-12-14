@@ -366,12 +366,46 @@
         }
         .section-header.mini { font-size: 10px; margin-bottom: 8px; opacity: 0.7; }
 
-        .organ-tray {
+        .organ-tray { 
             display: flex;
-            flex-wrap: wrap; 
+            flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
         }
+
+        /* RELOCATED SIDEBAR CONTENT */
+        .relocated-hub {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            backdrop-filter: blur(20px);
+        }
+        .relocated-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .relocated-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 10px;
+        }
+        .relocated-card {
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+        }
+        .nav-card .sidebar-nav { gap: 6px; }
+        .nav-card .nav-link { width: 100%; }
+        .nav-card .nav-grid { margin-top: 10px; }
+        .health-stack { display: flex; flex-direction: column; gap: 8px; }
 
         .organ-item {
             width: 44px; height: 44px;
@@ -728,72 +762,6 @@
         </div>
 
         <div class="dashboard-body">
-            <div class="sidebar">
-                <div class="sidebar-top">
-                    <div class="logo">H<span>+</span></div>
-                    <div class="version-pill"><i class="ph ph-seal-check"></i> Version 3 Pro</div>
-                    <div class="patient-quick">
-                        <div class="name">Dhivakaran</div>
-                        <div class="pill-row">
-                            <div class="pill"><i class="ph ph-pulse"></i>Daily readiness 92%</div>
-                            <div class="pill"><i class="ph ph-users-three"></i>Family tracking ON</div>
-                            <div class="pill"><i class="ph ph-shield-check"></i>Synced to devices</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="sidebar-nav">
-                    <div class="nav-label">Care navigation</div>
-                    <a class="nav-link active" href="patient-dashboard.html"><i class="ph-fill ph-heartbeat"></i>Daily dashboard</a>
-                    <a class="nav-link" href="patient-health.html"><i class="ph ph-activity"></i>Health graph</a>
-                    <a class="nav-link" href="patient-labs.html"><i class="ph ph-flask"></i>Latest labs</a>
-                    <a class="nav-link" href="patient-devices.html"><i class="ph ph-wifi-high"></i>Device streams</a>
-                    <a class="nav-link" href="patient-profile.html"><i class="ph ph-user"></i>Patient profile</a>
-                    <a class="nav-link" href="patient-settings.html"><i class="ph ph-gear"></i>Settings</a>
-                </div>
-
-                <div class="nav-label">Family + quick sync</div>
-                <div class="nav-grid">
-                    <a class="nav-chip-tile" href="patient-family.html"><strong>Family watch</strong><span>Notify caregivers instantly</span></a>
-                    <a class="nav-chip-tile" href="patient-log.html"><strong>Daily log</strong><span>Minute-by-minute recap</span></a>
-                    <a class="nav-chip-tile" href="patient-insurance.html"><strong>Insurance desk</strong><span>Pre-approvals + claims</span></a>
-                    <a class="nav-chip-tile" href="patient-settings.html"><strong>Preferences</strong><span>Sync all modules</span></a>
-                </div>
-
-                <div class="family-watch">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong>Family is watching</strong>
-                        <span style="color:#10b981; font-weight:700; font-size:12px;">Live</span>
-                    </div>
-                    <div class="avatars">
-                        <div class="avatar">R</div>
-                        <div class="avatar">A</div>
-                        <div class="avatar">P</div>
-                        <div class="avatar" style="background:rgba(59,130,246,0.4);">+</div>
-                    </div>
-                    <div style="color:var(--text-muted); font-size:12px;">Share-ready links for guardians and partner.</div>
-                </div>
-
-                <div class="chat-drawer" id="chat-drawer">
-                    <h4><span><i class="ph ph-robot"></i> AI Assistant</span><span class="status-dot"></span></h4>
-                    <div class="chat-messages" id="chat-messages"></div>
-                    <div class="chat-input-row">
-                        <input type="text" id="chat-input" placeholder="Describe symptoms e.g. pain, bleeding" />
-                        <button id="chat-send"><i class="ph ph-paper-plane-tilt"></i></button>
-                    </div>
-                </div>
-
-                <div class="sidebar-utilities">
-                    <div class="label">Care tools</div>
-                    <button data-open-modal="video-modal"><i class="ph ph-video-camera"></i><span>Video Call</span></button>
-                    <button data-open-modal="pharmacy-modal"><i class="ph ph-pill"></i><span>Refill Rx</span></button>
-                    <button data-open-modal="files-modal"><i class="ph ph-folder"></i><span>Files</span></button>
-                    <button data-open-modal="insurance-modal"><i class="ph ph-shield-check"></i><span>Insurance</span></button>
-                    <button data-open-modal="faceid-overlay"><i class="ph ph-lock"></i><span>Secure</span></button>
-                    <button style="color:#ef4444; border-color: rgba(239,68,68,0.4);"><i class="ph ph-power"></i><span>Log out</span></button>
-                </div>
-            </div>
-
             <div class="main-content">
 
                 <div class="header-section">
@@ -826,6 +794,129 @@
                             <div class="section-header mini">Select Organ System</div>
                             <div class="organ-tray"></div>
                             <div class="link-row" id="organ-shortcuts"></div>
+                        </div>
+
+                        <div class="relocated-hub">
+                            <div class="relocated-header">
+                                <div class="logo">H<span>+</span></div>
+                                <div class="version-pill"><i class="ph ph-seal-check"></i> Version 3 Pro</div>
+                            </div>
+                            <div class="relocated-grid">
+                                <div class="patient-quick relocated-card">
+                                    <div class="name">Dhivakaran</div>
+                                    <div class="pill-row">
+                                        <div class="pill"><i class="ph ph-pulse"></i>Daily readiness 92%</div>
+                                        <div class="pill"><i class="ph ph-users-three"></i>Family tracking ON</div>
+                                        <div class="pill"><i class="ph ph-shield-check"></i>Synced to devices</div>
+                                    </div>
+                                </div>
+
+                                <div class="relocated-card nav-card">
+                                    <div class="nav-label">Care navigation</div>
+                                    <div class="sidebar-nav">
+                                        <a class="nav-link active" href="patient-dashboard.html"><i class="ph-fill ph-heartbeat"></i>Daily dashboard</a>
+                                        <a class="nav-link" href="patient-health.html"><i class="ph ph-activity"></i>Health graph</a>
+                                        <a class="nav-link" href="patient-labs.html"><i class="ph ph-flask"></i>Latest labs</a>
+                                        <a class="nav-link" href="patient-devices.html"><i class="ph ph-wifi-high"></i>Device streams</a>
+                                        <a class="nav-link" href="patient-profile.html"><i class="ph ph-user"></i>Patient profile</a>
+                                        <a class="nav-link" href="patient-settings.html"><i class="ph ph-gear"></i>Settings</a>
+                                    </div>
+                                    <div class="nav-label">Family + quick sync</div>
+                                    <div class="nav-grid">
+                                        <a class="nav-chip-tile" href="patient-family.html"><strong>Family watch</strong><span>Notify caregivers instantly</span></a>
+                                        <a class="nav-chip-tile" href="patient-log.html"><strong>Daily log</strong><span>Minute-by-minute recap</span></a>
+                                        <a class="nav-chip-tile" href="patient-insurance.html"><strong>Insurance desk</strong><span>Pre-approvals + claims</span></a>
+                                        <a class="nav-chip-tile" href="patient-settings.html"><strong>Preferences</strong><span>Sync all modules</span></a>
+                                    </div>
+                                </div>
+
+                                <div class="family-watch relocated-card">
+                                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                                        <strong>Family is watching</strong>
+                                        <span style="color:#10b981; font-weight:700; font-size:12px;">Live</span>
+                                    </div>
+                                    <div class="avatars">
+                                        <div class="avatar">R</div>
+                                        <div class="avatar">A</div>
+                                        <div class="avatar">P</div>
+                                        <div class="avatar" style="background:rgba(59,130,246,0.4);">+</div>
+                                    </div>
+                                    <div style="color:var(--text-muted); font-size:12px;">Share-ready links for guardians and partner.</div>
+                                </div>
+
+                                <div class="chat-drawer relocated-card" id="chat-drawer">
+                                    <h4><span><i class="ph ph-robot"></i> AI Assistant</span><span class="status-dot"></span></h4>
+                                    <div class="chat-messages" id="chat-messages"></div>
+                                    <div class="chat-input-row">
+                                        <input type="text" id="chat-input" placeholder="Describe symptoms e.g. pain, bleeding" />
+                                        <button id="chat-send"><i class="ph ph-paper-plane-tilt"></i></button>
+                                    </div>
+                                </div>
+
+                                <div class="sidebar-utilities relocated-card">
+                                    <div class="label">Care tools</div>
+                                    <button data-open-modal="video-modal"><i class="ph ph-video-camera"></i><span>Video Call</span></button>
+                                    <button data-open-modal="pharmacy-modal"><i class="ph ph-pill"></i><span>Refill Rx</span></button>
+                                    <button data-open-modal="files-modal"><i class="ph ph-folder"></i><span>Files</span></button>
+                                    <button data-open-modal="insurance-modal"><i class="ph ph-shield-check"></i><span>Insurance</span></button>
+                                    <button data-open-modal="faceid-overlay"><i class="ph ph-lock"></i><span>Secure</span></button>
+                                    <button style="color:#ef4444; border-color: rgba(239,68,68,0.4);"><i class="ph ph-power"></i><span>Log out</span></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="health-stack">
+                            <div class="section-header" style="margin-bottom:4px;"><div class="blue-dot"></div> Version 3 · Health map</div>
+                            <div class="health-grid">
+                                <div class="health-card" id="health-condition-card">
+                                    <h4><i class="ph ph-pulse"></i> Condition</h4>
+                                    <p id="health-condition-text">Reading lab + vitals to declare health.</p>
+                                    <div class="badge-line" id="health-monitor-badges"></div>
+                                </div>
+                                <div class="health-card" id="visit-card">
+                                    <h4><i class="ph ph-first-aid"></i> Visit / Admit</h4>
+                                    <p id="visit-advice">Doctor visit guidance will appear here.</p>
+                                    <div class="badge-line" id="visit-why"></div>
+                                </div>
+                                <div class="health-card" id="upcoming-card">
+                                    <h4><i class="ph ph-calendar"></i> Upcoming</h4>
+                                    <p id="upcoming-list">Lab tests, appointments, medicines will list here.</p>
+                                    <div class="badge-line" id="upcoming-badges"></div>
+                                </div>
+                                <div class="health-card" id="family-share-card">
+                                    <h4><i class="ph ph-users-three"></i> Family shares</h4>
+                                    <p id="family-share-text">Share dashboard with trusted profiles.</p>
+                                    <div class="badge-line" id="family-share-badges"></div>
+                                </div>
+                            </div>
+
+                            <div class="section-header" style="margin-bottom:4px;"><div class="blue-dot"></div> Version 3 Pro · Sync center</div>
+                            <div class="sync-board" id="sync-board">
+                                <div class="sync-card">
+                                    <div class="title"><i class="ph ph-gear-six"></i>Profile + settings</div>
+                                    <div class="desc">Linked to patient profile and settings for consistent alerts and privacy.</div>
+                                    <div class="meta"><span class="dot"></span> Synced</div>
+                                    <a href="patient-settings.html">Open settings</a>
+                                </div>
+                                <div class="sync-card">
+                                    <div class="title"><i class="ph ph-users"></i>Family oversight</div>
+                                    <div class="desc">Guardians are watching the dashboard; daily summaries are shared.</div>
+                                    <div class="meta"><span class="dot"></span> Live watchers 3</div>
+                                    <a href="patient-family.html">Manage family access</a>
+                                </div>
+                                <div class="sync-card">
+                                    <div class="title"><i class="ph ph-flask"></i>Labs + health pages</div>
+                                    <div class="desc">Readiness pulls from labs, organs, and device streams across pages.</div>
+                                    <div class="meta"><span class="dot"></span> Synced to dashboard</div>
+                                    <a href="patient-health.html">View health graph</a>
+                                </div>
+                                <div class="sync-card">
+                                    <div class="title"><i class="ph ph-shield-check"></i>Safety routines</div>
+                                    <div class="desc">SOS, secure face ID, and insurance desk are pinned for quick use.</div>
+                                    <div class="meta"><span class="dot"></span> Ready for daily checks</div>
+                                    <a href="patient-insurance.html">Open insurance desk</a>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -882,83 +973,29 @@
                         </div>
 
                         <div class="schedule-area" style="margin-top: 10px;">
-                        
-                        <div class="ai-panel" id="ai-panel">
-                            <span class="ai-title" id="ai-title">AI ANALYSIS</span>
-                            <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
-                            <div class="typing" id="ai-typing">AI is typing...</div>
-                        </div>
-                        
-                        <!-- DISEASE GUIDANCE (HIDDEN BY DEFAULT) -->
-                        <div class="guidance-panel" id="guidance-panel">
-                            <div class="guidance-title">Action Plan: Dengue Management</div>
-                            <ul class="guidance-list">
-                                <li>Monitor Platelets (Admit if < 20k)</li>
-                                <li>Immediate Hydration Required</li>
-                                <li>Check for bleeding spots</li>
-                                <li>Watch for window period (Day 3-7)</li>
-                            </ul>
-                        </div>
+                            <div class="ai-panel" id="ai-panel">
+                                <span class="ai-title" id="ai-title">AI ANALYSIS</span>
+                                <p class="ai-text" id="ai-text">Patient vitals are stable. All organ functions within normal range. Monitoring active.</p>
+                                <div class="typing" id="ai-typing">AI is typing...</div>
+                            </div>
 
-                        <div class="section-header" style="margin-bottom:8px; margin-top:10px;"><div class="blue-dot"></div> Care Schedule</div>
-                        <div class="next-checkup">
-                            <div><div style="font-size:10px; color:#9ca3af; margin-bottom:2px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 13px;">Fri, 24 Mar</div></div>
-                            <i class="ph-fill ph-calendar-check" style="font-size:20px; color: var(--color-blue);"></i>
-                         </div>
+                            <!-- DISEASE GUIDANCE (HIDDEN BY DEFAULT) -->
+                            <div class="guidance-panel" id="guidance-panel">
+                                <div class="guidance-title">Action Plan: Dengue Management</div>
+                                <ul class="guidance-list">
+                                    <li>Monitor Platelets (Admit if < 20k)</li>
+                                    <li>Immediate Hydration Required</li>
+                                    <li>Check for bleeding spots</li>
+                                    <li>Watch for window period (Day 3-7)</li>
+                                </ul>
+                            </div>
 
-                        <div class="section-header" style="margin-bottom:8px; margin-top:4px;"><div class="blue-dot"></div> Version 3 · Health map</div>
-                        <div class="health-grid">
-                            <div class="health-card" id="health-condition-card">
-                                <h4><i class="ph ph-pulse"></i> Condition</h4>
-                                <p id="health-condition-text">Reading lab + vitals to declare health.</p>
-                                <div class="badge-line" id="health-monitor-badges"></div>
-                            </div>
-                            <div class="health-card" id="visit-card">
-                                <h4><i class="ph ph-first-aid"></i> Visit / Admit</h4>
-                                <p id="visit-advice">Doctor visit guidance will appear here.</p>
-                                <div class="badge-line" id="visit-why"></div>
-                            </div>
-                            <div class="health-card" id="upcoming-card">
-                                <h4><i class="ph ph-calendar"></i> Upcoming</h4>
-                                <p id="upcoming-list">Lab tests, appointments, medicines will list here.</p>
-                                <div class="badge-line" id="upcoming-badges"></div>
-                            </div>
-                            <div class="health-card" id="family-share-card">
-                                <h4><i class="ph ph-users-three"></i> Family shares</h4>
-                                <p id="family-share-text">Share dashboard with trusted profiles.</p>
-                                <div class="badge-line" id="family-share-badges"></div>
-                            </div>
+                            <div class="section-header" style="margin-bottom:8px; margin-top:10px;"><div class="blue-dot"></div> Care Schedule</div>
+                            <div class="next-checkup">
+                                <div><div style="font-size:10px; color:#9ca3af; margin-bottom:2px; font-weight: 600;">NEXT CHECKUP</div><div style="font-weight:700; font-size: 13px;">Fri, 24 Mar</div></div>
+                                <i class="ph-fill ph-calendar-check" style="font-size:20px; color: var(--color-blue);"></i>
+                             </div>
                         </div>
-
-                        <div class="section-header" style="margin-bottom:8px; margin-top:6px;"><div class="blue-dot"></div> Version 3 Pro · Sync center</div>
-                        <div class="sync-board" id="sync-board">
-                            <div class="sync-card">
-                                <div class="title"><i class="ph ph-gear-six"></i>Profile + settings</div>
-                                <div class="desc">Linked to patient profile and settings for consistent alerts and privacy.</div>
-                                <div class="meta"><span class="dot"></span> Synced</div>
-                                <a href="patient-settings.html">Open settings</a>
-                            </div>
-                            <div class="sync-card">
-                                <div class="title"><i class="ph ph-users"></i>Family oversight</div>
-                                <div class="desc">Guardians are watching the dashboard; daily summaries are shared.</div>
-                                <div class="meta"><span class="dot"></span> Live watchers 3</div>
-                                <a href="patient-family.html">Manage family access</a>
-                            </div>
-                            <div class="sync-card">
-                                <div class="title"><i class="ph ph-flask"></i>Labs + health pages</div>
-                                <div class="desc">Readiness pulls from labs, organs, and device streams across pages.</div>
-                                <div class="meta"><span class="dot"></span> Synced to dashboard</div>
-                                <a href="patient-health.html">View health graph</a>
-                            </div>
-                            <div class="sync-card">
-                                <div class="title"><i class="ph ph-shield-check"></i>Safety routines</div>
-                                <div class="desc">SOS, secure face ID, and insurance desk are pinned for quick use.</div>
-                                <div class="meta"><span class="dot"></span> Ready for daily checks</div>
-                                <a href="patient-insurance.html">Open insurance desk</a>
-                            </div>
-                        </div>
-
-                    </div>
 
                 </div>
 
