@@ -123,12 +123,15 @@
         .dashboard-body { flex: 1; display: flex; overflow: hidden; position: relative; }
 
         /* SIDEBAR */
-        .sidebar { width: 90px; display: flex; flex-direction: column; align-items: center; padding: 40px 0; gap: 36px; border-right: 1px solid var(--glass-border); z-index: 10; background: var(--sidebar-bg); backdrop-filter: var(--glass-blur); flex-shrink: 0; }
+        .sidebar { width: 120px; display: flex; flex-direction: column; align-items: center; padding: 32px 0; gap: 18px; border-right: 1px solid var(--glass-border); z-index: 10; background: var(--sidebar-bg); backdrop-filter: var(--glass-blur); flex-shrink: 0; }
         .logo { font-weight: 800; color: var(--text-main); font-size: 24px; letter-spacing: -1px; margin-bottom: 12px; }
         .logo span { color: var(--color-blue); }
-        .menu-item { width: 50px; height: 50px; border-radius: 16px; display: flex; justify-content: center; align-items: center; color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
-        .menu-item:hover { color: var(--text-main); background: var(--glass-bg); }
+        .menu-item { width: 90px; height: 74px; border-radius: 16px; display: flex; justify-content: center; align-items: center; color: var(--text-muted); font-size: 22px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; text-decoration: none; flex-direction: column; gap: 6px; padding: 10px; text-align: center; }
+        .menu-item:hover { color: var(--text-main); background: var(--glass-bg); border-color: var(--glass-border); }
         .menu-item.active { background: var(--glass-border); color: var(--color-blue); box-shadow: var(--shadow-soft); border: 1px solid var(--glass-border); }
+        .menu-item.danger { color: #ef4444; }
+        .menu-label { font-size: 11px; font-weight: 700; color: inherit; letter-spacing: 0.2px; }
+        .sidebar-divider { width: 60%; height: 1px; background: var(--divider-color); margin: 6px auto; opacity: 0.6; }
 
         /* MAIN GRID */
         .main-content {
@@ -151,10 +154,13 @@
         .page-title h2 { font-size: 18px; color: var(--color-blue); margin-bottom: 5px; font-weight: 600; letter-spacing: 0.5px; }
         .page-title h1 { font-size: 56px; font-weight: 700; color: var(--text-main); line-height: 1; letter-spacing: -2px; }
         .page-title h1 span { font-weight: 300; opacity: 0.8; }
+        .page-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .page-nav a { padding: 8px 14px; border-radius: 12px; border: 1px solid var(--glass-border); color: var(--text-muted); background: var(--glass-bg); font-size: 12px; font-weight: 700; text-decoration: none; }
+        .page-nav a.active { color: var(--color-blue); border-color: rgba(10,132,255,0.4); box-shadow: 0 6px 14px rgba(10,132,255,0.15); }
 
         /* 3D STAGE */
         .heart-stage { grid-column: 1; grid-row: 2; position: relative; display: flex; justify-content: center; align-items: center; }
-        #model-3d-container { width: 140%; height: 140%; position: absolute; top: -20%; left: -20%; z-index: 1; opacity: 0; animation: fadeIn 1.5s ease-out forwards; cursor: grab; }
+        #model-3d-container { width: 140%; height: 140%; position: absolute; top: -20%; left: -20%; z-index: 1; opacity: 0; animation: fadeIn 1.5s ease-out forwards; cursor: grab; display: flex; align-items: center; justify-content: center; }
         #model-3d-container:active { cursor: grabbing; }
         .rings { position: absolute; width: 550px; height: 550px; border-radius: 50%; border: 1px solid var(--glass-border); background: radial-gradient(circle, rgba(10, 132, 255, 0.03) 0%, transparent 60%); z-index: 0; animation: spin 40s linear infinite; }
         .rings::before { content: ''; position: absolute; top: 50px; left: 50px; right: 50px; bottom: 50px; border-radius: 50%; border: 1px dashed var(--glass-border); animation: spinReverse 30s linear infinite; }
@@ -420,11 +426,19 @@
         <div class="dashboard-body">
             <div class="sidebar">
                 <div class="logo">H<span>+</span></div>
-                <div class="menu-item active"><i class="ph-fill ph-heartbeat"></i></div>
-                <div class="menu-item"><i class="ph ph-flask"></i></div>
-                <div class="menu-item"><i class="ph ph-calendar"></i></div>
-                <div class="menu-item"><i class="ph ph-user"></i></div>
-                <div class="menu-item" style="margin-top: auto; color: #ef4444;"><i class="ph ph-power"></i></div>
+                <a class="menu-item active" href="patient-dashboard.html"><i class="ph-fill ph-heartbeat"></i><span class="menu-label">Dashboard</span></a>
+                <a class="menu-item" href="patient-health.html"><i class="ph-bold ph-pulse"></i><span class="menu-label">Health</span></a>
+                <a class="menu-item" href="patient-organs.html"><i class="ph-bold ph-scan"></i><span class="menu-label">Organs</span></a>
+                <a class="menu-item" href="patient-labs.html"><i class="ph ph-flask"></i><span class="menu-label">Labs</span></a>
+                <a class="menu-item" href="patient-pharmacy.html"><i class="ph ph-pill"></i><span class="menu-label">Pharmacy</span></a>
+                <a class="menu-item" href="patient-hospitals.html"><i class="ph ph-hospital"></i><span class="menu-label">Hospitals</span></a>
+                <a class="menu-item" href="patient-insurance.html"><i class="ph ph-shield-plus"></i><span class="menu-label">Insurance</span></a>
+                <a class="menu-item" href="patient-devices.html"><i class="ph ph-watch"></i><span class="menu-label">Devices</span></a>
+                <a class="menu-item" href="patient-family.html"><i class="ph ph-users"></i><span class="menu-label">Family</span></a>
+                <a class="menu-item" href="patient-profile.html"><i class="ph ph-user"></i><span class="menu-label">Profile</span></a>
+                <div class="sidebar-divider"></div>
+                <a class="menu-item" href="patient-settings.html"><i class="ph ph-gear-six"></i><span class="menu-label">Settings</span></a>
+                <a class="menu-item danger" href="index.html" style="margin-top: auto;"><i class="ph ph-power"></i><span class="menu-label">Exit</span></a>
             </div>
 
             <div class="main-content">
@@ -437,6 +451,19 @@
                         <div class="page-title">
                             <h2>Patient: Dhivakaran</h2>
                             <h1>Status <span>Overview</span></h1>
+                        </div>
+                        <div class="page-nav">
+                            <a class="active" href="patient-dashboard.html">Dashboard</a>
+                            <a href="patient-health.html">Health</a>
+                            <a href="patient-organs.html">Organs</a>
+                            <a href="patient-labs.html">Labs</a>
+                            <a href="patient-pharmacy.html">Pharmacy</a>
+                            <a href="patient-hospitals.html">Hospitals</a>
+                            <a href="patient-insurance.html">Insurance</a>
+                            <a href="patient-devices.html">Devices</a>
+                            <a href="patient-family.html">Family</a>
+                            <a href="patient-profile.html">Profile</a>
+                            <a href="patient-settings.html">Settings</a>
                         </div>
                     </div>
                 </div>
@@ -717,7 +744,16 @@
 
     <script>
         // --- CONFIGURATION ---
-        const GITHUB_REPO_PATH = 'https://cdn.jsdelivr.net/gh/Nobledental/ULTRA-MOD@main/3d_models/'; 
+        const MODEL_BASE_PATH = '3d_models/';
+        const MODEL_FALLBACK = 'heart.glb';
+        const ORGAN_MODEL_FILES = {
+            heart: 'heart.glb',
+            brain: 'brain.glb',
+            lungs: 'lungs.glb',
+            liver: 'liver.glb',
+            kidneys: 'kidneys.glb',
+            eyes: 'eyes.glb'
+        };
         const apiKey = ""; // Gemini API Key will be injected by the environment
         
         // --- CUSTOM SVG ICONS FOR ORGANS ---
@@ -861,6 +897,54 @@
                     { name: "Vanadium", val: "Norm", unit: "", status: "optimal", cat: "Trace" },
                     { name: "Inositol", val: "Norm", unit: "", status: "optimal", cat: "Carb" }
                 ]
+            },
+            gallbladder: {
+                title: "Biliary System", simValue: 18, icon: "svg-gallbladder",
+                stats: [
+                    { id: "c1", title: "Bile Flow", base: 88, unit: "%", icon: "ph-arrows-left-right", type: "perc" },
+                    { id: "c2", title: "Cholesterol", base: 165, unit: "mg/dL", icon: "ph-drop-half-bottom", type: "norm" },
+                    { id: "c3", title: "Gallstone Risk", base: 8, unit: "%", icon: "ph-diamond", type: "perc" },
+                    { id: "c4", title: "LFT Support", base: 92, unit: "%", icon: "ph-heartbeat", type: "perc" }
+                ],
+                ai: { msg: "No biliary obstruction detected. Keep fiber intake consistent to prevent sludge.", risk: 9 },
+                nutrients: [
+                    { name: "Choline", val: "Adequate", unit: "", status: "optimal", cat: "Nutrient" },
+                    { name: "Fiber", val: "30", unit: "g", status: "optimal", cat: "Dietary" },
+                    { name: "Omega-3", val: "4.2", unit: "%", status: "deficient", cat: "Fatty Acid" },
+                    { name: "Vitamin K", val: "0.8", unit: "ug/mL", status: "optimal", cat: "Vitamin" }
+                ]
+            },
+            urinary: {
+                title: "Urinary Tract", simValue: 12, icon: "svg-urinary",
+                stats: [
+                    { id: "c1", title: "Filtration", base: 97, unit: "%", icon: "ph-funnel", type: "perc" },
+                    { id: "c2", title: "Hydration", base: 94, unit: "%", icon: "ph-drop", type: "perc" },
+                    { id: "c3", title: "pH", base: 6.2, unit: "pH", icon: "ph-eyedropper", type: "norm" },
+                    { id: "c4", title: "UTI Risk", base: 3, unit: "%", icon: "ph-shield-check", type: "perc" }
+                ],
+                ai: { msg: "Clear urinalysis. Encourage steady water intake and balanced electrolytes.", risk: 6 },
+                nutrients: [
+                    { name: "Cranberry", val: "Support", unit: "", status: "optimal", cat: "Phytonutrient" },
+                    { name: "Vitamin C", val: "1.0", unit: "mg/dL", status: "optimal", cat: "Vitamin" },
+                    { name: "Sodium", val: "138", unit: "mmol/L", status: "optimal", cat: "Electrolyte" },
+                    { name: "Potassium", val: "4.4", unit: "mmol/L", status: "optimal", cat: "Electrolyte" }
+                ]
+            },
+            eyes: {
+                title: "Ophthalmic", simValue: 20, icon: "ph-eye",
+                stats: [
+                    { id: "c1", title: "IOP", base: 14, unit: "mmHg", icon: "ph-gauge", type: "norm" },
+                    { id: "c2", title: "Vision", base: 20, unit: "/20", icon: "ph-binoculars", type: "norm" },
+                    { id: "c3", title: "Hydration", base: 90, unit: "%", icon: "ph-drop-half", type: "perc" },
+                    { id: "c4", title: "Strain", base: 22, unit: "%", icon: "ph-device-mobile", type: "perc" }
+                ],
+                ai: { msg: "Retinal scan clear. Maintain screen breaks to keep strain minimal.", risk: 7 },
+                nutrients: [
+                    { name: "Vitamin A", val: "Optimal", unit: "", status: "optimal", cat: "Vitamin" },
+                    { name: "Lutein", val: "Adequate", unit: "", status: "optimal", cat: "Carotenoid" },
+                    { name: "Omega-3", val: "4.5", unit: "%", status: "deficient", cat: "Fatty Acid" },
+                    { name: "Zinc", val: "85", unit: "mcg/dL", status: "optimal", cat: "Mineral" }
+                ]
             }
         };
 
@@ -955,18 +1039,27 @@
             group = new THREE.Group();
             scene.add(group);
 
-            // Using GLB Models from GitHub
             const loader = new THREE.GLTFLoader();
-            loader.load(`${GITHUB_REPO_PATH}${type}.glb`, (gltf) => {
+            const fileName = ORGAN_MODEL_FILES[type] || MODEL_FALLBACK;
+            const modelPath = `${MODEL_BASE_PATH}${fileName}`;
+
+            loader.load(modelPath, (gltf) => {
                 const model = gltf.scene;
-                // Auto-center & Scale
+
+                // Normalize scale & center
                 const box = new THREE.Box3().setFromObject(model);
-                const center = box.getCenter(new THREE.Vector3());
-                const size = box.getSize(new THREE.Vector3()).length();
-                const scale = 6 / size;
-                
-                model.position.sub(center); // Center to origin
+                const size = box.getSize(new THREE.Vector3());
+                const maxDim = Math.max(size.x, size.y, size.z) || 1;
+                const targetSize = 6;
+                const scale = targetSize / maxDim;
+
                 model.scale.setScalar(scale);
+                box.setFromObject(model);
+                const center = box.getCenter(new THREE.Vector3());
+                model.position.sub(center);
+                model.rotation.y = Math.PI; // Face camera consistently
+
+                group.position.set(0, 0, 0);
                 group.add(model);
             }, undefined, (err) => {
                 console.warn("Model fallback", err);
