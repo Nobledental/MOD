@@ -223,10 +223,16 @@
         /* MAIN GRID - COMPACT */
         .main-content {
             flex: 1; padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px; overflow-y: auto; position: relative;
+        }
+
+        .main-columns {
             display: grid;
-            grid-template-columns: 1.4fr 1fr;
-            grid-template-rows: auto 1fr;
-            gap: 20px; overflow-y: auto; position: relative;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 18px;
+            align-items: start;
         }
 
         /* HEADER */
@@ -296,20 +302,23 @@
 
         /* LEFT PANEL (3D + ORGANS) */
         .left-panel-container {
-            grid-column: 1; grid-row: 2;
-            display: flex; flex-direction: column; gap: 15px;
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 12px;
             position: relative;
         }
 
         /* 3D STAGE */
         .heart-stage {
-            flex: 1; min-height: 380px;
+            min-height: 320px;
+            max-height: 420px;
             position: relative;
             display: flex; justify-content: center; align-items: center;
             border-radius: 24px;
             border: 1px solid var(--glass-border);
             background: rgba(0,0,0,0.1);
-            overflow: hidden; 
+            overflow: hidden;
+            padding: 12px;
         }
         #model-3d-container {
             width: 100%; height: 100%; position: absolute; top: 0; left: 0; z-index: 1;
@@ -349,9 +358,11 @@
             border: 1px solid var(--glass-border);
             border-radius: 18px;
             padding: 12px;
-            margin-top: -50px; /* Overlap nicely */
             z-index: 10;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
         .section-header.mini { font-size: 10px; margin-bottom: 8px; opacity: 0.7; }
 
@@ -408,10 +419,17 @@
 
         /* RIGHT PANEL (VITALS + SCHEDULE) */
         .right-panel-container {
-            grid-column: 2; grid-row: 2;
-            display: flex; flex-direction: column; gap: 15px;
+            display: grid;
+            grid-template-rows: auto auto 1fr;
+            gap: 12px;
             height: 100%;
         }
+
+        .insight-stack {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            gap: 12px;
+        }.cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 10px; }
 
         .floating-stat {
             background: var(--card-bg); backdrop-filter: blur(20px);
@@ -436,7 +454,7 @@
         .section-header { font-size: 12px; font-weight: 700; color: var(--color-blue); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
         .blue-dot { width: 5px; height: 5px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
 
-        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; }
+        .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; gap: 10px; }
         
         .data-card {
             background: var(--card-bg); 
@@ -505,6 +523,7 @@
             backdrop-filter: blur(24px);
             border-radius: 18px; padding: 16px;
             border: 1px solid var(--glass-border); display: flex; flex-direction: column;
+            gap: 10px;
         }
         .ai-panel {
             margin-top: auto; padding: 14px; background: rgba(59, 130, 246, 0.08);
@@ -658,14 +677,9 @@
 
         /* --- RESPONSIVE OPTIMIZATION --- */
         @media (max-width: 1200px) {
-            .main-content {
-                grid-template-columns: 1fr;
-                grid-template-rows: auto 450px auto auto;
-                padding: 20px;
-                overflow-y: scroll;
-            }
-            .left-panel-container { grid-row: 2; }
-            .right-panel-container { grid-row: 3; }
+            .main-content { padding: 20px; }
+            .main-columns { grid-template-columns: 1fr; }
+            .heart-stage { max-height: none; }
             .sidebar { display: none; }
             .logo { display: none; }
         }
@@ -675,6 +689,7 @@
             .url-bar { display: none; }
             .nav-icons { display: none; }
             .main-content { padding: 16px; gap: 20px; display: flex; flex-direction: column; }
+            .main-columns { grid-template-columns: 1fr; }
             .page-title h1 { font-size: 36px; }
             .heart-stage { height: 320px; flex-shrink: 0; }
             .cards-grid { grid-template-columns: 1fr; }
@@ -685,9 +700,8 @@
 
         @media (max-width: 1080px) {
             .sidebar { display: none; }
-            .main-content { grid-template-columns: 1fr; grid-template-rows: auto auto auto; padding-bottom: 120px; }
-            .left-panel-container { grid-column: 1; grid-row: 2; }
-            .right-panel-container { grid-column: 1; grid-row: 3; }
+            .main-content { padding-bottom: 120px; }
+            .main-columns { grid-template-columns: 1fr; }
             .bottom-nav { display: block; }
         }
     </style>
@@ -781,7 +795,7 @@
             </div>
 
             <div class="main-content">
-                
+
                 <div class="header-section">
                     <div class="header-left">
                         <div class="top-toggles">
@@ -798,71 +812,76 @@
                     <button class="theme-toggle" id="theme-toggle">White Theme</button>
                 </div>
 
-                <div class="left-panel-container">
-                    <div class="heart-stage">
-                        <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
-                        <div class="rings"></div>
-                        <div class="scanner-line"></div>
-                        <div id="model-3d-container"></div>
-                    </div>
-                    
-                    <div class="organ-tray-wrapper">
-                        <div class="section-header mini">Select Organ System</div>
-                        <div class="organ-tray"></div>
-                        <div class="link-row" id="organ-shortcuts"></div>
-                    </div>
-                </div>
+                <div class="main-columns">
 
-                <div class="right-panel-container">
-                    
-                    <div class="floating-stat" id="float-card">
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <div class="live-badge"><div class="live-dot"></div> LIVE</div>
-                            <span style="font-size:11px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
+                    <div class="left-panel-container">
+                        <div class="heart-stage">
+                            <div class="sound-btn" id="sound-toggle"><i class="ph-fill ph-speaker-simple-high"></i></div>
+                            <div class="rings"></div>
+                            <div class="scanner-line"></div>
+                            <div id="model-3d-container"></div>
                         </div>
-                        <div style="font-size:24px; font-weight:800; margin-bottom:4px; color: var(--text-white);" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
-                        <svg width="100%" height="30" viewBox="0 0 200 30" id="live-ecg-svg" preserveAspectRatio="none">
-                            <path id="live-ecg-path" d="" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </div>
 
-                    <div class="section-header"><div class="blue-dot"></div> <span id="section-title">My Heart Condition</span></div>
-                    
-                    <div class="cards-grid">
-                        <div class="data-card state-blue" id="card-1">
-                            <div class="card-head">
-                                <div><span class="card-title" id="c1-title">Blood Status</span><span class="card-val" id="c1-val">116/70</span></div>
-                                <i class="ph-fill ph-drop card-icon" id="c1-icon"></i>
-                            </div>
-                            <div class="bar-chart" id="blood-chart">
-                                <div class="bar" style="height:40%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:50%"></div><div class="bar act" style="height:90%"></div><div class="bar act" style="height:60%"></div><div class="bar" style="height:40%"></div>
-                            </div>
-                        </div>
-                        <div class="data-card active-blue" id="card-2">
-                            <div class="card-head">
-                                <div><span class="card-title" id="c2-title">Heart Rate</span><span class="card-val" id="c2-val">120 <span style="font-size:14px; font-weight:500;">bpm</span></span></div>
-                                <i class="ph ph-heartbeat card-icon" style="color:white;" id="c2-icon"></i>
-                            </div>
-                            <svg width="100%" height="50" style="margin-top:auto; opacity:0.8; overflow:visible;"><path id="card-wave-path" d="M0,25 Q10,25 15,10 T30,25 T45,40 T60,10 T75,25 T100,25" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/></svg>
-                            <div class="blue-square-val"><span style="font-size:16px; font-weight:800;" id="box-bpm">120</span></div>
-                        </div>
-                        <div class="data-card state-blue" id="card-3">
-                            <div class="card-head">
-                                <div><span class="card-title" id="c3-title">Blood Count</span><span class="card-val" id="c3-val">80-90</span></div>
-                                <i class="ph-fill ph-chart-bar card-icon" id="c3-icon"></i>
-                            </div>
-                            <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 Q25,5 50,20 T100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"/><circle cx="80" cy="20" r="4" fill="#3b82f6" /></svg>
-                        </div>
-                        <div class="data-card state-blue" id="card-4">
-                            <div class="card-head">
-                                <div><span class="card-title" id="c4-title">Glucose Level</span><span class="card-val" id="c4-val">230<small style="font-size:12px; color:#6b7280;">/ml</small></span></div>
-                                <i class="ph-fill ph-dna card-icon" id="c4-icon"></i>
-                            </div>
-                            <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 L10,25 L20,15 L30,25 L40,15 L50,25 L60,15 L100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                        <div class="organ-tray-wrapper">
+                            <div class="section-header mini">Select Organ System</div>
+                            <div class="organ-tray"></div>
+                            <div class="link-row" id="organ-shortcuts"></div>
                         </div>
                     </div>
 
-                    <div class="schedule-area" style="margin-top: 10px;">
+                    <div class="right-panel-container">
+
+                        <div class="insight-stack">
+                            <div class="floating-stat" id="float-card">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <div class="live-badge"><div class="live-dot"></div> LIVE</div>
+                                    <span style="font-size:11px; color:#9ca3af; font-weight:700;">Real-time telemetry</span>
+                                </div>
+                                <div style="font-size:24px; font-weight:800; margin-bottom:4px; color: var(--text-white);" id="main-stat">120 <span style="font-size:12px; font-weight:500;">bpm</span></div>
+                                <svg width="100%" height="30" viewBox="0 0 200 30" id="live-ecg-svg" preserveAspectRatio="none">
+                                    <path id="live-ecg-path" d="" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+
+                            <div>
+                                <div class="section-header" style="margin-bottom:8px;"><div class="blue-dot"></div> <span id="section-title">My Heart Condition</span></div>
+                                <div class="cards-grid">
+                                    <div class="data-card state-blue" id="card-1">
+                                        <div class="card-head">
+                                            <div><span class="card-title" id="c1-title">Blood Status</span><span class="card-val" id="c1-val">116/70</span></div>
+                                            <i class="ph-fill ph-drop card-icon" id="c1-icon"></i>
+                                        </div>
+                                        <div class="bar-chart" id="blood-chart">
+                                            <div class="bar" style="height:40%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:50%"></div><div class="bar act" style="height:90%"></div><div class="bar act" style="height:60%"></div><div class="bar" style="height:40%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="data-card active-blue" id="card-2">
+                                        <div class="card-head">
+                                            <div><span class="card-title" id="c2-title">Heart Rate</span><span class="card-val" id="c2-val">120 <span style="font-size:14px; font-weight:500;">bpm</span></span></div>
+                                            <i class="ph ph-heartbeat card-icon" style="color:white;" id="c2-icon"></i>
+                                        </div>
+                                        <svg width="100%" height="50" style="margin-top:auto; opacity:0.8; overflow:visible;"><path id="card-wave-path" d="M0,25 Q10,25 15,10 T30,25 T45,40 T60,10 T75,25 T100,25" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round"/></svg>
+                                        <div class="blue-square-val"><span style="font-size:16px; font-weight:800;" id="box-bpm">120</span></div>
+                                    </div>
+                                    <div class="data-card state-blue" id="card-3">
+                                        <div class="card-head">
+                                            <div><span class="card-title" id="c3-title">Blood Count</span><span class="card-val" id="c3-val">80-90</span></div>
+                                            <i class="ph-fill ph-chart-bar card-icon" id="c3-icon"></i>
+                                        </div>
+                                        <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 Q25,5 50,20 T100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round"/><circle cx="80" cy="20" r="4" fill="#3b82f6" /></svg>
+                                    </div>
+                                    <div class="data-card state-blue" id="card-4">
+                                        <div class="card-head">
+                                            <div><span class="card-title" id="c4-title">Glucose Level</span><span class="card-val" id="c4-val">230<small style="font-size:12px; color:#6b7280;">/ml</small></span></div>
+                                            <i class="ph-fill ph-dna card-icon" id="c4-icon"></i>
+                                        </div>
+                                        <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 L10,25 L20,15 L30,25 L40,15 L50,25 L60,15 L100,20" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-area" style="margin-top: 10px;">
                         
                         <div class="ai-panel" id="ai-panel">
                             <span class="ai-title" id="ai-title">AI ANALYSIS</span>
