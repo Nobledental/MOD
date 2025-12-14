@@ -228,6 +228,88 @@
             gap: 18px; overflow-y: auto; position: relative;
         }
 
+        /* EXPERIENCE STRIP */
+        .experience-strip {
+            border: 1px solid var(--glass-border);
+            background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(16,185,129,0.08));
+            border-radius: 18px;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: 1.1fr 1.2fr 0.9fr;
+            gap: 14px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.16);
+        }
+        .strip-meta { display: flex; flex-direction: column; gap: 8px; }
+        .strip-eyebrow {
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+        .strip-title { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+        .strip-desc { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+        .micro-chips { display: flex; gap: 8px; flex-wrap: wrap; }
+        .micro-chip {
+            padding: 6px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(0,0,0,0.15);
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .micro-chip i { color: var(--color-blue); }
+        .strip-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px; }
+        .strip-card {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid var(--glass-border);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+        .strip-card::after {
+            content: "";
+            position: absolute; inset: 0;
+            background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.18), transparent 45%);
+            opacity: 0.6; pointer-events: none;
+        }
+        .strip-card small { font-size: 11px; color: var(--text-muted); letter-spacing: 0.3px; }
+        .strip-value { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; z-index: 1; }
+        .strip-trend { font-size: 12px; color: #10b981; display: flex; gap: 6px; align-items: center; z-index: 1; }
+        .strip-trend.negative { color: #f59e0b; }
+        .micro-bar {
+            width: 100%; height: 6px; border-radius: 999px;
+            background: rgba(255,255,255,0.08);
+            overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
+        }
+        .micro-bar span { display: block; height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); border-radius: 999px; width: 76%; }
+        .strip-steps { display: flex; flex-direction: column; gap: 8px; }
+        .step-card {
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .step-time { font-size: 11px; color: var(--text-muted); width: 60px; }
+        .step-body { display: flex; flex-direction: column; gap: 2px; }
+        .step-body strong { font-size: 13px; }
+        .step-body span { font-size: 12px; color: var(--text-muted); }
+        .step-icon {
+            width: 32px; height: 32px; border-radius: 10px;
+            background: rgba(59,130,246,0.12);
+            color: var(--color-blue);
+            display: grid; place-items: center;
+        }
+
         .main-columns {
             display: grid;
             grid-template-columns: 1.1fr 1fr;
@@ -716,6 +798,8 @@
             .heart-stage { max-height: none; }
             .sidebar { display: none; }
             .logo { display: none; }
+            .experience-strip { grid-template-columns: 1fr; }
+            .strip-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
         }
 
         @media (max-width: 768px) {
@@ -730,6 +814,9 @@
             .organ-tray { justify-content: center; } /* Stack on mobile */
             .organ-item { width: 50px; height: 50px; }
             .organ-item i, .organ-item svg { font-size: 20px; }
+            .experience-strip { grid-template-columns: 1fr; }
+            .strip-grid { grid-template-columns: 1fr; }
+            .strip-steps { order: 3; }
         }
 
         @media (max-width: 1080px) {
@@ -778,6 +865,65 @@
                         <div class="link-row" id="navigator-links"></div>
                     </div>
                     <button class="theme-toggle" id="theme-toggle">White Theme</button>
+                </div>
+
+                <div class="experience-strip">
+                    <div class="strip-meta">
+                        <div class="strip-eyebrow">Today</div>
+                        <div class="strip-title">Care pulse for Dhivakaran</div>
+                        <p class="strip-desc">A condensed view of readiness, rest and daily focus. Use this as the command center before diving deeper.</p>
+                        <div class="micro-chips">
+                            <div class="micro-chip"><i class="ph ph-heartbeat"></i> Synced overnight</div>
+                            <div class="micro-chip"><i class="ph ph-moon"></i> Sleep debt recovered</div>
+                            <div class="micro-chip"><i class="ph ph-shield-check"></i> Security lock enabled</div>
+                        </div>
+                    </div>
+                    <div class="strip-grid">
+                        <div class="strip-card">
+                            <small>Readiness</small>
+                            <div class="strip-value">92%</div>
+                            <div class="micro-bar"><span style="width:92%"></span></div>
+                            <div class="strip-trend"><i class="ph ph-arrow-up"></i> +4% vs yesterday</div>
+                        </div>
+                        <div class="strip-card">
+                            <small>Rest &amp; recovery</small>
+                            <div class="strip-value">7h 45m</div>
+                            <div class="micro-bar"><span style="width:78%"></span></div>
+                            <div class="strip-trend"><i class="ph ph-wave-saw-tool"></i> Deep sleep 2h 10m</div>
+                        </div>
+                        <div class="strip-card">
+                            <small>Movement</small>
+                            <div class="strip-value">4,280 steps</div>
+                            <div class="micro-bar"><span style="width:65%"></span></div>
+                            <div class="strip-trend negative"><i class="ph ph-arrow-bend-left-down"></i> Add 2 short walks</div>
+                        </div>
+                    </div>
+                    <div class="strip-steps">
+                        <div class="step-card">
+                            <div class="step-icon"><i class="ph ph-drop"></i></div>
+                            <div class="step-body">
+                                <strong>Hydrate + meds</strong>
+                                <span>Start with 350ml water, Atenolol 25mg</span>
+                            </div>
+                            <div class="step-time">Now</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon" style="background: rgba(16,185,129,0.15); color:#10b981;"><i class="ph ph-walk"></i></div>
+                            <div class="step-body">
+                                <strong>Move break</strong>
+                                <span>10 min stretch to lower resting HR</span>
+                            </div>
+                            <div class="step-time">11:00</div>
+                        </div>
+                        <div class="step-card">
+                            <div class="step-icon" style="background: rgba(59,130,246,0.2); color: var(--text-white);"><i class="ph ph-notebook"></i></div>
+                            <div class="step-body">
+                                <strong>Coach review</strong>
+                                <span>Upload BP reading before 6 PM</span>
+                            </div>
+                            <div class="step-time">Later</div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="main-columns">
