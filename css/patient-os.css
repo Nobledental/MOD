@@ -17,17 +17,19 @@
 }
 
 html[data-theme="vision"] {
-  --bg: #f6f7fb;
-  --bg-soft: rgba(255, 255, 255, 0.7);
-  --bg-glass: rgba(255, 255, 255, 0.45);
+  --bg: #fdfdff;
+  --bg-soft: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.7);
   --text: #0f111a;
-  --muted: #4c5164;
-  --primary: #3a7afe;
-  --accent: #00a5b5;
-  --shadow: 0 25px 60px rgba(25, 39, 76, 0.25);
-  --shadow-strong: 0 32px 80px rgba(25, 39, 76, 0.28);
-  --border: 1px solid rgba(255, 255, 255, 0.5);
-  --border-strong: 1px solid rgba(25, 39, 76, 0.18);
+  --muted: #445066;
+  --primary: #70c0ff;
+  --accent: #ff9ad8;
+  --danger: #ff6b8b;
+  --success: #4cc6aa;
+  --shadow: 0 25px 60px rgba(25, 39, 76, 0.14);
+  --shadow-strong: 0 32px 80px rgba(25, 39, 76, 0.18);
+  --border: 1px solid rgba(118, 136, 175, 0.25);
+  --border-strong: 1px solid rgba(25, 39, 76, 0.15);
 }
 
 * { box-sizing: border-box; }
@@ -163,11 +165,13 @@ header.hf-topbar {
 
 .atlas-card model-viewer {
   width: 100%;
-  height: 220px;
-  border-radius: 14px;
-  background: radial-gradient(circle at 30% 20%, rgba(109, 225, 227, 0.1), rgba(0,0,0,0));
+  height: 260px;
+  border-radius: 16px;
+  background: radial-gradient(circle at 30% 20%, rgba(109, 225, 227, 0.18), rgba(0,0,0,0));
   border: var(--border);
   margin: 10px 0 14px;
+  display: block;
+  transform-origin: center;
 }
 
 .atlas-links {
@@ -189,6 +193,63 @@ header.hf-topbar {
 }
 
 .atlas-links a:hover { transform: translateY(-2px); border-color: rgba(109, 225, 227, 0.4); }
+
+.live-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.live-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(109, 225, 227, 0.12), transparent 45%),
+              radial-gradient(circle at 80% 70%, rgba(138, 164, 255, 0.12), transparent 42%);
+  pointer-events: none;
+}
+
+.live-vitals { align-items: flex-end; }
+
+.pill.success { background: linear-gradient(120deg, var(--success), var(--primary)); color: #061017; }
+.pill.warn { background: linear-gradient(120deg, var(--danger), #ffb36b); color: #0f0a10; }
+
+.state-low { border-color: rgba(255, 123, 138, 0.6); box-shadow: 0 20px 60px rgba(255, 123, 138, 0.15); }
+.state-borderline { border-color: rgba(255, 195, 113, 0.5); box-shadow: 0 20px 60px rgba(255, 195, 113, 0.12); }
+.state-normal { border-color: rgba(112, 192, 255, 0.6); box-shadow: 0 20px 60px rgba(112, 192, 255, 0.12); }
+
+.state-low .pill { background: linear-gradient(120deg, #ff7b8a, #ff476f); color: #160611; }
+.state-borderline .pill { background: linear-gradient(120deg, #ffd18a, #ff9f5b); color: #0f0a10; }
+.state-normal .pill { background: linear-gradient(120deg, #70c0ff, #8aa4ff); color: #05121d; }
+
+.atlas-card.active, .organ-card.active {
+  outline: 2px solid rgba(109, 225, 227, 0.4);
+  outline-offset: 2px;
+  box-shadow: 0 24px 70px rgba(109, 225, 227, 0.18);
+}
+
+.model-stage { margin-top: 12px; }
+.model-stage model-viewer {
+  width: 100%;
+  height: 360px;
+  border-radius: 18px;
+  border: var(--border);
+  background: radial-gradient(circle at 50% 40%, rgba(109, 225, 227, 0.14), rgba(0,0,0,0));
+}
+
+model-viewer.pumping {
+  animation: hf-heartbeat var(--pulse-speed, 0.9s) ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes hf-heartbeat {
+  0% { transform: scale(0.98); }
+  20% { transform: scale(var(--pulse-scale, 1.03)); }
+  40% { transform: scale(0.99); }
+  60% { transform: scale(var(--pulse-scale, 1.02)); }
+  100% { transform: scale(0.98); }
+}
+
+.fallback-globe { box-shadow: 0 18px 60px rgba(112, 192, 255, 0.18); }
 
 .hero-title { font-size: clamp(32px, 5vw, 46px); margin: 0 0 10px; }
 .hero-sub { color: var(--muted); margin: 0 0 18px; }
