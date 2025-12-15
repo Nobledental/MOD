@@ -1,211 +1,240 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="matte">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthFlo — Family & Care Circle</title>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/patient-os.css">
-  <link rel="stylesheet" href="css/patient-connections.css">
+  <title>HealthFlo — Family Hub</title>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-radial: radial-gradient(circle at 20% 30%, #506176 0%, #1a1f2b 55%, #0E121B 100%);
+      --glass-bg: rgba(255, 255, 255, 0.03);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --glass-blur: blur(20px);
+      --text-main: #ffffff;
+      --text-muted: #94a3b8;
+      --color-blue: #0A84FF;
+      --color-yellow: #f59e0b;
+      --color-red: #ef4444;
+      --color-green: #10b981;
+      --color-purple: #8b5cf6;
+      --card-bg: rgba(22, 28, 38, 0.65);
+      --card-border: rgba(255, 255, 255, 0.05);
+      --shadow-soft: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', 'Plus Jakarta Sans', sans-serif; }
+    body { background: var(--bg-radial); color: var(--text-main); min-height: 100vh; padding: 36px; }
+
+    .family-shell { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+    .family-hero { padding: 24px 28px; border-radius: 26px; background: linear-gradient(120deg, rgba(59,130,246,0.15), rgba(255,255,255,0.02)); border: 1px solid var(--card-border); box-shadow: var(--shadow-soft); display:flex; align-items: center; justify-content: space-between; gap: 18px; backdrop-filter: blur(18px); }
+    .family-hero h1 { font-size: 42px; letter-spacing: -1px; }
+    .family-hero p { color: var(--text-muted); margin-top: 6px; max-width: 640px; }
+    .chip { display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border-radius: 999px; background: rgba(10,132,255,0.12); color: var(--color-blue); font-size: 12px; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; }
+    .pill-btn { padding: 10px 16px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-main); text-decoration: none; font-weight: 700; display:inline-flex; align-items:center; gap:8px; }
+    .pill-btn:hover { border-color: rgba(10,132,255,0.4); color: var(--color-blue); }
+
+    /* FAMILY CARDS */
+    .family-section { background: radial-gradient(circle at 20% 30%, rgba(255,255,255,0.04), rgba(255,255,255,0.01) 60%); border: 1px solid var(--card-border); border-radius: 26px; padding: 22px 24px; box-shadow: var(--shadow-soft); backdrop-filter: blur(18px); }
+    .family-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    .family-title { font-size: 14px; letter-spacing: 0.6px; text-transform: uppercase; color: var(--color-blue); font-weight: 800; display:flex; align-items:center; gap:8px; }
+    .family-sub { font-size: 12px; color: var(--text-muted); }
+    .view-all-link { color: var(--text-muted); font-size: 12px; font-weight: 700; text-decoration: none; display:flex; align-items:center; gap:6px; }
+    .view-all-link:hover { color: var(--color-blue); }
+    .family-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; }
+    .family-card { position: relative; padding: 16px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.08); background: linear-gradient(145deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02)); box-shadow: 0 10px 30px rgba(0,0,0,0.25); backdrop-filter: blur(12px); overflow: hidden; }
+    .family-card::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08), transparent 55%); opacity: 0; transition: opacity 0.3s ease; }
+    .family-card:hover::after { opacity: 1; }
+    .family-top { display:flex; align-items:center; gap:12px; position:relative; z-index:1; }
+    .family-avatar { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-weight: 800; color: white; font-size: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); }
+    .accent-blue { background: linear-gradient(135deg, #1d4ed8, #60a5fa); }
+    .accent-pink { background: linear-gradient(135deg, #be185d, #f472b6); }
+    .accent-green { background: linear-gradient(135deg, #047857, #34d399); }
+    .accent-orange { background: linear-gradient(135deg, #b45309, #f59e0b); }
+    .family-info { display:flex; flex-direction:column; gap:4px; }
+    .family-name { font-size: 16px; font-weight: 700; color: var(--text-main); }
+    .family-role { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+    .family-score { display:flex; align-items: baseline; gap:6px; margin-top: 10px; position:relative; z-index:1; }
+    .family-score strong { font-size: 26px; color: var(--text-main); letter-spacing: -0.5px; }
+    .score-label { font-size: 11px; color: var(--text-muted); font-weight: 700; }
+    .family-chip { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius: 12px; font-size:11px; font-weight:700; color: var(--text-main); border:1px solid var(--glass-border); background: rgba(255,255,255,0.05); margin-top: 8px; position:relative; z-index:1; }
+    .family-chip i { color: var(--color-blue); }
+
+    /* CONTROL GRID */
+    .control-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+    .control-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 18px; padding: 18px; box-shadow: var(--shadow-soft); backdrop-filter: blur(16px); display:flex; flex-direction:column; gap:10px; }
+    .control-card h3 { font-size: 16px; }
+    .control-card p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
+    .badge { display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border-radius: 10px; border:1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-main); font-size: 12px; font-weight: 700; }
+    .pill-input { width: 100%; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); padding: 10px 12px; color: var(--text-main); }
+    .pill-row { display:flex; gap: 10px; }
+    .pill-row .pill-input { flex:1; }
+    .control-actions { display:flex; gap: 10px; flex-wrap: wrap; }
+    .primary-btn { background: linear-gradient(135deg, var(--color-blue), #2563eb); color: white; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 700; cursor:pointer; box-shadow: 0 8px 20px rgba(59,130,246,0.25); }
+    .primary-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .hint { color: var(--text-muted); font-size: 12px; }
+    .table-card { background: var(--card-bg); border:1px solid var(--card-border); border-radius: 18px; padding: 14px; box-shadow: var(--shadow-soft); backdrop-filter: blur(16px); }
+    table { width: 100%; border-collapse: collapse; color: var(--text-main); }
+    th, td { text-align: left; padding: 10px 8px; font-size: 13px; }
+    th { color: var(--text-muted); font-weight: 700; }
+    tr + tr td { border-top: 1px solid var(--glass-border); }
+
+    @media(max-width: 720px) {
+      body { padding: 20px; }
+      .family-hero { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
 </head>
 <body>
-  <header class="hf-topbar">
-    <div class="container topbar-inner">
-      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
-      <nav class="hf-nav">
-        <a href="patient-dashboard.html">Dashboard</a>
-        <a href="patient-health.html">Health</a>
-        <a href="patient-organs.html">Organs</a>
-        <a href="patient-profile.html">Profile</a>
-        <a href="patient-hospitals.html">Hospitals</a>
-        <a href="patient-pharmacy.html">Pharmacy</a>
-        <a href="patient-labs.html">Labs</a>
-        <a href="patient-devices.html">Devices</a>
-        <a class="active" href="patient-family.html">Family</a>
-        <a href="patient-insurance.html">Insurance</a>
-        <a href="patient-settings.html">Settings</a>
-      </nav>
-      <div class="topbar-actions">
-        <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">🌓</button>
-        <button class="icon-btn">🔔</button>
+  <div class="family-shell">
+    <header class="family-hero">
+      <div>
+        <span class="chip"><i class="ph-fill ph-heart"></i> Shared Health Records</span>
+        <h1>Family Hub</h1>
+        <p>Keep your trusted circle in sync with the same glassy dashboard experience as your patient home. Live scores, SOS sharing, and permissions stay mirrored.</p>
       </div>
-    </div>
-  </header>
+      <a class="pill-btn" href="patient-dashboard.html"><i class="ph-bold ph-arrow-left"></i> Back to dashboard</a>
+    </header>
 
-  <main class="container">
-    <section class="connection-hero">
-      <div class="hero-card">
-        <p class="chip">Family mirror</p>
-        <h1 class="hero-title">Share live vitals and alerts</h1>
-        <p class="section-sub">Trusted family get AI-simplified vitals, organ alerts, and ambulance triggers with privacy controls.</p>
-        <div class="hero-actions">
-          <button class="badge primary" id="familyMirror" data-state="off">Share live view with family</button>
-          <button class="badge" id="triggerEmergency">Trigger ambulance</button>
-          <button class="badge" id="autoToggle">Auto trigger: OFF</button>
+    <section class="family-section">
+      <div class="family-header">
+        <div>
+          <div class="family-title"><div class="chip" style="padding:4px 10px; background: rgba(59,130,246,0.12); color: var(--color-blue);">Care Circle</div> Family members</div>
+          <div class="family-sub">Connected to vitals, SOS alerts, and consent receipts.</div>
         </div>
-        <div class="notice" id="family_status_msg">Family access paused.</div>
-        <div class="notice" id="emg_status_msg">Manual mode active.</div>
+        <div class="hint">Scores update with your dashboard</div>
       </div>
-      <div class="hero-card stack">
-        <div class="stat-grid" id="family_tiles">
-          <div class="stat"><small>Riya (Sister)</small><strong>Viewer</strong><span class="hint">Sees labs, vitals</span></div>
-          <div class="stat"><small>Anand (Dad)</small><strong>Guardian</strong><span class="hint">Can trigger ambulance</span></div>
-          <div class="stat"><small>Priya (Partner)</small><strong>Admin</strong><span class="hint">Manage insurance</span></div>
+      <div class="family-grid" id="family-grid"></div>
+    </section>
+
+    <section class="control-grid">
+      <div class="control-card">
+        <h3><i class="ph-fill ph-shield"></i> Share live view</h3>
+        <p>Mirror vitals, labs, and SOS status with trusted family. Toggle sharing without leaving the dashboard look.</p>
+        <div class="control-actions">
+          <button class="primary-btn" id="toggleShare">Pause sharing</button>
+          <span class="badge" id="shareStatus"><i class="ph-fill ph-broadcast"></i> Live mirroring</span>
         </div>
-        <div class="inline-list">
-          <span class="badge soft">SOS mirroring</span>
-          <span class="badge soft">Geo-stream</span>
-          <span class="badge soft">One-tap revoke</span>
+        <div class="hint">Family will see the same tiles and alerts you see here.</div>
+      </div>
+
+      <div class="control-card">
+        <h3><i class="ph-fill ph-first-aid"></i> Emergency rules</h3>
+        <p>Decide who can trigger ambulance, share live location, or accept a hospital bed during escalations.</p>
+        <div class="control-actions">
+          <span class="badge"><i class="ph-bold ph-map-pin"></i> Geo + QR</span>
+          <span class="badge"><i class="ph-bold ph-bell"></i> Layered alerts</span>
+          <span class="badge"><i class="ph-bold ph-clock"></i> Auto-stop 30m</span>
         </div>
+      </div>
+
+      <div class="control-card">
+        <h3><i class="ph-fill ph-user-plus"></i> Add family profile</h3>
+        <div class="pill-row">
+          <input class="pill-input" id="nameInput" placeholder="Name" required>
+          <input class="pill-input" id="relationInput" placeholder="Role (Spouse/Guardian)" required>
+        </div>
+        <div class="pill-row">
+          <input class="pill-input" id="scoreInput" placeholder="Health score" type="number" min="0" max="100" value="90">
+          <select class="pill-input" id="accentInput">
+            <option value="accent-blue">Blue</option>
+            <option value="accent-pink">Pink</option>
+            <option value="accent-green">Green</option>
+            <option value="accent-orange">Orange</option>
+          </select>
+        </div>
+        <button class="primary-btn" id="addMember">Save & mirror</button>
+        <div class="hint">New members appear here and on the dashboard tile.</div>
       </div>
     </section>
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">Trusted circle</p>
-          <h2 class="section-title">Roles & permissions</h2>
-          <p class="section-sub">Granular controls for who sees vitals, prescriptions, insurance, or can act during emergencies.</p>
-        </div>
-      </header>
-      <div class="section-grid">
+    <section class="table-card">
+      <h3 style="margin-bottom:8px;">What family can do</h3>
+      <table>
+        <thead>
+          <tr><th>Action</th><th>Owner</th><th>Permissions</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Approve admission</td><td>Admin</td><td>Accept bed + share QR</td></tr>
+          <tr><td>Upload lab reports</td><td>Guardian</td><td>Auto-sync to organs/labs</td></tr>
+          <tr><td>Order medicines</td><td>Viewer</td><td>Requires patient OTP</td></tr>
+          <tr><td>Insurance documents</td><td>Admin</td><td>Submit + track status</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <script>
+    const FAMILY_MEMBERS = [
+      { name: 'You', relation: 'Primary Account', role: 'Health Score', score: 87, accent: 'accent-blue', badge: 'Live mirrored' },
+      { name: 'Priya', relation: 'Spouse', role: 'Health Score', score: 92, accent: 'accent-pink', badge: 'Care permissions' },
+      { name: 'Aarav', relation: 'Son (8)', role: 'Health Score', score: 95, accent: 'accent-green', badge: 'Vitals only' },
+      { name: 'Rajesh', relation: 'Father', role: 'Health Score', score: 78, accent: 'accent-orange', badge: 'Location + SOS' }
+    ];
+
+    function renderFamilyCards(targetId, members) {
+      const grid = document.getElementById(targetId);
+      if (!grid) return;
+      grid.innerHTML = members.map(member => `
         <div class="family-card">
-          <h3>Add family profile</h3>
-          <form id="familyForm" class="section-sub">
-            <div class="row">
-              <input type="text" id="familyName" placeholder="Name" required class="pill">
-              <input type="text" id="familyRole" placeholder="Role (Viewer/Guardian/Admin)" required class="pill">
+          <div class="family-top">
+            <div class="family-avatar ${member.accent}">${member.name.charAt(0)}</div>
+            <div class="family-info">
+              <div class="family-name">${member.name}</div>
+              <div class="family-role">${member.relation}</div>
             </div>
-            <div class="row">
-              <input type="tel" id="familyPhone" placeholder="Phone" class="pill">
-              <label class="pill"><input type="checkbox" id="familyShare" checked> Share dashboard</label>
-            </div>
-            <button class="badge primary" type="submit">Save & mirror</button>
-          </form>
-        </div>
-        <div class="family-card">
-          <h3>Shared dashboards</h3>
-          <div id="familyList" class="device-meta"></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">Trusted circle</p>
-          <h2 class="section-title">Roles & permissions</h2>
-          <p class="section-sub">Granular controls for who sees vitals, prescriptions, insurance, or can act during emergencies.</p>
-        </div>
-      </header>
-      <div class="section-grid">
-        <div class="family-card">
-          <h3>Share packages</h3>
-          <p class="section-sub">Pick what to share: vitals, organ alerts, labs, insurance or invoices.</p>
-          <div class="device-meta">
-            <span class="pill">Vitals + Organs</span>
-            <span class="pill">Labs + Radiology</span>
-            <span class="pill">Insurance desk</span>
           </div>
-        </div>
-        <div class="family-card">
-          <h3>Emergency controls</h3>
-          <p class="section-sub">Allow who can call ambulance, share live location, or accept a hospital bed.</p>
-          <div class="device-meta">
-            <span class="pill">Crash/fall detect</span>
-            <span class="pill">Geo + QR</span>
+          <div class="family-score">
+            <strong>${member.score}</strong>
+            <span class="score-label">${member.role}</span>
           </div>
+          <div class="family-chip"><i class="ph-bold ph-shield-check"></i> ${member.badge}</div>
         </div>
-        <div class="family-card">
-          <h3>Notifications</h3>
-          <p class="section-sub">Configure SMS, WhatsApp, and in-app alerts. Silent hours respected.</p>
-          <div class="device-meta">
-            <span class="pill">Layered alerts</span>
-            <span class="pill">Timezone aware</span>
-          </div>
-        </div>
-      </div>
-    </section>
+      `).join('');
+    }
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">Care tasks</p>
-          <h2 class="section-title">What family can do</h2>
-          <p class="section-sub">Orders, insurance uploads, and appointment approvals without paperwork.</p>
-        </div>
-      </header>
-      <div class="table-card">
-        <table>
-          <thead>
-            <tr><th>Action</th><th>Owner</th><th>Permissions</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Approve admission</td><td>Admin</td><td>Can accept bed + share QR</td></tr>
-            <tr><td>Upload lab reports</td><td>Guardian</td><td>Auto-sync to organs/labs</td></tr>
-            <tr><td>Order medicines</td><td>Viewer</td><td>Requires patient OTP</td></tr>
-            <tr><td>Insurance documents</td><td>Admin</td><td>Submit + track status</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
+    function hydrateFromStorage() {
+      const cache = localStorage.getItem('hf-family');
+      return cache ? JSON.parse(cache) : FAMILY_MEMBERS;
+    }
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">Safety</p>
-          <h2 class="section-title">Location + follow-me</h2>
-          <p class="section-sub">Live location streaming during ambulance triggers with privacy-aware timers.</p>
-        </div>
-      </header>
-      <div class="section-grid">
-        <div class="family-card">
-          <h3>Location streaming</h3>
-          <p class="section-sub">Send live location to 3 trusted members for 30 minutes.</p>
-          <div class="device-meta">
-            <span class="pill">TTL 30m</span>
-            <span class="pill">Auto stop</span>
-          </div>
-        </div>
-        <div class="family-card">
-          <h3>Consent receipts</h3>
-          <p class="section-sub">Every share has a receipt with time and device used.</p>
-          <div class="device-meta">
-            <span class="pill">Audit ready</span>
-            <span class="pill">HIPAA safe</span>
-          </div>
-        </div>
-        <div class="family-card">
-          <h3>Hospital handoff</h3>
-          <p class="section-sub">Trusted family can share QR/ID to register at the hospital without paperwork.</p>
-          <div class="device-meta">
-            <span class="pill">HF-QR-2048</span>
-            <span class="pill">HF-USER-NEO</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+    function persistFamily(list) {
+      localStorage.setItem('hf-family', JSON.stringify(list));
+    }
 
-  <nav class="neo-dock">
-    <a class="dock-btn" href="patient-dashboard.html" aria-label="Dashboard">🏠</a>
-    <a class="dock-btn" href="patient-health.html" aria-label="Health">💓</a>
-    <a class="dock-btn" href="patient-organs.html" aria-label="Organs">🫀</a>
-    <a class="dock-btn" href="patient-profile.html" aria-label="Profile">👤</a>
-    <a class="dock-btn" href="patient-labs.html" aria-label="Labs">🧪</a>
-    <a class="dock-btn" href="patient-hospitals.html" aria-label="Hospitals">🏥</a>
-    <a class="dock-btn" href="patient-pharmacy.html" aria-label="Pharmacy">💊</a>
-    <a class="dock-btn" href="patient-devices.html" aria-label="Devices">📡</a>
-    <a class="dock-btn active" href="patient-family.html" aria-label="Family">👪</a>
-    <a class="dock-btn" href="patient-insurance.html" aria-label="Insurance">💳</a>
-    <a class="dock-btn" href="patient-settings.html" aria-label="Settings">⚙️</a>
-  </nav>
+    const familyList = hydrateFromStorage();
+    renderFamilyCards('family-grid', familyList);
 
-  <footer>
-    <p>© 2025 HealthFlo — Family desk</p>
-  </footer>
+    document.getElementById('toggleShare').addEventListener('click', (e) => {
+      const badge = document.getElementById('shareStatus');
+      const isPaused = badge.dataset.state === 'paused';
+      if (isPaused) {
+        badge.dataset.state = 'live';
+        badge.innerHTML = '<i class="ph-fill ph-broadcast"></i> Live mirroring';
+        e.target.textContent = 'Pause sharing';
+      } else {
+        badge.dataset.state = 'paused';
+        badge.innerHTML = '<i class="ph-bold ph-shield-warning"></i> Sharing paused';
+        e.target.textContent = 'Resume sharing';
+      }
+    });
 
-  <script src="js/patient-os.js"></script>
-  <script src="js/patient-connections.js"></script>
+    document.getElementById('addMember').addEventListener('click', () => {
+      const name = document.getElementById('nameInput').value.trim();
+      const relation = document.getElementById('relationInput').value.trim();
+      const score = parseInt(document.getElementById('scoreInput').value, 10) || 80;
+      const accent = document.getElementById('accentInput').value;
+      if (!name || !relation) return;
+
+      familyList.push({ name, relation, role: 'Health Score', score, accent, badge: 'Newly added' });
+      persistFamily(familyList);
+      renderFamilyCards('family-grid', familyList);
+
+      document.getElementById('nameInput').value = '';
+      document.getElementById('relationInput').value = '';
+      document.getElementById('scoreInput').value = '90';
+    });
+  </script>
 </body>
 </html>
