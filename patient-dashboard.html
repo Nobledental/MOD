@@ -2089,6 +2089,7 @@
         const MODEL_BASE_PATH = '3d_models/';
         const MODEL_FALLBACK = 'heart.glb';
         const ORGAN_MODEL_FILES = {
+            general: 'body.glb',
             heart: 'heart.glb',
             brain: 'brain.glb',
             lungs: 'lungs.glb',
@@ -2096,11 +2097,12 @@
             kidneys: 'kidneys.glb',
             eyes: 'eyes.glb'
         };
-        const apiKey = ""; // Gemini API Key will be injected by the environment
+        const apiKey = ""; // Gemini API Key
         const SYNC_KEY = 'hf-last-sync';
 
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
+            general: `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`,
             liver: `<svg viewBox="0 0 24 24"><path d="M20.5 13.5c-.5-3.5-3.5-6.5-8.5-6.5s-8 3-8 6.5c0 3.5 3 6.5 6 6.5 1.5 0 3-.5 4.5-1.5 3.5-2.5 5.5-3.5 6-5z" /><path d="M8 8.5v3" /></svg>`,
             lungs: `<svg viewBox="0 0 24 24"><path d="M12 2v20M6 5c-2.2 0-4 2.2-4 5.5S4 19 6.5 19 11 17 11 12 8.2 5 6 5zM18 5c2.2 0 4 2.2 4 5.5S20 19 17.5 19 13 17 13 12 15.8 5 18 5z" /></svg>`,
             kidneys: `<svg viewBox="0 0 24 24"><path d="M7.5 6c-2.5 0-4.5 2-4.5 5.5s3 7.5 6 7.5c2 0 3-1.5 3-4-1 1-3 0-3-2s2-3.5 4.5-3.5c-1-2.5-3.5-3.5-6-3.5z" /><path d="M16.5 6c2.5 0 4.5 2 4.5 5.5s-3 7.5-6 7.5c-2 0-3-1.5-3-4 1 1 3 0 3-2s-2-3.5-4.5-3.5c1-2.5 3.5-3.5 6-3.5z" /></svg>`,
@@ -2113,8 +2115,22 @@
 
         // --- EXTENDED DATA: ALL ORGANS + NUTRIENTS ---
         const ORGAN_DATA = {
+            general: {
+                title: "General Body", simValue: 90, icon: "svg-general", lastReport: "2025-11-20",
+                stats: [
+                    { id: "c1", title: "Body Temp", base: 98.6, unit: "°F", icon: "ph-thermometer", type: "temp" },
+                    { id: "c2", title: "Pulse Rate", base: 72, unit: "bpm", icon: "ph-heartbeat", type: "bpm" },
+                    { id: "c3", title: "Weight", base: 75, unit: "kg", icon: "ph-scales", type: "mass" },
+                    { id: "c4", title: "Blood Sugar", base: 95, unit: "mg/dL", icon: "ph-drop", type: "gluc" }
+                ],
+                ai: { msg: "Overall general health is closely monitored. Weight is stable.", risk: 10 },
+                nutrients: [
+                    { name: "Hydration", val: "Optimal", unit: "", status: "optimal", cat: "General" },
+                    { name: "Protein", val: "Adj", unit: "", status: "optimal", cat: "Macro" }
+                ]
+            },
             heart: {
-                title: "Cardiovascular", simValue: 80, icon: "ph-heart",
+                title: "Cardiovascular", simValue: 80, icon: "ph-heart", lastReport: "2025-10-15",
                 stats: [
                     { id: "c1", title: "Blood Pressure", base: 116, unit: "/70", icon: "ph-drop", type: "bp" },
                     { id: "c2", title: "Heart Rate", base: 80, unit: "bpm", icon: "ph-heartbeat", type: "bpm" },
@@ -2130,7 +2146,7 @@
                 ]
             },
             brain: {
-                title: "Nervous System", simValue: 14, icon: "ph-brain",
+                title: "Nervous System", simValue: 14, icon: "ph-brain", lastReport: "2025-09-10",
                 stats: [
                     { id: "c1", title: "Brain Waves", base: 14, unit: "Hz", icon: "ph-wave-sine", type: "hz" },
                     { id: "c2", title: "Stress Load", base: 65, unit: "%", icon: "ph-lightning", type: "perc" },
@@ -2146,7 +2162,7 @@
                 ]
             },
             lungs: {
-                title: "Respiratory", simValue: 16, icon: "svg-lungs",
+                title: "Respiratory", simValue: 16, icon: "svg-lungs", lastReport: "2025-08-25",
                 stats: [
                     { id: "c1", title: "Resp Rate", base: 16, unit: "rpm", icon: "ph-wind", type: "rpm" },
                     { id: "c2", title: "SpO2", base: 98, unit: "%", icon: "ph-drop", type: "perc" },
@@ -2162,7 +2178,7 @@
                 ]
             },
             liver: {
-                title: "Hepatic System", simValue: 5, icon: "svg-liver",
+                title: "Hepatic System", simValue: 5, icon: "svg-liver", lastReport: "2025-07-30",
                 stats: [
                     { id: "c1", title: "ALT (SGPT)", base: 29, unit: "U/L", icon: "ph-flask", type: "norm" },
                     { id: "c2", title: "Detox Efficiency", base: 95, unit: "%", icon: "ph-shield-check", type: "perc" },
@@ -2178,7 +2194,7 @@
                 ]
             },
             kidneys: {
-                title: "Renal System", simValue: 90, icon: "svg-kidneys",
+                title: "Renal System", simValue: 90, icon: "svg-kidneys", lastReport: "2025-10-05",
                 stats: [
                     { id: "c1", title: "GFR", base: 95, unit: "mL", icon: "ph-gauge", type: "norm" },
                     { id: "c2", title: "Creatinine", base: 0.9, unit: "mg/dL", icon: "ph-flask", type: "norm" },
@@ -2194,7 +2210,7 @@
                 ]
             },
             stomach: {
-                title: "Gastric System", simValue: 60, icon: "svg-stomach",
+                title: "Gastric System", simValue: 60, icon: "svg-stomach", lastReport: "2025-02-15",
                 stats: [
                     { id: "c1", title: "Gastric pH", base: 2.1, unit: "pH", icon: "ph-eyedropper", type: "norm" },
                     { id: "c2", title: "Motility", base: 3, unit: "cpm", icon: "ph-wave-sine", type: "norm" },
@@ -2210,7 +2226,7 @@
                 ]
             },
             intestines: {
-                title: "Digestive Tract", simValue: 55, icon: "svg-intestines",
+                title: "Digestive Tract", simValue: 55, icon: "svg-intestines", lastReport: "2025-01-20",
                 stats: [
                     { id: "c1", title: "Absorption", base: 92, unit: "%", icon: "ph-arrows-in", type: "perc" },
                     { id: "c2", title: "Microbiome", base: 8.5, unit: "/10", icon: "ph-bug", type: "score" },
@@ -2226,7 +2242,7 @@
                 ]
             },
             pancreas: {
-                title: "Endocrine/Exocrine", simValue: 40, icon: "svg-pancreas",
+                title: "Endocrine/Exocrine", simValue: 40, icon: "svg-pancreas", lastReport: "2025-03-10",
                 stats: [
                     { id: "c1", title: "Insulin", base: 6.5, unit: "uIU", icon: "ph-syringe", type: "norm" },
                     { id: "c2", title: "Lipase", base: 35, unit: "U/L", icon: "ph-drop", type: "norm" },
@@ -2242,7 +2258,7 @@
                 ]
             },
             gallbladder: {
-                title: "Biliary System", simValue: 18, icon: "svg-gallbladder",
+                title: "Biliary System", simValue: 18, icon: "svg-gallbladder", lastReport: "2025-02-28",
                 stats: [
                     { id: "c1", title: "Bile Flow", base: 88, unit: "%", icon: "ph-arrows-left-right", type: "perc" },
                     { id: "c2", title: "Cholesterol", base: 165, unit: "mg/dL", icon: "ph-drop-half-bottom", type: "norm" },
@@ -2258,7 +2274,7 @@
                 ]
             },
             urinary: {
-                title: "Urinary Tract", simValue: 12, icon: "svg-urinary",
+                title: "Urinary Tract", simValue: 12, icon: "svg-urinary", lastReport: "2025-01-05",
                 stats: [
                     { id: "c1", title: "Filtration", base: 97, unit: "%", icon: "ph-funnel", type: "perc" },
                     { id: "c2", title: "Hydration", base: 94, unit: "%", icon: "ph-drop", type: "perc" },
@@ -2274,7 +2290,7 @@
                 ]
             },
             eyes: {
-                title: "Ophthalmic", simValue: 20, icon: "ph-eye",
+                title: "Ophthalmic", simValue: 20, icon: "ph-eye", lastReport: "2025-03-01",
                 stats: [
                     { id: "c1", title: "IOP", base: 14, unit: "mmHg", icon: "ph-gauge", type: "norm" },
                     { id: "c2", title: "Vision", base: 20, unit: "/20", icon: "ph-binoculars", type: "norm" },
@@ -2343,7 +2359,7 @@
             scene.add(new THREE.PointLight(0x3b82f6, 1, 50)); // Fill
 
             // Initial Load
-            loadOrganModel('heart');
+            loadOrganModel('general');
 
             // Animation Loop
             const clock = new THREE.Clock();
@@ -2416,7 +2432,7 @@
         };
 
         // --- DASHBOARD LOGIC ---
-        let activeOrgan = 'heart';
+        let activeOrgan = 'general';
 
         const renderOrganTray = () => {
             const tray = document.querySelector('.organ-tray');
@@ -2425,7 +2441,7 @@
             Object.keys(ORGAN_DATA).forEach(key => {
                 const data = ORGAN_DATA[key];
                 const btn = document.createElement('div');
-                btn.className = `organ-item ${key === 'heart' ? 'selected' : ''}`;
+                btn.className = `organ-item ${key === 'general' ? 'selected' : ''}`;
                 btn.dataset.organ = key;
                 btn.title = data.title;
 
@@ -2550,6 +2566,8 @@
             updateSyncIndicator(`Live @ ${friendly}`);
         };
 
+
+
         const hydrateSync = () => {
             const raw = localStorage.getItem(SYNC_KEY);
             if (!raw) return;
@@ -2620,6 +2638,38 @@
 
             // Update Nutrition Grid
             renderNutrients(data.nutrients);
+
+            // Check Report Age
+            if (data.lastReport) {
+                const reportDate = new Date(data.lastReport);
+                const today = new Date('2025-12-16'); // Current date
+                const monthsDiff = (today.getFullYear() - reportDate.getFullYear()) * 12 + (today.getMonth() - reportDate.getMonth());
+
+                // Primary organs: heart, brain, lungs, liver, kidneys (3 months threshold)
+                const primaryOrgans = ['heart', 'brain', 'lungs', 'liver', 'kidneys'];
+                const isPrimary = primaryOrgans.includes(key);
+                const threshold = isPrimary ? 3 : 10;
+
+                if (monthsDiff > threshold) {
+                    const reportWarning = document.createElement('div');
+                    reportWarning.style.cssText = 'margin-top:15px; padding:12px; background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); border-radius:8px; font-size:12px; color:var(--color-yellow);';
+                    reportWarning.innerHTML = `<i class="ph-bold ph-warning"></i> <strong>Report Outdated:</strong> Last ${data.title} report was ${monthsDiff} months ago. <a href="patient-labs.html" style="color:var(--color-blue); text-decoration:underline; cursor:pointer;">Upload latest report</a> for updated results.`;
+
+                    const aiSection = document.querySelector('.ai-hub');
+                    if (aiSection) {
+                        // Remove old warnings
+                        const oldWarning = aiSection.querySelector('.report-warning');
+                        if (oldWarning) oldWarning.remove();
+
+                        reportWarning.className = 'report-warning';
+                        aiSection.appendChild(reportWarning);
+                    }
+                } else {
+                    // Remove warning if report is fresh
+                    const oldWarning = document.querySelector('.report-warning');
+                    if (oldWarning) oldWarning.remove();
+                }
+            }
 
             // Re-apply translation after dynamic update
             const currentLang = localStorage.getItem('hf_lang') || 'en';
@@ -2952,41 +3002,63 @@
 
         // --- LIVE VITALS SIMULATION ---
         const startLiveVitals = () => {
-            // Heart Rate (60-100 normal)
             setInterval(() => {
-                const bpm = 70 + Math.floor(Math.random() * 15);
-                const el = document.getElementById('c2-val'); // Assuming Heart Rate is Card 2
-                if (el) el.innerText = bpm + " BPM";
+                if (activeOrgan === 'general') {
+                    // General Body Vitals
+                    const temp = (98.4 + Math.random() * 0.4).toFixed(1);
+                    const pulse = 70 + Math.floor(Math.random() * 12);
+                    const weight = 75 + (Math.random() * 0.2 - 0.1).toFixed(1);
+                    const sugar = 90 + Math.floor(Math.random() * 15);
+
+                    const el1 = document.getElementById('c1-val');
+                    const el2 = document.getElementById('c2-val');
+                    const el3 = document.getElementById('c3-val');
+                    const el4 = document.getElementById('c4-val');
+                    const main = document.getElementById('main-stat');
+
+                    if (el1 && !el1.innerHTML.includes('...')) el1.innerHTML = `${temp} <small>°F</small>`;
+                    if (el2 && !el2.innerHTML.includes('...')) el2.innerHTML = `${pulse} <small>bpm</small>`;
+                    if (el3 && !el3.innerHTML.includes('...')) el3.innerHTML = `${weight} <small>kg</small>`;
+                    if (el4 && !el4.innerHTML.includes('...')) el4.innerHTML = `${sugar} <small>mg/dL</small>`;
+                    if (main && !main.innerHTML.includes('Scanning')) main.innerHTML = `${pulse} <span style="font-size:14px;">bpm</span>`;
+
+                } else if (activeOrgan === 'heart') {
+                    // Heart Physics (BPM)
+                    const bpm = 70 + Math.floor(Math.random() * 15);
+                    const el = document.getElementById('c2-val');
+                    if (el && !el.innerHTML.includes('...')) el.innerHTML = `${bpm} <small>bpm</small>`;
+
+                    // Main Stat Update
+                    const main = document.getElementById('main-stat');
+                    if (main && !main.innerHTML.includes('Scanning')) main.innerHTML = `${bpm} <span style="font-size:14px;">bpm</span>`;
+
+                    // AUTO SOS (Only for Heart Demo)
+                    const user = localStorage.getItem('hf_demo_user');
+                    if ((user === 'rahul' || user === 'sam') && Math.random() > 0.95) {
+                        triggerEmergency();
+                    }
+                } else {
+                    // Generic Jitter for other organs
+                    const cards = document.querySelectorAll('.data-card');
+                    const target = cards[Math.floor(Math.random() * cards.length)];
+                    if (target) {
+                        const valEl = target.querySelector('.card-val');
+                        if (valEl && !valEl.innerHTML.includes('...')) {
+                            // Just a visual wiggle
+                            target.style.transform = 'scale(1.02)';
+                            setTimeout(() => target.style.transform = 'scale(1)', 200);
+                        }
+                    }
+                }
             }, 2000);
-
-            // SpO2 (95-100 normal)
-            setInterval(() => {
-                const spo2 = 96 + Math.floor(Math.random() * 4);
-                const el = document.getElementById('c3-val'); // Assuming SpO2 is Card 3
-                if (el) el.innerText = spo2 + "%";
-            }, 3500);
-
-            // BP (110-120 / 70-80 normal)
-            setInterval(() => {
-                const sys = 115 + Math.floor(Math.random() * 10);
-                const dia = 75 + Math.floor(Math.random() * 8);
-                const el = document.getElementById('c1-val'); // Assuming BP is Card 1
-                if (el) el.innerText = `${sys}/${dia}`;
-            }, 5000);
-
-            // Temp (36.5-37.2 normal)
-            setInterval(() => {
-                const temp = (36.5 + Math.random() * 0.5).toFixed(1);
-                const el = document.getElementById('c4-val'); // Assuming Temp is Card 4
-                if (el) el.innerText = temp + "°C";
-            }, 6000);
         };
+
 
         // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             initThree();
             renderOrganTray();
-            updateUI('heart'); // Default
+            updateUI('general'); // Default
             startLiveVitals(); // Start Vitals
             hydrateSync();
 
