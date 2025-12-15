@@ -103,6 +103,8 @@
         .window-dot { width: 12px; height: 12px; border-radius: 50%; opacity: 0.8; }
         .branding-right { margin-left: auto; font-weight: 700; color: var(--text-main); letter-spacing: 1px; font-size: 14px; opacity: 0.8; display: flex; align-items: center; gap: 10px; }
         .branding-right span { color: var(--color-blue); text-shadow: 0 0 10px var(--glow-color); }
+        .sync-pill { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 12px; background: rgba(59,130,246,0.12); color: var(--color-blue); font-size: 11px; font-weight: 700; border: 1px solid rgba(59,130,246,0.25); box-shadow: 0 6px 18px rgba(59,130,246,0.15); }
+        .sync-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-green); box-shadow: 0 0 0 0 rgba(16,185,129,0.4); animation: breathe 2.4s ease-in-out infinite; }
         .sync-btn { padding: 8px 16px; background: var(--color-blue); color: white; border-radius: 8px; border: none; font-weight: 600; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 4px 12px var(--glow-color); }
         .sync-btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
         .sync-btn.loading i { animation: spin 1s linear infinite; }
@@ -159,8 +161,8 @@
         .page-nav a.active { color: var(--color-blue); border-color: rgba(10,132,255,0.4); box-shadow: 0 6px 14px rgba(10,132,255,0.15); }
 
         /* 3D STAGE */
-        .heart-stage { grid-column: 1; grid-row: 2; position: relative; display: flex; justify-content: center; align-items: center; }
-        #model-3d-container { width: 140%; height: 140%; position: absolute; top: -20%; left: -20%; z-index: 1; opacity: 0; animation: fadeIn 1.5s ease-out forwards; cursor: grab; display: flex; align-items: center; justify-content: center; }
+        .heart-stage { grid-column: 1; grid-row: 2; position: relative; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        #model-3d-container { width: 100%; height: 100%; position: absolute; inset: 0; z-index: 1; opacity: 0; animation: fadeIn 1.5s ease-out forwards; cursor: grab; display: flex; align-items: center; justify-content: center; }
         #model-3d-container:active { cursor: grabbing; }
         .rings { position: absolute; width: 550px; height: 550px; border-radius: 50%; border: 1px solid var(--glass-border); background: radial-gradient(circle, rgba(10, 132, 255, 0.03) 0%, transparent 60%); z-index: 0; animation: spin 40s linear infinite; }
         .rings::before { content: ''; position: absolute; top: 50px; left: 50px; right: 50px; bottom: 50px; border-radius: 50%; border: 1px dashed var(--glass-border); animation: spinReverse 30s linear infinite; }
@@ -180,16 +182,40 @@
         .blue-dot { width: 6px; height: 6px; background: var(--color-blue); border-radius: 50%; box-shadow: 0 0 8px var(--color-blue); }
         .cards-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 20px; flex: 1; }
         .data-card { background: var(--card-bg); backdrop-filter: blur(18px); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid var(--card-border); position: relative; overflow: hidden; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .data-card::after { content: ""; position: absolute; inset: -40% 10%; background: radial-gradient(circle at 50% 50%, rgba(59,130,246,0.15), transparent 50%); opacity: 0; transition: opacity 0.4s; filter: blur(30px); }
         .data-card:hover { border-color: var(--color-blue); transform: translateY(-2px); box-shadow: var(--shadow-soft); }
+        .data-card:hover::after { opacity: 1; }
         .card-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; z-index: 2; }
         .card-icon { font-size: 20px; transition: color 0.3s; }
         .card-title { font-size: 13px; color: var(--text-muted); display: block; margin-bottom: 6px; font-weight: 500; }
         .card-val { font-size: 26px; font-weight: 700; color: var(--text-main); letter-spacing: -0.5px; transition: 0.3s; }
+        .card-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; margin-top: 6px; transition: 0.3s; }
+        .card-status i { font-size: 14px; }
         .scanning-text { color: var(--color-blue); font-size: 14px; font-weight: 600; letter-spacing: 1px; animation: pulseText 1s infinite; }
         @keyframes pulseText { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
         /* Card Colors */
         .data-card.state-blue .card-icon { color: var(--color-blue); }
         .data-card.active-blue { background: var(--card-active-bg); border: 1px solid rgba(59, 130, 246, 0.3); box-shadow: var(--shadow-soft); }
+
+        .data-card.state-normal { border: 1px solid rgba(16,185,129,0.5); background: linear-gradient(145deg, rgba(16,185,129,0.12), var(--card-bg)); box-shadow: 0 10px 30px rgba(16,185,129,0.12); }
+        .data-card.state-normal .card-icon { color: var(--color-green); }
+        .data-card.state-normal .card-status { background: rgba(16,185,129,0.15); color: var(--color-green); box-shadow: 0 0 0 0 rgba(16,185,129,0.3); animation: breathe 2.4s ease-in-out infinite; }
+
+        .data-card.state-borderline { border: 1px solid rgba(245,158,11,0.5); background: linear-gradient(145deg, rgba(245,158,11,0.12), var(--card-bg)); box-shadow: 0 10px 30px rgba(245,158,11,0.12); }
+        .data-card.state-borderline .card-icon { color: var(--color-yellow); }
+        .data-card.state-borderline .card-status { background: rgba(245,158,11,0.15); color: var(--color-yellow); animation: shimmer 2s linear infinite; }
+
+        .data-card.state-unstable { border: 1px solid rgba(249,115,22,0.5); background: linear-gradient(145deg, rgba(249,115,22,0.12), var(--card-bg)); box-shadow: 0 10px 30px rgba(249,115,22,0.12); }
+        .data-card.state-unstable .card-icon { color: #f97316; }
+        .data-card.state-unstable .card-status { background: rgba(249,115,22,0.18); color: #f97316; animation: pulseText 1.2s ease-in-out infinite; }
+
+        .data-card.state-critical { border: 1px solid rgba(239,68,68,0.6); background: linear-gradient(145deg, rgba(239,68,68,0.16), var(--card-bg)); box-shadow: 0 10px 30px rgba(239,68,68,0.2); }
+        .data-card.state-critical .card-icon { color: var(--color-red); }
+        .data-card.state-critical .card-status { background: rgba(239,68,68,0.2); color: var(--color-red); animation: alertPulse 0.9s ease-in-out infinite; box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+
+        @keyframes breathe { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.2);} 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0.05);} }
+        @keyframes shimmer { 0% { background-position: -100px 0; } 100% { background-position: 100px 0; } }
+        @keyframes alertPulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239,68,68,0.35);} 70% { transform: scale(1.02); box-shadow: 0 0 0 12px rgba(239,68,68,0); } 100% { transform: scale(1);} }
         
         .data-card.state-yellow { background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, var(--card-bg) 100%); border: 1px solid rgba(245, 158, 11, 0.4); }
         .data-card.state-yellow .card-icon { color: var(--color-yellow); }
@@ -413,7 +439,15 @@
                 <div class="window-dot" style="background: #10b981;"></div>
             </div>
             <div class="branding-right">HealthFlo <span>CLINICAL V3</span></div>
-            
+
+            <div class="sync-pill" id="sync-pill">
+                <div class="dot"></div>
+                <div>
+                    <div style="font-size:10px; opacity:0.7;">Network Sync</div>
+                    <div style="font-size:12px; font-weight:800;" id="sync-status">Live</div>
+                </div>
+            </div>
+
             <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
                 <i class="ph-bold ph-sun"></i>
             </button>
@@ -488,12 +522,14 @@
                                 <div><span class="card-title" id="c1-title">--</span><span class="card-val" id="c1-val">--</span></div>
                                 <i class="ph-fill ph-activity card-icon" id="c1-icon"></i>
                             </div>
+                            <div class="card-status" id="c1-status"><i class="ph-bold ph-pulse"></i> Live</div>
                         </div>
                         <div class="data-card active-blue" id="card-2">
                             <div class="card-head">
                                 <div><span class="card-title" id="c2-title">--</span><span class="card-val" id="c2-val">--</span></div>
                                 <i class="ph ph-heartbeat card-icon" id="c2-icon"></i>
                             </div>
+                            <div class="card-status" id="c2-status"><i class="ph-bold ph-heart"></i> Live</div>
                             <svg width="100%" height="40" style="margin-top:auto;"><path d="M0,20 Q25,5 50,20 T100,20" fill="none" stroke="#3b82f6" stroke-width="3"/></svg>
                         </div>
                         <div class="data-card state-blue" id="card-3">
@@ -501,12 +537,14 @@
                                 <div><span class="card-title" id="c3-title">--</span><span class="card-val" id="c3-val">--</span></div>
                                 <i class="ph-fill ph-drop card-icon" id="c3-icon"></i>
                             </div>
+                            <div class="card-status" id="c3-status"><i class="ph-bold ph-activity"></i> Live</div>
                         </div>
                         <div class="data-card state-blue" id="card-4">
                             <div class="card-head">
                                 <div><span class="card-title" id="c4-title">--</span><span class="card-val" id="c4-val">--</span></div>
                                 <i class="ph-fill ph-thermometer card-icon" id="c4-icon"></i>
                             </div>
+                            <div class="card-status" id="c4-status"><i class="ph-bold ph-wave-square"></i> Live</div>
                         </div>
                     </div>
                 </div>
@@ -755,6 +793,7 @@
             eyes: 'eyes.glb'
         };
         const apiKey = ""; // Gemini API Key will be injected by the environment
+        const SYNC_KEY = 'hf-last-sync';
         
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
@@ -975,7 +1014,7 @@
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 1, 18);
+            camera.position.set(0, 2, 14);
 
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
@@ -1007,14 +1046,16 @@
             const animate = () => {
                 requestAnimationFrame(animate);
                 const t = clock.getElapsedTime();
-                
+
                 if (group && !isDragging) {
-                    // Slight heartbeat effect for all
-                    const pulse = 1 + Math.sin(t * 1.5) * 0.02;
+                    const baseScale = activeOrgan === 'heart' ? 1.08 : 1.02;
+                    const pulseStrength = activeOrgan === 'heart' ? 0.08 : 0.02;
+                    const pulse = baseScale + Math.sin(t * (activeOrgan === 'heart' ? 2.8 : 1.4)) * pulseStrength;
                     group.scale.set(pulse, pulse, pulse);
-                    group.rotation.y = Math.sin(t * 0.5) * 0.1 + (mouseX * 0.5);
+                    group.rotation.y = Math.sin(t * 0.5) * 0.15 + (mouseX * 0.5);
+                    group.rotation.x = Math.sin(t * 0.2) * 0.05 + (mouseY * 0.05);
                 }
-                
+
                 if(particles) particles.rotation.y += 0.0005;
                 renderer.render(scene, camera);
             };
@@ -1026,11 +1067,12 @@
                 camera.updateProjectionMatrix();
                 renderer.setSize(container.clientWidth, container.clientHeight);
             });
-            
+
             // Interactive Mouse
             container.addEventListener('mousemove', (e) => {
                 const rect = container.getBoundingClientRect();
                 mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+                mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
             });
         };
 
@@ -1050,7 +1092,7 @@
                 const box = new THREE.Box3().setFromObject(model);
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z) || 1;
-                const targetSize = 6;
+                const targetSize = 8;
                 const scale = targetSize / maxDim;
 
                 model.scale.setScalar(scale);
@@ -1059,7 +1101,7 @@
                 model.position.sub(center);
                 model.rotation.y = Math.PI; // Face camera consistently
 
-                group.position.set(0, 0, 0);
+                group.position.set(0, -0.5, 0);
                 group.add(model);
             }, undefined, (err) => {
                 console.warn("Model fallback", err);
@@ -1142,6 +1184,80 @@
             });
         };
 
+        const evaluateVital = (stat) => {
+            const val = stat.base;
+            const title = stat.title.toLowerCase();
+            let level = 'normal';
+            let label = 'Normal';
+
+            if (stat.type === 'bp') {
+                if (val < 120) { level = 'normal'; label = 'Normal'; }
+                else if (val < 130) { level = 'borderline'; label = 'Borderline'; }
+                else if (val < 140) { level = 'unstable'; label = 'Unstable'; }
+                else { level = 'critical'; label = 'Critical'; }
+            } else if (stat.type === 'bpm') {
+                if (val >= 60 && val <= 100) { level = 'normal'; label = 'Normal'; }
+                else if ((val > 100 && val <= 110) || (val >= 50 && val < 60)) { level = 'borderline'; label = 'Elevated'; }
+                else if ((val > 110 && val <= 120) || (val >= 45 && val < 50)) { level = 'unstable'; label = 'Unstable'; }
+                else { level = 'critical'; label = 'Critical'; }
+            } else if (stat.type === 'perc') {
+                if (val >= 90) { level = 'normal'; label = 'Optimal'; }
+                else if (val >= 80) { level = 'borderline'; label = 'Borderline'; }
+                else if (val >= 65) { level = 'unstable'; label = 'Unstable'; }
+                else { level = 'critical'; label = 'Critical'; }
+            } else if (title.includes('o2') || title.includes('oxygen')) {
+                if (val >= 95) { level = 'normal'; label = 'Normal'; }
+                else if (val >= 92) { level = 'borderline'; label = 'Borderline'; }
+                else if (val >= 88) { level = 'unstable'; label = 'Unstable'; }
+                else { level = 'critical'; label = 'Critical'; }
+            } else if (stat.type === 'hz') {
+                if (val >= 12 && val <= 25) { level = 'normal'; label = 'Focused'; }
+                else if ((val > 25 && val <= 30) || (val >= 10 && val < 12)) { level = 'borderline'; label = 'Elevated'; }
+                else if (val > 30 || val < 8) { level = 'critical'; label = 'Critical'; }
+                else { level = 'unstable'; label = 'Unstable'; }
+            } else {
+                if (val >= 95) { level = 'normal'; label = 'Stable'; }
+                else if (val >= 85) { level = 'borderline'; label = 'Borderline'; }
+                else if (val >= 70) { level = 'unstable'; label = 'Unstable'; }
+                else { level = 'critical'; label = 'Critical'; }
+            }
+
+            return { level, label };
+        };
+
+        const updateSyncIndicator = (label = 'Live') => {
+            const statusEl = document.getElementById('sync-status');
+            const pill = document.getElementById('sync-pill');
+            if (statusEl) statusEl.innerText = label;
+            if (pill) {
+                const dot = pill.querySelector('.dot');
+                if (dot) {
+                    dot.style.background = label.toLowerCase().includes('pending') ? '#f59e0b' : 'var(--color-green)';
+                }
+                pill.title = `Last sync: ${label}`;
+            }
+        };
+
+        const persistSync = (payload = {}) => {
+            const stamp = new Date().toISOString();
+            const record = { ...payload, time: stamp };
+            localStorage.setItem(SYNC_KEY, JSON.stringify(record));
+            const friendly = new Date(stamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            updateSyncIndicator(`Live @ ${friendly}`);
+        };
+
+        const hydrateSync = () => {
+            const raw = localStorage.getItem(SYNC_KEY);
+            if (!raw) return;
+            try {
+                const parsed = JSON.parse(raw);
+                const friendly = parsed.time ? new Date(parsed.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Live';
+                updateSyncIndicator(`Live @ ${friendly}`);
+            } catch (e) {
+                console.warn('Sync hydrate failed', e);
+            }
+        };
+
         const updateUI = (key) => {
             activeOrgan = key;
             const data = ORGAN_DATA[key];
@@ -1173,7 +1289,9 @@
                 const elTitle = document.getElementById(`c${i+1}-title`);
                 const elVal = document.getElementById(`c${i+1}-val`);
                 const elIcon = document.getElementById(`c${i+1}-icon`);
-                
+                const card = document.getElementById(`card-${i+1}`);
+                const statusPill = document.getElementById(`c${i+1}-status`);
+
                 if (elTitle) elTitle.innerText = s.title;
                 if (elIcon) elIcon.className = `ph-fill ${s.icon} card-icon`;
                 if (elVal) {
@@ -1183,6 +1301,14 @@
                         if(i === 1) {
                             const mainStat = document.getElementById('main-stat');
                             if(mainStat) mainStat.innerHTML = `${s.base} <span style="font-size:14px;">${s.unit}</span>`;
+                        }
+                        if(card) {
+                            const { level, label } = evaluateVital(s);
+                            card.classList.remove('state-normal','state-borderline','state-unstable','state-critical','state-blue','active-blue');
+                            card.classList.add(`state-${level}`);
+                            if(statusPill) {
+                                statusPill.innerHTML = `<i class="ph-bold ${level === 'critical' ? 'ph-warning' : level === 'unstable' ? 'ph-activity' : level === 'borderline' ? 'ph-wave-sine' : 'ph-check'}"></i> ${label}`;
+                            }
                         }
                     }, 500 + (i*100));
                 }
@@ -1474,10 +1600,11 @@
         window.simulateSync = () => {
             const btn = document.getElementById('sync-btn');
             const originalText = btn.innerHTML;
-            
+
             btn.classList.add('loading');
             btn.innerHTML = `<i class="ph-bold ph-spinner"></i> Syncing...`;
-            
+            updateSyncIndicator('Pending...');
+
             setTimeout(() => {
                 btn.classList.remove('loading');
                 btn.style.background = '#10b981';
@@ -1486,7 +1613,9 @@
                 // Show notification toast in AI box
                 const aiMsg = document.getElementById('ai-msg');
                 aiMsg.innerText = "New lab results synchronized from Quest Diagnostics. Vitamin D levels have been updated in your charts.";
-                
+
+                persistSync({ organ: activeOrgan, note: 'Labs refreshed' });
+
                 setTimeout(() => {
                     btn.style.background = '';
                     btn.innerHTML = originalText;
@@ -1499,6 +1628,7 @@
             initThree();
             renderOrganTray();
             updateUI('heart'); // Default
+            hydrateSync();
 
             // Event Delegation for Organ Clicks
             document.querySelector('.organ-tray').addEventListener('click', (e) => {
@@ -1507,9 +1637,15 @@
                 
                 document.querySelectorAll('.organ-item').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
-                
+
                 loadOrganModel(btn.dataset.organ);
                 updateUI(btn.dataset.organ);
+            });
+
+            window.addEventListener('storage', (event) => {
+                if (event.key === SYNC_KEY) {
+                    hydrateSync();
+                }
             });
         });
 
