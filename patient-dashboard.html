@@ -171,6 +171,8 @@
         @keyframes fadeIn { to { opacity: 1; } }
         .scanner-line { position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--color-blue), transparent); box-shadow: 0 0 20px var(--color-blue); animation: scan-down 4s ease-in-out infinite; z-index: 2; opacity: 0.5; pointer-events: none;}
         @keyframes scan-down { 0% { top: 10%; opacity: 0; } 50% { opacity: 0.8; } 100% { top: 90%; opacity: 0; } }
+        .model-hint { position: absolute; right: 16px; bottom: 16px; display: inline-flex; align-items: center; gap: 8px; background: rgba(10, 132, 255, 0.12); border: 1px solid rgba(10, 132, 255, 0.3); color: var(--color-blue); padding: 10px 12px; border-radius: 14px; font-size: 12px; z-index: 5; box-shadow: var(--shadow-soft); backdrop-filter: blur(10px); }
+        .model-hint i { color: var(--color-blue); }
         .floating-stat { position: absolute; bottom: 40px; left: 20px; background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 20px; padding: 16px 20px; width: 220px; z-index: 10; box-shadow: var(--shadow-soft); }
         .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; background: rgba(239, 68, 68, 0.15); color: #ef4444; border-radius: 6px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
         .live-dot { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: blink 1s infinite; }
@@ -524,6 +526,7 @@
                     <div class="rings"></div>
                     <div class="scanner-line"></div>
                     <div id="model-3d-container"></div>
+                    <div class="model-hint"><i class="ph-bold ph-cube-focus"></i>Drag to rotate • Scroll to zoom</div>
                     <div class="floating-stat">
                         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
                             <div class="live-badge"><div class="live-dot"></div> LIVE</div>
@@ -848,7 +851,23 @@
             lungs: 'lungs.glb',
             liver: 'liver.glb',
             kidneys: 'kidneys.glb',
-            eyes: 'eyes.glb'
+            eyes: 'eyes.glb',
+            spleen: 'spleen.glb',
+            thyroid: 'thyroid.glb',
+            skin: 'skin.glb',
+            muscle: 'muscle.glb'
+        };
+
+        const ORGAN_MODEL_ORIENTATION = {
+            default: { rotation: [0, Math.PI, 0], offsetY: 1.35, targetSize: 9 },
+            heart: { rotation: [0, Math.PI, 0], offsetY: 1.45, targetSize: 9.5 },
+            brain: { rotation: [0, Math.PI, 0], offsetY: 1.5, targetSize: 8.8 },
+            lungs: { rotation: [0, Math.PI, 0], offsetY: 1.55, targetSize: 9.3 },
+            eyes: { rotation: [0, 0, 0], offsetY: 1.6, targetSize: 7.2 },
+            spleen: { rotation: [0, Math.PI, 0], offsetY: 1.5, targetSize: 8.4 },
+            thyroid: { rotation: [0, Math.PI, 0], offsetY: 1.55, targetSize: 7.8 },
+            muscle: { rotation: [0, Math.PI, 0], offsetY: 1.45, targetSize: 9.2 },
+            skin: { rotation: [0, Math.PI, 0], offsetY: 1.4, targetSize: 8.6 }
         };
         const apiKey = ""; // Gemini API Key will be injected by the environment
         const SYNC_KEY = 'hf-last-sync';
@@ -1110,6 +1129,70 @@
                     { name: "Omega-3", val: "4.5", unit: "%", status: "deficient", cat: "Fatty Acid" },
                     { name: "Zinc", val: "85", unit: "mcg/dL", status: "optimal", cat: "Mineral" }
                 ]
+            },
+            spleen: {
+                title: "Lymphatic", simValue: 22, icon: "ph-shield-star",
+                stats: [
+                    { id: "c1", title: "Immune Load", base: 18, unit: "%", icon: "ph-virus", type: "perc" },
+                    { id: "c2", title: "Lymph Flow", base: 82, unit: "%", icon: "ph-arrows-left-right", type: "perc" },
+                    { id: "c3", title: "Inflammation", base: 0.8, unit: "mg", icon: "ph-thermometer", type: "norm" },
+                    { id: "c4", title: "Antibody", base: 95, unit: "%", icon: "ph-shield", type: "perc" }
+                ],
+                ai: { msg: "Lymphatic circulation strong. No swelling detected in recent scans.", risk: 10 },
+                nutrients: [
+                    { name: "Vitamin C", val: "1.1", unit: "mg/dL", status: "optimal", cat: "Vitamin" },
+                    { name: "Polyphenols", val: "Rich", unit: "", status: "optimal", cat: "Phytonutrient" },
+                    { name: "Zinc", val: "86", unit: "mcg/dL", status: "optimal", cat: "Mineral" },
+                    { name: "Copper", val: "110", unit: "mcg/dL", status: "deficient", cat: "Mineral" }
+                ]
+            },
+            thyroid: {
+                title: "Endocrine", simValue: 32, icon: "ph-butterfly",
+                stats: [
+                    { id: "c1", title: "TSH", base: 2.1, unit: "uIU/mL", icon: "ph-activity", type: "norm" },
+                    { id: "c2", title: "Free T3", base: 3.3, unit: "pg/mL", icon: "ph-flame", type: "norm" },
+                    { id: "c3", title: "Free T4", base: 1.2, unit: "ng/dL", icon: "ph-flask", type: "norm" },
+                    { id: "c4", title: "Metabolic Burn", base: 76, unit: "%", icon: "ph-fire-simple", type: "perc" }
+                ],
+                ai: { msg: "Thyroid output stable with balanced T3/T4 conversion.", risk: 12 },
+                nutrients: [
+                    { name: "Iodine", val: "95", unit: "mcg/L", status: "optimal", cat: "Mineral" },
+                    { name: "Selenium", val: "130", unit: "ng/mL", status: "optimal", cat: "Mineral" },
+                    { name: "Tyrosine", val: "Sufficient", unit: "", status: "optimal", cat: "Amino Acid" },
+                    { name: "Zinc", val: "80", unit: "mcg/dL", status: "deficient", cat: "Mineral" }
+                ]
+            },
+            muscle: {
+                title: "Musculoskeletal", simValue: 44, icon: "ph-arm-flex",
+                stats: [
+                    { id: "c1", title: "Strength", base: 78, unit: "%", icon: "ph-lightning", type: "perc" },
+                    { id: "c2", title: "Recovery", base: 6, unit: "hrs", icon: "ph-moon-stars", type: "norm" },
+                    { id: "c3", title: "Hydration", base: 91, unit: "%", icon: "ph-drop", type: "perc" },
+                    { id: "c4", title: "Fatigue", base: 14, unit: "%", icon: "ph-battery-medium", type: "perc" }
+                ],
+                ai: { msg: "Muscle fibers recovering well. Schedule light mobility to keep fatigue low.", risk: 9 },
+                nutrients: [
+                    { name: "Protein", val: "1.6", unit: "g/kg", status: "optimal", cat: "Macro" },
+                    { name: "Creatine", val: "Adequate", unit: "", status: "optimal", cat: "Compound" },
+                    { name: "Electrolytes", val: "Stable", unit: "", status: "optimal", cat: "Electrolyte" },
+                    { name: "Vitamin D", val: "25", unit: "ng/mL", status: "deficient", cat: "Vitamin" }
+                ]
+            },
+            skin: {
+                title: "Dermatologic", simValue: 15, icon: "ph-drop-half-bottom",
+                stats: [
+                    { id: "c1", title: "Hydration", base: 85, unit: "%", icon: "ph-drop-half", type: "perc" },
+                    { id: "c2", title: "Elasticity", base: 88, unit: "%", icon: "ph-wave-sine", type: "perc" },
+                    { id: "c3", title: "UV Exposure", base: 20, unit: "index", icon: "ph-sun", type: "norm" },
+                    { id: "c4", title: "Barrier", base: 92, unit: "%", icon: "ph-shield-check", type: "perc" }
+                ],
+                ai: { msg: "Skin barrier intact. Keep UV exposure moderated during midday.", risk: 6 },
+                nutrients: [
+                    { name: "Collagen", val: "Supported", unit: "", status: "optimal", cat: "Protein" },
+                    { name: "Vitamin E", val: "11", unit: "mg", status: "optimal", cat: "Vitamin" },
+                    { name: "Hyaluronic Acid", val: "Adequate", unit: "", status: "optimal", cat: "Compound" },
+                    { name: "Vitamin C", val: "1.0", unit: "mg/dL", status: "deficient", cat: "Vitamin" }
+                ]
             }
         };
 
@@ -1133,6 +1216,8 @@
         let scene, camera, renderer, group, particles, spotLight;
         let isDragging = false;
         let mouseX = 0, mouseY = 0;
+        let lastPointer = { x: 0, y: 0 };
+        let zoomLevel = 13;
 
         const initThree = () => {
             const container = document.getElementById('model-3d-container');
@@ -1140,7 +1225,7 @@
 
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 2, 14);
+            camera.position.set(0, 2.2, zoomLevel);
 
             renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
             renderer.setSize(container.clientWidth, container.clientHeight);
@@ -1173,13 +1258,16 @@
                 requestAnimationFrame(animate);
                 const t = clock.getElapsedTime();
 
-                if (group && !isDragging) {
+                if (group) {
                     const baseScale = activeOrgan === 'heart' ? 1.08 : 1.02;
                     const pulseStrength = activeOrgan === 'heart' ? 0.08 : 0.02;
                     const pulse = baseScale + Math.sin(t * (activeOrgan === 'heart' ? 2.8 : 1.4)) * pulseStrength;
                     group.scale.set(pulse, pulse, pulse);
-                    group.rotation.y = Math.sin(t * 0.5) * 0.15 + (mouseX * 0.5);
-                    group.rotation.x = Math.sin(t * 0.2) * 0.05 + (mouseY * 0.05);
+
+                    if (!isDragging) {
+                        group.rotation.y += 0.002 + (mouseX * 0.01);
+                        group.rotation.x = THREE.MathUtils.lerp(group.rotation.x, mouseY * 0.2, 0.08);
+                    }
                 }
 
                 if(particles) particles.rotation.y += 0.0005;
@@ -1200,6 +1288,36 @@
                 mouseX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
                 mouseY = ((e.clientY - rect.top) / rect.height) * 2 - 1;
             });
+
+            container.addEventListener('pointerdown', (e) => {
+                isDragging = true;
+                lastPointer = { x: e.clientX, y: e.clientY };
+                container.setPointerCapture(e.pointerId);
+            });
+
+            container.addEventListener('pointermove', (e) => {
+                if (!isDragging || !group) return;
+                const dx = (e.clientX - lastPointer.x) * 0.005;
+                const dy = (e.clientY - lastPointer.y) * 0.005;
+                group.rotation.y += dx;
+                group.rotation.x += dy;
+                lastPointer = { x: e.clientX, y: e.clientY };
+            });
+
+            const endDrag = (e) => {
+                isDragging = false;
+                if (e && e.pointerId) {
+                    try { container.releasePointerCapture(e.pointerId); } catch (_) {}
+                }
+            };
+            container.addEventListener('pointerup', endDrag);
+            container.addEventListener('pointerleave', endDrag);
+
+            container.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                zoomLevel = Math.min(Math.max(zoomLevel + e.deltaY * 0.01, 9), 20);
+                camera.position.z = zoomLevel;
+            });
         };
 
         const loadOrganModel = (type) => {
@@ -1207,33 +1325,45 @@
             group = new THREE.Group();
             scene.add(group);
 
+            const { rotation, offsetY, targetSize } = ORGAN_MODEL_ORIENTATION[type] || ORGAN_MODEL_ORIENTATION.default;
+
             const loader = new THREE.GLTFLoader();
-            const fileName = ORGAN_MODEL_FILES[type] || MODEL_FALLBACK;
-            const modelPath = `${MODEL_BASE_PATH}${fileName}`;
+            const fileName = ORGAN_MODEL_FILES[type];
+            const modelPath = fileName ? `${MODEL_BASE_PATH}${fileName}` : null;
 
-            loader.load(modelPath, (gltf) => {
-                const model = gltf.scene;
+            const addFallbackMesh = () => {
+                const geo = new THREE.TorusKnotGeometry(2.2, 0.55, 120, 16);
+                const mat = new THREE.MeshStandardMaterial({ color: 0x0A84FF, metalness: 0.3, roughness: 0.2, emissive: 0x0A84FF, emissiveIntensity: 0.3 });
+                return new THREE.Mesh(geo, mat);
+            };
 
-                // Normalize scale & center
+            const applyModel = (model) => {
                 const box = new THREE.Box3().setFromObject(model);
                 const size = box.getSize(new THREE.Vector3());
                 const maxDim = Math.max(size.x, size.y, size.z) || 1;
-                const targetSize = 8;
-                const scale = targetSize / maxDim;
+                const scale = (targetSize || 8) / maxDim;
 
                 model.scale.setScalar(scale);
                 box.setFromObject(model);
                 const center = box.getCenter(new THREE.Vector3());
                 model.position.sub(center);
-                model.rotation.y = Math.PI; // Face camera consistently
+                model.rotation.set(rotation[0], rotation[1], rotation[2]);
 
-                group.position.set(0, 0.8, 0);
+                group.position.set(0, offsetY, 0);
                 group.add(model);
+            };
+
+            if (!modelPath) {
+                applyModel(addFallbackMesh());
+                return;
+            }
+
+            loader.load(modelPath, (gltf) => {
+                const model = gltf.scene || addFallbackMesh();
+                applyModel(model);
             }, undefined, (err) => {
                 console.warn("Model fallback", err);
-                const geo = new THREE.IcosahedronGeometry(2.5, 1);
-                const mat = new THREE.MeshStandardMaterial({ color: 0x0A84FF, wireframe: true });
-                group.add(new THREE.Mesh(geo, mat));
+                applyModel(addFallbackMesh());
             });
         };
 
