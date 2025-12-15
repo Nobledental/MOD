@@ -352,10 +352,10 @@
 
         /* MANAGEMENT GRID (Experience, Profiles, Services) */
         .management-grid {
-            grid-column: 1 / -1; 
-            grid-row: 6; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr 340px; 
+            grid-column: 1 / -1;
+            grid-row: 6;
+            display: grid;
+            grid-template-columns: 1fr 1fr 340px;
             gap: 30px;
         }
 
@@ -369,6 +369,24 @@
             backdrop-filter: blur(20px);
             box-shadow: var(--shadow-soft);
         }
+
+        /* SOS / Emergency */
+        .sos-card { border: 1px solid rgba(239,68,68,0.35); box-shadow: 0 10px 30px rgba(239,68,68,0.12); }
+        .sos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 12px 0 16px; }
+        .sos-chip { display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 14px; border: 1px solid var(--glass-border); background: rgba(239,68,68,0.06); color: var(--text-main); cursor: pointer; transition: 0.2s; }
+        .sos-chip .icon { width: 32px; height: 32px; border-radius: 10px; display: grid; place-items: center; background: rgba(239,68,68,0.15); color: #ef4444; }
+        .sos-chip strong { font-size: 13px; }
+        .sos-chip:hover { transform: translateY(-2px); border-color: rgba(239,68,68,0.5); box-shadow: 0 10px 25px rgba(239,68,68,0.16); }
+        .sos-chip.active { border-color: rgba(16,185,129,0.6); box-shadow: 0 0 0 2px rgba(16,185,129,0.12); }
+        .automation-row { display: flex; align-items: center; gap: 10px; margin: 6px 0 4px; flex-wrap: wrap; }
+        .automation-row label { font-size: 12px; color: var(--text-muted); font-weight: 700; }
+        .automation-row select { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--glass-border); background: var(--glass-bg); color: var(--text-main); font-weight: 700; cursor: pointer; }
+        .automation-status { font-size: 12px; color: var(--text-main); opacity: 0.8; margin-top: 4px; }
+        .sos-log { margin-top: 12px; padding: 10px; background: var(--glass-bg); border: 1px dashed var(--glass-border); border-radius: 12px; font-size: 11px; color: var(--text-muted); max-height: 120px; overflow-y: auto; }
+        .sos-log-line { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px dashed var(--divider-color); }
+        .sos-log-line:last-child { border-bottom: none; }
+        .critical-blink::after { content: ''; position: fixed; inset: 0; background: rgba(239,68,68,0.18); pointer-events: none; animation: flashRed 1s ease-in-out infinite; mix-blend-mode: screen; z-index: 999; }
+        @keyframes flashRed { 0% { opacity: 0.1; } 50% { opacity: 0.6; } 100% { opacity: 0.1; } }
 
         /* Services / Insurance Card */
         .insurance-card {
@@ -683,7 +701,47 @@
                 </div>
 
                 <div class="management-grid">
-                    
+
+                    <div class="module-card sos-card">
+                        <div class="section-header" style="margin-bottom:10px;">
+                            <div style="background:rgba(239,68,68,0.12); padding:4px; border-radius:6px; margin-right:8px; color:#ef4444;"><i class="ph-fill ph-siren"></i></div> SOS - Emergency
+                            <span style="margin-left:auto; font-size:11px; color:var(--text-muted);">Mapped to care network</span>
+                        </div>
+                        <p style="font-size:12px; color:var(--text-muted); line-height:1.5; margin-bottom:10px;">Tap to instantly alert the right team. Hospital, ambulance, doctor, and your family profile will receive your live vitals and location.</p>
+
+                        <div class="sos-grid">
+                            <button class="sos-chip" data-target="Hospital Network" onclick="triggerSOS('Hospital Network', this)">
+                                <div class="icon"><i class="ph-fill ph-hospital"></i></div>
+                                <div><strong>Hospital</strong><div style="font-size:11px; color:var(--text-muted);">Direct admission</div></div>
+                            </button>
+                            <button class="sos-chip" data-target="Ambulance Dispatch" onclick="triggerSOS('Ambulance Dispatch', this)">
+                                <div class="icon"><i class="ph-fill ph-truck"></i></div>
+                                <div><strong>Ambulance</strong><div style="font-size:11px; color:var(--text-muted);">Nearest ETA sent</div></div>
+                            </button>
+                            <button class="sos-chip" data-target="On-call Doctor" onclick="triggerSOS('On-call Doctor', this)">
+                                <div class="icon"><i class="ph-fill ph-stethoscope"></i></div>
+                                <div><strong>Doctor</strong><div style="font-size:11px; color:var(--text-muted);">Tele-eval link</div></div>
+                            </button>
+                            <button class="sos-chip" data-target="Family Profile" onclick="triggerSOS('Family Profile', this)">
+                                <div class="icon"><i class="ph-fill ph-users-three"></i></div>
+                                <div><strong>Family</strong><div style="font-size:11px; color:var(--text-muted);">Safety update</div></div>
+                            </button>
+                        </div>
+
+                        <div class="automation-row">
+                            <label for="automation-select"><i class="ph-bold ph-clock"></i> Automation trigger</label>
+                            <select id="automation-select" onchange="setAutomationWindow(this.value)">
+                                <option value="15">15 sec</option>
+                                <option value="30" selected>30 sec</option>
+                                <option value="60">60 sec</option>
+                                <option value="120">120 sec</option>
+                            </select>
+                            <button class="ai-btn" style="margin-left:auto;" onclick="dispatchAllSOS(false)"><i class="ph-bold ph-warning"></i> Trigger All</button>
+                        </div>
+                        <div class="automation-status" id="automation-status">Auto-escalation will fire in 30 sec when vitals are critical.</div>
+                        <div class="sos-log" id="sos-log">No SOS activity yet.</div>
+                    </div>
+
                     <div class="module-card">
                         <div class="section-header" style="margin-bottom:15px;">
                             <div style="background:rgba(10,132,255,0.1); padding:4px; border-radius:6px; margin-right:8px; color:var(--color-blue);"><i class="ph-fill ph-sparkle"></i></div> Experience Hub
@@ -794,6 +852,74 @@
         };
         const apiKey = ""; // Gemini API Key will be injected by the environment
         const SYNC_KEY = 'hf-last-sync';
+        let automationWindow = 30;
+        let automationTimer = null;
+        let criticalActive = false;
+
+        // --- SOS + AUTOMATION CONTROLS ---
+        function updateAutomationStatus(text) {
+            const status = document.getElementById('automation-status');
+            if (status) status.innerText = text;
+        }
+
+        function setAutomationWindow(val) {
+            automationWindow = parseInt(val, 10) || 30;
+            updateAutomationStatus(`Auto-escalation will fire in ${automationWindow} sec when vitals are critical.`);
+            if (criticalActive) startAutomationCountdown();
+        }
+
+        function startAutomationCountdown() {
+            if (automationWindow <= 0) return;
+            stopAutomationCountdown();
+            let remaining = automationWindow;
+            updateAutomationStatus(`Auto SOS in ${remaining} sec unless cleared.`);
+            automationTimer = setInterval(() => {
+                remaining -= 1;
+                updateAutomationStatus(`Auto SOS in ${Math.max(remaining, 0)} sec unless cleared.`);
+                if (remaining <= 0) {
+                    stopAutomationCountdown();
+                    dispatchAllSOS(true);
+                }
+            }, 1000);
+        }
+
+        function stopAutomationCountdown(message = 'Automation idle until next alert.') {
+            if (automationTimer) clearInterval(automationTimer);
+            automationTimer = null;
+            if (!criticalActive) updateAutomationStatus(message);
+        }
+
+        function triggerSOS(target, element = null) {
+            if (element) {
+                document.querySelectorAll('.sos-chip').forEach(chip => chip.classList.remove('active'));
+                element.classList.add('active');
+            }
+            const log = document.getElementById('sos-log');
+            const stamp = new Date().toLocaleTimeString();
+            if (log) {
+                if (log.innerText.includes('No SOS activity yet')) log.innerHTML = '';
+                log.innerHTML = `<div class="sos-log-line"><span>${stamp}</span><strong>${target}</strong></div>` + log.innerHTML;
+            }
+        }
+
+        function dispatchAllSOS(autoTriggered = true) {
+            document.querySelectorAll('.sos-chip').forEach(chip => chip.classList.add('active'));
+            ['Hospital Network', 'Ambulance Dispatch', 'On-call Doctor', 'Family Profile'].forEach(name => triggerSOS(name));
+            if (autoTriggered) updateAutomationStatus('Auto SOS dispatched to all contacts.');
+        }
+
+        function setCriticalMode(active) {
+            criticalActive = active;
+            const app = document.querySelector('.app-container');
+            if (app) app.classList.toggle('critical-blink', active);
+
+            if (active) {
+                startAutomationCountdown();
+            } else {
+                stopAutomationCountdown();
+                document.querySelectorAll('.sos-chip').forEach(chip => chip.classList.remove('active'));
+            }
+        }
         
         // --- CUSTOM SVG ICONS FOR ORGANS ---
         const ORGAN_SVGS = {
@@ -1101,7 +1227,7 @@
                 model.position.sub(center);
                 model.rotation.y = Math.PI; // Face camera consistently
 
-                group.position.set(0, -0.5, 0);
+                group.position.set(0, 0.8, 0);
                 group.add(model);
             }, undefined, (err) => {
                 console.warn("Model fallback", err);
@@ -1285,6 +1411,7 @@
             marker.style.left = data.ai.risk + "%";
 
             // Update Cards (With Fake Scanning Delay)
+            let hasCritical = false;
             data.stats.forEach((s, i) => {
                 const elTitle = document.getElementById(`c${i+1}-title`);
                 const elVal = document.getElementById(`c${i+1}-val`);
@@ -1304,6 +1431,7 @@
                         }
                         if(card) {
                             const { level, label } = evaluateVital(s);
+                            if (level === 'critical') hasCritical = true;
                             card.classList.remove('state-normal','state-borderline','state-unstable','state-critical','state-blue','active-blue');
                             card.classList.add(`state-${level}`);
                             if(statusPill) {
@@ -1316,6 +1444,8 @@
 
             // Update Nutrition Grid
             renderNutrients(data.nutrients);
+
+            setCriticalMode(hasCritical);
         };
 
         // --- GEMINI API INTEGRATION ---
