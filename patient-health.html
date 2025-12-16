@@ -6,6 +6,47 @@
   <title>HealthFlo — Patient Health Board</title>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/patient-os.css">
+  <link href="https://unpkg.com/@phosphor-icons/web" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    /* Merged dashboards (health v2 + organs v2) */
+    .halo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+    .glass-card { background: var(--bg-glass); border: var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); }
+    .health-score-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
+    .health-circle { width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(var(--primary) 0deg, var(--primary) calc(var(--score,80) * 3.6deg), rgba(255,255,255,0.08) calc(var(--score,80) * 3.6deg), rgba(255,255,255,0.08) 360deg); display: grid; place-items: center; position: relative; }
+    .health-circle::after { content: ''; position: absolute; width: 130px; height: 130px; border-radius: 50%; background: var(--bg); }
+    .health-score-value { position: relative; font-size: 46px; font-weight: 800; z-index: 1; }
+    .health-score-value small { display: block; font-size: 12px; color: var(--muted); }
+    .insight-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .pill.ai { background: rgba(140, 245, 183, 0.15); color: var(--success); border: 1px solid rgba(140, 245, 183, 0.4); }
+    .insight-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(109, 225, 227, 0.12); display: grid; place-items: center; }
+    .quick-actions { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .action-btn { display: flex; gap: 12px; padding: 14px; border-radius: 14px; text-decoration: none; color: var(--text); background: var(--bg-glass); border: var(--border); align-items: center; }
+    .action-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(255,255,255,0.05); display: grid; place-items: center; font-size: 18px; }
+    .chart-card { background: var(--bg-glass); border: var(--border); border-radius: 20px; padding: 16px; box-shadow: var(--shadow); }
+    .chart-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .chart-tabs { display: flex; gap: 8px; }
+    .chart-tab { background: transparent; border: var(--border); color: var(--text); padding: 6px 12px; border-radius: 12px; cursor: pointer; }
+    .chart-tab.active { background: var(--accent); color: #0d0d14; border-color: transparent; }
+    .risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .risk-card { background: var(--bg-glass); border: var(--border); border-radius: 16px; padding: 14px; }
+    .risk-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .risk-badge { padding: 6px 12px; border-radius: 20px; font-weight: 700; background: rgba(255,255,255,0.06); }
+    .risk-bar { margin-top: 10px; width: 100%; height: 6px; border-radius: 10px; background: rgba(255,255,255,0.1); overflow: hidden; }
+    .risk-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); width: var(--risk, 50%); }
+    .organs-section { margin-top: 3rem; }
+    .organs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .organ-card-enhanced { background: var(--bg-glass); border: var(--border); border-radius: 18px; overflow: hidden; box-shadow: var(--shadow); }
+    .organ-preview { height: 200px; background: radial-gradient(circle at 20% 20%, rgba(109, 225, 227, 0.12), transparent 40%), radial-gradient(circle at 80% 10%, rgba(138, 164, 255, 0.12), transparent 35%), linear-gradient(135deg, rgba(0,0,0,0.18), rgba(0,0,0,0.05)); }
+    .organ-info { padding: 16px; display: grid; gap: 8px; }
+    .organ-meta { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .organ-status-badge { padding: 6px 12px; border-radius: 12px; border: var(--border); background: rgba(255,255,255,0.04); }
+    .organ-metrics { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; font-size: 13px; color: var(--muted); }
+    .organ-metrics strong { display: block; color: var(--text); }
+    .organ-links { display: flex; flex-wrap: wrap; gap: 8px; }
+    .organ-links a { text-decoration: none; padding: 6px 10px; border-radius: 10px; border: var(--border); color: var(--text); font-size: 12px; }
+    .live-badge { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 12px; background: rgba(140, 245, 183, 0.15); border: 1px solid rgba(140, 245, 183, 0.4); color: var(--success); font-weight: 700; }
+  </style>
 </head>
 <body>
   <header class="hf-topbar">
@@ -14,7 +55,7 @@
       <nav class="hf-nav">
         <a href="patient-dashboard.html">Dashboard</a>
         <a class="active" href="patient-health.html">Health</a>
-        <a href="patient-organs.html">Organs</a>
+        <a href="#organs">Organs</a>
         <a href="patient-profile.html">Profile</a>
         <a href="patient-hospitals.html">Hospitals</a>
         <a href="patient-pharmacy.html">Pharmacy</a>
@@ -69,6 +110,89 @@
           </div>
         </div>
         <div class="notice" id="ai_summary">Guardian AI summarises vitals in simple words.</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <header>
+        <div>
+          <p class="chip">Guardian AI</p>
+          <h2 class="section-title">Health score, live vitals, and AI narration</h2>
+          <p class="section-sub">Merged HealthFlo dashboards with deep analysis from the v2 layouts.</p>
+        </div>
+      </header>
+      <div class="halo-grid">
+        <div class="glass-card health-score-wrap">
+          <span class="live-badge"><i class="ph-fill ph-pulse"></i> Live monitoring</span>
+          <div class="health-circle" id="health_score_ring">
+            <div class="health-score-value"><span id="health_score_value">87</span><small>out of 100</small></div>
+          </div>
+          <h3>Overall health score</h3>
+          <p class="section-sub">Balanced from heart, metabolic, immunity, and respiratory inputs.</p>
+          <div class="stat-grid">
+            <div class="stat"><small>Cardio</small><strong id="score_cardio">92</strong></div>
+            <div class="stat"><small>Metabolic</small><strong id="score_metabolic">85</strong></div>
+            <div class="stat"><small>Immunity</small><strong id="score_immunity">84</strong></div>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div class="insight-header">
+            <div class="insight-icon"><i class="ph-fill ph-robot"></i></div>
+            <div>
+              <p class="chip pill ai">AI Health Guardian</p>
+              <h3 style="margin: 4px 0 0 0;">Personalized guidance</h3>
+            </div>
+          </div>
+          <div class="notice" id="ai_insight_card">Excellent progress! Cardiovascular trends are steady.</div>
+          <div class="stat-grid" style="margin-top: 14px;">
+            <div class="stat"><small>Alert badge</small><strong id="ai_alerts">0 alerts</strong><span id="ai_alerts_msg">Dashboard mirrors critical flags.</span></div>
+            <div class="stat"><small>Next action</small><strong id="ai_next">Hydration + walk</strong><span id="ai_next_msg">Auto-synced to dashboard</span></div>
+            <div class="stat"><small>Family</small><strong id="ai_family">Paused</strong><span id="ai_family_msg">Share live view</span></div>
+            <div class="stat"><small>Labs</small><strong id="ai_labs">Synced</strong><span id="ai_labs_msg">Latest timeline loaded</span></div>
+          </div>
+        </div>
+        <div class="glass-card">
+          <div class="chart-header">
+            <div>
+              <p class="chip">Trends</p>
+              <h3>Vitals over time</h3>
+            </div>
+            <div class="chart-tabs">
+              <button class="chart-tab active" data-period="week">Week</button>
+              <button class="chart-tab" data-period="month">Month</button>
+              <button class="chart-tab" data-period="year">Year</button>
+            </div>
+          </div>
+          <canvas id="trend_chart" height="120"></canvas>
+        </div>
+        <div class="glass-card">
+          <p class="chip">Quick actions</p>
+          <h3>Keep everything in sync</h3>
+          <div class="quick-actions">
+            <a class="action-btn" href="patient-labs.html"><div class="action-icon"><i class="ph-bold ph-flask"></i></div><div><strong>Upload lab results</strong><small>Push PDFs and values</small></div></a>
+            <a class="action-btn" href="#organs"><div class="action-icon"><i class="ph-bold ph-scan"></i></div><div><strong>Open organ watch</strong><small>3D atlas + alerts</small></div></a>
+            <a class="action-btn" href="patient-pharmacy.html"><div class="action-icon"><i class="ph-bold ph-pill"></i></div><div><strong>Medication tracker</strong><small>Therapeutic classes</small></div></a>
+            <a class="action-btn" href="patient-hospitals.html"><div class="action-icon"><i class="ph-bold ph-calendar-plus"></i></div><div><strong>Book consult</strong><small>Mirror dashboard flags</small></div></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="risk-grid" style="margin-top: 1.25rem;">
+        <div class="risk-card" style="--risk: 18%;">
+          <div class="risk-header"><div><div class="risk-title">Cardiovascular</div><p class="section-sub">ECG, BP, BNP, Troponin</p></div><span class="risk-badge">Low</span></div>
+          <p class="section-sub">Exercise + BP logs keep this risk green.</p>
+          <div class="risk-bar"><div class="risk-fill"></div></div>
+        </div>
+        <div class="risk-card" style="--risk: 42%;">
+          <div class="risk-header"><div><div class="risk-title">Metabolic</div><p class="section-sub">HbA1c, lipids, thyroid</p></div><span class="risk-badge">Moderate</span></div>
+          <p class="section-sub">Watch glucose load; sync labs weekly.</p>
+          <div class="risk-bar"><div class="risk-fill"></div></div>
+        </div>
+        <div class="risk-card" style="--risk: 24%;">
+          <div class="risk-header"><div><div class="risk-title">Respiratory</div><p class="section-sub">Spirometry + SpO₂ trends</p></div><span class="risk-badge">Low</span></div>
+          <p class="section-sub">Respiratory coaching enabled with devices.</p>
+          <div class="risk-bar"><div class="risk-fill"></div></div>
+        </div>
       </div>
     </section>
 
@@ -253,6 +377,7 @@
             <button class="badge primary" id="triggerEmergency">Trigger ambulance</button>
             <button class="badge" id="autoToggle">Auto trigger: OFF</button>
           </div>
+        </div>
         <div class="card">
           <h3>Pharmacy & meds</h3>
           <p class="section-sub">The new dual-dashboard pharmacy page mirrors Labs: search medicines by drug/brand/therapeutic use, find HealthFlo buffer pharmacies with live locations, and auto-sync back here.</p>
@@ -265,12 +390,153 @@
         </div>
       </div>
     </section>
+
+    <section class="section organs-section" id="organs">
+      <header>
+        <div>
+          <p class="chip">Organ watch</p>
+          <h2 class="section-title">Whole-body atlas mirrored to dashboard</h2>
+          <p class="section-sub">Merged organ watchboards with live vitals, lab sync, and 3D meshes.</p>
+        </div>
+      </header>
+      <div class="halo-grid">
+        <div class="glass-card">
+          <div class="card-head"><h3>Organ alert badge</h3><span class="live-badge" id="organ_live_indicator">Live</span></div>
+          <div class="notice" id="organ_alert">All clear</div>
+          <div class="notice" id="organ_alert_badge">0 alerts</div>
+          <div class="stat-grid">
+            <div class="stat"><small>Heart rate</small><strong id="organ_vitals_hr">—</strong></div>
+            <div class="stat"><small>BP</small><strong id="organ_vitals_bp">—</strong></div>
+            <div class="stat"><small>SpO₂</small><strong id="organ_vitals_spo2">—</strong></div>
+            <div class="stat"><small>Resp</small><strong id="organ_vitals_resp">—</strong></div>
+            <div class="stat"><small>Temp</small><strong id="organ_vitals_temp">—</strong></div>
+          </div>
+          <div class="stat-line"><small>Last lab</small> <strong id="organ_lab_name">No lab synced</strong></div>
+          <div class="stat-line" id="organ_lab_updated">Use Labs → Sync to push reports here.</div>
+        </div>
+        <div class="glass-card">
+          <div class="card-head"><h3>Organ notifications</h3><span class="pill">Dashboard sync</span></div>
+          <div id="alert_list">
+            <div class="notice success">All systems green. You will be notified if vitals cross thresholds.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="atlas-grid" style="margin-top: 1.25rem;">
+        <div class="card atlas-card" data-organ="heart">
+          <div class="card-head"><h3>Heart</h3><span class="pill success">Synced</span></div>
+          <p class="section-sub">Live myocardium mesh and ECG trends.</p>
+          <model-viewer src="3d_models/heart.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=heart">Dashboard</a>
+            <a href="patient-health.html?organ=heart">Health</a>
+            <a href="patient-labs.html?organ=heart">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="liver">
+          <div class="card-head"><h3>Liver</h3><span class="pill">Normal</span></div>
+          <p class="section-sub">Functional model with toxin filter score.</p>
+          <model-viewer src="3d_models/liver.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=liver">Dashboard</a>
+            <a href="patient-health.html?organ=liver">Health</a>
+            <a href="patient-labs.html?organ=liver">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="lungs">
+          <div class="card-head"><h3>Lungs</h3><span class="pill">Calm</span></div>
+          <p class="section-sub">Respiratory mesh for spirometry + SpO₂.</p>
+          <model-viewer src="3d_models/lungs.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=lungs">Dashboard</a>
+            <a href="patient-health.html?organ=lungs">Health</a>
+            <a href="patient-labs.html?organ=lungs">Labs</a>
+          </div>
+        </div>
+        <div class="card atlas-card" data-organ="kidneys">
+          <div class="card-head"><h3>Kidneys</h3><span class="pill">Hydrated</span></div>
+          <p class="section-sub">Renal mesh with hydration and filtration cues.</p>
+          <model-viewer src="3d_models/kidneys.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a href="patient-dashboard.html?organ=kidneys">Dashboard</a>
+            <a href="patient-health.html?organ=kidneys">Health</a>
+            <a href="patient-labs.html?organ=kidneys">Labs</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-top: 1.5rem;">
+        <div class="card-head"><h3 id="organ_studio_title">Immersive anatomy studio</h3><span class="pill" id="organ_studio_status">Ready</span></div>
+        <p class="section-sub">Select an organ card to jump into 3D, align with labs, vitals, and consult readiness.</p>
+        <div class="model-stage">
+          <model-viewer id="organ_model_viewer" data-fallback="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Earth/glTF-Binary/Earth.glb" camera-controls auto-rotate shadow-intensity="0.8" interaction-prompt="none">
+            <div class="model-fallback">Immersive 3D organ mesh loads on supported browsers.</div>
+          </model-viewer>
+        </div>
+        <div class="stat-grid" style="margin-top: 10px;">
+          <div class="stat"><small>Vitals</small><strong id="organ_studio_vitals">—</strong><span id="organ_studio_summary">Whole-body preview ready</span></div>
+          <div class="stat"><small>Labs</small><strong id="organ_studio_lab">Labs mirrored from dashboard</strong><span id="organ_studio_next">—</span></div>
+          <div class="stat"><small>Synced with</small><strong id="organ_studio_sync">Dashboard · Health · Labs</strong></div>
+        </div>
+      </div>
+
+      <div class="organs-grid" style="margin-top: 1.25rem;">
+        <div class="organ-card-enhanced" data-organ="brain">
+          <div class="organ-preview"></div>
+          <div class="organ-info">
+            <div class="organ-meta"><strong>Brain</strong><span class="organ-status-badge" id="brain_status">Calm</span></div>
+            <p class="section-sub">Sleep, stress, cognition.</p>
+            <div class="organ-metrics"><div>State<strong id="brain_state">—</strong></div><div>Next<strong id="brain_next">Mindfulness</strong></div></div>
+            <div class="organ-links">
+              <a href="patient-dashboard.html?organ=brain">Dashboard</a>
+              <a href="patient-health.html?organ=brain">Health</a>
+            </div>
+          </div>
+        </div>
+        <div class="organ-card-enhanced" data-organ="liver">
+          <div class="organ-preview"></div>
+          <div class="organ-info">
+            <div class="organ-meta"><strong>Liver</strong><span class="organ-status-badge" id="liver_status">Healthy</span></div>
+            <p class="section-sub">LFT + bilirubin.</p>
+            <div class="organ-metrics"><div>Markers<strong id="liver_markers">—</strong></div><div>Next<strong id="liver_next">Hydrate</strong></div></div>
+            <div class="organ-links">
+              <a href="patient-dashboard.html?organ=liver">Dashboard</a>
+              <a href="patient-health.html?organ=liver">Health</a>
+            </div>
+          </div>
+        </div>
+        <div class="organ-card-enhanced" data-organ="kidney">
+          <div class="organ-preview"></div>
+          <div class="organ-info">
+            <div class="organ-meta"><strong>Kidneys</strong><span class="organ-status-badge" id="kidney_status">Hydrated</span></div>
+            <p class="section-sub">KFT + hydration.</p>
+            <div class="organ-metrics"><div>Labs<strong id="kidney_markers">—</strong></div><div>Next<strong id="kidney_next">Water reminder</strong></div></div>
+            <div class="organ-links">
+              <a href="patient-dashboard.html?organ=kidney">Dashboard</a>
+              <a href="patient-health.html?organ=kidney">Health</a>
+            </div>
+          </div>
+        </div>
+        <div class="organ-card-enhanced" data-organ="heart">
+          <div class="organ-preview"></div>
+          <div class="organ-info">
+            <div class="organ-meta"><strong>Heart</strong><span class="organ-status-badge" id="heart_status">Good</span></div>
+            <p class="section-sub">ECG + cardiac markers.</p>
+            <div class="organ-metrics"><div>Vitals<strong id="heart_vitals">—</strong></div><div>Next<strong id="heart_next">Log ECG</strong></div></div>
+            <div class="organ-links">
+              <a href="patient-dashboard.html?organ=heart">Dashboard</a>
+              <a href="patient-health.html?organ=heart">Health</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <nav class="neo-dock">
     <a class="dock-btn" href="patient-dashboard.html" aria-label="Dashboard">🏠</a>
     <a class="dock-btn active" href="patient-health.html" aria-label="Health">💓</a>
-    <a class="dock-btn" href="patient-organs.html" aria-label="Organs">🫀</a>
+    <a class="dock-btn" href="#organs" aria-label="Organs">🫀</a>
     <a class="dock-btn" href="patient-profile.html" aria-label="Profile">👤</a>
     <a class="dock-btn" href="patient-labs.html" aria-label="Labs">🧪</a>
     <a class="dock-btn" href="patient-hospitals.html" aria-label="Hospitals">🏥</a>
@@ -286,6 +552,17 @@
   </footer>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      const root = document.documentElement;
+      const themeToggle = document.getElementById('themeToggle');
+      const savedTheme = localStorage.getItem('hf-theme');
+      if (savedTheme) root.dataset.theme = savedTheme;
+      themeToggle?.addEventListener('click', () => {
+        const next = root.dataset.theme === 'vision' ? 'matte' : 'vision';
+        root.dataset.theme = next;
+        localStorage.setItem('hf-theme', next);
+        themeToggle.textContent = next === 'vision' ? '🌞' : '🌓';
+      });
+
       const safeParse = (key) => { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } };
       const labSnap = safeParse('lab-dashboard-latest');
       const healthSnap = safeParse('health-board-status');
@@ -296,11 +573,18 @@
       const history = (labSnap.history || []).slice().sort((a,b) => new Date(b.date) - new Date(a.date));
 
       const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+      const pickStat = (regex, fallback='--') => vitalsSnap.stats?.find(s => regex.test(s.label))?.val || fallback;
 
-      setText('v_hr', vitalsSnap.stats?.find(s => /heart/i.test(s.label))?.val || '--');
-      setText('v_bp', vitalsSnap.stats?.find(s => /pressure|bp/i.test(s.label))?.val || '--');
-      setText('v_spo2', `${panels.spirometry || '--'}`);
-      setText('v_temp', `${panels.temperature ? panels.temperature.toFixed ? panels.temperature.toFixed(1) : panels.temperature : '--'}°F`);
+      const hrVal = pickStat(/heart|pulse/i, '--');
+      const bpVal = pickStat(/pressure|bp/i, '--');
+      const spo2Val = pickStat(/SpO/i, panels.spirometry || '--');
+      const tempVal = panels.temperature ? (panels.temperature.toFixed ? panels.temperature.toFixed(1) : panels.temperature) : pickStat(/temp/i, '--');
+      const respVal = panels.resp || pickStat(/resp/i, '16/min');
+
+      setText('v_hr', hrVal);
+      setText('v_bp', bpVal);
+      setText('v_spo2', `${spo2Val}`);
+      setText('v_temp', `${tempVal}${tempVal === '--' ? '' : '°F'}`);
 
       setText('lab_rbc', `${panels.rbc || '--'} M/µL`);
       setText('lab_wbc', `${panels.wbc || '--'} k/µL`);
@@ -315,10 +599,10 @@
       setText('lab_crp', panels.crp || '--');
       setText('lab_bnp', panels.bnp || '--');
       setText('lab_spirometry', panels.spirometry || '--');
-      setText('lab_spo2', vitalsSnap.stats?.find(s => /SpO/i.test(s.label))?.val || '--');
-      setText('lab_resp', `${panels.resp || '16/min'}`);
+      setText('lab_spo2', spo2Val);
+      setText('lab_resp', `${respVal}`);
 
-      const summaryText = healthSnap.condition ? `${healthSnap.condition}: ${healthSnap.advice}` : 'Guardian AI summarises vitals in simple words.';
+      const summaryText = healthSnap.condition ? `${healthSnap.condition}: ${healthSnap.advice || ''}`.trim() : 'Guardian AI summarises vitals in simple words.';
       setText('ai_summary', summaryText);
       setText('blood_signal', healthSnap.reasons?.[0] || 'Balanced');
       setText('cbc_signal', healthSnap.monitor?.join(', ') || 'Normal');
@@ -328,6 +612,74 @@
       setText('lab_cardiac_ai', 'Heart stress markers are low.');
       setText('lab_lung_ai', panels.spirometry || 'Breathing looks smooth.');
 
+      // Guardian AI + score
+      const score = Number(healthSnap.score ?? 87);
+      const ring = document.getElementById('health_score_ring');
+      if (ring) ring.style.setProperty('--score', score);
+      setText('health_score_value', score.toFixed ? score.toFixed(0) : score);
+      setText('score_cardio', healthSnap.cardioScore || 92);
+      setText('score_metabolic', healthSnap.metabolicScore || 85);
+      setText('score_immunity', healthSnap.immunityScore || 84);
+
+      const alertCount = (healthSnap.alerts || []).length || (healthSnap.reasons?.length || 0);
+      setText('ai_insight_card', summaryText || 'Excellent progress!');
+      setText('ai_alerts', `${alertCount} alerts`);
+      setText('ai_alerts_msg', alertCount ? 'Mirrored to dashboard' : 'Dashboard mirrors critical flags.');
+      setText('ai_next', healthSnap.advice?.[0] || 'Hydration + walk');
+      setText('ai_next_msg', 'Auto-synced to dashboard');
+      setText('ai_family', healthSnap.family?.state || 'Paused');
+      setText('ai_family_msg', healthSnap.family?.note || 'Share live view');
+      setText('ai_labs', reports.length ? 'Synced' : 'Pending');
+      setText('ai_labs_msg', reports.length ? 'Latest timeline loaded' : 'Import labs to sync');
+
+      // Trend chart
+      const ctx = document.getElementById('trend_chart');
+      if (ctx && window.Chart) {
+        const baseLabels = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+        const hrTrend = vitalsSnap.trend?.hr || [72, 70, 74, 71, 73, 69, 72];
+        const bpTrend = vitalsSnap.trend?.bp || [118, 115, 120, 117, 119, 116, 118];
+        const trendChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: baseLabels,
+            datasets: [
+              { label: 'Heart rate', data: hrTrend, borderColor: '#6de1e3', backgroundColor: 'rgba(109,225,227,0.15)', fill: true, tension: 0.35 },
+              { label: 'Systolic BP', data: bpTrend, borderColor: '#8aa4ff', backgroundColor: 'rgba(138,164,255,0.12)', fill: true, tension: 0.35 }
+            ]
+          },
+          options: {
+            plugins: { legend: { labels: { color: '#cfd6ef' } } },
+            scales: {
+              y: { ticks: { color: '#cfd6ef' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+              x: { ticks: { color: '#cfd6ef' }, grid: { color: 'rgba(255,255,255,0.02)' } }
+            }
+          }
+        });
+
+        document.querySelectorAll('.chart-tab').forEach(btn => {
+          btn.addEventListener('click', (event) => {
+            document.querySelectorAll('.chart-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            const period = event.target.dataset.period;
+            if (period === 'month') {
+              trendChart.data.labels = ['W1','W2','W3','W4'];
+              trendChart.data.datasets[0].data = hrTrend.slice(0,4).map(v => v - 1);
+              trendChart.data.datasets[1].data = bpTrend.slice(0,4).map(v => v - 2);
+            } else if (period === 'year') {
+              trendChart.data.labels = ['Q1','Q2','Q3','Q4'];
+              trendChart.data.datasets[0].data = [72,71,73,72];
+              trendChart.data.datasets[1].data = [118,119,117,118];
+            } else {
+              trendChart.data.labels = baseLabels;
+              trendChart.data.datasets[0].data = hrTrend;
+              trendChart.data.datasets[1].data = bpTrend;
+            }
+            trendChart.update();
+          });
+        });
+      }
+
+      // Reports timeline
       const timeline = document.getElementById('lab_timeline');
       if (timeline) {
         timeline.innerHTML = '';
@@ -345,7 +697,7 @@
         reports.slice(0, 6).forEach(rep => {
           const card = document.createElement('article');
           card.className = 'report-card';
-          card.innerHTML = `<h4>${rep.name}</h4><div class="report-meta">${rep.lab} • ${rep.doctor || 'Doctor lens'} • ${new Date(rep.date).toLocaleString()}</div><div class="report-ai">${rep.ai || 'Pending AI narration.'}</div>`;
+          card.innerHTML = `<h4>${rep.name}</h4><div class="report-meta">${rep.lab || 'Lab'} • ${rep.doctor || 'Doctor lens'} • ${new Date(rep.date).toLocaleString()}</div><div class="report-ai">${rep.ai || 'Pending AI narration.'}</div>`;
           if (rep.parameters) {
             const tagRow = document.createElement('div');
             tagRow.className = 'report-tags';
@@ -365,13 +717,52 @@
         const study = row.getAttribute('data-rad-study');
         const statusEl = row.querySelector('[data-rad-status]');
         const etaEl = row.querySelector('[data-rad-eta]');
-        const match = (labSnap.imagingReports || []).find(r => r.name.toLowerCase().includes(study.split('-')[0]));
+        const match = (labSnap.imagingReports || []).find(r => r.name?.toLowerCase().includes(study.split('-')[0]));
         if (match && statusEl && etaEl) {
           statusEl.textContent = match.status || 'Ready';
           etaEl.textContent = new Date(match.date).toLocaleDateString();
         }
       });
+
+      // Organ sync from dashboard
+      setText('organ_vitals_hr', hrVal ? `${hrVal} bpm` : '--');
+      setText('organ_vitals_bp', bpVal ? `${bpVal}` : '--');
+      setText('organ_vitals_spo2', `${spo2Val}`);
+      setText('organ_vitals_resp', `${respVal}`);
+      setText('organ_vitals_temp', `${tempVal}${tempVal === '--' ? '' : ' °F'}`);
+      const latestLab = reports[0];
+      setText('organ_lab_name', latestLab?.name || 'No lab synced');
+      setText('organ_lab_updated', latestLab ? `Updated ${new Date(latestLab.date).toLocaleString()}` : 'Use Labs → Sync to push reports here.');
+      setText('organ_studio_vitals', `${hrVal || '--'} bpm • ${bpVal || '--'} • ${spo2Val || '--'}%`);
+      setText('organ_studio_summary', healthSnap.condition || 'Whole-body preview ready');
+      setText('organ_studio_lab', latestLab?.lab || 'Labs mirrored from dashboard');
+      setText('organ_studio_next', healthSnap.advice?.[0] || 'Hydration + walk');
+      setText('organ_studio_sync', 'Dashboard · Health · Labs · Pharmacy · Hospitals');
+
+      const setBadge = (id, value) => { const el = document.getElementById(id); if (el && value) el.textContent = value; };
+      setBadge('heart_status', panels.bnp || 'Good');
+      setBadge('liver_status', panels.bilirubin ? 'Monitor' : 'Healthy');
+      setBadge('kidney_status', panels.creatinine ? 'Hydrated' : 'Hydrated');
+      setBadge('brain_status', healthSnap.brain || 'Calm');
+      setText('heart_vitals', `${hrVal || '--'} · ${bpVal || '--'}`);
+      setText('liver_markers', panels.sgot ? `${panels.sgot}/${panels.sgpt} U/L` : '--');
+      setText('kidney_markers', panels.creatinine ? `${panels.creatinine} mg/dL` : '--');
+      setText('brain_state', healthSnap.brain || 'Calm');
+
+      const alertList = document.getElementById('alert_list');
+      if (alertList && alertCount) {
+        alertList.innerHTML = '';
+        (healthSnap.reasons || []).forEach(reason => {
+          const note = document.createElement('div');
+          note.className = 'notice warn';
+          note.textContent = reason;
+          alertList.appendChild(note);
+        });
+        setText('organ_alert', 'Abnormal signals mirrored to dashboard');
+        setText('organ_alert_badge', `${alertCount} alerts`);
+      }
     });
   </script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </body>
 </html>
