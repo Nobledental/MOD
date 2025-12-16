@@ -30,6 +30,21 @@
       margin: 0 auto;
     }
 
+    .main-content h1,
+    .main-content h2,
+    .main-content h3,
+    .main-content h4,
+    .main-content h5,
+    .main-content h6 {
+      color: var(--text-main);
+    }
+
+    .main-content p,
+    .main-content small,
+    .main-content span {
+      color: var(--text-muted);
+    }
+
     /* ===== Medication Management (Pharmacy sync) ===== */
     .med-section {
       margin-top: 36px;
@@ -894,6 +909,61 @@
           </div>
         </div>
 
+        <div class="section-title">
+          <i class="ph-fill ph-user-focus"></i> Complete Profile & Lifestyle
+        </div>
+        <div class="mini-grid">
+          <div class="tile">
+            <p class="vital-label" style="margin: 0;">Body Composition</p>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px;">
+              <div><strong style="color: var(--text-main);">72.4 kg</strong><br><small>Weight</small></div>
+              <div><strong style="color: var(--text-main);">176 cm</strong><br><small>Height</small></div>
+              <div><strong style="color: var(--text-main);">23.3</strong><br><small>BMI (Healthy)</small></div>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 12px;">
+              <span class="vital-status"><i class="ph ph-check"></i> Stable trend</span>
+              <span class="vital-status warning"><i class="ph ph-bell"></i> Hydration reminder 2L/day</span>
+            </div>
+          </div>
+          <div class="tile">
+            <p class="vital-label" style="margin: 0;">Allergies & Blood Group</p>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 12px;">
+              <div class="med-pill-item" style="--pill-color:#f59e0b; --pill-color-dark:#b45309;">
+                <div class="pill-icon">🥜</div>
+                <div class="med-info">
+                  <div class="med-name" style="color: var(--text-main);">Peanut allergy</div>
+                  <div class="med-dosage">Carry epinephrine auto-injector</div>
+                </div>
+              </div>
+              <div class="med-pill-item" style="--pill-color:#ef4444; --pill-color-dark:#b91c1c;">
+                <div class="pill-icon">💊</div>
+                <div class="med-info">
+                  <div class="med-name" style="color: var(--text-main);">Penicillin sensitivity</div>
+                  <div class="med-dosage">Flagged in pharmacy hub</div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+              <div><strong style="color: var(--text-main);">Blood Group</strong><br><span style="font-size:24px;color:var(--color-blue);font-weight:800">O+</span></div>
+              <div style="text-align:right;">
+                <small>Food/Drug alerts auto-share with labs & pharmacy</small>
+              </div>
+            </div>
+          </div>
+          <div class="tile">
+            <p class="vital-label" style="margin: 0;">History & Confidential Notes</p>
+            <ul style="margin: 10px 0 0 18px; line-height: 1.5; color: var(--text-main);">
+              <li>Past medical: Mild asthma (childhood), GERD</li>
+              <li>Past surgical: Appendectomy (2015)</li>
+              <li>Family: Father - Type 2 Diabetes; Mother - Hypertension</li>
+              <li>Personal (private): smoking - none, alcohol - social, substance abuse - none</li>
+            </ul>
+            <div class="vital-status" style="margin-top: 10px;">
+              <i class="ph-bold ph-lock"></i> Personal history is hidden by default; share only when you approve.
+            </div>
+          </div>
+        </div>
+
         <!-- Trend Chart -->
         <div class="section-title">
           <i class="ph-fill ph-chart-line"></i> Health Trends
@@ -915,22 +985,22 @@
           <i class="ph-fill ph-shield-warning"></i> Health Risk Assessment
         </div>
         <div class="risk-grid">
-          <div class="risk-card" style="--risk-color: #10b981; --risk-level: 15%;">
+          <div class="risk-card" style="--risk-color: #ef4444; --risk-level: 72%;">
             <div class="risk-header">
               <div>
-                <div class="risk-title">Cardiovascular Disease</div>
-                <p style="font-size: 11px; opacity: 0.6; margin: 0;">Based on genetics & lifestyle</p>
+                <div class="risk-title">Sleep Apnea Risk</div>
+                <p style="font-size: 11px; opacity: 0.6; margin: 0;">Snoring + overnight SpO₂ dips</p>
               </div>
-              <div class="risk-badge">Low</div>
+              <div class="risk-badge">High</div>
             </div>
             <div style="font-size: 13px; opacity: 0.8; margin-top: 12px;">
-              Regular exercise and healthy diet contribute to low risk profile.
+              Schedule a home sleep study; CPAP trial ready. Auto-synced to providers.
             </div>
             <div class="risk-bar">
               <div class="risk-fill"></div>
             </div>
           </div>
-          <div class="risk-card" style="--risk-color: #f59e0b; --risk-level: 45%;">
+          <div class="risk-card" style="--risk-color: #f59e0b; --risk-level: 54%;">
             <div class="risk-header">
               <div>
                 <div class="risk-title">Type 2 Diabetes</div>
@@ -939,7 +1009,7 @@
               <div class="risk-badge">Moderate</div>
             </div>
             <div style="font-size: 13px; opacity: 0.8; margin-top: 12px;">
-              Monitor blood sugar levels. Consider reducing refined carb intake.
+              Weekly CGM sync enabled. Nutritionist reminder sent for carb cycling consult.
             </div>
             <div class="risk-bar">
               <div class="risk-fill"></div>
@@ -955,6 +1025,21 @@
             </div>
             <div style="font-size: 13px; opacity: 0.8; margin-top: 12px;">
               Blood pressure consistently within optimal ranges. Excellent!
+            </div>
+            <div class="risk-bar">
+              <div class="risk-fill"></div>
+            </div>
+          </div>
+          <div class="risk-card" style="--risk-color: #f59e0b; --risk-level: 48%;">
+            <div class="risk-header">
+              <div>
+                <div class="risk-title">Cardiovascular Disease</div>
+                <p style="font-size: 11px; opacity: 0.6; margin: 0;">Genetics + lipid profile</p>
+              </div>
+              <div class="risk-badge">Moderate</div>
+            </div>
+            <div style="font-size: 13px; opacity: 0.8; margin-top: 12px;">
+              Statin adherence high; next calcium-score CT suggested in 6 months.
             </div>
             <div class="risk-bar">
               <div class="risk-fill"></div>
@@ -1034,6 +1119,62 @@
           </div>
         </div>
 
+        <div class="section-title" style="margin-top: 32px;">
+          <i class="ph-fill ph-calendar-check"></i> Reminders & Women’s Health
+        </div>
+        <div class="mini-grid">
+          <div class="tile">
+            <p class="vital-label" style="margin:0;">Smart Reminders</p>
+            <div class="timeline-lite" style="margin-top: 10px;">
+              <div class="time-slot due">
+                <div class="time-label">08:00</div>
+                <div style="color: var(--text-main); font-weight: 700;">Metformin 500mg</div>
+                <small>Reminder mirrored on Pharmacy & Dashboard</small>
+              </div>
+              <div class="time-slot taken">
+                <div class="time-label">12:30</div>
+                <div style="color: var(--text-main); font-weight: 700;">Lunch glucose log</div>
+                <small>Synced to health trends</small>
+              </div>
+              <div class="time-slot">
+                <div class="time-label">19:00</div>
+                <div style="color: var(--text-main); font-weight: 700;">Evening walk 30 mins</div>
+                <small>Device live sync enabled</small>
+              </div>
+            </div>
+          </div>
+          <div class="tile">
+            <p class="vital-label" style="margin:0;">Confidential Personal History</p>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
+              <div class="action-icon" style="width:44px; height:44px;"><i class="ph-bold ph-fingerprint"></i></div>
+              <div>
+                <strong style="color: var(--text-main);">Share controls</strong>
+                <p style="margin:4px 0 0 0; color: var(--text-muted);">Only you can view personal notes. Toggle sharing for friends or hospitals.</p>
+              </div>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:10px; flex-wrap:wrap;">
+              <span class="vital-status warning"><i class="ph-bold ph-eye-slash"></i> Private</span>
+              <span class="vital-status"><i class="ph-bold ph-share-fat"></i> Share for 48h</span>
+            </div>
+          </div>
+          <div class="tile">
+            <p class="vital-label" style="margin:0;">Women’s Health</p>
+            <div style="display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-top:10px;">
+              <div>
+                <strong style="color: var(--text-main);">Cycle tracking</strong>
+                <p style="margin:4px 0;">Menses due in 6 days • PMS tips loaded</p>
+              </div>
+              <div>
+                <strong style="color: var(--text-main);">Pregnancy & PCOD</strong>
+                <p style="margin:4px 0;">PCOD guidance: low-GI meals, daily steps 8k</p>
+              </div>
+            </div>
+            <div class="vital-status" style="margin-top:8px;">
+              <i class="ph-bold ph-notebook"></i> Exportable to OB-GYN or friends only when you approve.
+            </div>
+          </div>
+        </div>
+
         <!-- Quick Actions -->
         <div class="section-title">
           <i class="ph-fill ph-lightning"></i> Quick Actions
@@ -1067,6 +1208,80 @@
               <small>Find nearby doctors</small>
             </div>
           </a>
+          <a href="#medications" class="action-btn">
+            <div class="action-icon"><i class="ph-bold ph-clock"></i></div>
+            <div class="action-text">
+              <strong>Schedule dose reminder</strong>
+              <small>Syncs to Pharmacy & Dashboard</small>
+            </div>
+          </a>
+          <a href="#" class="action-btn" onclick="alert('Shared with selected hospital securely'); return false;">
+            <div class="action-icon"><i class="ph-bold ph-lock-laminated"></i></div>
+            <div class="action-text">
+              <strong>Share personal history</strong>
+              <small>Requires your approval</small>
+            </div>
+          </a>
+        </div>
+
+        <div class="section-title" style="margin-top: 32px;">
+          <i class="ph-bold ph-table"></i> Lab Report Comparison (CBC)
+        </div>
+        <div class="med-shell">
+          <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div>
+              <p class="vital-label" style="margin:0;">Historical CBC snapshots</p>
+              <strong style="color: var(--text-main);">Side-by-side parameters</strong>
+            </div>
+            <span class="vital-status warning"><i class="ph-bold ph-arrows-left-right"></i> Synced with Labs page</span>
+          </div>
+          <div style="overflow-x:auto;">
+            <table style="width:100%; border-collapse: collapse; text-align:left;">
+              <thead>
+                <tr style="background: var(--card-active-bg);">
+                  <th style="padding:10px; border-bottom:1px solid var(--glass-border);">Parameter</th>
+                  <th style="padding:10px; border-bottom:1px solid var(--glass-border);">09 Oct</th>
+                  <th style="padding:10px; border-bottom:1px solid var(--glass-border);">22 Nov</th>
+                  <th style="padding:10px; border-bottom:1px solid var(--glass-border);">05 Dec</th>
+                  <th style="padding:10px; border-bottom:1px solid var(--glass-border);">Range</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:10px; border-bottom:1px solid var(--glass-border);">Hemoglobin</td>
+                  <td style="padding:10px;">13.2</td>
+                  <td style="padding:10px;">12.8</td>
+                  <td style="padding:10px; font-weight:700; color:var(--color-green);">13.5</td>
+                  <td style="padding:10px; color:var(--text-muted);">12-16 g/dL</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px; border-bottom:1px solid var(--glass-border);">WBC</td>
+                  <td style="padding:10px;">6.8</td>
+                  <td style="padding:10px; font-weight:700; color:var(--color-yellow);">10.9</td>
+                  <td style="padding:10px;">8.2</td>
+                  <td style="padding:10px; color:var(--text-muted);">4-11 x10³/uL</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px; border-bottom:1px solid var(--glass-border);">Platelets</td>
+                  <td style="padding:10px;">195</td>
+                  <td style="padding:10px;">202</td>
+                  <td style="padding:10px; font-weight:700; color:var(--color-green);">210</td>
+                  <td style="padding:10px; color:var(--text-muted);">150-400 x10³/uL</td>
+                </tr>
+                <tr>
+                  <td style="padding:10px;">MCV</td>
+                  <td style="padding:10px;">88</td>
+                  <td style="padding:10px;">90</td>
+                  <td style="padding:10px;">89</td>
+                  <td style="padding:10px; color:var(--text-muted);">80-100 fL</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div style="margin-top:10px; display:flex; justify-content: space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+            <span style="font-size:12px; color:var(--text-muted);">Latest values broadcast to dashboard trends.</span>
+            <button class="pill primary-link" onclick="window.location='patient-labs.html'">Open full Labs</button>
+          </div>
         </div>
 
         <div class="section-title" style="margin-top: 36px;">
