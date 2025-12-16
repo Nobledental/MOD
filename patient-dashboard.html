@@ -8,13 +8,10 @@
     <!-- Icons & Fonts -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/advanced-labs.css">
     
     <!-- 3D Engine -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/advanced-labs.js" defer></script>
     
     <style>
         /* --- CORE THEME VARIABLES --- */
@@ -887,25 +884,19 @@
                             </div>
                         </div>
                     <div class="pharmacy-item">
-                        <div style="width:32px; height:32px; background:rgba(16,185,129,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#10b981;"><i class="ph-fill ph-pill"></i></div>
-                        <div>
-                            <div style="font-size:12px; font-weight:700; color:var(--text-main);">Atorvastatin</div>
-                            <div style="font-size:10px; opacity:0.6; color:var(--text-muted);">10mg • Daily</div>
+                            <div style="width:32px; height:32px; background:rgba(16,185,129,0.1); border-radius:8px; display:flex; align-items:center; justify-content:center; color:#10b981;"><i class="ph-fill ph-pill"></i></div>
+                            <div>
+                                <div style="font-size:12px; font-weight:700; color:var(--text-main);">Atorvastatin</div>
+                                <div style="font-size:10px; opacity:0.6; color:var(--text-muted);">10mg • Daily</div>
+                            </div>
+                            <button class="refill-btn">Refill</button>
                         </div>
-                        <button class="refill-btn">Refill</button>
                     </div>
-                </div>
 
-                <div class="section-header" style="margin-top:20px;">
-                    <div style="background:rgba(59,130,246,0.12); padding:6px; border-radius:8px; margin-right:8px; color:#0A84FF;"><i class="ph-fill ph-flask"></i></div>
-                    Lab Sync Across Organs & Health
                 </div>
-                <section class="advanced-labs" data-page="dashboard"></section>
-
             </div>
         </div>
     </div>
-</div>
 
     <!-- Future Simulation Modal -->
     <div class="modal-overlay" id="future-modal">
