@@ -28,6 +28,230 @@
       margin: 0 auto;
     }
 
+    /* ===== Medication Management (Pharmacy sync) ===== */
+    .med-section {
+      margin-top: 36px;
+    }
+
+    .med-shell {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .med-hero {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .med-hero h3 {
+      margin: 0;
+      font-size: 18px;
+      color: white;
+    }
+
+    .med-hero p {
+      margin: 4px 0 0 0;
+      opacity: 0.7;
+      font-size: 13px;
+    }
+
+    .med-hero .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill.primary-link {
+      background: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+      color: white;
+      border: none;
+    }
+
+    .pill.soft-link {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      color: white;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .tile {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .timeline-lite {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+    }
+
+    .time-slot {
+      min-width: 180px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .time-slot:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-blue);
+    }
+
+    .time-slot.due {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(245, 158, 11, 0.05));
+      border-color: var(--color-yellow);
+    }
+
+    .time-slot.taken {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(16, 185, 129, 0.05));
+      border-color: var(--color-green);
+    }
+
+    .time-label {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 4px;
+    }
+
+    .med-pill-item {
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 10px;
+      margin-top: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--pill-color), var(--pill-color-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: white;
+    }
+
+    .med-info {
+      flex: 1;
+    }
+
+    .med-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .med-dosage {
+      font-size: 11px;
+      opacity: 0.6;
+    }
+
+    .med-card-lite {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .med-card-lite::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--med-color);
+    }
+
+    .med-icon-large {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--med-color), var(--med-color-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: white;
+    }
+
+    .med-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .stock-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 10px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+    }
+
+    .stock-bar {
+      flex: 1;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .stock-fill {
+      height: 100%;
+      background: var(--stock-color);
+      width: var(--stock-level);
+      transition: width 0.5s ease;
+    }
+
+    .interaction-result {
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+      margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .timeline-lite {
+        flex-direction: column;
+      }
+
+      .time-slot {
+        min-width: 100%;
+      }
+    }
+
     /* Health Score Circle */
     .health-score-container {
       display: flex;
@@ -736,6 +960,78 @@
           </div>
         </div>
 
+        <!-- Medication Management (synced with Pharmacy) -->
+        <div class="section-title" id="medications">
+          <i class="ph-fill ph-pill"></i> Medication Management
+        </div>
+        <div class="med-shell med-section">
+          <div class="med-hero">
+            <div>
+              <h3>Pharmacy Hub Preview</h3>
+              <p>Track doses, refill stock, and sync orders directly to the Pharmacy OS.</p>
+              <div id="mapped-order-health" style="font-size: 12px; opacity: 0.7; margin-top: 6px;">
+                Awaiting first synced order.
+              </div>
+            </div>
+            <div class="actions">
+              <a class="pill primary-link" href="patient-pharmacy.html?from=health" id="open-pharmacy-link">
+                <i class="ph-bold ph-shopping-cart"></i> Order via Pharmacy
+              </a>
+              <button class="pill soft-link" type="button" onclick="markAllTaken()">
+                <i class="ph-bold ph-check-circle"></i> Mark all taken
+              </button>
+            </div>
+          </div>
+
+          <div class="mini-grid">
+            <div class="tile">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                  <p class="vital-label" style="margin: 0;">Today</p>
+                  <strong>Medication Timeline</strong>
+                </div>
+                <span style="font-size: 12px; opacity: 0.6;">Synced to adherence</span>
+              </div>
+              <div class="timeline-lite" id="timeline"></div>
+            </div>
+
+            <div class="tile">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                  <p class="vital-label" style="margin: 0;">Active</p>
+                  <strong>Medications & Stock</strong>
+                </div>
+                <span style="font-size: 12px; opacity: 0.6;">Refills mirror pharmacy</span>
+              </div>
+              <div id="meds-grid" style="display: grid; grid-template-columns: 1fr; gap: 12px;"></div>
+            </div>
+
+            <div class="tile">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div>
+                  <p class="vital-label" style="margin: 0;">Safety</p>
+                  <strong>Interaction & Sync</strong>
+                </div>
+                <button class="pill ghost" type="button" onclick="runInteractionCheck()">
+                  <i class="ph-bold ph-shield-check"></i> Run check
+                </button>
+              </div>
+              <div class="interaction-result" id="interaction-result">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <i class="ph-fill ph-check-circle" style="color: var(--color-green);"></i>
+                  <div>
+                    <strong style="color: var(--color-green);">No interactions detected</strong>
+                    <p style="margin: 4px 0 0 0; opacity: 0.7; font-size: 12px;">Safe to continue. Last checked just now.</p>
+                  </div>
+                </div>
+              </div>
+              <div style="margin-top: 12px; font-size: 12px; opacity: 0.7;">
+                New orders placed on Pharmacy are pinned here automatically for reminders.
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Quick Actions -->
         <div class="section-title">
           <i class="ph-fill ph-lightning"></i> Quick Actions
@@ -780,10 +1076,84 @@
 
     const brain = new MedicalBrain();
 
+    const HEALTH_MEDS = [
+      {
+        id: 1,
+        name: 'Metformin',
+        dosage: '500mg',
+        frequency: 'Twice daily',
+        times: ['08:00 AM', '08:00 PM'],
+        stock: 28,
+        refillDate: '2025-12-30',
+        color: '#3b82f6',
+        colorDark: '#2563eb',
+        category: 'Diabetes'
+      },
+      {
+        id: 2,
+        name: 'Lisinopril',
+        dosage: '10mg',
+        frequency: 'Once daily',
+        times: ['09:00 AM'],
+        stock: 45,
+        refillDate: '2026-01-15',
+        color: '#ef4444',
+        colorDark: '#dc2626',
+        category: 'Blood Pressure'
+      },
+      {
+        id: 3,
+        name: 'Atorvastatin',
+        dosage: '20mg',
+        frequency: 'Once daily',
+        times: ['10:00 PM'],
+        stock: 12,
+        refillDate: '2025-12-20',
+        color: '#8b5cf6',
+        colorDark: '#7c3aed',
+        category: 'Cholesterol'
+      },
+      {
+        id: 4,
+        name: 'Aspirin',
+        dosage: '81mg',
+        frequency: 'Once daily',
+        times: ['08:00 AM'],
+        stock: 60,
+        refillDate: '2026-02-01',
+        color: '#10b981',
+        colorDark: '#059669',
+        category: 'Cardio'
+      },
+      {
+        id: 5,
+        name: 'Vitamin D3',
+        dosage: '2000 IU',
+        frequency: 'Once daily',
+        times: ['12:00 PM'],
+        stock: 90,
+        refillDate: '2026-03-01',
+        color: '#f59e0b',
+        colorDark: '#d97706',
+        category: 'Supplement'
+      }
+    ];
+
+    const HEALTH_TIME_SLOTS = [
+      { time: '08:00 AM', meds: [1, 4], status: 'taken' },
+      { time: '09:00 AM', meds: [2], status: 'taken' },
+      { time: '12:00 PM', meds: [5], status: 'due' },
+      { time: '08:00 PM', meds: [1], status: 'upcoming' },
+      { time: '10:00 PM', meds: [3], status: 'upcoming' }
+    ];
+
     document.addEventListener('DOMContentLoaded', () => {
       injectDemoData();
       initChart();
       startLiveVitals();
+      renderTimeline();
+      renderMedicationCards();
+      hydrateSyncedOrder();
 
       const currentUserKey = localStorage.getItem('hf_demo_user') || 'dhivakaran';
       const user = DemoUsers[currentUserKey];
@@ -802,6 +1172,165 @@
         }
       }
     });
+
+    function renderTimeline() {
+      const timeline = document.getElementById('timeline');
+      if (!timeline) return;
+
+      timeline.innerHTML = '';
+
+      HEALTH_TIME_SLOTS.forEach((slot) => {
+        const div = document.createElement('div');
+        div.className = `time-slot ${slot.status}`;
+
+        const status = slot.status === 'taken' ? '✓ Taken' : slot.status === 'due' ? '⚠️ Due Now' : 'Upcoming';
+
+        div.innerHTML = `
+          <div class="time-label">${slot.time}</div>
+          <div style="font-size: 11px; opacity: 0.6; margin-bottom: 6px;">${status}</div>
+          ${slot.meds
+            .map((medId) => {
+              const med = HEALTH_MEDS.find((m) => m.id === medId);
+              return `
+                <div class="med-pill-item" style="--pill-color: ${med.color}; --pill-color-dark: ${med.colorDark};">
+                  <div class="pill-icon"><i class="ph-fill ph-pill"></i></div>
+                  <div class="med-info">
+                    <div class="med-name">${med.name}</div>
+                    <div class="med-dosage">${med.dosage}</div>
+                  </div>
+                  ${slot.status !== 'taken'
+                  ? `<i class="ph-bold ph-circle" style="color: rgba(255,255,255,0.3);"></i>`
+                  : `<i class="ph-fill ph-check-circle" style="color: var(--color-green);"></i>`}
+                </div>
+              `;
+            })
+            .join('')}
+        `;
+
+        timeline.appendChild(div);
+      });
+    }
+
+    function renderMedicationCards() {
+      const grid = document.getElementById('meds-grid');
+      if (!grid) return;
+
+      grid.innerHTML = '';
+
+      HEALTH_MEDS.forEach((med) => {
+        const stockLevel = Math.min(100, (med.stock / 90) * 100);
+        const stockColor = stockLevel < 20 ? '#ef4444' : stockLevel < 50 ? '#f59e0b' : '#10b981';
+        const needsRefill = stockLevel < 20;
+
+        const card = document.createElement('div');
+        card.className = 'med-card-lite';
+        card.style.setProperty('--med-color', med.color);
+        card.style.setProperty('--med-color-dark', med.colorDark);
+
+        card.innerHTML = `
+          <div class="med-icon-large"><i class="ph-fill ph-pill"></i></div>
+          <div>
+            <div style="display: flex; justify-content: space-between; gap: 10px; align-items: flex-start;">
+              <div>
+                <h4 style="margin: 0; color: white;">${med.name}</h4>
+                <p style="margin: 2px 0 6px 0; opacity: 0.7; font-size: 12px;">${med.dosage} • ${med.frequency}</p>
+              </div>
+              <span class="pill soft-link" style="font-size: 11px;">${med.category}</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 12px;">
+              <span style="opacity: 0.7;">Daily</span>
+              <strong>${med.times.join(', ')}</strong>
+            </div>
+            <div class="stock-indicator" style="--stock-color: ${stockColor}; --stock-level: ${stockLevel}%">
+              <div style="font-size: 11px; opacity: 0.7;">Stock</div>
+              <div class="stock-bar"><div class="stock-fill"></div></div>
+              <div style="font-size: 12px; font-weight: 700;">${med.stock} pills</div>
+            </div>
+
+            <div class="med-actions">
+              <button class="pill ghost" type="button" style="font-size: 12px;" onclick="orderViaPharmacy(${med.id})">
+                <i class="ph-bold ph-shopping-cart"></i> Order via Pharmacy
+              </button>
+              <button class="pill ghost" type="button" style="font-size: 12px;" onclick="openPharmacyRefill(${med.id})">
+                ${needsRefill ? '<i class="ph-bold ph-warning"></i> Refill soon' : '<i class="ph-bold ph-check"></i> Stock OK'}
+              </button>
+            </div>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    window.markAllTaken = () => {
+      alert('All medications marked as taken!\n\nAdherence updated and your care team will be notified.');
+      HEALTH_TIME_SLOTS.forEach((slot) => (slot.status = 'taken'));
+      renderTimeline();
+    };
+
+    window.runInteractionCheck = () => {
+      const result = document.getElementById('interaction-result');
+      if (!result) return;
+      result.innerHTML = '<div style="text-align: center; opacity: 0.6;">Analyzing medications...</div>';
+
+      setTimeout(() => {
+        result.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="ph-fill ph-check-circle" style="color: var(--color-green); font-size: 20px;"></i>
+            <div>
+              <strong style="color: var(--color-green);">✓ No interactions detected</strong>
+              <p style="font-size: 12px; opacity: 0.7; margin: 4px 0 0 0;">Safe to take together. Last checked: ${new Date().toLocaleTimeString()}.</p>
+            </div>
+          </div>
+        `;
+      }, 1200);
+    };
+
+    window.orderViaPharmacy = (id) => {
+      const med = HEALTH_MEDS.find((m) => m.id === id);
+      if (!med) return;
+
+      const payload = { id: med.id, brand: med.name, generic: med.dosage, ts: Date.now(), source: 'health' };
+      localStorage.setItem('hf-latest-order', JSON.stringify(payload));
+      hydrateSyncedOrder(payload);
+
+      const url = new URL('patient-pharmacy.html', window.location.href);
+      url.searchParams.set('from', 'health');
+      url.searchParams.set('med', med.name);
+      window.location.href = url.toString();
+    };
+
+    window.openPharmacyRefill = (id) => {
+      const med = HEALTH_MEDS.find((m) => m.id === id);
+      const message = med
+        ? `Refill ${med.name} from Pharmacy OS? We'll carry the request over and show substitutes if needed.`
+        : 'Open Pharmacy OS for refills?';
+      const proceed = confirm(message);
+      if (proceed) {
+        orderViaPharmacy(id);
+      }
+    };
+
+    function hydrateSyncedOrder(existing) {
+      const target = document.getElementById('mapped-order-health');
+      if (!target) return;
+
+      let order = existing;
+      if (!order) {
+        try {
+          const saved = localStorage.getItem('hf-latest-order');
+          if (saved) order = JSON.parse(saved);
+        } catch (err) {
+          console.warn('Unable to hydrate synced order', err);
+        }
+      }
+
+      if (order) {
+        const when = new Date(order.ts || Date.now()).toLocaleString();
+        target.innerHTML = `<strong>Synced:</strong> ${order.brand} • visible on Pharmacy, Dashboard, Labs <span style="opacity: 0.6;">(${when})</span>`;
+      }
+    }
 
     // Live Vitals Simulation
     function startLiveVitals() {
