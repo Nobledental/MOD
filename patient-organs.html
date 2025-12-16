@@ -137,6 +137,57 @@
       width: 100%;
     }
 
+    .hero-merge {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(59, 130, 246, 0.08));
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 24px;
+      margin: 24px 0;
+    }
+
+    .hero-merge h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      color: white;
+    }
+
+    .hero-merge p {
+      margin: 0 0 12px 0;
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    .hero-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .vital-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 8px;
+    }
+
+    .vital-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .vital-stat {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+    }
+
     .header-section {
       display: grid;
       grid-template-columns: 1.4fr 1fr;
@@ -355,6 +406,28 @@
 
     .notice { padding: 10px 12px; border-radius: 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.3); color: white; }
 
+    /* Matrix & modal */
+    .report-matrix { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+    .matrix-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 14px; padding: 14px; display: grid; gap: 8px; }
+    .matrix-card h4 { margin: 0; display: flex; align-items: center; gap: 8px; }
+    .matrix-pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border); font-weight: 700; font-size: 12px; }
+    .matrix-list { margin: 0; padding-left: 18px; color: var(--text-muted); }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { width: 92%; max-width: 960px; max-height: 90vh; background: #13161c; border-radius: 24px; border: 1px solid var(--glass-border); overflow: hidden; display: flex; flex-direction: column; }
+    .modal-header { padding: 24px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .modal-body { padding: 24px; overflow-y: auto; flex: 1; display: grid; gap: 12px; }
+    .close-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.05); color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; }
+    .close-btn:hover { background: var(--color-red); }
+    .lab-chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border); font-weight: 700; font-size: 12px; width: fit-content; }
+    .lab-card { border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.02); border-radius: 14px; padding: 16px; }
+    .lab-tests { display: grid; gap: 10px; }
+    .lab-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); }
+    .status-pill { padding: 6px 10px; border-radius: 10px; font-weight: 800; font-size: 12px; text-transform: uppercase; }
+    .status-pill.normal { color: var(--color-green); background: rgba(16,185,129,0.12); }
+    .status-pill.abnormal { color: var(--color-yellow); background: rgba(245,158,11,0.16); }
+    .status-pill.review { color: var(--color-red); background: rgba(239,68,68,0.16); }
+
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
       50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
@@ -434,6 +507,29 @@
           </div>
         </div>
 
+        <div class="hero-merge">
+          <div>
+            <h1>Advanced organ orchestration</h1>
+            <p>Labs, vitals, imaging, and AI triage merge into a single organ view. Upload once and every organ card inherits the interpretation without re-entry.</p>
+            <div class="hero-badges">
+              <span class="chip"><i class="ph ph-upload"></i> OCR ➜ Organ map</span>
+              <span class="chip"><i class="ph ph-sparkle"></i> AI triage</span>
+              <span class="chip"><i class="ph ph-lab-test"></i> Lab-to-organ popups</span>
+              <span class="chip"><i class="ph ph-chart-line-up"></i> Trend-aware</span>
+            </div>
+          </div>
+          <div>
+            <div class="vital-card">
+              <div style="display:flex; align-items:center; justify-content: space-between; gap: 8px;">
+                <strong>Live vitals</strong>
+                <span class="pill" style="border-color: var(--color-green); color: var(--color-green);"><i class="ph ph-activity"></i> Stable</span>
+              </div>
+              <div class="vital-grid" id="vitalGrid"></div>
+              <p class="notice" style="margin: 10px 0 0 0;">Vitals mirror from Devices tab; anomalies surface inside organ popups for context.</p>
+            </div>
+          </div>
+        </div>
+
         <div class="section-title"><i class="ph-fill ph-heart"></i> Primary Organ Systems</div>
         <div class="organs-grid" id="organs-grid"></div>
 
@@ -492,6 +588,9 @@
           </div>
         </div>
 
+        <div class="section-title"><i class="ph-fill ph-flask"></i> Organ-wise diagnostic matrix (Blood · Radiology · Histopathology)</div>
+        <div id="reportMatrix" class="report-matrix"></div>
+
         <div class="section-title"><i class="ph-fill ph-books"></i> Clinical test library by organ</div>
         <div class="library-grid" id="testLibrary"></div>
 
@@ -507,7 +606,22 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="labModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h3 style="margin: 0;">Organ labs</h3>
+          <p style="margin: 4px 0 0 0; opacity: 0.6;">Mapped from latest uploads</p>
+        </div>
+        <button class="close-btn" id="closeLabModal"><i class="ph-bold ph-x"></i></button>
+      </div>
+      <div class="modal-body" id="labModalBody"></div>
+    </div>
+  </div>
+
   <script>
+    const VITALS = { heartRate: 76, bp: '118/76', spo2: 98, resp: 16, temp: 98.4 };
+
     const ORGAN_DATA = {
       heart: {
         name: 'Heart', subtitle: 'Cardiovascular system', model: '3d_models/heart.glb', icon: 'ph-heart', color: '#ef4444', colorDark: '#dc2626', health: 93, status: 'healthy',
@@ -713,17 +827,97 @@
       }
     };
 
+    const LAB_RESULTS = [
+      {
+        id: 1,
+        name: 'Complete Blood Count (CBC)',
+        date: '2025-12-10',
+        lab: 'Quest Diagnostics',
+        category: 'cbc',
+        status: 'normal',
+        color: '#10b981',
+        tests: [
+          { name: 'Hemoglobin', value: '14.2', unit: 'g/dL', range: '13.5-17.5', color: '#10b981', status: 'normal' },
+          { name: 'WBC', value: '7.2', unit: 'K/uL', range: '4.5-11.0', color: '#10b981', status: 'normal' },
+          { name: 'Platelets', value: '245', unit: 'K/uL', range: '150-400', color: '#10b981', status: 'normal' },
+          { name: 'RBC', value: '5.1', unit: 'M/uL', range: '4.5-5.5', color: '#10b981', status: 'normal' }
+        ],
+        ai: 'All blood cell counts are within optimal ranges. No signs of anemia or infection. Continue healthy lifestyle.'
+      },
+      {
+        id: 2,
+        name: 'Comprehensive Metabolic Panel',
+        date: '2025-12-08',
+        lab: 'LabCorp',
+        category: 'metabolic',
+        status: 'normal',
+        color: '#3b82f6',
+        tests: [
+          { name: 'Glucose', value: '92', unit: 'mg/dL', range: '70-100', color: '#10b981', status: 'normal' },
+          { name: 'Calcium', value: '9.4', unit: 'mg/dL', range: '8.5-10.5', color: '#10b981', status: 'normal' },
+          { name: 'Sodium', value: '140', unit: 'mmol/L', range: '136-145', color: '#10b981', status: 'normal' },
+          { name: 'Potassium', value: '4.2', unit: 'mmol/L', range: '3.5-5.0', color: '#10b981', status: 'normal' }
+        ],
+        ai: 'Electrolyte balance and glucose levels are perfect. Kidney and liver function markers normal.'
+      },
+      {
+        id: 3,
+        name: 'Lipid Panel',
+        date: '2025-12-05',
+        lab: 'Quest Diagnostics',
+        category: 'metabolic',
+        status: 'abnormal',
+        color: '#f59e0b',
+        tests: [
+          { name: 'Total Cholesterol', value: '198', unit: 'mg/dL', range: '<200', color: '#f59e0b', status: 'borderline' },
+          { name: 'LDL', value: '115', unit: 'mg/dL', range: '<100', color: '#ef4444', status: 'high' },
+          { name: 'HDL', value: '58', unit: 'mg/dL', range: '>40', color: '#10b981', status: 'good' },
+          { name: 'Triglycerides', value: '125', unit: 'mg/dL', range: '<150', color: '#10b981', status: 'normal' }
+        ],
+        ai: 'LDL cholesterol slightly elevated. Recommend: reduce saturated fat intake, increase fiber, consider omega-3 supplements.'
+      },
+      {
+        id: 4,
+        name: 'Thyroid Function (TSH)',
+        date: '2025-11-28',
+        lab: 'LabCorp',
+        category: 'metabolic',
+        status: 'normal',
+        color: '#8b5cf6',
+        tests: [
+          { name: 'TSH', value: '2.1', unit: 'uIU/mL', range: '0.4-4.0', color: '#10b981', status: 'optimal' },
+          { name: 'T4 Free', value: '1.3', unit: 'ng/dL', range: '0.8-1.8', color: '#10b981', status: 'normal' },
+          { name: 'T3', value: '110', unit: 'ng/dL', range: '80-200', color: '#10b981', status: 'normal' }
+        ],
+        ai: 'Thyroid function is perfectly balanced. No signs of hypo or hyperthyroidism.'
+      }
+    ];
+
+    const ORGAN_LABS = {
+      heart: [1, 3],
+      lungs: [1],
+      liver: [2],
+      kidneys: [2],
+      brain: [4],
+      eyes: [],
+      bones: [],
+      ent: []
+    };
+
     const SAMPLE_TEXT = `Patient: John Doe\nTroponin I: 0.12 ng/mL\nNT-proBNP 520 pg/mL\nLDL Cholesterol 162 mg/dL\nhs-CRP 4.5 mg/L\nCreatinine 1.2 mg/dL\nABG pO2 82 mmHg, pCO2 46 mmHg\nTSH 5.2 mIU/L\nVitamin D 18 ng/mL`;
 
     document.addEventListener('DOMContentLoaded', () => {
+      renderVitals();
       renderOrganCards();
       renderAtlas();
       setupBodyMap();
       renderSystemStats();
+      renderReportMatrix();
       fillTestLibrary();
       populateOrganSelect();
       updateOverallScore();
       wireLabActions();
+      setupLabModal();
     });
 
     function renderOrganCards() {
@@ -759,11 +953,24 @@
             </div>
             <div class="organ-actions">
               <button class="organ-btn" onclick="viewDetails('${key}')"><i class="ph-bold ph-info"></i> Details</button>
-              <button class="organ-btn" onclick="viewReports('${key}')"><i class="ph-bold ph-file-text"></i> Reports</button>
+              <button class="organ-btn" onclick="openOrganLabs('${key}')"><i class="ph-bold ph-flask"></i> Labs</button>
             </div>
           </div>`;
         grid.appendChild(card);
       });
+    }
+
+    function renderVitals() {
+      const grid = document.getElementById('vitalGrid');
+      if (!grid) return;
+      const vitals = [
+        { label: 'Heart Rate', value: `${VITALS.heartRate} bpm` },
+        { label: 'Blood Pressure', value: VITALS.bp },
+        { label: 'SpO₂', value: `${VITALS.spo2}%` },
+        { label: 'Respiratory', value: `${VITALS.resp} rpm` },
+        { label: 'Temperature', value: `${VITALS.temp}°F` }
+      ];
+      grid.innerHTML = vitals.map(v => `<div class="vital-stat"><span>${v.label}</span><span>${v.value}</span></div>`).join('');
     }
 
     function renderAtlas() {
@@ -790,7 +997,7 @@
       document.querySelectorAll('.body-hotspot').forEach(hotspot => {
         hotspot.addEventListener('click', () => {
           const organ = hotspot.dataset.organ;
-          alert(`Selected: ${organ.toUpperCase()}\n\nOpening detailed organ analysis.`);
+          openOrganLabs(organ);
         });
       });
     }
@@ -806,6 +1013,28 @@
           <div style="font-size: 28px; font-weight: 800; color: white;">${stat.value}<small style="font-size: 14px; opacity: 0.6;">/100</small></div>
           <div class="stat-bar"><div class="stat-fill" style="--percentage:${stat.value}%"></div></div>`;
         container.appendChild(block);
+      });
+    }
+
+    function renderReportMatrix() {
+      const container = document.getElementById('reportMatrix');
+      if (!container) return;
+      container.innerHTML = '';
+      Object.entries(TEST_LIBRARY).forEach(([key, entry]) => {
+        const organ = ORGAN_DATA[key] || { color: 'var(--color-blue)', name: entry.title };
+        const card = document.createElement('div');
+        card.className = 'matrix-card';
+        card.innerHTML = `
+          <h4><i class="ph-fill ph-flask" style="color:${organ.color};"></i> ${entry.title}</h4>
+          <span class="matrix-pill"><i class="ph ph-brain"></i> AI mapping ready</span>
+          <div>
+            <strong>Blood / biomarkers</strong>
+            <ul class="matrix-list">${entry.blood.map(t => `<li>${t.name}</li>`).join('')}</ul>
+          </div>
+          ${entry.imaging.length ? `<div><strong>Imaging</strong><ul class="matrix-list">${entry.imaging.map(i => `<li>${i}</li>`).join('')}</ul></div>` : ''}
+          ${entry.histopath.length ? `<div><strong>Histopathology</strong><ul class="matrix-list">${entry.histopath.map(h => `<li>${h}</li>`).join('')}</ul></div>` : ''}
+        `;
+        container.appendChild(card);
       });
     }
 
@@ -840,7 +1069,7 @@
         card.innerHTML = `
           <h4>${entry.title}</h4>
           <strong>Blood/biomarkers</strong>
-          <ul>${entry.blood.map(test => `<li><strong>${test.name}</strong> — ${test.range}. ${test.flag}</li>`).join('')}</ul>
+          <ul>${entry.blood.map(test => `<li><strong>${test.name}</strong> — ${test.flag}</li>`).join('')}</ul>
           ${entry.imaging.length ? `<strong>Radiology/Imaging</strong><ul>${entry.imaging.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
           ${entry.histopath.length ? `<strong>Histopathology</strong><ul>${entry.histopath.map(h => `<li>${h}</li>`).join('')}</ul>` : ''}
         `;
@@ -933,7 +1162,6 @@
             <h4>${test.name}</h4>
             <span class="status-flag ${badgeClass}">${status.summary}</span>
           </div>
-          <p class="metric-label">Typical reference: ${test.range} (use lab-printed range if different)</p>
           <p class="metric-value">OCR value: <strong>${valueText}</strong></p>
           <p style="margin:0; color: var(--text-muted);">${status.action}</p>
         </div>`;
@@ -951,6 +1179,81 @@
       if (name.toLowerCase().includes('calprotectin')) return 'Coordinate GI consult for IBD workup and stool repeat if needed.';
       if (name.toLowerCase().includes('psa')) return 'Discuss urology evaluation and MRI/biopsy pathway if persistently high.';
       return base[level] || 'Coordinate with care team for next steps.';
+    }
+
+    function statusClass(status) {
+      if (!status) return 'normal';
+      const lowered = status.toLowerCase();
+      if (lowered.includes('high') || lowered.includes('borderline')) return 'review';
+      if (lowered.includes('good') || lowered.includes('optimal') || lowered === 'normal') return 'normal';
+      return 'abnormal';
+    }
+
+    function openOrganLabs(organKey) {
+      const organ = ORGAN_DATA[organKey];
+      const modal = document.getElementById('labModal');
+      const body = document.getElementById('labModalBody');
+      if (!organ || !modal || !body) return;
+      const labs = LAB_RESULTS.filter(l => (ORGAN_LABS[organKey] || []).includes(l.id));
+      const planned = TEST_LIBRARY[organKey]?.blood || [];
+      body.innerHTML = `
+        <div class="lab-card" style="border-color:${organ.color};">
+          <div style="display:flex; justify-content:space-between; gap:12px; align-items:center; flex-wrap: wrap;">
+            <div>
+              <div class="lab-chip"><i class="ph ph-scan"></i> ${organ.name}</div>
+              <h3 style="margin:6px 0 4px 0;">${organ.subtitle}</h3>
+              <p style="margin:0; color: var(--text-muted);">Health score ${organ.health}/100 · Status ${organ.status}</p>
+            </div>
+            <div class="health-ring" style="--organ-color:${organ.color}; --organ-color-dark:${organ.colorDark}; --health:${organ.health};"><span>${organ.health}</span></div>
+          </div>
+        </div>
+        ${labs.length ? labs.map(lab => `
+          <div class="lab-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+              <div>
+                <div class="lab-chip"><i class="ph ph-flask"></i> ${lab.lab}</div>
+                <h3 style="margin:6px 0;">${lab.name}</h3>
+                <p style="margin:0; color: var(--text-muted);">${new Date(lab.date).toLocaleDateString()}</p>
+              </div>
+              <span class="status-pill ${lab.status === 'normal' ? 'normal' : 'review'}">${lab.status === 'normal' ? 'Normal' : 'Review'}</span>
+            </div>
+            <div class="lab-tests">
+              ${lab.tests.map(test => `
+                <div class="lab-row">
+                  <div>
+                    <strong>${test.name}</strong>
+                    <p style="margin:2px 0 0 0; opacity:0.6;">AI is tracking this marker for ${organ.name.toLowerCase()}.</p>
+                  </div>
+                  <div style="text-align:right;">
+                    <div style="font-weight:800; color:${test.color};">${test.value}</div>
+                    <small style="opacity:0.7;">${test.unit}</small>
+                    <div class="status-pill ${statusClass(test.status)}">${(test.status || 'normal').toString().toUpperCase()}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="ai-analysis" style="margin-top:10px;">${lab.ai}</div>
+          </div>
+        `).join('') : '<div class="lab-card"><p style="margin:0; color: var(--text-muted);">No recent labs mapped. Upload a report or open Labs to sync.</p></div>'}
+        <div class="lab-card">
+          <strong>Planned markers</strong>
+          <p class="notice" style="margin:6px 0;">Reference ranges stay hidden but are used internally for AI risk scoring.</p>
+          <ul class="matrix-list">${planned.length ? planned.map(p => `<li>${p.name}</li>`).join('') : '<li>Add markers from the test library</li>'}</ul>
+        </div>
+      `;
+      modal.classList.add('active');
+    }
+
+    function setupLabModal() {
+      const modal = document.getElementById('labModal');
+      const closeBtn = document.getElementById('closeLabModal');
+      if (!modal || !closeBtn) return;
+      closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+      modal.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) {
+          modal.classList.remove('active');
+        }
+      });
     }
 
     window.viewDetails = (organ) => {
