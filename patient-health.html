@@ -4,12 +4,64 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>HealthFlo — Patient Health Board</title>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/patient-os.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/dashboard-theme2.css">
   <link href="https://unpkg.com/@phosphor-icons/web" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
-    /* Merged dashboards (health v2 + organs v2) */
+    /* Theme bridge for merged dashboards (health v2 + organs v2) */
+    :root {
+      --bg: #0e1016;
+      --bg-soft: #151924;
+      --bg-glass: rgba(255, 255, 255, 0.04);
+      --text: var(--text-main);
+      --muted: var(--text-muted);
+      --primary: #6de1e3;
+      --accent: #8aa4ff;
+      --danger: #ff7b8a;
+      --success: #8cf5b7;
+      --shadow: var(--shadow-soft);
+      --border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    body { margin: 0; font-family: 'Plus Jakarta Sans', 'Manrope', system-ui, sans-serif; background: var(--bg-radial); color: var(--text-main); }
+    a { color: inherit; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    .hf-topbar { position: sticky; top: 0; z-index: 10; backdrop-filter: blur(18px); background: rgba(0,0,0,0.35); border-bottom: var(--border); }
+    .topbar-inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 14px 0; }
+    .hf-logo { font-weight: 800; text-decoration: none; color: var(--text-main); display: inline-flex; align-items: center; gap: 8px; }
+    .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--color-blue); display: inline-block; }
+    .hf-nav { display: flex; flex-wrap: wrap; gap: 12px; }
+    .hf-nav a { text-decoration: none; padding: 8px 12px; border-radius: 10px; color: var(--text-muted); border: 1px solid transparent; }
+    .hf-nav a.active { border-color: var(--glass-border); background: var(--glass-bg); color: var(--text-main); }
+    .topbar-actions { display: flex; gap: 10px; }
+    .icon-btn { background: var(--glass-bg); color: var(--text-main); border: 1px solid var(--glass-border); border-radius: 12px; padding: 8px 10px; cursor: pointer; }
+    .hero { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-top: 1.25rem; }
+    .hero-card, .card { background: var(--glass-bg); border: var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow-soft); }
+    .hero-title { font-size: 32px; margin: 10px 0; }
+    .hero-sub { color: var(--text-muted); line-height: 1.6; }
+    .hero-actions, .badge-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .badge, .pill { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 12px; border: var(--border); color: var(--text-main); background: var(--glass-bg); }
+    .card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .section { margin-top: 2rem; }
+    .section-title { margin: 6px 0; }
+    .section-sub { color: var(--text-muted); line-height: 1.5; }
+    .list-grid, .stat-grid, .atlas-grid { display: grid; gap: 1rem; }
+    .stat-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+    .list-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .atlas-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+    .stat strong { display: block; font-size: 20px; margin-top: 4px; }
+    .notice { background: rgba(255,255,255,0.05); border: var(--border); border-radius: 12px; padding: 12px; margin-top: 8px; color: var(--text-main); }
+    .notice.success { border-color: rgba(16,185,129,0.4); color: var(--success); }
+    .pill.success { color: var(--success); border-color: rgba(16,185,129,0.4); }
+    .pill.warn { color: var(--color-yellow); border-color: rgba(245,158,11,0.5); }
+    .card.atlas-card model-viewer { width: 100%; height: 220px; border-radius: 12px; background: rgba(255,255,255,0.02); }
+    .model-stage { border: var(--border); border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.02); margin-top: 12px; }
+    .model-stage model-viewer { width: 100%; height: 320px; }
+    .vitals-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
+    .vital-card { background: var(--glass-bg); border: var(--border); border-radius: 16px; padding: 12px; text-align: center; }
+    .vital-value { font-size: 22px; font-weight: 800; }
+    .vital-value small { display: block; color: var(--text-muted); font-size: 12px; }
     .halo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
     .glass-card { background: var(--bg-glass); border: var(--border); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); }
     .health-score-wrap { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 12px; }
@@ -480,56 +532,7 @@
         </div>
       </div>
 
-      <div class="organs-grid" style="margin-top: 1.25rem;">
-        <div class="organ-card-enhanced" data-organ="brain">
-          <div class="organ-preview"></div>
-          <div class="organ-info">
-            <div class="organ-meta"><strong>Brain</strong><span class="organ-status-badge" id="brain_status">Calm</span></div>
-            <p class="section-sub">Sleep, stress, cognition.</p>
-            <div class="organ-metrics"><div>State<strong id="brain_state">—</strong></div><div>Next<strong id="brain_next">Mindfulness</strong></div></div>
-            <div class="organ-links">
-              <a href="patient-dashboard.html?organ=brain">Dashboard</a>
-              <a href="patient-health.html?organ=brain">Health</a>
-            </div>
-          </div>
-        </div>
-        <div class="organ-card-enhanced" data-organ="liver">
-          <div class="organ-preview"></div>
-          <div class="organ-info">
-            <div class="organ-meta"><strong>Liver</strong><span class="organ-status-badge" id="liver_status">Healthy</span></div>
-            <p class="section-sub">LFT + bilirubin.</p>
-            <div class="organ-metrics"><div>Markers<strong id="liver_markers">—</strong></div><div>Next<strong id="liver_next">Hydrate</strong></div></div>
-            <div class="organ-links">
-              <a href="patient-dashboard.html?organ=liver">Dashboard</a>
-              <a href="patient-health.html?organ=liver">Health</a>
-            </div>
-          </div>
-        </div>
-        <div class="organ-card-enhanced" data-organ="kidney">
-          <div class="organ-preview"></div>
-          <div class="organ-info">
-            <div class="organ-meta"><strong>Kidneys</strong><span class="organ-status-badge" id="kidney_status">Hydrated</span></div>
-            <p class="section-sub">KFT + hydration.</p>
-            <div class="organ-metrics"><div>Labs<strong id="kidney_markers">—</strong></div><div>Next<strong id="kidney_next">Water reminder</strong></div></div>
-            <div class="organ-links">
-              <a href="patient-dashboard.html?organ=kidney">Dashboard</a>
-              <a href="patient-health.html?organ=kidney">Health</a>
-            </div>
-          </div>
-        </div>
-        <div class="organ-card-enhanced" data-organ="heart">
-          <div class="organ-preview"></div>
-          <div class="organ-info">
-            <div class="organ-meta"><strong>Heart</strong><span class="organ-status-badge" id="heart_status">Good</span></div>
-            <p class="section-sub">ECG + cardiac markers.</p>
-            <div class="organ-metrics"><div>Vitals<strong id="heart_vitals">—</strong></div><div>Next<strong id="heart_next">Log ECG</strong></div></div>
-            <div class="organ-links">
-              <a href="patient-dashboard.html?organ=heart">Dashboard</a>
-              <a href="patient-health.html?organ=heart">Health</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="organs-grid" style="margin-top: 1.25rem;" id="organ_cards_grid"></div>
     </section>
   </main>
 
@@ -550,8 +553,25 @@
   <footer>
     <p>© 2025 HealthFlo — Health Board</p>
   </footer>
-  <script>
+  <script type="module">
+    import { DemoUsers, injectDemoData } from './js/js/demo-data.js';
+    import { MedicalBrain } from './js/medical-brain.js';
+
+    const ORGAN_DATA = {
+      heart: { name: 'Heart', summary: 'Cardiovascular system', model: '3d_models/heart.glb', color: '#ef4444', metrics: ['72 bpm', '118/76', 'EF 60%', 'Stable'], status: 'Synced' },
+      brain: { name: 'Brain', summary: 'Sleep, stress, cognition', model: '3d_models/brain.glb', color: '#8b5cf6', metrics: ['Calm', 'Low stress', '7.2h', 'Memory good'], status: 'Calm' },
+      lungs: { name: 'Lungs', summary: 'Respiratory mesh', model: '3d_models/lungs.glb', color: '#06b6d4', metrics: ['SpO₂ 98%', 'Resp 16', 'VO₂ 42', 'Capacity 5.8L'], status: 'Calm' },
+      liver: { name: 'Liver', summary: 'LFT + bilirubin', model: '3d_models/liver.glb', color: '#f59e0b', metrics: ['ALT 28', 'AST 25', 'Bili 0.8', '95%'], status: 'Healthy' },
+      kidneys: { name: 'Kidneys', summary: 'KFT + hydration', model: '3d_models/kidneys.glb', color: '#10b981', metrics: ['GFR 95', 'Creat 0.9', 'Hydration 78%', 'BUN 14'], status: 'Hydrated' },
+      eyes: { name: 'Eyes', summary: 'Vision + pressure', model: '3d_models/eye.glb', color: '#38bdf8', metrics: ['20/20', 'IOP 14', 'Dryness low', 'Focus stable'], status: 'Clear' },
+      pancreas: { name: 'Pancreas', summary: 'Glucose control', model: '3d_models/pancreas.glb', color: '#fb7185', metrics: ['FBS 96', 'HbA1c 5.4', 'Insulin 10', 'Trend steady'], status: 'Balanced' },
+    };
+
+    const randomTrend = (base = 70, variance = 4, points = 7) => Array.from({ length: points }, (_, idx) => Math.round(base + Math.sin(idx) * variance));
+
     document.addEventListener('DOMContentLoaded', () => {
+      injectDemoData();
+
       const root = document.documentElement;
       const themeToggle = document.getElementById('themeToggle');
       const savedTheme = localStorage.getItem('hf-theme');
@@ -564,27 +584,59 @@
       });
 
       const safeParse = (key) => { try { return JSON.parse(localStorage.getItem(key)) || {}; } catch { return {}; } };
-      const labSnap = safeParse('lab-dashboard-latest');
-      const healthSnap = safeParse('health-board-status');
-      const vitalsSnap = safeParse('dashboardVitals');
+      const currentUserKey = localStorage.getItem('hf_demo_user') || 'dhivakaran';
+      const user = DemoUsers[currentUserKey] || DemoUsers.dhivakaran;
+      const brain = new MedicalBrain();
+      const analysis = brain.analyze(user || {}, user?.vitals || {}, user?.labs || {});
+
+      const labSnapStored = safeParse('lab-dashboard-latest');
+      const labSnap = Object.keys(labSnapStored).length ? labSnapStored : { latestPanels: user?.labs || {}, reports: [], history: [] };
+      const healthSnapStored = safeParse('health-board-status');
+      const healthSnap = Object.keys(healthSnapStored).length ? healthSnapStored : {
+        ...analysis,
+        score: 87,
+        cardioScore: 92,
+        metabolicScore: 85,
+        immunityScore: 84,
+        condition: user?.condition || 'Stable',
+        family: { state: 'Paused', note: 'Share live view' }
+      };
+      const vitalsSnapStored = safeParse('dashboardVitals');
+      const vitalsSnap = Object.keys(vitalsSnapStored).length ? vitalsSnapStored : {
+        stats: [
+          { label: 'Heart rate', val: `${user?.vitals?.heartRate || 72}` },
+          { label: 'Blood pressure', val: `${user?.vitals?.bpSys || 118}/${user?.vitals?.bpDia || 76}` },
+          { label: 'SpO₂', val: `${user?.vitals?.spo2 || 98}` },
+          { label: 'Temperature', val: `${user?.vitals?.temp || 98.4}` },
+          { label: 'Respiration', val: `${user?.vitals?.resp || 16}` }
+        ],
+        trend: { hr: randomTrend(user?.vitals?.heartRate || 72, 3), bp: randomTrend(user?.vitals?.bpSys || 118, 2) }
+      };
 
       const panels = labSnap.latestPanels || {};
-      const reports = (labSnap.reports || []).slice().sort((a,b) => new Date(b.date) - new Date(a.date));
-      const history = (labSnap.history || []).slice().sort((a,b) => new Date(b.date) - new Date(a.date));
+      const reports = (labSnap.reports || []).slice().sort((a,b) => new Date(b.date || Date.now()) - new Date(a.date || Date.now()));
+      const history = (labSnap.history || []).slice().sort((a,b) => new Date(b.date || Date.now()) - new Date(a.date || Date.now()));
 
       const setText = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
       const pickStat = (regex, fallback='--') => vitalsSnap.stats?.find(s => regex.test(s.label))?.val || fallback;
 
-      const hrVal = pickStat(/heart|pulse/i, '--');
-      const bpVal = pickStat(/pressure|bp/i, '--');
-      const spo2Val = pickStat(/SpO/i, panels.spirometry || '--');
-      const tempVal = panels.temperature ? (panels.temperature.toFixed ? panels.temperature.toFixed(1) : panels.temperature) : pickStat(/temp/i, '--');
-      const respVal = panels.resp || pickStat(/resp/i, '16/min');
+      const hrVal = pickStat(/heart|pulse/i, `${user?.vitals?.heartRate || '--'}`);
+      const bpVal = pickStat(/pressure|bp/i, `${user?.vitals?.bpSys || '--'}/${user?.vitals?.bpDia || '--'}`);
+      const spo2Val = pickStat(/SpO/i, panels.spirometry || user?.vitals?.spo2 || '--');
+      const tempVal = panels.temperature ? (panels.temperature.toFixed ? panels.temperature.toFixed(1) : panels.temperature) : pickStat(/temp/i, user?.vitals?.temp || '--');
+      const respVal = panels.resp || pickStat(/resp/i, `${user?.vitals?.resp || '16'}/min`);
 
       setText('v_hr', hrVal);
       setText('v_bp', bpVal);
       setText('v_spo2', `${spo2Val}`);
       setText('v_temp', `${tempVal}${tempVal === '--' ? '' : '°F'}`);
+
+      // Light live vitals shimmer
+      setInterval(() => {
+        const hr = Number(hrVal) || 70;
+        setText('v_hr', Math.round(hr + Math.random() * 4 - 2));
+        setText('v_spo2', `${Math.min(99, Number(spo2Val) + Math.floor(Math.random() * 2))}`);
+      }, 3500);
 
       setText('lab_rbc', `${panels.rbc || '--'} M/µL`);
       setText('lab_wbc', `${panels.wbc || '--'} k/µL`);
@@ -602,11 +654,11 @@
       setText('lab_spo2', spo2Val);
       setText('lab_resp', `${respVal}`);
 
-      const summaryText = healthSnap.condition ? `${healthSnap.condition}: ${healthSnap.advice || ''}`.trim() : 'Guardian AI summarises vitals in simple words.';
-      setText('ai_summary', summaryText);
+      const summaryText = healthSnap.condition ? `${healthSnap.condition}: ${healthSnap.advice?.[0] || healthSnap.advice || ''}`.trim() : 'Guardian AI summarises vitals in simple words.';
+      setText('ai_summary', summaryText || 'Guardian AI summarises vitals in simple words.');
       setText('blood_signal', healthSnap.reasons?.[0] || 'Balanced');
       setText('cbc_signal', healthSnap.monitor?.join(', ') || 'Normal');
-      setText('lab_cbc_ai', healthSnap.reasons?.join(' • ') || 'Blood looks balanced. No infection seen.');
+      setText('lab_cbc_ai', (healthSnap.reasons || analysis.conditions || []).join(' • ') || 'Blood looks balanced. No infection seen.');
       setText('lab_lft_ai', 'Liver values inside normal range.');
       setText('lab_kft_ai', 'Kidney filters are working well.');
       setText('lab_cardiac_ai', 'Heart stress markers are low.');
@@ -686,7 +738,7 @@
         history.slice(0, 8).forEach(item => {
           const card = document.createElement('article');
           card.className = 'report-card';
-          card.innerHTML = `<h4>${item.title || 'Lab slot'}</h4><div class="report-meta">${item.lab || 'Concierge lab'} • ${new Date(item.date).toLocaleString()}</div><div class="report-ai">${item.status || 'Ready'} — ${item.note || 'Synced to dashboard.'}</div>`;
+          card.innerHTML = `<h4>${item.title || 'Lab slot'}</h4><div class="report-meta">${item.lab || 'Concierge lab'} • ${new Date(item.date || Date.now()).toLocaleString()}</div><div class="report-ai">${item.status || 'Ready'} — ${item.note || 'Synced to dashboard.'}</div>`;
           timeline.appendChild(card);
         });
       }
@@ -697,7 +749,7 @@
         reports.slice(0, 6).forEach(rep => {
           const card = document.createElement('article');
           card.className = 'report-card';
-          card.innerHTML = `<h4>${rep.name}</h4><div class="report-meta">${rep.lab || 'Lab'} • ${rep.doctor || 'Doctor lens'} • ${new Date(rep.date).toLocaleString()}</div><div class="report-ai">${rep.ai || 'Pending AI narration.'}</div>`;
+          card.innerHTML = `<h4>${rep.name || 'Report'}</h4><div class="report-meta">${rep.lab || 'Lab'} • ${rep.doctor || 'Doctor lens'} • ${new Date(rep.date || Date.now()).toLocaleString()}</div><div class="report-ai">${rep.ai || 'Pending AI narration.'}</div>`;
           if (rep.parameters) {
             const tagRow = document.createElement('div');
             tagRow.className = 'report-tags';
@@ -720,11 +772,11 @@
         const match = (labSnap.imagingReports || []).find(r => r.name?.toLowerCase().includes(study.split('-')[0]));
         if (match && statusEl && etaEl) {
           statusEl.textContent = match.status || 'Ready';
-          etaEl.textContent = new Date(match.date).toLocaleDateString();
+          etaEl.textContent = new Date(match.date || Date.now()).toLocaleDateString();
         }
       });
 
-      // Organ sync from dashboard
+      // Organ sync from dashboard + atlas v2
       setText('organ_vitals_hr', hrVal ? `${hrVal} bpm` : '--');
       setText('organ_vitals_bp', bpVal ? `${bpVal}` : '--');
       setText('organ_vitals_spo2', `${spo2Val}`);
@@ -732,12 +784,49 @@
       setText('organ_vitals_temp', `${tempVal}${tempVal === '--' ? '' : ' °F'}`);
       const latestLab = reports[0];
       setText('organ_lab_name', latestLab?.name || 'No lab synced');
-      setText('organ_lab_updated', latestLab ? `Updated ${new Date(latestLab.date).toLocaleString()}` : 'Use Labs → Sync to push reports here.');
+      setText('organ_lab_updated', latestLab ? `Updated ${new Date(latestLab.date || Date.now()).toLocaleString()}` : 'Use Labs → Sync to push reports here.');
       setText('organ_studio_vitals', `${hrVal || '--'} bpm • ${bpVal || '--'} • ${spo2Val || '--'}%`);
       setText('organ_studio_summary', healthSnap.condition || 'Whole-body preview ready');
       setText('organ_studio_lab', latestLab?.lab || 'Labs mirrored from dashboard');
       setText('organ_studio_next', healthSnap.advice?.[0] || 'Hydration + walk');
       setText('organ_studio_sync', 'Dashboard · Health · Labs · Pharmacy · Hospitals');
+
+      const organGrid = document.getElementById('organ_cards_grid');
+      const viewer = document.getElementById('organ_model_viewer');
+      const organStudioTitle = document.getElementById('organ_studio_title');
+      const organStudioStatus = document.getElementById('organ_studio_status');
+
+      if (organGrid) {
+        organGrid.innerHTML = '';
+        Object.entries(ORGAN_DATA).forEach(([key, organ]) => {
+          const card = document.createElement('article');
+          card.className = 'organ-card-enhanced';
+          card.dataset.organ = key;
+          card.innerHTML = `
+            <div class="organ-preview" style="background: radial-gradient(circle at 20% 20%, ${organ.color}22, transparent 42%), linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.1));"></div>
+            <div class="organ-info">
+              <div class="organ-meta"><strong>${organ.name}</strong><span class="organ-status-badge">${organ.status}</span></div>
+              <p class="section-sub">${organ.summary}</p>
+              <div class="organ-metrics">${organ.metrics.map(m => `<div>${m.split(' ')[0]}<strong>${m.replace(/^[^ ]+\s?/, '')}</strong></div>`).join('')}</div>
+              <div class="organ-links"><a href="patient-dashboard.html?organ=${key}">Dashboard</a><a href="patient-health.html?organ=${key}">Health</a></div>
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            if (viewer) {
+              viewer.setAttribute('src', organ.model);
+            }
+            setText('organ_studio_vitals', `${hrVal || '--'} bpm • ${bpVal || '--'} • ${spo2Val || '--'}%`);
+            setText('organ_studio_summary', `${organ.name} focus — ${organ.summary}`);
+            setText('organ_studio_lab', latestLab?.lab || 'Labs mirrored from dashboard');
+            setText('organ_studio_next', healthSnap.advice?.[0] || 'Hydration + walk');
+            if (organStudioTitle) organStudioTitle.textContent = `${organ.name} studio`;
+            if (organStudioStatus) organStudioStatus.textContent = organ.status || 'Ready';
+          });
+
+          organGrid.appendChild(card);
+        });
+      }
 
       const setBadge = (id, value) => { const el = document.getElementById(id); if (el && value) el.textContent = value; };
       setBadge('heart_status', panels.bnp || 'Good');
