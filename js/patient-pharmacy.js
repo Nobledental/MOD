@@ -1,3 +1,4 @@
+
 /* HealthFlo Pharmacy OS — dual dashboards with deep catalog */
 document.addEventListener('DOMContentLoaded', () => {
   const qs = (s, r = document) => r.querySelector(s);
@@ -360,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (statOrders) statOrders.textContent = state.activeOrders.length.toString();
     if (statBuffer) statBuffer.textContent = '100%';
     hydrateMapping();
+    handleIncomingIntent();
   }
 
   function mapOrderToPages(med) {
@@ -385,6 +387,24 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       console.warn('Unable to restore mapping', err);
     }
+  }
+
+  function handleIncomingIntent() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('from') !== 'health') return;
+
+    const medName = params.get('med');
+    const payload = {
+      id: medName || 'health-intent',
+      brand: medName || 'Health medication',
+      generic: 'Synced from patient-health',
+      ts: Date.now(),
+      source: 'health',
+    };
+
+    localStorage.setItem('hf-latest-order', JSON.stringify(payload));
+    renderOrderMapping(payload);
+    toast(`Synced from Health: ${medName || 'Medication'}`);
   }
 
   initHandlers();
