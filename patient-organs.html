@@ -1,360 +1,965 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="matte">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HealthFlo — Organ Watch</title>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/patient-os.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>HealthFlo — Organ Systems & Reports</title>
+
+  <!-- Icons & Fonts -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Shared Theme (renamed) -->
+  <link rel="stylesheet" href="css/dashboard-theme1.css">
+
+  <!-- 3D Model Viewer -->
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+  <style>
+    /* ===== PREMIUM ORGAN SYSTEMS DASHBOARD ===== */
+    body {
+      font-family: 'Plus Jakarta Sans', 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      background: var(--bg-radial, #0f172a);
+      color: var(--text-main, #e5e7eb);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-container {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .browser-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: var(--browser-bar-bg);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--divider-color);
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .window-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      opacity: 0.9;
+    }
+
+    .branding-right {
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .dashboard-body {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      min-height: calc(100vh - 48px);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--divider-color);
+      padding: 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .logo span {
+      color: var(--color-blue);
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: var(--text-main);
+      border: 1px solid transparent;
+      transition: all 0.25s ease;
+      font-weight: 600;
+    }
+
+    .menu-item:hover,
+    .menu-item.active {
+      background: var(--card-active-bg);
+      border-color: var(--card-border);
+    }
+
+    .menu-item.danger {
+      color: var(--color-red);
+    }
+
+    .menu-label {
+      font-size: 14px;
+    }
+
+    .sidebar-divider {
+      margin: 12px 0;
+      border-bottom: 1px solid var(--divider-color);
+    }
+
+    /* Main content */
+    .main-content {
+      padding: 30px;
+      max-width: 1800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .header-section {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+      align-items: stretch;
+    }
+
+    .hero-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-card h1 {
+      margin: 8px 0 6px;
+      font-size: 28px;
+    }
+
+    .hero-card p {
+      margin: 0;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .pill.success { color: var(--color-green); border-color: var(--color-green); }
+    .pill.warn { color: var(--color-yellow); border-color: var(--color-yellow); }
+
+    .stat-card-large {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .stat-block h4 { margin: 0 0 6px; color: var(--text-muted); font-weight: 600; }
+    .stat-block .value { font-size: 28px; font-weight: 800; }
+    .stat-block small { color: var(--text-muted); }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      margin: 32px 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 24px;
+      background: linear-gradient(180deg, var(--color-blue), var(--color-purple));
+      border-radius: 2px;
+    }
+
+    /* Organ Grid Layout */
+    .organs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+      margin-top: 12px;
+    }
+
+    /* Enhanced Organ Card */
+    .organ-card-enhanced {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 0;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .organ-card-enhanced::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--organ-color), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .organ-card-enhanced:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      border-color: var(--organ-color);
+    }
+
+    .organ-card-enhanced:hover::before { opacity: 1; }
+
+    /* 3D Preview Section */
+    .organ-preview { height: 220px; position: relative; background: linear-gradient(135deg, rgba(0,0,0,0.3), rgba(0,0,0,0.1)); overflow: hidden; }
+    .organ-preview model-viewer { width: 100%; height: 100%; }
+
+    .organ-status-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .organ-status-badge.healthy { background: rgba(16,185,129,0.2); border-color: var(--color-green); color: var(--color-green); }
+    .organ-status-badge.warning { background: rgba(245,158,11,0.2); border-color: var(--color-yellow); color: var(--color-yellow); }
+
+    /* Organ Info Section */
+    .organ-info { padding: 24px; }
+    .organ-header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .organ-icon { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, var(--organ-color), var(--organ-color-dark)); display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; }
+    .organ-title { flex: 1; }
+    .organ-title h3 { font-size: 20px; font-weight: 700; color: white; margin: 0 0 4px 0; }
+    .organ-title p { font-size: 12px; opacity: 0.6; margin: 0; }
+
+    /* Organ Metrics */
+    .organ-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 16px; }
+    .metric-item { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+    .metric-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.6; margin-bottom: 6px; }
+    .metric-value { font-size: 18px; font-weight: 700; color: white; }
+    .metric-value small { font-size: 11px; opacity: 0.6; font-weight: 500; margin-left: 4px; }
+
+    /* Health Score Ring */
+    .health-ring { width: 60px; height: 60px; border-radius: 50%; background: conic-gradient(var(--organ-color) 0deg, var(--organ-color) calc(var(--health) * 3.6deg), rgba(255, 255, 255, 0.05) calc(var(--health) * 3.6deg), rgba(255, 255, 255, 0.05) 360deg); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; color: white; position: relative; }
+    .health-ring::before { content: ''; position: absolute; width: 46px; height: 46px; border-radius: 50%; background: var(--bg-primary, #0b1020); }
+    .health-ring span { position: relative; z-index: 1; }
+
+    /* Action Buttons */
+    .organ-actions { display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, 0.05); }
+    .organ-btn { flex: 1; padding: 10px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255, 255, 255, 0.03); color: white; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .organ-btn:hover { background: var(--organ-color); border-color: var(--organ-color); transform: translateY(-2px); }
+
+    /* Body Map Section */
+    .body-map-section { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; margin-top: 20px; position: relative; overflow: hidden; }
+    .body-map-grid { display: grid; grid-template-columns: 400px 1fr; gap: 40px; align-items: center; }
+    .body-diagram { position: relative; width: 100%; max-width: 400px; margin: 0 auto; }
+    .body-hotspot { position: absolute; width: 40px; height: 40px; border-radius: 50%; background: rgba(59, 130, 246, 0.2); border: 2px solid var(--color-blue); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; animation: pulse 2s infinite; }
+    .body-hotspot:hover { transform: scale(1.2); background: var(--color-blue); }
+    .body-hotspot i { color: white; font-size: 20px; }
+
+    /* System stats */
+    .system-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .stat-card { background: rgba(0, 0, 0, 0.2); padding: 20px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.05); }
+    .stat-card h4 { font-size: 14px; color: white; margin: 0 0 12px 0; display: flex; align-items: center; gap: 8px; }
+    .stat-bar { height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; margin-top: 12px; }
+    .stat-fill { height: 100%; background: linear-gradient(90deg, var(--color-blue), var(--color-purple)); width: var(--percentage); animation: fillStat 1.5s ease-out; }
+
+    /* Atlas */
+    .atlas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .atlas-card { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+    .atlas-card model-viewer { width: 100%; height: 200px; border-radius: 12px; overflow: hidden; }
+    .atlas-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .badge-link { padding: 6px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); border: 1px solid var(--glass-border); font-weight: 600; font-size: 12px; }
+
+    /* Lab Intelligence */
+    .lab-panel { background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px; padding: 18px; display: grid; gap: 14px; }
+    .form-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    .input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); color: white; }
+    .textarea { min-height: 140px; width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); color: white; }
+    .cta-btn { padding: 12px 16px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--color-blue); color: white; font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(10, 132, 255, 0.3); }
+    .cta-btn.secondary { background: rgba(255,255,255,0.06); border-color: var(--glass-border); color: white; box-shadow: none; }
+    .chip { padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.08); font-size: 12px; font-weight: 600; display: inline-flex; gap: 6px; align-items: center; }
+
+    .results-list { display: grid; gap: 12px; }
+    .result-card { background: rgba(0,0,0,0.2); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; }
+    .result-card h4 { margin: 0 0 6px; }
+    .status-flag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px; font-weight: 700; font-size: 12px; }
+    .status-flag.ok { background: rgba(16,185,129,0.18); color: var(--color-green); }
+    .status-flag.watch { background: rgba(245,158,11,0.2); color: var(--color-yellow); }
+    .status-flag.alert { background: rgba(239,68,68,0.2); color: var(--color-red); }
+
+    .library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+    .library-card { border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); border-radius: 12px; padding: 14px; }
+    .library-card h4 { margin: 0 0 8px; }
+    .library-card ul { margin: 6px 0; padding-left: 18px; color: var(--text-muted); }
+
+    .notice { padding: 10px 12px; border-radius: 10px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.3); color: white; }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+      50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+    }
+
+    @keyframes fillStat { from { width: 0%; } to { width: var(--percentage); } }
+
+    @media (max-width: 1200px) {
+      .dashboard-body { grid-template-columns: 1fr; }
+      .sidebar { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--divider-color); }
+      .header-section { grid-template-columns: 1fr; }
+      .body-map-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <header class="hf-topbar">
-    <div class="container topbar-inner">
-      <a class="hf-logo" href="patient-dashboard.html"><span class="logo-dot"></span>HealthFlo Patient OS</a>
-      <nav class="hf-nav">
-        <a href="patient-dashboard.html">Dashboard</a>
-        <a href="patient-health.html">Health</a>
-        <a class="active" href="patient-organs.html">Organs</a>
-        <a href="patient-profile.html">Profile</a>
-        <a href="patient-hospitals.html">Hospitals</a>
-        <a href="patient-pharmacy.html">Pharmacy</a>
-        <a href="patient-labs.html">Labs</a>
-        <a href="patient-devices.html">Devices</a>
-        <a href="patient-family.html">Family</a>
-        <a href="patient-insurance.html">Insurance</a>
-        <a href="patient-settings.html">Settings</a>
-      </nav>
-      <div class="topbar-actions">
-        <button class="icon-btn" id="themeToggle">🌓</button>
-        <button class="icon-btn">🔔</button>
+  <div class="app-container">
+    <div class="browser-bar">
+      <div class="window-controls">
+        <div class="window-dot" style="background: #ef4444;"></div>
+        <div class="window-dot" style="background: #f59e0b;"></div>
+        <div class="window-dot" style="background: #10b981;"></div>
+      </div>
+      <div class="branding-right">HealthFlo <span>CLINICAL V3</span></div>
+    </div>
+
+    <div class="dashboard-body">
+      <div class="sidebar">
+        <div class="logo">H<span>+</span></div>
+        <a class="menu-item" href="patient-dashboard.html"><i class="ph ph-heartbeat"></i><span class="menu-label">Dashboard</span></a>
+        <a class="menu-item" href="patient-health.html"><i class="ph ph-pulse"></i><span class="menu-label">Health</span></a>
+        <a class="menu-item active" href="patient-organs.html"><i class="ph-fill ph-scan"></i><span class="menu-label">Organs</span></a>
+        <a class="menu-item" href="patient-labs.html"><i class="ph ph-flask"></i><span class="menu-label">Labs</span></a>
+        <a class="menu-item" href="patient-pharmacy.html"><i class="ph ph-pill"></i><span class="menu-label">Pharmacy</span></a>
+        <a class="menu-item" href="patient-hospitals.html"><i class="ph ph-hospital"></i><span class="menu-label">Hospitals</span></a>
+        <a class="menu-item" href="patient-insurance.html"><i class="ph ph-shield-plus"></i><span class="menu-label">Insurance</span></a>
+        <a class="menu-item" href="patient-log.html"><i class="ph ph-clipboard-text"></i><span class="menu-label">Log</span></a>
+        <a class="menu-item" href="patient-devices.html"><i class="ph ph-watch"></i><span class="menu-label">Devices</span></a>
+        <a class="menu-item" href="patient-family.html"><i class="ph ph-users"></i><span class="menu-label">Family</span></a>
+        <a class="menu-item" href="patient-profile.html"><i class="ph ph-user"></i><span class="menu-label">Profile</span></a>
+        <div class="sidebar-divider"></div>
+        <a class="menu-item" href="patient-settings.html"><i class="ph ph-gear-six"></i><span class="menu-label">Settings</span></a>
+        <a class="menu-item danger" href="index.html" style="margin-top: auto;"><i class="ph ph-power"></i><span class="menu-label">Exit</span></a>
+      </div>
+
+      <div class="main-content">
+        <div class="header-section">
+          <div class="hero-card">
+            <div class="chip">Organ watch + AI clinical rail</div>
+            <h1>Whole-body atlas with live vitals + OCR labs</h1>
+            <p>Upload heart reports, map every organ’s blood, radiology, and histopathology data, and let the AI flag risk,
+              management, and treatment prompts. Alerts mirror to Dashboard, Health, Labs, and Pharmacy without re-entry.</p>
+            <div class="badge-row">
+              <span class="pill"><i class="ph ph-cloud-arrow-up"></i> OCR lab mapping</span>
+              <span class="pill"><i class="ph ph-activity"></i> Device-linked vitals</span>
+              <span class="pill"><i class="ph ph-brain"></i> AI organ coach</span>
+              <span class="pill"><i class="ph ph-bandaid"></i> Chronic prevention</span>
+            </div>
+            <p class="notice" style="margin-top: 12px;">Reference ranges vary by lab, equipment, age, and sex. Always confirm with the range printed on your report.</p>
+          </div>
+          <div class="stat-card-large" id="overallStatusCard">
+            <div class="stat-block">
+              <h4>Overall body score</h4>
+              <div class="value" id="overallScore">—</div>
+              <small id="overallTone">Aggregating every organ</small>
+            </div>
+            <div class="stat-block">
+              <h4>Urgent alerts</h4>
+              <div class="value" id="alertCount">0</div>
+              <small id="alertSummary">No critical organ triggers</small>
+            </div>
+            <div class="stat-block">
+              <h4>Last lab sync</h4>
+              <div class="value" id="labSync">Awaiting upload</div>
+              <small id="labSyncMeta">Push from Labs page or upload below</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="ph-fill ph-heart"></i> Primary Organ Systems</div>
+        <div class="organs-grid" id="organs-grid"></div>
+
+        <div class="section-title"><i class="ph-fill ph-cube"></i> 3D organ atlas & dashboard links</div>
+        <div class="atlas-grid" id="atlas-grid"></div>
+
+        <div class="section-title"><i class="ph-fill ph-user-focus"></i> Interactive Body Map</div>
+        <div class="body-map-section">
+          <div class="body-map-grid">
+            <div class="body-diagram">
+              <svg viewBox="0 0 200 400" style="width: 100%; height: auto;">
+                <defs>
+                  <linearGradient id="bodyGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:rgba(59,130,246,0.2);stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:rgba(139,92,246,0.2);stop-opacity:1" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="100" cy="40" rx="25" ry="30" fill="url(#bodyGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                <rect x="80" y="65" width="40" height="80" rx="8" fill="url(#bodyGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                <ellipse cx="100" cy="150" rx="35" ry="40" fill="url(#bodyGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                <rect x="70" y="185" width="20" height="120" rx="10" fill="url(#bodyGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+                <rect x="110" y="185" width="20" height="120" rx="10" fill="url(#bodyGradient)" stroke="rgba(255,255,255,0.2)" stroke-width="1" />
+              </svg>
+              <div class="body-hotspot" style="top: 8%; left: 40%;" data-organ="brain" title="Brain"><i class="ph-fill ph-brain"></i></div>
+              <div class="body-hotspot" style="top: 22%; left: 38%;" data-organ="heart" title="Heart"><i class="ph-fill ph-heart"></i></div>
+              <div class="body-hotspot" style="top: 24%; left: 52%;" data-organ="lungs" title="Lungs"><i class="ph-fill ph-wind"></i></div>
+              <div class="body-hotspot" style="top: 36%; left: 48%;" data-organ="liver" title="Liver"><i class="ph-fill ph-drop"></i></div>
+              <div class="body-hotspot" style="top: 42%; left: 30%;" data-organ="kidneys" title="Kidneys"><i class="ph-fill ph-funnel"></i></div>
+            </div>
+            <div>
+              <h3 style="font-size: 24px; color: white; margin-bottom: 8px;">Full Body Analysis</h3>
+              <p style="opacity: 0.7; margin-bottom: 24px;">Select organs from the map or explore detailed metrics below.</p>
+              <div class="system-stats" id="system-stats"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="ph-fill ph-file-text"></i> Lab intelligence, OCR mapping & AI care</div>
+        <div class="lab-panel">
+          <div class="form-row">
+            <label class="chip" for="labOrganSelect">Target organ system</label>
+            <select id="labOrganSelect" class="input"></select>
+            <label class="chip" for="labFileInput">Upload PDF/text lab report (OCR)</label>
+            <input type="file" id="labFileInput" class="input" accept=".txt,.pdf,.doc,.docx,.rtf,.json,.csv" />
+          </div>
+          <textarea id="labOcrText" class="textarea" placeholder="Paste OCR text here or upload a report…"></textarea>
+          <div class="form-row">
+            <button class="cta-btn" id="mapLabBtn"><i class="ph ph-magic-wand"></i> Map results with AI</button>
+            <button class="cta-btn secondary" id="loadSampleBtn"><i class="ph ph-flask"></i> Load sample heart report</button>
+          </div>
+          <div class="notice">AI compares against typical adult ranges for guidance only; adjust using the reference ranges printed on your report.</div>
+          <div class="results-list" id="labResultsList"></div>
+          <div class="stat-card" style="margin-top: 8px;">
+            <h4><i class="ph-fill ph-activity" style="color: var(--color-blue);"></i> Full body health status</h4>
+            <p id="fullBodyStatus" style="margin: 0; color: var(--text-muted);"></p>
+          </div>
+        </div>
+
+        <div class="section-title"><i class="ph-fill ph-books"></i> Clinical test library by organ</div>
+        <div class="library-grid" id="testLibrary"></div>
+
+        <div class="section-title"><i class="ph-fill ph-bell"></i> Organ notifications & cross-app sync</div>
+        <div class="lab-panel">
+          <div class="chip" id="bridgeStatus">Synced with Dashboard · Health · Labs · Pharmacy · Hospitals</div>
+          <p class="notice" id="bridgeNotice">All organ signals are mirrored. Escalations trigger consult prompts and medication safety checks.</p>
+          <div class="results-list" id="alertFeed">
+            <div class="result-card"><h4>All systems green</h4><p class="metric-value" style="font-size: 14px;">You will be notified if vitals or labs cross thresholds.</p></div>
+          </div>
+        </div>
       </div>
     </div>
-  </header>
+  </div>
 
-  <main class="container">
-    <section class="hero">
-      <div class="hero-card">
-        <p class="chip">Organ watch + notifications</p>
-        <h1 class="hero-title">Whole-body atlas with live vitals</h1>
-        <p class="hero-sub">Every organ and system streams signals from vitals, devices, and synced lab reports. We flag organ stress and mirror urgent alerts to the dashboard.</p>
-        <div class="hero-actions">
-          <span class="badge">Vitals-linked</span>
-          <span class="badge">Lab-synced</span>
-          <span class="badge">3D previews</span>
-        </div>
-      </div>
-      <div class="card live-card">
-        <div class="card-head"><h3>Organ alert badge</h3><span class="pill" id="organ_live_indicator">Live</span></div>
-        <p class="section-sub">Mirrors to dashboard when abnormalities exist.</p>
-        <div class="notice" id="organ_alert">All clear</div>
-        <div class="notice" id="organ_alert_badge">0 alerts</div>
-        <div class="signal-row live-vitals">
-          <div>
-            <p class="section-sub">Latest vitals</p>
-            <div class="stat-line">Heart rate <strong id="organ_vitals_hr">—</strong></div>
-            <div class="stat-line">BP <strong id="organ_vitals_bp">—</strong> · SpO₂ <strong id="organ_vitals_spo2">—</strong></div>
-            <div class="stat-line">Resp <strong id="organ_vitals_resp">—</strong> · Temp <strong id="organ_vitals_temp">—</strong></div>
-          </div>
-          <div>
-            <p class="section-sub">Last lab sync</p>
-            <div class="stat-line"><strong id="organ_lab_name">No lab synced</strong></div>
-            <div class="stat-line" id="organ_lab_updated">Use Labs → Sync to push reports here.</div>
-          </div>
-        </div>
-      </div>
-    </section>
+  <script>
+    const ORGAN_DATA = {
+      heart: {
+        name: 'Heart', subtitle: 'Cardiovascular system', model: '3d_models/heart.glb', icon: 'ph-heart', color: '#ef4444', colorDark: '#dc2626', health: 93, status: 'healthy',
+        metrics: [
+          { label: 'Troponin I', value: '<0.04', unit: 'ng/mL' },
+          { label: 'NT-proBNP', value: '110', unit: 'pg/mL' },
+          { label: 'BP', value: '118/74', unit: 'mmHg' },
+          { label: 'LVEF', value: '65', unit: '%' }
+        ],
+        links: ['dashboard', 'health', 'labs']
+      },
+      lungs: {
+        name: 'Lungs', subtitle: 'Respiratory system', model: '3d_models/lungs.glb', icon: 'ph-wind', color: '#38bdf8', colorDark: '#0284c7', health: 89, status: 'healthy',
+        metrics: [
+          { label: 'ABG pO₂', value: '95', unit: 'mmHg' },
+          { label: 'ABG pCO₂', value: '38', unit: 'mmHg' },
+          { label: 'SpO₂', value: '98', unit: '%' },
+          { label: 'D-Dimer', value: '<500', unit: 'ng/mL' }
+        ],
+        links: ['dashboard', 'health', 'labs']
+      },
+      liver: {
+        name: 'Liver', subtitle: 'Hepatic system', model: '3d_models/liver.glb', icon: 'ph-drop', color: '#f97316', colorDark: '#ea580c', health: 84, status: 'warning',
+        metrics: [
+          { label: 'ALT', value: '42', unit: 'U/L' },
+          { label: 'AST', value: '38', unit: 'U/L' },
+          { label: 'Bilirubin', value: '0.9', unit: 'mg/dL' },
+          { label: 'INR', value: '1.1', unit: '' }
+        ],
+        links: ['dashboard', 'health', 'labs']
+      },
+      kidneys: {
+        name: 'Kidneys', subtitle: 'Renal system', model: '3d_models/kidneys.glb', icon: 'ph-funnel', color: '#10b981', colorDark: '#059669', health: 85, status: 'warning',
+        metrics: [
+          { label: 'GFR', value: '95', unit: 'mL/min' },
+          { label: 'Creatinine', value: '0.9', unit: 'mg/dL' },
+          { label: 'BUN', value: '14', unit: 'mg/dL' },
+          { label: 'Potassium', value: '4.3', unit: 'mEq/L' }
+        ],
+        links: ['dashboard', 'health', 'labs']
+      },
+      brain: {
+        name: 'Brain', subtitle: 'Neurologic system', model: '3d_models/brain.glb', icon: 'ph-brain', color: '#a855f7', colorDark: '#7c3aed', health: 90, status: 'healthy',
+        metrics: [
+          { label: 'MRI', value: 'Clear', unit: '' },
+          { label: 'TSH', value: '2.0', unit: 'mIU/L' },
+          { label: 'B12', value: '450', unit: 'pg/mL' },
+          { label: 'Sleep', value: '7.2', unit: 'hrs' }
+        ],
+        links: ['dashboard', 'health', 'labs']
+      },
+      eyes: {
+        name: 'Eyes', subtitle: 'Visual system', model: '3d_models/eyes.glb', icon: 'ph-eye', color: '#3b82f6', colorDark: '#2563eb', health: 95, status: 'healthy',
+        metrics: [
+          { label: 'Vision', value: '20/20', unit: '' },
+          { label: 'IOP', value: '14', unit: 'mmHg' },
+          { label: 'Strain', value: 'Low', unit: '' },
+          { label: 'Health', value: 'Clear', unit: '' }
+        ],
+        links: ['dashboard', 'health', 'labs']
+      }
+    };
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">3D atlas</p>
-          <h2 class="section-title">Organ meshes mapped to every page</h2>
-          <p class="section-sub">Preview the newest meshes and jump straight into dashboard, health plan, labs, or pharmacy for the same organ.</p>
-        </div>
-      </header>
-      <div class="atlas-grid">
-        <div class="card atlas-card" data-organ="heart">
-          <div class="card-head"><h3>Heart</h3><span class="pill success">Synced</span></div>
-          <p class="section-sub">Live myocardium mesh and ECG trends.</p>
-          <model-viewer src="3d_models/heart.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=heart">Dashboard</a>
-            <a href="patient-health.html?organ=heart">Health</a>
-            <a href="patient-labs.html?organ=heart">Labs</a>
-          </div>
-        </div>
-        <div class="card atlas-card" data-organ="liver">
-          <div class="card-head"><h3>Liver</h3><span class="pill">Normal</span></div>
-          <p class="section-sub">Functional model with toxin filter score.</p>
-          <model-viewer src="3d_models/liver.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=liver">Dashboard</a>
-            <a href="patient-health.html?organ=liver">Health</a>
-            <a href="patient-labs.html?organ=liver">Labs</a>
-          </div>
-        </div>
-        <div class="card atlas-card" data-organ="cirrhotic_liver">
-          <div class="card-head"><h3>Cirrhotic liver</h3><span class="pill warn">Monitored</span></div>
-          <p class="section-sub">High-res mesh to mirror fibrosis dashboards.</p>
-          <model-viewer src="3d_models/cirrhotic_liver.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=cirrhotic_liver">Dashboard</a>
-            <a href="patient-health.html?organ=cirrhotic_liver">Health</a>
-            <a href="patient-labs.html?organ=cirrhotic_liver">Labs</a>
-          </div>
-        </div>
-        <div class="card atlas-card" data-organ="lungs">
-          <div class="card-head"><h3>Lungs</h3><span class="pill">Calm</span></div>
-          <p class="section-sub">Respiratory mesh for spirometry + SpO₂.</p>
-          <model-viewer src="3d_models/lungs.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=lungs">Dashboard</a>
-            <a href="patient-health.html?organ=lungs">Health</a>
-            <a href="patient-labs.html?organ=lungs">Labs</a>
-          </div>
-        </div>
-        <div class="card atlas-card" data-organ="kidneys">
-          <div class="card-head"><h3>Kidneys</h3><span class="pill">Hydrated</span></div>
-          <p class="section-sub">Renal mesh with hydration and filtration cues.</p>
-          <model-viewer src="3d_models/kidneys.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=kidneys">Dashboard</a>
-            <a href="patient-health.html?organ=kidneys">Health</a>
-            <a href="patient-labs.html?organ=kidneys">Labs</a>
-          </div>
-        </div>
-        <div class="card atlas-card" data-organ="brain">
-          <div class="card-head"><h3>Brain</h3><span class="pill warn">Cortex focus</span></div>
-          <p class="section-sub">Neuro mesh synced to sleep, stress, and cognition.</p>
-          <model-viewer src="3d_models/brain.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=brain">Dashboard</a>
-            <a href="patient-health.html?organ=brain">Health</a>
-            <a href="patient-labs.html?organ=brain">Labs</a>
-          </div>
-        </div>
-        <div class="card atlas-card" data-organ="eyes">
-          <div class="card-head"><h3>Eyes</h3><span class="pill">Focus</span></div>
-          <p class="section-sub">Vision mesh connected to dryness + acuity signals.</p>
-          <model-viewer src="3d_models/eyes.glb" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=eyes">Dashboard</a>
-            <a href="patient-health.html?organ=eyes">Health</a>
-            <a href="patient-labs.html?organ=eyes">Labs</a>
-          </div>
-        </div>
-        <div class="card atlas-card" data-organ="pancreas" data-fallback="true">
-          <div class="card-head"><h3>Pancreas</h3><span class="pill">Auto-fallback</span></div>
-          <p class="section-sub">No custom mesh? We’ll render the globe-style view automatically.</p>
-          <model-viewer camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
-          <div class="atlas-links">
-            <a href="patient-dashboard.html?organ=pancreas">Dashboard</a>
-            <a href="patient-health.html?organ=pancreas">Health</a>
-            <a href="patient-labs.html?organ=pancreas">Labs</a>
-          </div>
-        </div>
-      </div>
-    </section>
+    const ATLAS = [
+      { key: 'heart', badge: 'Synced' },
+      { key: 'liver', badge: 'Normal' },
+      { key: 'lungs', badge: 'Calm' },
+      { key: 'kidneys', badge: 'Hydrated' },
+      { key: 'brain', badge: 'Cortex focus' },
+      { key: 'eyes', badge: 'Focus' }
+    ];
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">Organ grid + immersive studio</p>
-          <h2 class="section-title">Immersive organ watch</h2>
-          <p class="section-sub">Status per organ with a 3D anatomy studio and live sync to dashboard, health, labs, vitals, pharmacy, and hospitals.</p>
-        </div>
-      </header>
-      <div class="grid-two">
-        <div class="stack-gap">
-          <div class="list-grid organ-map">
-            <div class="card organ-card" data-organ="heart">
-              <div class="card-head"><h3>Heart</h3><span class="pill" id="heart_status">Good</span></div>
-              <p class="section-sub">Cardiac markers + ECG trend</p>
-              <div class="stat-line">Vitals: <strong id="heart_vitals">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="lungs">
-              <div class="card-head"><h3>Lungs</h3><span class="pill" id="lung_status">Free</span></div>
-              <p class="section-sub">Spirometry, SpO₂, respiratory rate</p>
-              <div class="stat-line">Breath: <strong id="lung_vitals">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="liver">
-              <div class="card-head"><h3>Liver</h3><span class="pill" id="liver_status">Healthy</span></div>
-              <p class="section-sub">LFT markers</p>
-              <div class="stat-line">Labs: <strong id="liver_markers">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="kidney">
-              <div class="card-head"><h3>Kidneys</h3><span class="pill" id="kidney_status">Hydrated</span></div>
-              <p class="section-sub">KFT + CUE</p>
-              <div class="stat-line">Labs: <strong id="kidney_markers">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="brain">
-              <div class="card-head"><h3>Brain</h3><span class="pill" id="brain_status">Calm</span></div>
-              <p class="section-sub">Sleep & stress signals</p>
-              <div class="stat-line">State: <strong id="brain_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="dental">
-              <div class="card-head"><h3>Dental</h3><span class="pill" id="dental_status">Bright</span></div>
-              <p class="section-sub">CBCT, cavities, gum health</p>
-              <div class="stat-line">Hygiene: <strong id="dental_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="vascular">
-              <div class="card-head"><h3>Vascular</h3><span class="pill" id="vascular_status">Open</span></div>
-              <p class="section-sub">Blood pressure & circulation</p>
-              <div class="stat-line">Flow: <strong id="vascular_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="endocrine">
-              <div class="card-head"><h3>Endocrine</h3><span class="pill" id="endocrine_status">Balanced</span></div>
-              <p class="section-sub">Thyroid, HbA1c, hormones</p>
-              <div class="stat-line">Signals: <strong id="endocrine_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="immune">
-              <div class="card-head"><h3>Immune</h3><span class="pill" id="immune_status">Calm</span></div>
-              <p class="section-sub">WBC, CRP, inflammation</p>
-              <div class="stat-line">Markers: <strong id="immune_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="musculoskeletal">
-              <div class="card-head"><h3>Musculoskeletal</h3><span class="pill" id="musculoskeletal_status">Supple</span></div>
-              <p class="section-sub">DEXA, mobility, pain diary</p>
-              <div class="stat-line">Support: <strong id="msk_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="gi">
-              <div class="card-head"><h3>Gut</h3><span class="pill" id="gi_status">Smooth</span></div>
-              <p class="section-sub">Nutrition, hydration, abdomen scans</p>
-              <div class="stat-line">Status: <strong id="gi_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="pancreas">
-              <div class="card-head"><h3>Pancreas</h3><span class="pill" id="pancreas_status">Steady</span></div>
-              <p class="section-sub">Glucose load + enzymes</p>
-              <div class="stat-line">Digestive: <strong id="pancreas_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="spleen">
-              <div class="card-head"><h3>Spleen & lymph</h3><span class="pill" id="spleen_status">Clear</span></div>
-              <p class="section-sub">Immune buffering + CBC</p>
-              <div class="stat-line">Defense: <strong id="spleen_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="reproductive">
-              <div class="card-head"><h3>Reproductive</h3><span class="pill" id="reproductive_status">Clear</span></div>
-              <p class="section-sub">USG pelvis / prostate + hormones</p>
-              <div class="stat-line">Scan: <strong id="reproductive_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="skin">
-              <div class="card-head"><h3>Skin</h3><span class="pill" id="skin_status">Calm</span></div>
-              <p class="section-sub">Hydration + allergy watch</p>
-              <div class="stat-line">Barrier: <strong id="skin_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="eye">
-              <div class="card-head"><h3>Eyes</h3><span class="pill" id="eye_status">Focused</span></div>
-              <p class="section-sub">Vision strain + fundoscopy</p>
-              <div class="stat-line">Focus: <strong id="eye_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="ear">
-              <div class="card-head"><h3>Ears</h3><span class="pill" id="ear_status">Clear</span></div>
-              <p class="section-sub">Hearing and balance</p>
-              <div class="stat-line">Sound: <strong id="ear_state">—</strong></div>
-            </div>
-            <div class="card organ-card" data-organ="bladder">
-              <div class="card-head"><h3>Bladder</h3><span class="pill" id="bladder_status">Clear</span></div>
-              <p class="section-sub">Hydration + UTI watch</p>
-              <div class="stat-line">Flow: <strong id="bladder_state">—</strong></div>
-            </div>
-          </div>
+    const SYSTEM_STATS = [
+      { label: 'Cardiovascular', value: 92 },
+      { label: 'Respiratory', value: 90 },
+      { label: 'Renal', value: 85 },
+      { label: 'Hepatic', value: 84 },
+      { label: 'Neurologic', value: 90 },
+      { label: 'Immune', value: 88 }
+    ];
 
-          <div class="card">
-            <div class="card-head"><h3>Organ data bridge</h3><span class="pill" id="organ_bridge_pill">Synced</span></div>
-            <p class="section-sub">Mirrors alerts and vitals to dashboard, health plan, labs, vitals, pharmacy, and hospitals without re-entry.</p>
-            <div class="grid-two">
-              <div class="stat-line">Dashboard: <strong id="sync_dashboard_status">Ready</strong></div>
-              <div class="stat-line">Health plan: <strong id="sync_health_status">Stable</strong></div>
-              <div class="stat-line">Labs: <strong id="sync_labs_status">Awaiting sync</strong></div>
-              <div class="stat-line">Vitals: <strong id="sync_vitals_status">Live</strong></div>
-              <div class="stat-line">Pharmacy: <strong id="sync_pharmacy_status">No pending meds</strong></div>
-              <div class="stat-line">Hospitals: <strong id="sync_hospital_status">No escalations</strong></div>
+    const TEST_LIBRARY = {
+      heart: {
+        title: 'Heart (Cardiovascular)',
+        blood: [
+          { name: 'Troponin I', range: '<0.04 ng/mL', flag: 'High: acute myocardial injury', high: 0.04 },
+          { name: 'Troponin T', range: '<0.01 ng/mL', flag: 'High: myocardial infarction/strain', high: 0.01 },
+          { name: 'NT-proBNP', range: '<125 pg/mL (<75y) | <450 pg/mL (>75y)', flag: 'High: heart failure', high: 125 },
+          { name: 'CK-MB', range: '0–3 ng/mL', flag: 'High: cardiac injury', high: 3 },
+          { name: 'Lipid Profile', range: 'TC<200, LDL<100, HDL>40/50, TG<150 mg/dL', flag: 'High LDL/TG: atherosclerosis risk', high: 200 },
+          { name: 'hs-CRP', range: '<1 mg/L low risk', flag: '>3 mg/L: vascular inflammation', high: 3 },
+          { name: 'Homocysteine', range: '5–15 µmol/L', flag: 'High: clot risk, B12/folate deficiency', high: 15 }
+        ],
+        imaging: [
+          'ECG (12-lead): rhythm, ST/T changes',
+          '2D Echocardiogram: LVEF 55–70%, valves',
+          'CT Calcium Score: plaque burden (0 is best)'
+        ],
+        histopath: []
+      },
+      lungs: {
+        title: 'Lungs (Respiratory)',
+        blood: [
+          { name: 'ABG pO2', range: 'pO₂ 80–100 mmHg', flag: 'Low: hypoxia', low: 80 },
+          { name: 'ABG pCO2', range: 'pCO₂ 35–45 mmHg', flag: 'High: CO₂ retention', high: 45 },
+          { name: 'D-Dimer', range: '<500 ng/mL FEU', flag: 'High: rule out PE/DVT with imaging', high: 500 },
+          { name: 'Quantiferon TB Gold', range: 'Negative', flag: 'Positive: latent/active TB' }
+        ],
+        imaging: ['Chest X-ray: opacities/effusions', 'HRCT Chest: ground glass, fibrosis patterns'],
+        histopath: []
+      },
+      kidneys: {
+        title: 'Kidneys (Renal)',
+        blood: [
+          { name: 'Creatinine', range: 'M 0.7–1.3, F 0.6–1.1 mg/dL', flag: 'High: renal impairment', high: 1.3 },
+          { name: 'Blood Urea Nitrogen', range: '7–20 mg/dL', flag: 'High: dehydration or renal failure', high: 20 },
+          { name: 'eGFR', range: '>90 mL/min/1.73m²', flag: '<60: CKD, <15: failure', low: 60 },
+          { name: 'Uric Acid', range: '3.5–7.2 mg/dL', flag: 'High: gout/stones', high: 7.2 },
+          { name: 'Potassium', range: '3.5–5.0 mEq/L', flag: 'K>6: emergency', high: 6 }
+        ],
+        imaging: ['Renal ultrasound: size/cysts/obstruction'],
+        histopath: ['Renal biopsy: glomerulosclerosis, IgA deposits, crescents']
+      },
+      liver: {
+        title: 'Liver',
+        blood: [
+          { name: 'ALT', range: '7–56 U/L', flag: 'High: hepatitis/fatty liver', high: 56 },
+          { name: 'AST', range: '10–40 U/L', flag: 'High: liver injury (alcohol if AST>ALT)', high: 40 },
+          { name: 'ALP', range: '44–147 IU/L', flag: 'High: bile duct blockage/bone disease', high: 147 },
+          { name: 'Bilirubin', range: '0.1–1.2 mg/dL', flag: 'High: jaundice workup', high: 1.2 },
+          { name: 'Albumin', range: '3.4–5.4 g/dL', flag: 'Low: chronic liver failure/malnutrition', low: 3.4 },
+          { name: 'INR', range: '0.8–1.1', flag: 'High: poor clotting in cirrhosis', high: 1.1 }
+        ],
+        imaging: ['Ultrasound liver: steatosis, ducts', 'FibroScan/Elastography for fibrosis'],
+        histopath: ['Liver biopsy: METAVIR F0–F4, steatosis grade']
+      },
+      gut: {
+        title: 'Intestine & Stomach',
+        blood: [
+          { name: 'H. pylori', range: 'Negative', flag: 'Positive: treat for gastritis/ulcers' },
+          { name: 'Stool occult blood', range: 'Negative', flag: 'Positive: bleeding ulcer/polyp' },
+          { name: 'Fecal Calprotectin', range: '<50 µg/g', flag: '>200: IBD (Crohn’s/UC)', high: 200 },
+          { name: 'Amylase', range: '40–140 U/L', flag: 'High (3x): pancreatitis', high: 140 },
+          { name: 'Lipase', range: '0–160 U/L', flag: 'High (3x): pancreatitis', high: 160 }
+        ],
+        imaging: ['Endoscopy/Colonoscopy: ulcers/polyps'],
+        histopath: ['Biopsy: atrophic gastritis, intestinal metaplasia, villous atrophy, adenomatous vs hyperplastic polyp']
+      },
+      oncology: {
+        title: 'Cancer/Tumor markers',
+        blood: [
+          { name: 'PSA', range: '<4.0 ng/mL', flag: 'High: BPH vs prostate cancer', high: 4 },
+          { name: 'CA-125', range: '<35 U/mL', flag: 'High: ovarian cancer/endometriosis', high: 35 },
+          { name: 'CEA', range: '<5 ng/mL (smokers)', flag: 'High: colorectal cancer spread', high: 5 },
+          { name: 'AFP', range: '<10 ng/mL', flag: 'High: HCC/germ cell tumor', high: 10 },
+          { name: 'CA 19-9', range: '<37 U/mL', flag: 'High: pancreatic/gallbladder cancer', high: 37 }
+        ],
+        imaging: ['CT/MRI per organ focus'],
+        histopath: ['Tumor biopsy: histology per site']
+      },
+      hematology: {
+        title: 'Blood (Hematology)',
+        blood: [
+          { name: 'Hemoglobin', range: 'M 13.5–17.5, F 12–15.5 g/dL', flag: 'Low: anemia; High: polycythemia', low: 12, high: 17.5 },
+          { name: 'WBC', range: '4,500–11,000 /µL', flag: 'High: infection/leukemia; Low: marrow suppression', low: 4500, high: 11000 },
+          { name: 'Platelets', range: '150–450k /µL', flag: 'Low: bleeding risk; High: inflammation', low: 150000, high: 450000 },
+          { name: 'ESR', range: '<20 mm/hr (M) <30 (F)', flag: 'High: inflammation', high: 30 },
+          { name: 'HbA1c', range: '<5.7%', flag: 'Prediabetes/diabetes if elevated', high: 5.7 }
+        ],
+        imaging: [],
+        histopath: []
+      },
+      brain: {
+        title: 'Brain & Nerves',
+        blood: [
+          { name: 'Vitamin B12', range: '200–900 pg/mL', flag: 'Low: neuropathy/memory issues', low: 200 },
+          { name: 'TSH', range: '0.4–4.0 mIU/L', flag: 'High: hypothyroidism (brain fog)', high: 4 }
+        ],
+        imaging: ['MRI Brain: stroke, demyelination, tumor, atrophy'],
+        histopath: []
+      },
+      bones: {
+        title: 'Bones',
+        blood: [
+          { name: 'Calcium', range: '8.5–10.2 mg/dL', flag: 'High: parathyroid; Low: Vit D deficiency', low: 8.5, high: 10.2 },
+          { name: 'Vitamin D', range: '30–100 ng/mL', flag: '<20: deficiency', low: 20 },
+          { name: 'Rheumatoid Factor', range: '<14 IU/mL', flag: 'High: rheumatoid arthritis', high: 14 }
+        ],
+        imaging: ['DEXA Scan: T-score +1 to -1 normal; -1 to -2.5 osteopenia; <-2.5 osteoporosis'],
+        histopath: []
+      },
+      eyes: {
+        title: 'Eyes',
+        blood: [ { name: 'Intraocular Pressure', range: '10–21 mmHg', flag: 'High: glaucoma risk', high: 21 }, { name: 'Visual Acuity', range: '20/20', flag: 'Worse: refractive/ocular disease' } ],
+        imaging: ['Fundus photography/OCT for retina'],
+        histopath: []
+      },
+      ent: {
+        title: 'Ears & Nose',
+        blood: [ { name: 'Audiometry', range: '0–25 dB HL', flag: '>25 dB: hearing loss', high: 25 } ],
+        imaging: ['Tympanometry: Type A curve normal'],
+        histopath: []
+      }
+    };
+
+    const SAMPLE_TEXT = `Patient: John Doe\nTroponin I: 0.12 ng/mL\nNT-proBNP 520 pg/mL\nLDL Cholesterol 162 mg/dL\nhs-CRP 4.5 mg/L\nCreatinine 1.2 mg/dL\nABG pO2 82 mmHg, pCO2 46 mmHg\nTSH 5.2 mIU/L\nVitamin D 18 ng/mL`;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      renderOrganCards();
+      renderAtlas();
+      setupBodyMap();
+      renderSystemStats();
+      fillTestLibrary();
+      populateOrganSelect();
+      updateOverallScore();
+      wireLabActions();
+    });
+
+    function renderOrganCards() {
+      const grid = document.getElementById('organs-grid');
+      grid.innerHTML = '';
+      Object.entries(ORGAN_DATA).forEach(([key, organ]) => {
+        const card = document.createElement('div');
+        card.className = 'organ-card-enhanced';
+        card.style.setProperty('--organ-color', organ.color);
+        card.style.setProperty('--organ-color-dark', organ.colorDark);
+        card.style.setProperty('--health', organ.health);
+        card.innerHTML = `
+          <div class="organ-preview">
+            <div class="organ-status-badge ${organ.status}">
+              <i class="ph-fill ${organ.status === 'healthy' ? 'ph-check' : 'ph-warning'}"></i>
+              ${organ.status === 'healthy' ? 'Healthy' : 'Monitor'}
             </div>
-            <div class="notice" id="organ_bridge_notice">All organ signals are mirrored to dashboard and consults.</div>
-            <div class="chip-row">
-              <a class="badge" href="patient-dashboard.html">Open dashboard</a>
-              <a class="badge" href="patient-health.html">Open health</a>
-              <a class="badge" href="patient-labs.html">Open labs</a>
-              <a class="badge" href="patient-pharmacy.html">Open pharmacy</a>
-              <a class="badge" href="patient-hospitals.html">Open hospitals</a>
+            <model-viewer src="${organ.model}" camera-controls auto-rotate shadow-intensity="0.7" interaction-prompt="none"></model-viewer>
+          </div>
+          <div class="organ-info">
+            <div class="organ-header">
+              <div class="organ-icon"><i class="ph-fill ${organ.icon}"></i></div>
+              <div class="organ-title"><h3>${organ.name}</h3><p>${organ.subtitle}</p></div>
+              <div class="health-ring"><span>${organ.health}</span></div>
             </div>
-          </div>
-        </div>
+            <div class="organ-metrics">
+              ${organ.metrics.map(m => `
+                <div class="metric-item">
+                  <div class="metric-label">${m.label}</div>
+                  <div class="metric-value">${m.value}<small>${m.unit}</small></div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="organ-actions">
+              <button class="organ-btn" onclick="viewDetails('${key}')"><i class="ph-bold ph-info"></i> Details</button>
+              <button class="organ-btn" onclick="viewReports('${key}')"><i class="ph-bold ph-file-text"></i> Reports</button>
+            </div>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
 
-        <div class="card">
-          <div class="card-head"><h3 id="organ_studio_title">Immersive anatomy studio</h3><span class="pill" id="organ_studio_status">Ready</span></div>
-          <p class="section-sub">Select an organ card to jump into 3D, align with labs, vitals, and consult readiness. If there’s no organ mesh, a rotatable globe-style fallback appears automatically.</p>
-          <div class="model-stage">
-            <model-viewer id="organ_model_viewer" data-fallback="https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/Earth/glTF-Binary/Earth.glb" camera-controls auto-rotate shadow-intensity="0.8" interaction-prompt="none">
-              <div class="model-fallback">Immersive 3D organ mesh loads on supported browsers.</div>
-            </model-viewer>
-          </div>
-          <div class="model-legend"><span class="legend-label" id="organ_studio_summary">Whole-body preview ready</span><span class="legend-sub" id="organ_studio_lab">Labs mirrored from dashboard</span></div>
-          <div class="stat-line">Vitals: <strong id="organ_studio_vitals">—</strong></div>
-          <div class="stat-line">Next action: <strong id="organ_studio_next">—</strong></div>
-          <div class="stat-line">Synced with: <strong id="organ_studio_sync">Dashboard · Health · Labs · Vitals · Pharmacy · Hospitals</strong></div>
-        </div>
-      </div>
-    </section>
+    function renderAtlas() {
+      const grid = document.getElementById('atlas-grid');
+      grid.innerHTML = '';
+      ATLAS.forEach(item => {
+        const organ = ORGAN_DATA[item.key];
+        const card = document.createElement('div');
+        card.className = 'atlas-card';
+        card.innerHTML = `
+          <div class="card-head"><h3>${organ.name}</h3><span class="pill ${organ.status === 'healthy' ? 'success' : 'warn'}">${item.badge}</span></div>
+          <p class="section-sub">Linked to vitals, labs, and dashboard alerts.</p>
+          <model-viewer src="${organ.model}" camera-controls auto-rotate shadow-intensity="0.7"></model-viewer>
+          <div class="atlas-links">
+            <a class="badge-link" href="patient-dashboard.html?organ=${item.key}">Dashboard</a>
+            <a class="badge-link" href="patient-health.html?organ=${item.key}">Health</a>
+            <a class="badge-link" href="patient-labs.html?organ=${item.key}">Labs</a>
+          </div>`;
+        grid.appendChild(card);
+      });
+    }
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">Lab sync</p>
-          <h2 class="section-title">Organ health from lab reports</h2>
-          <p class="section-sub">Pull the latest lab dashboard snapshot to update organ stress, hydration, inflammation, and endocrine balance.</p>
-        </div>
-        <div class="header-actions">
-          <button class="badge" id="refresh_lab_sync" type="button">🔁 Sync from Labs page</button>
-        </div>
-      </header>
-      <div class="card" id="lab_sync_panel">
-        <div class="grid-two">
-          <div>
-            <p class="section-sub">Hydration & kidney</p>
-            <div class="stat-line">Creatinine: <strong id="sync_creatinine">—</strong></div>
-            <div class="stat-line">Urea: <strong id="sync_urea">—</strong></div>
-          </div>
-          <div>
-            <p class="section-sub">Liver & inflammation</p>
-            <div class="stat-line">SGOT/SGPT: <strong id="sync_lft">—</strong></div>
-            <div class="stat-line">CRP: <strong id="sync_crp">—</strong></div>
-          </div>
-          <div>
-            <p class="section-sub">Endocrine & metabolic</p>
-            <div class="stat-line">HbA1c / Lipids: <strong id="sync_metabolic">—</strong></div>
-            <div class="stat-line">Thyroid: <strong id="sync_thyroid">—</strong></div>
-          </div>
-          <div>
-            <p class="section-sub">Immune</p>
-            <div class="stat-line">CBC / WBC: <strong id="sync_cbc">—</strong></div>
-            <div class="stat-line">Imaging flags: <strong id="sync_imaging">—</strong></div>
-          </div>
-        </div>
-        <p class="section-sub">Updated snapshot feeds the dashboard organ alerts automatically.</p>
-      </div>
-    </section>
+    function setupBodyMap() {
+      document.querySelectorAll('.body-hotspot').forEach(hotspot => {
+        hotspot.addEventListener('click', () => {
+          const organ = hotspot.dataset.organ;
+          alert(`Selected: ${organ.toUpperCase()}\n\nOpening detailed organ analysis.`);
+        });
+      });
+    }
 
-    <section class="section">
-      <header>
-        <div>
-          <p class="chip">Notifications</p>
-          <h2 class="section-title">Organ notifications + consults</h2>
-        </div>
-      </header>
-      <div class="card" id="organAlerts">
-        <p class="section-sub">Abnormalities will be mirrored to the dashboard and Settings for follow-up.</p>
-        <div id="alert_list">
-          <div class="notice success">All systems green. You will be notified if vitals cross thresholds.</div>
-        </div>
-      </div>
-    </section>
-  </main>
+    function renderSystemStats() {
+      const container = document.getElementById('system-stats');
+      container.innerHTML = '';
+      SYSTEM_STATS.forEach(stat => {
+        const block = document.createElement('div');
+        block.className = 'stat-card';
+        block.innerHTML = `
+          <h4><i class="ph-fill ph-activity" style="color: var(--color-blue);"></i> ${stat.label}</h4>
+          <div style="font-size: 28px; font-weight: 800; color: white;">${stat.value}<small style="font-size: 14px; opacity: 0.6;">/100</small></div>
+          <div class="stat-bar"><div class="stat-fill" style="--percentage:${stat.value}%"></div></div>`;
+        container.appendChild(block);
+      });
+    }
 
-  <footer>
-    <p>© 2025 HealthFlo — Organ Watch</p>
-  </footer>
-  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  <script src="js/patient-os.js"></script>
+    function populateOrganSelect() {
+      const select = document.getElementById('labOrganSelect');
+      select.innerHTML = '';
+      Object.keys(TEST_LIBRARY).forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = TEST_LIBRARY[key].title;
+        select.appendChild(opt);
+      });
+    }
+
+    function updateOverallScore() {
+      const values = Object.values(ORGAN_DATA).map(o => o.health);
+      const avg = Math.round(values.reduce((a, b) => a + b, 0) / values.length);
+      const alerting = Object.values(ORGAN_DATA).filter(o => o.status === 'warning').length;
+      document.getElementById('overallScore').textContent = `${avg}/100`;
+      document.getElementById('overallTone').textContent = alerting ? 'Monitor flagged organs and labs' : 'All organs stable';
+      document.getElementById('alertCount').textContent = alerting;
+      document.getElementById('alertSummary').textContent = alerting ? `${alerting} organ(s) need follow-up` : 'No critical organ triggers';
+      document.getElementById('fullBodyStatus').textContent = `Overall score ${avg}/100 with ${alerting ? alerting + ' monitoring flags' : 'no active alerts'}. AI combines vitals, labs, and imaging to prioritize consults.`;
+    }
+
+    function fillTestLibrary() {
+      const lib = document.getElementById('testLibrary');
+      lib.innerHTML = '';
+      Object.values(TEST_LIBRARY).forEach(entry => {
+        const card = document.createElement('div');
+        card.className = 'library-card';
+        card.innerHTML = `
+          <h4>${entry.title}</h4>
+          <strong>Blood/biomarkers</strong>
+          <ul>${entry.blood.map(test => `<li><strong>${test.name}</strong> — ${test.range}. ${test.flag}</li>`).join('')}</ul>
+          ${entry.imaging.length ? `<strong>Radiology/Imaging</strong><ul>${entry.imaging.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+          ${entry.histopath.length ? `<strong>Histopathology</strong><ul>${entry.histopath.map(h => `<li>${h}</li>`).join('')}</ul>` : ''}
+        `;
+        lib.appendChild(card);
+      });
+    }
+
+    function wireLabActions() {
+      document.getElementById('loadSampleBtn').addEventListener('click', () => {
+        document.getElementById('labOcrText').value = SAMPLE_TEXT;
+        document.getElementById('labSync').textContent = 'Sample data';
+        document.getElementById('labSyncMeta').textContent = 'From virtual upload';
+      });
+
+      document.getElementById('labFileInput').addEventListener('change', async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        if (file.type.startsWith('text/') || file.name.endsWith('json') || file.name.endsWith('csv')) {
+          const text = await file.text();
+          document.getElementById('labOcrText').value = text;
+        } else {
+          document.getElementById('labOcrText').value = 'OCR placeholder — convert PDF to text client-side or server-side to continue.';
+        }
+        document.getElementById('labSync').textContent = file.name;
+        document.getElementById('labSyncMeta').textContent = 'Uploaded for OCR mapping';
+      });
+
+      document.getElementById('mapLabBtn').addEventListener('click', () => {
+        const organ = document.getElementById('labOrganSelect').value;
+        const text = document.getElementById('labOcrText').value || '';
+        mapLabResults(organ, text);
+      });
+    }
+
+    function parseValue(text, name) {
+      const safe = name.replace(/[^a-zA-Z0-9]/g, '[\\s_-]*');
+      const pattern = new RegExp(`${safe}[\\s:]*([0-9]+(?:\\.[0-9]+)?)`, 'i');
+      const match = text.match(pattern);
+      return match ? parseFloat(match[1]) : null;
+    }
+
+    function mapLabResults(organKey, text) {
+      const entry = TEST_LIBRARY[organKey];
+      const resultsContainer = document.getElementById('labResultsList');
+      resultsContainer.innerHTML = '';
+      if (!entry) return;
+      const cards = [];
+      entry.blood.forEach(test => {
+        const value = parseValue(text, test.name);
+        const status = evaluateTest(test, value, text.toLowerCase());
+        cards.push(renderResultCard(test, value, status));
+      });
+      if (!cards.length) {
+        cards.push('<div class="result-card"><h4>No matches yet</h4><p class="metric-value" style="font-size: 14px;">Paste OCR text or load a sample to auto-map labs.</p></div>');
+      }
+      resultsContainer.innerHTML = cards.join('');
+      updateOverallScore();
+      document.getElementById('alertFeed').innerHTML = cards.filter(c => c.includes('alert')).join('') || '<div class="result-card"><h4>All systems green</h4><p class="metric-value" style="font-size: 14px;">No critical alerts detected.</p></div>';
+    }
+
+    function evaluateTest(test, value, loweredText) {
+      if (value === null) {
+        return { level: 'info', summary: 'Not detected in OCR', action: 'Ensure the test name matches the uploaded report.' };
+      }
+      let level = 'ok';
+      let summary = 'Within typical range (confirm lab reference)';
+      const actionBase = 'Cross-check with printed lab range and clinical context.';
+      if (typeof test.high === 'number' && value > test.high) {
+        level = value > (test.high * 2) ? 'alert' : 'watch';
+        summary = `High: ${test.flag}`;
+      }
+      if (typeof test.low === 'number' && value < test.low) {
+        level = value < (test.low * 0.8) ? 'alert' : 'watch';
+        summary = `Low: ${test.flag}`;
+      }
+      if (test.name.toLowerCase().includes('lipid') && loweredText.includes('ldl')) {
+        summary = 'Elevated LDL/TG raise plaque risk';
+        level = 'watch';
+      }
+      const management = generateManagement(test.name, level);
+      return { level, summary, action: `${summary}. ${management} ${actionBase}` };
+    }
+
+    function renderResultCard(test, value, status) {
+      const badgeClass = status.level === 'alert' ? 'alert' : status.level === 'watch' ? 'watch' : 'ok';
+      const valueText = value === null ? '—' : value;
+      return `
+        <div class="result-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap: wrap;">
+            <h4>${test.name}</h4>
+            <span class="status-flag ${badgeClass}">${status.summary}</span>
+          </div>
+          <p class="metric-label">Typical reference: ${test.range} (use lab-printed range if different)</p>
+          <p class="metric-value">OCR value: <strong>${valueText}</strong></p>
+          <p style="margin:0; color: var(--text-muted);">${status.action}</p>
+        </div>`;
+    }
+
+    function generateManagement(name, level) {
+      const base = {
+        watch: 'Schedule repeat testing, tighten lifestyle (sleep, nutrition, movement), and monitor symptoms.',
+        alert: 'Escalate to clinician, consider ED if symptomatic, and ensure medication safety checks.'
+      };
+      if (level === 'ok') return 'Continue routine monitoring and preventive care.';
+      if (name.toLowerCase().includes('troponin')) return 'Positive troponin needs emergency evaluation for heart attack.';
+      if (name.toLowerCase().includes('potassium')) return 'If K>6 or ECG changes: urgent care and cardiac monitoring.';
+      if (name.toLowerCase().includes('d-dimer')) return 'Pair with imaging (CTPA/USG) to confirm/exclude clot.';
+      if (name.toLowerCase().includes('calprotectin')) return 'Coordinate GI consult for IBD workup and stool repeat if needed.';
+      if (name.toLowerCase().includes('psa')) return 'Discuss urology evaluation and MRI/biopsy pathway if persistently high.';
+      return base[level] || 'Coordinate with care team for next steps.';
+    }
+
+    window.viewDetails = (organ) => {
+      window.location.href = `patient-dashboard.html?organ=${organ}`;
+    };
+
+    window.viewReports = (organ) => {
+      window.location.href = `patient-labs.html?filter=${organ}`;
+    };
+  </script>
 </body>
 </html>
